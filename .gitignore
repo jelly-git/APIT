@@ -1,0 +1,47 @@
+# WordPress core - not versioned, managed via WP-CLI/updates
+/wp-admin/
+/wp-includes/
+/wp-*.php
+index.php
+license.txt
+readme.html
+xmlrpc.php
+local-xdebuginfo.php
+
+# Config & secrets
+wp-config.php
+.htaccess
+
+# Uploads & generated content
+/wp-content/uploads/
+/wp-content/upgrade/
+/wp-content/cache/
+/wp-content/backup*/
+/wp-content/backups/
+/wp-content/languages/
+
+# Default WordPress bundled themes - not custom code
+/wp-content/themes/twentytwentytwo/
+/wp-content/themes/twentytwentythree/
+/wp-content/themes/twentytwentyfour/
+/wp-content/themes/twentytwentyfive/
+
+# Only the custom theme(s)/plugin(s) we build should be tracked under
+# /wp-content/themes/ and /wp-content/plugins/ — third-party plugins
+# installed from wp.org/Elementor marketplace are excluded once added:
+# /wp-content/plugins/*
+# !/wp-content/plugins/my-custom-plugin/
+
+# Local by Flywheel
+.ddev/
+local-xdebuginfo.php
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node / build tooling
+node_modules/
+npm-debug.log
