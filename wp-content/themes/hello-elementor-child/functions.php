@@ -5,7 +5,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'APIT_CHILD_VERSION', '1.0.0' );
+// Keep in sync with the Version header in style.css and with CHANGELOG.md.
+define( 'APIT_CHILD_VERSION', '0.4.0' );
 
 function apit_child_enqueue_assets() {
 	wp_enqueue_style(
