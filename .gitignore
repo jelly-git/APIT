@@ -20,17 +20,14 @@ wp-config.php
 /wp-content/backups/
 /wp-content/languages/
 
-# Default WordPress bundled themes - not custom code
-/wp-content/themes/twentytwentytwo/
-/wp-content/themes/twentytwentythree/
-/wp-content/themes/twentytwentyfour/
-/wp-content/themes/twentytwentyfive/
-
-# Only the custom theme(s)/plugin(s) we build should be tracked under
-# /wp-content/themes/ and /wp-content/plugins/ — third-party plugins
-# installed from wp.org/Elementor marketplace are excluded once added:
-# /wp-content/plugins/*
-# !/wp-content/plugins/my-custom-plugin/
+# Third-party themes/plugins (WordPress core defaults, Elementor, etc.)
+# are reinstalled via WP-CLI, not versioned. Only our own child
+# theme/plugin is tracked (add an exception below once it exists), e.g.:
+# !/wp-content/themes/apit-child/
+/wp-content/themes/*
+/wp-content/plugins/*
+!/wp-content/plugins/index.php
+!/wp-content/themes/index.php
 
 # Local by Flywheel
 .ddev/
