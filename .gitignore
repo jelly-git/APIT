@@ -21,13 +21,12 @@ wp-config.php
 /wp-content/languages/
 
 # Third-party themes/plugins (WordPress core defaults, Elementor, etc.)
-# are reinstalled via WP-CLI, not versioned. Only our own child
-# theme/plugin is tracked (add an exception below once it exists), e.g.:
-# !/wp-content/themes/apit-child/
+# are reinstalled via WP-CLI, not versioned. Only our own code is tracked.
 /wp-content/themes/*
 /wp-content/plugins/*
 !/wp-content/plugins/index.php
 !/wp-content/themes/index.php
+!/wp-content/themes/hello-elementor-child/
 
 # Local by Flywheel
 .ddev/

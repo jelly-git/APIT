@@ -1,0 +1,554 @@
+/*
+Theme Name: Hello Elementor Child - APIT
+Template: hello-elementor
+Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
+Version: 1.0.0
+*/
+
+:root {
+	--apit-branco: #f4f9ff;
+	--apit-magenta: #f41892;
+	--apit-azul: #4a85c8;
+	--apit-roxo: #8048a6;
+	--apit-black: #1b2a33;
+	--apit-font: "omnes", sans-serif; /* TODO: confirmar o nome exato da família no kit Adobe Fonts (Typekit) uqy3rtf */
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family: var(--apit-font);
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+/* ---------- Site Header ---------- */
+
+.apit-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: 20;
+	background-color: #1b2a33; /* dark fallback for pages without a colorful hero behind the header */
+	background-image: url("assets/img/header-bg.png");
+	background-position: top center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	color: var(--apit-branco);
+}
+
+.apit-header__topbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 6px 42px 4px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.apit-header__topbar-menu {
+	display: flex;
+	align-items: center;
+	gap: 32px;
+}
+
+.apit-header__topbar-menu a,
+.apit-header__lang a {
+	display: block;
+	padding: 5px 10px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 1.68;
+	letter-spacing: -0.12px;
+	text-transform: uppercase;
+	color: var(--apit-branco);
+}
+
+.apit-header__topbar-right {
+	display: flex;
+	align-items: center;
+	gap: 42px;
+}
+
+.apit-header__lang {
+	display: flex;
+	align-items: center;
+	gap: 36px;
+}
+
+.apit-header__lang a.is-active {
+	opacity: 1;
+}
+
+.apit-header__lang a:not(.is-active) {
+	opacity: 0.6;
+}
+
+.apit-header__social {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.apit-header__social a {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	font-size: 16px;
+	color: var(--apit-branco);
+}
+
+.apit-header__main {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 115px;
+	padding: 20px 42px;
+}
+
+.apit-header__logo {
+	flex-shrink: 0;
+}
+
+.apit-header__logo img {
+	display: block;
+	width: 188px;
+	height: 75px;
+	object-fit: contain;
+}
+
+.apit-header__main-right {
+	display: flex;
+	align-items: center;
+	gap: 42px;
+}
+
+.apit-header__nav {
+	display: flex;
+	align-items: center;
+	gap: 32px;
+}
+
+.apit-header__menu {
+	display: flex;
+	align-items: center;
+	gap: 32px;
+}
+
+.apit-header__menu a {
+	display: block;
+	padding: 5px 10px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 16px;
+	letter-spacing: -0.16px;
+	text-transform: uppercase;
+	color: #fff;
+}
+
+.apit-header__search-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	font-size: 24px;
+	color: #fff;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 0;
+}
+
+.apit-header__cta {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 12px 30px 11px;
+	border: 2px solid var(--apit-branco);
+	border-radius: 42px;
+	background: rgba(74, 133, 200, 0);
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 15px;
+	text-transform: uppercase;
+	color: var(--apit-branco);
+}
+
+.apit-header__cta i {
+	font-size: 16px;
+}
+
+@media (max-width: 1024px) {
+	.apit-header__topbar,
+	.apit-header__nav {
+		display: none;
+	}
+
+	.apit-header__main {
+		height: auto;
+		padding: 16px 20px;
+	}
+}
+
+/* ---------- Layout container ---------- */
+
+.apit-container {
+	max-width: 1300px;
+	margin-inline: auto;
+	padding-inline: 20px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 16px;
+	padding: 17px 30px 15px;
+	border-radius: 200px;
+	border: 2px solid transparent;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 1.68;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: var(--apit-branco);
+}
+
+.btn--solid {
+	background: var(--apit-azul);
+	border-color: var(--apit-azul);
+}
+
+.btn--outline {
+	background: transparent;
+	border-color: var(--apit-branco);
+}
+
+/* ---------- Home hero ---------- */
+
+/*
+ * TODO: replace with the real "freepik_abstract-layered-gradient" export from
+ * Figma node 9:19574 — the Figma MCP asset download hit the plan's rate limit,
+ * so this is a CSS approximation of that artwork.
+ */
+.hero {
+	position: relative;
+	overflow: hidden;
+	min-height: 1080px;
+	padding-top: 235px;
+	background-color: var(--apit-magenta);
+	background-image:
+		radial-gradient(120% 90% at 78% 8%, #2ec6b0 0%, rgba(46, 198, 176, 0) 55%),
+		radial-gradient(90% 80% at 100% 42%, #4a85c8 0%, rgba(74, 133, 200, 0) 60%),
+		radial-gradient(70% 70% at 62% 30%, var(--apit-roxo) 0%, rgba(128, 72, 166, 0) 65%),
+		radial-gradient(110% 100% at 8% 78%, var(--apit-magenta) 0%, rgba(244, 24, 146, 0) 70%);
+	color: #fff;
+	isolation: isolate;
+}
+
+.hero__blobs {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	z-index: 0;
+}
+
+/*
+ * The exported blob SVGs bake in a 200px Gaussian blur, which pads each edge by
+ * 400px — so an SVG for an N-px circle measures N+800 and must be offset by -400
+ * from the circle's designed position.
+ */
+.hero__blob {
+	position: absolute;
+	max-width: none;
+	margin: -400px 0 0 -400px;
+}
+
+.hero__blob--1 { left: -147px;  top: -165px; width: 1382px; }
+.hero__blob--2 { left: 352px;   top: 302px;  width: 1382px; }
+.hero__blob--3 { left: 502px;   top: 729px;  width: 1560px; }
+.hero__blob--4 { left: -157px;  top: 714px;  width: 1560px; }
+.hero__blob--5 { left: -193px;  top: 110px;  width: 1560px; }
+.hero__blob--6 { left: -122px;  top: 558px;  width: 1232px; }
+.hero__blob--7 { left: 1620px;  top: 432px;  width: 1382px; }
+
+.hero__watermark {
+	position: absolute;
+	left: 0;
+	top: 560px;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	font-size: 336px;
+	line-height: 0.82;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: #fff;
+	opacity: 0.18;
+	pointer-events: none;
+}
+
+.hero__inner {
+	position: relative;
+	z-index: 2;
+}
+
+.hero__title {
+	max-width: 799px;
+	margin: 0;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 72px;
+	line-height: 1.1;
+	color: #fff;
+}
+
+.hero__subtitle {
+	max-width: 474px;
+	margin: 30px 0 0;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 30px;
+	line-height: 1.4;
+	letter-spacing: -0.9px;
+	color: #fff;
+}
+
+.hero__actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 21px;
+	margin-top: 40px;
+}
+
+.hero__divider {
+	max-width: 1013px;
+	margin-top: 115px;
+	border-top: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.hero__watch-badge {
+	position: absolute;
+	right: 310px;
+	top: 243px;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	text-align: center;
+}
+
+.hero__watch-pill {
+	display: block;
+	padding: 6px 42px;
+	border: 2px solid #fff;
+	border-radius: 200px;
+	font-family: var(--apit-font);
+	font-size: 44px;
+	line-height: 1.1;
+	color: #fff;
+}
+
+.hero__watch-pill--outline {
+	font-size: 30px;
+	letter-spacing: 4px;
+}
+
+.hero__watch-badge small {
+	font-family: var(--apit-font);
+	font-size: 12px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #fff;
+}
+
+.hero__video {
+	position: absolute;
+	right: 290px;
+	top: 445px;
+	z-index: 2;
+	width: 329px;
+	height: 651px;
+	background: var(--apit-black);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 18px 29px 0 -2px transparent;
+}
+
+.hero__video::after {
+	content: "";
+	position: absolute;
+	inset: 29px -18px -22px 18px;
+	border: 2px solid #fff;
+	z-index: -1;
+}
+
+.hero__play {
+	background: none;
+	border: none;
+	padding: 0;
+	cursor: pointer;
+	font-size: 96px;
+	line-height: 1;
+	color: var(--apit-branco);
+}
+
+@media (max-width: 1400px) {
+	.hero {
+		min-height: 0;
+		padding-block: 200px 80px;
+	}
+
+	.hero__watch-badge,
+	.hero__video,
+	.hero__watermark {
+		display: none;
+	}
+}
+
+@media (max-width: 768px) {
+	.hero {
+		padding-block: 140px 60px;
+	}
+
+	.hero__title {
+		font-size: 40px;
+	}
+
+	.hero__subtitle {
+		font-size: 20px;
+		letter-spacing: normal;
+	}
+
+	.hero__divider {
+		margin-top: 60px;
+	}
+}
+
+/* ---------- Site Footer ---------- */
+
+.apit-footer {
+	background: #fff;
+	color: #1b2a33;
+	padding-top: 64px;
+}
+
+.apit-footer__main {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 40px;
+	padding-bottom: 48px;
+}
+
+.apit-footer__brand img {
+	display: block;
+	width: 250px;
+	height: auto;
+}
+
+.apit-footer__links-menu {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+}
+
+.apit-footer__links-menu a,
+.apit-footer__contact p {
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 1.68;
+	letter-spacing: 0.32px;
+	color: #1b2a33;
+	margin: 0;
+}
+
+.apit-footer__contact p {
+	margin-bottom: 4px;
+}
+
+.apit-footer__email {
+	color: #f41892 !important;
+}
+
+.apit-footer__social {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 8px;
+}
+
+.apit-footer__social a {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	font-size: 16px;
+	color: #1b2a33;
+}
+
+.apit-footer__watch img {
+	display: block;
+	width: 261px;
+	height: auto;
+}
+
+.apit-footer__bottom {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding-block: 24px;
+	border-top: 1px solid rgba(27, 42, 51, 0.12);
+}
+
+.apit-footer__copy,
+.apit-footer__legal {
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 14px;
+	letter-spacing: 0.28px;
+	opacity: 0.4;
+	margin: 0;
+}
+
+.apit-footer__legal a {
+	margin: 0 4px;
+}
+
+.apit-footer__credit img {
+	display: block;
+	width: 61px;
+	height: auto;
+}
+
+@media (max-width: 768px) {
+	.apit-footer__main {
+		flex-direction: column;
+		gap: 32px;
+	}
+}
