@@ -33,10 +33,11 @@ add_action( 'init', 'apit_register_evento_post_type' );
  */
 function apit_register_evento_meta() {
 	$fields = [
-		'apit_evento_data'      => 'string', // Y-m-d, drives the day/month badge
-		'apit_evento_categoria' => 'string', // pill above the card, e.g. "Encontro APIT"
-		'apit_evento_etiqueta'  => 'string', // pill inside the card, e.g. "Associados"
-		'apit_evento_extra'     => 'string', // optional second pill inside the card
+		'apit_evento_data'       => 'string', // Y-m-d, drives the day/month badge
+		'apit_evento_categoria'  => 'string', // pill over the top edge, e.g. "Evento APIT"
+		'apit_evento_local'      => 'string', // location pill, e.g. "Lisboa"
+		'apit_evento_acao_texto' => 'string', // optional button label, e.g. "Marcar reunião"
+		'apit_evento_acao_url'   => 'string', // where that button points
 	];
 
 	foreach ( $fields as $key => $type ) {
@@ -44,7 +45,15 @@ function apit_register_evento_meta() {
 			'type'              => $type,
 			'single'            => true,
 			'show_in_rest'      => true,
-			'sanitize_callback' => 'sanitize_text_field',
+			/*
+			 * The action field holds a URL, so it needs URL sanitising. It has to
+			 * be wrapped: register_post_meta passes the meta key as the second
+			 * argument, which esc_url_raw would read as its $protocols list and
+			 * then reject every URL.
+			 */
+			'sanitize_callback' => 'apit_evento_acao_url' === $key
+				? function ( $value ) { return esc_url_raw( $value ); }
+				: 'sanitize_text_field',
 			'auth_callback'     => function () {
 				return current_user_can( 'edit_posts' );
 			},

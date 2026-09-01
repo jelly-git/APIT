@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.7.0
+Version: 0.8.0
 */
 
 :root {
@@ -11,6 +11,9 @@ Version: 0.7.0
 	--apit-azul: #4a85c8;
 	--apit-roxo: #8048a6;
 	--apit-black: #1b2a33;
+	--apit-turquesa: #2ec6b0;
+	/* Light end of the category gradients on the calendar cards. */
+	--apit-cinza: #e9edf0;
 	/* Family name as served by the Typekit kit uqy3rtf. */
 	--apit-font: "omnes-pro", sans-serif;
 }
@@ -618,7 +621,7 @@ ul {
 }
 
 .calendario__arrow:hover {
-	background: var(--apit-cat, var(--apit-magenta));
+	background: var(--apit-black);
 	color: #fff;
 }
 
@@ -626,90 +629,152 @@ ul {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 37px;
-	overflow: hidden;
 }
 
 .calendario__item {
 	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
 }
 
+/*
+ * The card is a gradient from the category colour into light grey, with the
+ * bottom-right corner left clear for the date badge.
+ */
 .evento-card {
 	position: relative;
 	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
-	gap: 16px;
+	flex-direction: column;
+	justify-content: flex-end;
 	width: 100%;
 	min-height: 248px;
-	margin-top: -15px;
 	padding: 49px 38px 30px;
-	border-radius: 8px;
-	background: #fff;
-	box-shadow: 0 2px 16px rgba(27, 42, 51, 0.08);
+	background-image: linear-gradient(100deg, var(--apit-cat, var(--apit-magenta)) 0%, var(--apit-cinza) 100%);
+	color: #fff;
+}
+
+/* Category pill, straddling the card's top edge (Figma puts it 5px above). */
+.evento-card__categoria {
+	position: absolute;
+	top: -5px;
+	left: 14px;
+	padding: 6px 16px;
+	/* A shade darker than the gradient start, as in the design. */
+	background: color-mix(in srgb, var(--apit-cat, var(--apit-magenta)) 82%, #000);
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 11px;
+	line-height: 1.6;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: #fff;
+	white-space: nowrap;
 }
 
 .evento-card__body {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	/* Keeps the text clear of the date badge. */
+	max-width: calc(100% - 110px);
 }
 
 .evento-card__title {
 	margin: 0;
 	font-family: var(--apit-font);
-	font-weight: 500;
-	font-size: 24px;
-	line-height: 1.2;
-	color: var(--apit-black);
+	font-weight: 400;
+	font-size: 32px;
+	line-height: 1.15;
+	color: #fff;
 }
 
 .evento-card__meta {
-	margin: 0;
+	margin: 8px 0 0;
 	font-family: var(--apit-font);
+	font-weight: 500;
 	font-size: 16px;
-	line-height: 1.68;
-	color: rgba(27, 42, 51, 0.7);
+	line-height: 1.4;
+	color: #fff;
 }
 
-.evento-card__pills {
+.evento-card__actions {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 8px;
-	margin-top: 12px;
+	gap: 10px;
+	margin-top: 20px;
 }
 
-.evento-card__date {
-	display: flex;
-	flex-direction: column;
-	flex-shrink: 0;
+.evento-pill {
+	display: inline-flex;
 	align-items: center;
-	width: 90px;
-	border-radius: 8px;
-	overflow: hidden;
-	background: var(--apit-branco);
-	text-align: center;
-}
-
-.evento-card__month {
-	display: block;
-	width: 100%;
-	padding: 6px 0;
-	background: var(--apit-cat, var(--apit-magenta));
+	gap: 8px;
+	padding: 7px 18px;
+	border: 1px solid rgba(255, 255, 255, 0.9);
+	border-radius: 200px;
 	font-family: var(--apit-font);
 	font-weight: 500;
 	font-size: 12px;
 	line-height: 1.6;
-	text-transform: lowercase;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
 	color: #fff;
+	white-space: nowrap;
+}
+
+/* The action button is solid white with dark text, per the design. */
+.evento-pill--acao {
+	padding: 9px 22px;
+	border-color: #fff;
+	background: #fff;
+	font-size: 13px;
+	color: var(--apit-black);
+}
+
+.evento-pill--acao:hover {
+	background: var(--apit-black);
+	border-color: var(--apit-black);
+	color: #fff;
+}
+
+/*
+ * Date badge: bottom-right of the card, over a dark square offset by 4px
+ * (Figma stacks Rectangle 7 behind Rectangle 6 at +4,+4).
+ */
+.evento-card__date {
+	position: absolute;
+	right: 4px;
+	bottom: 0;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	width: 90px;
+	background: #fff;
+	text-align: center;
+}
+
+.evento-card__date::before {
+	content: "";
+	position: absolute;
+	inset: 4px -4px -4px 4px;
+	z-index: -1;
+	background: var(--apit-black);
+}
+
+.evento-card__month {
+	display: block;
+	padding: 8px 0 6px;
+	background: var(--apit-cat, var(--apit-magenta));
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 11px;
+	line-height: 1.4;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: var(--apit-black);
 }
 
 .evento-card__day {
 	display: block;
-	padding: 6px 0 10px;
+	padding: 4px 0 12px;
 	font-family: var(--apit-font);
-	font-weight: 500;
+	font-weight: 400;
 	font-size: 40px;
 	line-height: 1.2;
 	color: var(--apit-black);
@@ -729,6 +794,10 @@ ul {
 
 	.evento-card {
 		padding: 44px 24px 24px;
+	}
+
+	.evento-card__title {
+		font-size: 26px;
 	}
 }
 

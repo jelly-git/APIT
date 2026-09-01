@@ -22,6 +22,34 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.8.0] - 2026-09-01
+
+### Adicionado
+- Botão de ação opcional nos cartões do calendário (ex. "Marcar reunião"), com
+  texto e link definidos por evento nos campos `apit_evento_acao_texto` e
+  `apit_evento_acao_url`. Aparece só nos eventos que o tenham preenchido.
+- Pill de localização com ícone de marcador, do campo `apit_evento_local`.
+
+### Alterado
+- Cartões do calendário refeitos a partir das imagens do mockup: fundo em
+  degradé da cor da categoria para cinza claro, título e subtítulo brancos,
+  pill da categoria sobreposta ao topo numa tonalidade mais escura, e badge de
+  data encostada ao canto inferior direito sobre um quadrado escuro deslocado
+  4px (como o Figma empilha Rectangle 7 atrás de Rectangle 6).
+- Categorias de evento passaram a ser as do mockup — "Evento APIT" (turquesa),
+  "Evento Internacional" (magenta) e "Stand APIT" (azul).
+- Campos do evento reestruturados: `apit_evento_etiqueta` e
+  `apit_evento_extra` deram lugar a `apit_evento_local`,
+  `apit_evento_acao_texto` e `apit_evento_acao_url`.
+
+### Corrigido
+- `esc_url_raw` não pode ser usado diretamente como `sanitize_callback` de
+  `register_post_meta`: recebe a chave da meta no segundo parâmetro, lê-a como
+  a lista de `$protocols` e rejeita todos os URLs. Fica embrulhado numa closure.
+- Lazy-load do Elementor a anular os degradés dos cartões: além do 4.º
+  container, a regra desce para o 2.º em janelas com menos de 640px de altura.
+  Todos os containers da Home levam agora `e-no-lazyload`.
+
 ## [0.7.0] - 2026-09-01
 
 ### Adicionado

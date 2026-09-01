@@ -1,6 +1,11 @@
 <?php
 /**
  * Calendário section (home) — Figma nodes 13:19729 / 13:19650 / 16:19769 / 16:19789
+ *
+ * Card anatomy, per the design: the card is a left-to-right gradient in the
+ * category colour, with the category pill straddling its top edge, white title
+ * and subtitle, a location pill, an optional action button, and a date badge
+ * pinned to the bottom-right corner over an offset dark square.
  */
 $eventos = apit_get_proximos_eventos( 4 );
 
@@ -25,18 +30,19 @@ if ( ! $eventos ) {
 		<ul class="calendario__track">
 			<?php foreach ( $eventos as $evento ) : ?>
 				<?php
-				$data      = get_post_meta( $evento->ID, 'apit_evento_data', true );
-				$categoria = get_post_meta( $evento->ID, 'apit_evento_categoria', true );
-				$etiqueta  = get_post_meta( $evento->ID, 'apit_evento_etiqueta', true );
-				$extra     = get_post_meta( $evento->ID, 'apit_evento_extra', true );
-				$timestamp = $data ? strtotime( $data ) : false;
+				$data       = get_post_meta( $evento->ID, 'apit_evento_data', true );
+				$categoria  = get_post_meta( $evento->ID, 'apit_evento_categoria', true );
+				$local      = get_post_meta( $evento->ID, 'apit_evento_local', true );
+				$acao_texto = get_post_meta( $evento->ID, 'apit_evento_acao_texto', true );
+				$acao_url   = get_post_meta( $evento->ID, 'apit_evento_acao_url', true );
+				$timestamp  = $data ? strtotime( $data ) : false;
 				?>
 				<li class="calendario__item" style="<?php echo esc_attr( apit_cor_categoria_style( $categoria ) ); ?>">
-					<?php if ( $categoria ) : ?>
-						<span class="pill pill--categoria"><?php echo esc_html( $categoria ); ?></span>
-					<?php endif; ?>
-
 					<article class="evento-card">
+						<?php if ( $categoria ) : ?>
+							<span class="evento-card__categoria"><?php echo esc_html( $categoria ); ?></span>
+						<?php endif; ?>
+
 						<div class="evento-card__body">
 							<h3 class="evento-card__title">
 								<a href="<?php echo esc_url( get_permalink( $evento ) ); ?>"><?php echo esc_html( get_the_title( $evento ) ); ?></a>
@@ -46,14 +52,22 @@ if ( ! $eventos ) {
 								<p class="evento-card__meta"><?php echo esc_html( $evento->post_excerpt ); ?></p>
 							<?php endif; ?>
 
-							<div class="evento-card__pills">
-								<?php if ( $etiqueta ) : ?>
-									<span class="pill"><?php echo esc_html( $etiqueta ); ?></span>
-								<?php endif; ?>
-								<?php if ( $extra ) : ?>
-									<span class="pill"><?php echo esc_html( $extra ); ?></span>
-								<?php endif; ?>
-							</div>
+							<?php if ( $local || $acao_texto ) : ?>
+								<div class="evento-card__actions">
+									<?php if ( $local ) : ?>
+										<span class="evento-pill evento-pill--local">
+											<i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+											<?php echo esc_html( $local ); ?>
+										</span>
+									<?php endif; ?>
+
+									<?php if ( $acao_texto ) : ?>
+										<a class="evento-pill evento-pill--acao" href="<?php echo esc_url( $acao_url ?: get_permalink( $evento ) ); ?>">
+											<?php echo esc_html( $acao_texto ); ?>
+										</a>
+									<?php endif; ?>
+								</div>
+							<?php endif; ?>
 						</div>
 
 						<?php if ( $timestamp ) : ?>

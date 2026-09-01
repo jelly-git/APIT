@@ -15,14 +15,17 @@ defined( 'ABSPATH' ) || exit;
  */
 function apit_categoria_cores() {
 	$cores = [
-		'institucional'    => '#f41892', // magenta
-		'encontro-apit'    => '#f41892',
-		'mercados-feiras'  => '#4a85c8', // azul
-		'mercados'         => '#4a85c8',
-		'mercado'          => '#4a85c8',
-		'setor'            => '#8048a6', // roxo
-		'internacional'    => '#2ec6b0', // turquesa
-		'associados'       => '#2ec6b0',
+		// Categories as they appear on the mockup cards.
+		'evento-apit'          => '#2ec6b0', // turquesa
+		'evento-internacional' => '#f41892', // magenta
+		'stand-apit'           => '#4a85c8', // azul
+
+		// News categories.
+		'institucional'        => '#f41892',
+		'mercados-feiras'      => '#4a85c8',
+		'mercados'             => '#4a85c8',
+		'setor'                => '#8048a6', // roxo
+		'internacional'        => '#2ec6b0',
 	];
 
 	/**
