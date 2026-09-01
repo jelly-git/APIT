@@ -22,6 +22,34 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.11.0] - 2026-09-01
+
+### Alterado
+- Secção Notícias refeita: os três cartões têm estruturas diferentes no design,
+  e estavam todos iguais (imagem com degradé escuro e texto branco por cima).
+  Conforme o Figma:
+  - **destaque** (nós 16:19927 + 16:19936): imagem de 855×523 com um painel
+    branco de 496×225 sobreposto ao canto inferior esquerdo, com a categoria e
+    o título em texto escuro;
+  - **imagem** (nó 16:19929): imagem de 407×218 com a categoria e o título
+    abaixo dela, sobre o fundo da secção;
+  - **bloco** (nó 16:19935): bloco de 410×129 na cor da categoria, com o texto
+    dentro dele a branco.
+- A variante de cada cartão secundário vem do conteúdo: com imagem destacada
+  fica "imagem", sem ela fica "bloco". Os que têm imagem aparecem primeiro,
+  para dar a ordem do design (imagem em cima, bloco em baixo).
+- Cor da categoria "setor" de roxo para turquesa, como no mockup.
+
+### Adicionado
+- Duas imagens de exemplo com degradés da marca, como imagens destacadas das
+  notícias, para a secção poder ser avaliada antes de haver fotografia real.
+  Substituíveis no wp-admin como qualquer imagem.
+
+### Notas
+- As etiquetas de categoria ficaram todas em magenta e o bloco em turquesa, lido
+  da imagem do mockup — o Figma continua em limite de chamadas, pelo que estas
+  duas cores estão por confirmar.
+
 ## [0.10.0] - 2026-09-01
 
 ### Adicionado

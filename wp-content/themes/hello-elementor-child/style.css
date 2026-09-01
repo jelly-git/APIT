@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.10.0
+Version: 0.11.0
 */
 
 :root {
@@ -861,78 +861,120 @@ ul {
 	padding-block: 40px 72px;
 }
 
+/* Figma: 855 + 37 gap + 409, inside the 1300px content column. */
 .noticias__grid {
 	display: grid;
-	grid-template-columns: 855fr 407fr;
+	grid-template-columns: 855fr 409fr;
 	gap: 37px;
-	align-items: stretch;
+	align-items: start;
 }
 
+/* Right column: image card, 48px gap, then the colour block. */
 .noticias__coluna {
-	display: grid;
-	grid-template-rows: 218fr 129fr;
-	gap: 37px;
+	display: flex;
+	flex-direction: column;
+	gap: 48px;
 }
 
-.noticia {
-	position: relative;
-	display: flex;
-	border-radius: 8px;
-	overflow: hidden;
+.noticia__link {
+	display: block;
+	height: 100%;
+}
+
+.noticia__imagem {
+	display: block;
 	background-color: var(--apit-black);
 	background-position: center;
 	background-size: cover;
 	background-repeat: no-repeat;
 }
 
-.noticia__link {
-	display: flex;
-	align-items: flex-end;
-	width: 100%;
-	padding: 30px;
-	/* Keeps the title legible over any featured image. */
-	background:
-		linear-gradient(to top, rgba(27, 42, 51, 0.92) 0%, rgba(27, 42, 51, 0.4) 55%, rgba(27, 42, 51, 0.05) 100%),
-		linear-gradient(135deg, var(--apit-cat, var(--apit-magenta)) 0%, transparent 75%);
-}
-
-.noticia--destaque {
-	min-height: 523px;
-}
-
-.noticia--secundaria {
-	min-height: 129px;
-}
-
-.noticia__content {
+.noticia__texto,
+.noticia__painel {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
 }
 
 .noticia__categoria {
 	font-family: var(--apit-font);
 	font-weight: 500;
 	font-size: 14px;
-	line-height: 1.6;
-	text-transform: lowercase;
+	line-height: 1.7;
 	letter-spacing: 0.28px;
-	color: #fff;
-	opacity: 0.9;
+	text-transform: lowercase;
+	color: var(--apit-magenta);
 }
 
 .noticia__title {
-	margin: 0;
+	display: block;
 	font-family: var(--apit-font);
-	font-weight: 500;
-	font-size: 24px;
-	line-height: 1.25;
-	color: #fff;
+	font-weight: 400;
+	line-height: 1.4;
+	color: var(--apit-black);
+}
+
+/* ---- Destaque: image with a white panel over its bottom-left corner ---- */
+
+.noticia--destaque {
+	position: relative;
+	min-height: 523px;
+}
+
+.noticia--destaque .noticia__imagem {
+	position: absolute;
+	inset: 0;
+}
+
+.noticia--destaque .noticia__painel {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 496px;
+	min-height: 225px;
+	padding: 26px 24px 4px;
+	background: #fff;
 }
 
 .noticia--destaque .noticia__title {
-	max-width: 496px;
+	margin-top: 22px;
 	font-size: 36px;
+}
+
+/* ---- Imagem: 218px image with the text below it ---- */
+
+.noticia--imagem .noticia__imagem {
+	height: 218px;
+}
+
+.noticia--imagem .noticia__texto {
+	padding-top: 24px;
+}
+
+.noticia--imagem .noticia__title {
+	margin-top: 12px;
+	font-size: 24px;
+}
+
+/* ---- Bloco: solid category colour, white text ---- */
+
+.noticia--bloco {
+	min-height: 129px;
+	background: var(--apit-cat, var(--apit-magenta));
+}
+
+.noticia--bloco .noticia__link {
+	padding: 22px 24px;
+}
+
+.noticia--bloco .noticia__categoria,
+.noticia--bloco .noticia__title {
+	color: #fff;
+}
+
+.noticia--bloco .noticia__title {
+	margin-top: 7px;
+	max-width: 356px;
+	font-size: 18px;
 }
 
 @media (max-width: 1024px) {
@@ -940,16 +982,27 @@ ul {
 		grid-template-columns: 1fr;
 	}
 
-	.noticias__coluna {
-		grid-template-rows: auto auto;
+	.noticia--destaque {
+		min-height: 420px;
 	}
 
-	.noticia--destaque {
-		min-height: 380px;
+	.noticia--destaque .noticia__painel {
+		width: min(496px, 90%);
 	}
 
 	.noticia--destaque .noticia__title {
 		font-size: 28px;
+	}
+}
+
+@media (max-width: 640px) {
+	.noticia--destaque .noticia__painel {
+		width: 100%;
+		padding: 20px;
+	}
+
+	.noticia--destaque .noticia__title {
+		font-size: 22px;
 	}
 }
 

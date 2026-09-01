@@ -24,7 +24,7 @@ function apit_categoria_cores() {
 		'institucional'        => '#f41892',
 		'mercados-feiras'      => '#4a85c8',
 		'mercados'             => '#4a85c8',
-		'setor'                => '#8048a6', // roxo
+		'setor'                => '#2ec6b0', // turquesa
 		'internacional'        => '#2ec6b0',
 	];
 
