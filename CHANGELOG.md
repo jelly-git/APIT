@@ -22,6 +22,44 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.13.0] - 2026-09-01
+
+### Corrigido
+- **Header opaco**: tinha uma cor de fundo escura sólida, posta como reserva
+  para páginas sem hero, que tapava o hero por completo. O header passa a ser
+  transparente; o único fundo é o véu do Figma (nó `9:19483`), um degradé escuro
+  que desvanece de cerca de 39% de opacidade no topo até zero em baixo, ali para
+  manter o menu legível sobre a arte.
+- **Botão "Quero ser associado"** aparecia azul e não transparente: o Elementor
+  pinta os botões com a cor de acento do kit a partir do CSS da página, que
+  carrega depois do tema e empata em especificidade.
+- **Altura dos botões** 61px em vez de 57px, e o `<p>` dos widgets de texto
+  trazia 14.4px de margem que esticava o subtítulo e subia os botões.
+- **Margens de containers no Elementor**: os containers leem `margin` e
+  `padding`, e só os widgets leem as chaves com underscore — com `_margin` o
+  afastamento de 40px dos botões nunca chegou a aplicar-se.
+- **Divisor do hero**: o widget traz 15px de padding acima e abaixo da régua e
+  define a sua própria espessura e cor, o que a punha 18px abaixo do sítio, com
+  1px e a preto em vez de 2px a branco 50%.
+- **Ritmo vertical** de todas as secções alinhado ao frame do Figma: faixa do
+  calendário 1143–1576 com a linha de topo em 1190 e os cartões em 1266,
+  notícias 1647–2170, newsletter 2236–2608, e rodapé com o logótipo em 2677 e a
+  régua em 2914. Cada secção carrega o intervalo acima de si no seu próprio
+  padding.
+- **Newsletter**: o conteúdo é recuado no design (coluna esquerda em x=402,
+  direita a terminar em 1518, 1116px dentro dos 1300), o que é o que dá aos
+  campos Nome e Empresa os 329px desenhados; e o botão passou de 57px para os
+  48px do design.
+- **Posição do painel de vídeo** e do logótipo Watch Portugal no rodapé, ambos
+  desalinhados face ao design.
+
+### Notas
+- Verificado por medição contra as coordenadas do Figma: desvio médio de 1.8px
+  em treze pontos de referência, altura de página 2986 contra 2984, e todas as
+  cores conformes com as variáveis da marca.
+- Páginas sem hero colorido atrás do header vão precisar de tratamento próprio:
+  o menu é branco e desaparece sobre um fundo claro.
+
 ## [0.12.0] - 2026-09-01
 
 ### Alterado
