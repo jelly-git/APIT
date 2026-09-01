@@ -1,0 +1,24 @@
+---
+# Deploy tasks run by cPanel's Git Version Control after it pulls this branch.
+#
+# Only code is deployed. The WordPress core, wp-config.php and wp-content/uploads
+# are deliberately absent from this repository, and the database is NEVER touched
+# here — importing it on every deploy would wipe the live content. The database is
+# a one-time migration, done by hand.
+#
+# $HOME expands to the cPanel account's home directory, so no username is
+# hardcoded and the file works on any account.
+deployment:
+  tasks:
+    - export DEPLOYPATH=$HOME/public_html
+    - export TEMA=$DEPLOYPATH/wp-content/themes/hello-elementor-child
+
+    # Rebuilt from scratch so files deleted in git also disappear on the server.
+    # Safe because the folder's contents come entirely from this repository.
+    - /bin/rm -rf $TEMA
+    - /bin/mkdir -p $TEMA
+    - /bin/cp -R wp-content/themes/hello-elementor-child/. $TEMA/
+
+    # Hardening: keep directory listings off in the shared wp-content folders.
+    - /bin/cp -n wp-content/themes/index.php $DEPLOYPATH/wp-content/themes/index.php
+    - /bin/cp -n wp-content/plugins/index.php $DEPLOYPATH/wp-content/plugins/index.php
