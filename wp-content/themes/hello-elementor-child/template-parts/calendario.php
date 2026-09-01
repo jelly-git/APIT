@@ -7,7 +7,8 @@
  * and subtitle, a location pill, an optional action button, and a date badge
  * pinned to the bottom-right corner over an offset dark square.
  */
-$eventos = apit_get_proximos_eventos( 4 );
+// The carousel scrolls, so it is not limited to what fits in one view.
+$eventos = apit_get_proximos_eventos( 12 );
 
 if ( ! $eventos ) {
 	return;

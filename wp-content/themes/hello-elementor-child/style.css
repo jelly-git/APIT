@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.8.4
+Version: 0.9.0
 */
 
 :root {
@@ -620,19 +620,40 @@ ul {
 	cursor: pointer;
 }
 
-.calendario__arrow:hover {
+.calendario__arrow:hover,
+.calendario__arrow:focus-visible {
 	background: var(--apit-black);
 	color: #fff;
 }
 
+.calendario__arrow:disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+
+.calendario__arrow:disabled:hover {
+	background: rgba(27, 42, 51, 0.08);
+	color: var(--apit-black);
+}
+
 .calendario__track {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
+	display: flex;
 	gap: 37px;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	/* The arrows are the control; the scrollbar itself is hidden. */
+	scrollbar-width: none;
+}
+
+.calendario__track::-webkit-scrollbar {
+	display: none;
 }
 
 .calendario__item {
 	display: flex;
+	/* Three cards per view, at the designed 409px inside a 1300px column. */
+	flex: 0 0 calc((100% - 2 * 37px) / 3);
+	scroll-snap-align: start;
 }
 
 /*
@@ -786,14 +807,17 @@ ul {
 
 @media (max-width: 1024px) {
 	.calendario__track {
-		grid-template-columns: repeat(2, 1fr);
 		gap: 24px;
+	}
+
+	.calendario__item {
+		flex-basis: calc((100% - 24px) / 2);
 	}
 }
 
 @media (max-width: 640px) {
-	.calendario__track {
-		grid-template-columns: 1fr;
+	.calendario__item {
+		flex-basis: 100%;
 	}
 
 	.evento-card {

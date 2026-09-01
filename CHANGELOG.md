@@ -22,6 +22,29 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.9.0] - 2026-09-01
+
+### Adicionado
+- Carrossel no Calendário: os cartões ficam todos na mesma linha, três visíveis
+  de cada vez (nos 409px do design), e as setas deslocam a lista um cartão por
+  clique, desativando-se em cada extremo. O Figma coloca um quarto cartão em
+  x=1648, fora da coluna de 1300px, pelo que o transbordo é intencional.
+- `assets/js/calendario.js` para conduzir o carrossel.
+
+### Alterado
+- O Calendário passou a mostrar até 12 eventos em vez de 4, já que o carrossel
+  desloca a lista em vez de a limitar ao que caber numa vista.
+- Dois cartões por vista abaixo de 1024px e um abaixo de 640px, mantendo o
+  carrossel funcional.
+
+### Notas
+- A animação do carrossel é feita com `requestAnimationFrame` em vez de
+  `scrollBy({ behavior: 'smooth' })`, que não é implementado por todos os
+  motores — onde falta, o scroll não acontece de forma alguma. Como o
+  `requestAnimationFrame` é suspenso em separadores escondidos, um temporizador
+  de segurança coloca a lista no destino se nenhum frame chegar, e o estado das
+  setas é atualizado por callback em vez de depender do evento `scroll`.
+
 ## [0.8.4] - 2026-09-01
 
 ### Corrigido
