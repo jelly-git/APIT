@@ -19,6 +19,26 @@ migrações únicas, feitas à mão — o repositório não as contém, por dese
 
 ---
 
+## Ambiente de destino (confirmado)
+
+| | |
+|---|---|
+| URL | `https://dev.jellycode.agency/apit` |
+| Caminho | `/home/agencydevjellyc/public_html/apit` |
+| Base de dados | `agencydevjellyc_apit` |
+| Prefixo das tabelas | `wp_` (igual ao local) |
+| WordPress | 7.1 (igual ao local) |
+
+O `siteurl` do servidor é `dev.jellycode.agency/apit`, não `jellycode.agency`.
+Ambos os anfitriões servem a mesma pasta, mas o WordPress canoniza para o
+primeiro — é esse que conta para a troca de URLs.
+
+Estado a 1 de setembro de 2026: instalação limpa com o tema `twentytwentyfive`
+activo. O `hello-elementor` e o `elementor` **não estão instalados** (ambos
+devolvem 404), pelo que o tema filho ainda não pode arrancar.
+
+---
+
 ## 1. Pré-requisitos no servidor
 
 O tema filho não funciona sozinho. Instalar antes do primeiro deploy:
@@ -59,32 +79,29 @@ que copia o tema para `~/public_html/apit/wp-content/themes/`.
 
 ## 3. Base de dados (uma vez)
 
-O ficheiro exportado está em `Local Sites/apit/apit-bd.sql` (1,4 MB).
+Já está exportada **com os URLs do servidor aplicados**, em
+`Local Sites/apit/apit-bd-para-servidor.sql` (1,4 MB, 13 tabelas). Não é
+preciso search-replace nem plugin nenhum depois de importar.
 
-**Atenção:** isto substitui tudo o que estiver na base de dados de destino.
+> **Substitui tudo** o que estiver em `agencydevjellyc_apit`, incluindo os
+> utilizadores. Depois da importação o acesso ao wp-admin passa a ser o do site
+> local: utilizador `Jelly-APIT`, com a palavra-passe definida no Local — não a
+> que usa hoje no servidor.
 
-1. cPanel > **MySQL Databases** — tomar nota do nome da base de dados, do
-   utilizador e da palavra-passe que o `wp-config.php` do servidor já usa.
-2. cPanel > **phpMyAdmin** > escolher essa base de dados > **Importar** >
-   carregar `apit-bd.sql`.
+1. phpMyAdmin > base de dados `agencydevjellyc_apit`
+2. **Importar** > carregar `apit-bd-para-servidor.sql` > **Executar**
 
-Depois é obrigatório trocar os URLs: o WordPress e sobretudo o Elementor
-guardam endereços absolutos, e sem esta troca a Home não renderiza.
+O ficheiro traz `DROP TABLE IF EXISTS` em cada tabela, pelo que não é preciso
+esvaziar a base de dados antes.
 
-Por SSH, substituindo `apitv.com` pelo domínio real:
+Se preferir manter o dump com os URLs locais, existe também
+`apit-bd.sql`; nesse caso a troca tem de ser feita depois, e obriga a
+`--precise` porque os dados do Elementor estão serializados:
 
 ```bash
 cd ~/public_html/apit
-wp search-replace 'http://apit.local' 'https://apitv.com' --all-tables --precise --report-changed-only
-wp cache flush
-wp elementor flush-css
+wp search-replace http://apit.local https://dev.jellycode.agency/apit --all-tables --precise
 ```
-
-O `--precise` é necessário porque os dados do Elementor estão serializados em
-JSON dentro de `wp_postmeta`; sem ele os URLs lá dentro não são substituídos.
-
-Sem SSH, instalar o plugin **Better Search Replace** e correr a mesma troca com
-"Run as dry run" desligado, em todas as tabelas.
 
 ---
 
