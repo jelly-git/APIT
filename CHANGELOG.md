@@ -24,6 +24,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.18.1] - 2026-09-01
+
+### Corrigido
+- Degradé do hero a tingir a página toda em mobile, rodapé incluído. A camada
+  de decoração passa a fluir abaixo dos 1400px, e para manter o degradé a
+  cobrir a secção eu tinha-lhe posto `position: fixed` — que segue o scroll e
+  cobre a janela inteira. Passou para a camada do vídeo, que é absoluta e
+  cobre o hero em todos os breakpoints.
+- Texto do hero encostado à margem do ecrã em mobile: os containers do
+  Elementor não têm padding, e sem a largura do desktop não sobra margem que
+  faça esse papel. Levam agora 20px laterais, como o resto das secções.
+- Espaço morto no fim do carrossel em mobile: o alargamento até à margem do
+  ecrã acrescenta largura para além do último cartão. Abaixo dos 768px o
+  alargamento sai e o cartão fica mais estreito do que a coluna, o que mantém
+  o cartão seguinte à vista sem deixar folga no fim.
+
 ## [0.18.0] - 2026-09-01
 
 ### Adicionado

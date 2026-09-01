@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.18.0
+Version: 0.18.1
 */
 
 :root {
@@ -545,11 +545,13 @@ body.apit-menu-aberto {
 
 /*
  * Gradient laid over the video, as in the design: it unifies the section and
- * softens the video's shapes, which stay visible through it. Being a
- * ::before it paints under the badge and the teaser panel, which the design
- * keeps crisp.
+ * softens the video's shapes, which stay visible through it. It rides on the
+ * media layer because that one is absolute and covers the hero at every
+ * breakpoint — the decoration layer is not, once it joins the flow on mobile.
+ * Being inside that layer it paints under the badge, the teaser panel and the
+ * text, which the design keeps crisp.
  */
-.hero-decor::before {
+.apit-hero__media::after {
 	content: "";
 	position: absolute;
 	inset: 0;
@@ -751,19 +753,17 @@ body.apit-menu-aberto {
 		order: 3;
 	}
 
+	.apit-hero > .elementor-element-herowrap,
+	.apit-hero > .elementor-element-herocaption {
+		padding-inline: 20px;
+	}
+
 	/* Out of the absolute layer and into the flow. */
 	.hero-decor {
 		position: static;
 		inset: auto;
 		width: min(1300px, calc(100% - 40px));
 		margin-inline: auto;
-	}
-
-	/* The gradient over the video stays full-bleed even though its parent no longer is. */
-	.hero-decor::before {
-		position: fixed;
-		inset: 0;
-		pointer-events: none;
 	}
 
 	.hero__watch-badge {
@@ -1152,10 +1152,22 @@ body.apit-menu-aberto {
 	}
 }
 
-@media (max-width: 640px) {
-	.calendario {
-		--apit-card: var(--apit-col);
+@media (max-width: 768px) {
+	/*
+	 * No bleed here: it added scrollable width past the last card, leaving dead
+	 * space at the end of the carousel. The card stays narrower than the column
+	 * so the next one still peeks.
+	 */
+	.calendario__track {
+		margin-right: 0;
 	}
+
+	.calendario {
+		--apit-card: calc(var(--apit-col) - 52px);
+	}
+}
+
+@media (max-width: 640px) {
 
 	.evento-card {
 		padding: 44px 24px 24px;
