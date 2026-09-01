@@ -22,6 +22,23 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.12.0] - 2026-09-01
+
+### Alterado
+- Logótipos oficiais da marca em vez das recriações: o selo "Watch Portugal" do
+  hero deixou de ser texto e pills em CSS e passa a ser o PNG branco (356×158,
+  nó `83:3098`), e o rodapé usa o logótipo APIT a cor (250×141) e o "Watch
+  Portugal" a preto (261×116).
+- Os ficheiros foram copiados da biblioteca de multimédia para
+  `assets/img/` do tema. O `.gitignore` exclui `wp-content/uploads`, pelo que
+  ficheiros da biblioteca não seguiriam no deploy por git; nos assets do tema
+  são versionados e viajam com ele.
+
+### Removido
+- `logo-apit-color.svg` e `logo-watch-portugal.svg`, exportações do Figma
+  substituídas pelos ficheiros oficiais.
+- CSS do selo recriado em pills, já sem uso.
+
 ## [0.11.0] - 2026-09-01
 
 ### Alterado

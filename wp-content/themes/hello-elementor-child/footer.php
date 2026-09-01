@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<footer class="apit-footer">
 		<div class="apit-container apit-footer__main">
 			<div class="apit-footer__brand">
-				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/logo-apit-color.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" width="250" height="141">
+				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/logo-apit.png' ); ?>" alt="<?php bloginfo( 'name' ); ?>" width="250" height="141">
 			</div>
 
 			<nav class="apit-footer__links" aria-label="<?php esc_attr_e( 'Links do rodapé', 'apit' ); ?>">
@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			</div>
 
 			<div class="apit-footer__watch">
-				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/logo-watch-portugal.svg' ); ?>" alt="Watch Portugal" width="261" height="116">
+				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/logo-watch-portugal-preto.png' ); ?>" alt="Watch Portugal" width="261" height="116">
 			</div>
 		</div>
 

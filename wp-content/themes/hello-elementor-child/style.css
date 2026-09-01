@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.11.0
+Version: 0.12.0
 */
 
 :root {
@@ -419,41 +419,19 @@ ul {
 	padding-block: 0;
 }
 
-/* CSS stand-in for the Watch Portugal badge — see the note in hero-decor.php. */
+/* Watch Portugal badge — Figma node 83:3098 (356x158). */
 .hero__watch-badge {
 	position: absolute;
 	right: 310px;
 	top: 243px;
 	z-index: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	gap: 8px;
-	text-align: center;
+	width: 356px;
 }
 
-.hero__watch-pill {
+.hero__watch-badge img {
 	display: block;
-	padding: 6px 42px;
-	border: 2px solid #fff;
-	border-radius: 200px;
-	font-family: var(--apit-font);
-	font-size: 44px;
-	line-height: 1.1;
-	color: #fff;
-}
-
-.hero__watch-pill--outline {
-	font-size: 30px;
-	letter-spacing: 4px;
-}
-
-.hero__watch-badge small {
-	font-family: var(--apit-font);
-	font-size: 12px;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-	color: #fff;
+	width: 100%;
+	height: auto;
 }
 
 .hero__video {

@@ -22,19 +22,8 @@ $img = get_stylesheet_directory_uri() . '/assets/img/';
 
 	<div class="hero__watermark"><span>in</span><span>dex</span></div>
 
-	<?php
-	/*
-	 * TODO: replace with the white Watch Portugal artwork (Figma node 83:3098).
-	 * The only file on disk is the dark footer variant (node 19:20212), which
-	 * has a filled background and so cannot be recoloured with a CSS filter —
-	 * the Figma download for the hero variant hit the plan's rate limit. Until
-	 * then the badge is rebuilt with CSS to match the design.
-	 */
-	?>
 	<div class="hero__watch-badge">
-		<span class="hero__watch-pill">Watch</span>
-		<span class="hero__watch-pill hero__watch-pill--outline">PORTUGAL</span>
-		<small>Independent TV Producers</small>
+		<img src="<?php echo esc_url( $img . 'logo-watch-portugal-branco.png' ); ?>" alt="Watch Portugal" width="356" height="158">
 	</div>
 
 	<div class="hero__video">
