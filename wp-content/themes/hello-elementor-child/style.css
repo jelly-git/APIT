@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.8.1
+Version: 0.8.4
 */
 
 :root {
@@ -213,7 +213,7 @@ ul {
 /* ---------- Layout container ---------- */
 
 .apit-container {
-	max-width: 1300px;
+	max-width: 1340px;
 	margin-inline: auto;
 	padding-inline: 20px;
 }
@@ -643,7 +643,7 @@ ul {
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	justify-content: flex-end;
+	justify-content: flex-start;
 	width: 100%;
 	min-height: 248px;
 	padding: 49px 38px 30px;
@@ -672,8 +672,7 @@ ul {
 .evento-card__body {
 	display: flex;
 	flex-direction: column;
-	/* Keeps the text clear of the date badge. */
-	max-width: calc(100% - 110px);
+	max-width: 326px;
 }
 
 .evento-card__title {
@@ -686,18 +685,19 @@ ul {
 }
 
 .evento-card__meta {
-	margin: 8px 0 0;
+	margin: 4px 0 0;
 	font-family: var(--apit-font);
 	font-weight: 500;
 	font-size: 16px;
-	line-height: 1.4;
+	line-height: 1.68;
 	color: #fff;
 }
 
 .evento-card__actions {
 	display: flex;
-	flex-wrap: wrap;
-	gap: 10px;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 13px;
 	margin-top: 20px;
 }
 
@@ -705,7 +705,7 @@ ul {
 	display: inline-flex;
 	align-items: center;
 	gap: 8px;
-	padding: 7px 18px;
+	padding: 5px 18px;
 	border: 1px solid rgba(255, 255, 255, 0.9);
 	border-radius: 200px;
 	font-family: var(--apit-font);
@@ -720,7 +720,7 @@ ul {
 
 /* The action button is solid white with dark text, per the design. */
 .evento-pill--acao {
-	padding: 9px 22px;
+	padding: 6px 22px;
 	border-color: #fff;
 	background: #fff;
 	font-size: 13px;
@@ -750,18 +750,22 @@ ul {
 	display: flex;
 	flex-direction: column;
 	width: 90px;
+	height: 90px;
 	background: #fff;
 	box-shadow: 4px 4px 0 0 var(--apit-black);
 	text-align: center;
 }
 
 .evento-card__month {
-	display: block;
-	padding: 8px 0 6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	height: 32px;
 	background: var(--apit-cat, var(--apit-magenta));
 	font-family: var(--apit-font);
 	font-weight: 500;
-	font-size: 11px;
+	font-size: 12px;
 	line-height: 1.4;
 	letter-spacing: 0.5px;
 	text-transform: uppercase;
@@ -769,8 +773,10 @@ ul {
 }
 
 .evento-card__day {
-	display: block;
-	padding: 4px 0 12px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: 1;
 	font-family: var(--apit-font);
 	font-weight: 400;
 	font-size: 40px;

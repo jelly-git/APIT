@@ -22,6 +22,23 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.8.4] - 2026-09-01
+
+### Corrigido
+- Posicionamentos do cartão do calendário conferidos contra as coordenadas do
+  Figma (nó `13:19650`) e agora a 1px do design em todos os elementos:
+  - conteúdo alinhado ao topo (49px), não ao fundo;
+  - título numa única linha, na caixa de 326px do design — antes o corpo estava
+    limitado a `100% - 110px` para evitar a badge, o que o estreitava a 285px e
+    o quebrava em duas linhas. A badge fica 159px abaixo, pelo que o título
+    pode ocupar toda a largura;
+  - largura do `.apit-container` de 1300 para 1340px, para que a coluna interior
+    seja os 1300px do design e os cartões os 409px desenhados (eram 395px);
+  - `line-height` do subtítulo de 1.4 para 1.68, a altura do design;
+  - pill e badge nas medidas exactas (94×31 e 90×90);
+  - pills empilhados na vertical com 13px de intervalo, como no Figma, em vez de
+    lado a lado.
+
 ## [0.8.1] - 2026-09-01
 
 ### Corrigido
