@@ -31,7 +31,7 @@ if ( ! $eventos ) {
 				$extra     = get_post_meta( $evento->ID, 'apit_evento_extra', true );
 				$timestamp = $data ? strtotime( $data ) : false;
 				?>
-				<li class="calendario__item">
+				<li class="calendario__item" style="<?php echo esc_attr( apit_cor_categoria_style( $categoria ) ); ?>">
 					<?php if ( $categoria ) : ?>
 						<span class="pill pill--categoria"><?php echo esc_html( $categoria ); ?></span>
 					<?php endif; ?>

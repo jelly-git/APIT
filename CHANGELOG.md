@@ -15,10 +15,42 @@ A versão aqui registada corresponde ao campo `Version` de
   Figma (nó `9:19574`) — o download esgotou o limite de chamadas MCP do plano.
 - Substituir o selo "Watch Portugal" do hero (recriado em CSS) pelo artwork
   branco do Figma (nó `83:3098`).
+- Confirmar as cores por categoria com o design (foram propostas a partir da
+  paleta da marca, por o Figma estar em limite de chamadas).
 - Página "Sobre a APIT" (nó `19:20294`) e layouts mobile (nó `66:643`).
 - Menu hambúrguer: abaixo de 1024px o menu principal desaparece sem alternativa.
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.7.0] - 2026-09-01
+
+### Adicionado
+- Cor por categoria: cada categoria tem uma cor da marca, que pinta a tira do
+  mês e a pill nos cartões do calendário e tinge o degradé dos cartões de
+  notícias. O mapa está em `inc/categoria-cores.php` e pode ser alterado sem
+  editar o tema, pelo filtro `apit_categoria_cores`.
+- Degradé de fundo na secção APIT News (o design empilha três retângulos de
+  largura total no nó `19:19941`).
+
+### Alterado
+- Fundos do Calendário e das Notícias trocados: o Calendário passa a branco e
+  as Notícias a cinza, como no mockup.
+- Botão "Subscrever" com o mesmo desenho em pílula dos restantes botões.
+- Legenda do vídeo no hero reposicionada para as coordenadas do Figma
+  (x=828, y=904), e altura do hero alinhada com o frame (1143px).
+
+### Corrigido
+- Ordem de carregamento do CSS: o `style.css` do tema filho passou a depender
+  dos handles do tema pai, porque carregava antes do `reset.css` e perdia todos
+  os empates de especificidade — era o que impunha `border-radius: 3px` aos
+  botões.
+- Margens no Elementor: o `_margin` do widget sobrepõe-se ao CSS do tema, pelo
+  que o deslocamento horizontal da legenda tem de ser definido no Elementor.
+- Padding predefinido de 10px nos containers do Elementor, que desalinhava
+  verticalmente todo o hero em 20px.
+- Degradé da newsletter apagado pelo lazy-load do Elementor, que anula imagens
+  de fundo a partir do 4.º container de topo (e nos seus descendentes). O
+  container leva agora a classe `e-no-lazyload`.
 
 ## [0.6.0] - 2026-09-01
 

@@ -6,19 +6,13 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.6.0' );
+define( 'APIT_CHILD_VERSION', '0.7.0' );
 
+require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
 require_once get_stylesheet_directory() . '/inc/shortcodes.php';
 
 function apit_child_enqueue_assets() {
-	wp_enqueue_style(
-		'hello-elementor-parent',
-		get_template_directory_uri() . '/style.css',
-		[],
-		APIT_CHILD_VERSION
-	);
-
 	wp_enqueue_style(
 		'apit-omnes-font',
 		'https://use.typekit.net/uqy3rtf.css',
@@ -33,10 +27,16 @@ function apit_child_enqueue_assets() {
 		'6.7.2'
 	);
 
+	/*
+	 * Depends on the parent theme's own handles (reset.css, theme.css,
+	 * header-footer.css) so the child stylesheet is printed after them. Without
+	 * this it loaded first and lost every specificity tie — the parent's
+	 * `[type="submit"], button { border-radius: 3px }` was beating our buttons.
+	 */
 	wp_enqueue_style(
 		'apit-child-style',
 		get_stylesheet_directory_uri() . '/style.css',
-		[ 'hello-elementor-parent', 'apit-omnes-font', 'font-awesome-free' ],
+		[ 'apit-omnes-font', 'font-awesome-free', 'hello-elementor', 'hello-elementor-theme-style', 'hello-elementor-header-footer' ],
 		APIT_CHILD_VERSION
 	);
 }

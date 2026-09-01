@@ -38,9 +38,13 @@ $render_card = function ( $post, $variant ) {
 	$categorias = get_the_category( $post->ID );
 	$categoria  = $categorias ? $categorias[0]->name : '';
 	$thumb      = get_the_post_thumbnail_url( $post->ID, 'large' );
+	// The gradient over the image is tinted with the category colour.
+	$style = apit_cor_categoria_style( $categoria );
+	if ( $thumb ) {
+		$style .= " background-image: url('" . esc_url( $thumb ) . "');";
+	}
 	?>
-	<article class="noticia noticia--<?php echo esc_attr( $variant ); ?>"
-		<?php if ( $thumb ) : ?>style="background-image: url('<?php echo esc_url( $thumb ); ?>')"<?php endif; ?>>
+	<article class="noticia noticia--<?php echo esc_attr( $variant ); ?>" style="<?php echo esc_attr( $style ); ?>">
 		<a class="noticia__link" href="<?php echo esc_url( get_permalink( $post ) ); ?>">
 			<div class="noticia__content">
 				<?php if ( $categoria ) : ?>
