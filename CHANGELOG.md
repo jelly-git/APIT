@@ -22,6 +22,21 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.17.0] - 2026-09-01
+
+### Adicionado
+- Camada de degradé por cima do vídeo do hero, como no design: unifica a secção
+  e suaviza as formas do vídeo, que continuam visíveis através dela. Entra como
+  `::before` da camada de decoração, pelo que fica acima do vídeo e abaixo do
+  selo e do painel, que o design mantém nítidos.
+
+### Notas
+- Os valores do degradé são aproximados a partir da imagem do mockup, com a
+  paleta da marca: quatro radiais para os focos de cor e um linear por baixo a
+  preencher, a 55% de opacidade. O Figma continua no limite de chamadas MCP,
+  pelo que os valores reais estão por confirmar — falta sobretudo presença do
+  turquesa na zona central superior.
+
 ## [0.16.0] - 2026-09-01
 
 ### Corrigido

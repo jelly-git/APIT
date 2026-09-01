@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.16.0
+Version: 0.17.0
 */
 
 :root {
@@ -357,6 +357,34 @@ ul {
 	pointer-events: none;
 	/* Above the background media (-1), below the text widgets (2). */
 	z-index: 1;
+}
+
+/*
+ * Gradient laid over the video, as in the design: it unifies the section and
+ * softens the video's shapes, which stay visible through it. Being a
+ * ::before it paints under the badge and the teaser panel, which the design
+ * keeps crisp.
+ */
+.hero-decor::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	opacity: 0.55;
+	/*
+	 * The radials give the design's colour hotspots; the linear one underneath
+	 * fills the gaps, so no part of the video's own grey shows through.
+	 */
+	background-image:
+		radial-gradient(110% 85% at 74% 6%, #2ec6b0 0%, rgba(46, 198, 176, 0) 52%),
+		radial-gradient(85% 80% at 100% 38%, var(--apit-azul) 0%, rgba(74, 133, 200, 0) 58%),
+		radial-gradient(70% 75% at 60% 28%, var(--apit-roxo) 0%, rgba(128, 72, 166, 0) 62%),
+		radial-gradient(110% 100% at 6% 80%, var(--apit-magenta) 0%, rgba(244, 24, 146, 0) 68%),
+		linear-gradient(100deg,
+			var(--apit-magenta) 0%,
+			#d2359f 22%,
+			#2ec6b0 46%,
+			var(--apit-azul) 70%,
+			var(--apit-roxo) 100%);
 }
 
 
