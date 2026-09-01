@@ -22,6 +22,15 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.8.1] - 2026-09-01
+
+### Corrigido
+- Dia da data invisível nos cartões do calendário. O quadrado escuro deslocado
+  era um `::before` com `z-index: -1`, mas a badge tem `z-index` próprio e por
+  isso forma um contexto de empilhamento — nele, um filho com z-index negativo
+  é pintado por cima do fundo branco do pai em vez de atrás, tapando-o e
+  deixando o número escuro sobre fundo escuro. Passou a ser um `box-shadow`.
+
 ## [0.8.0] - 2026-09-01
 
 ### Adicionado

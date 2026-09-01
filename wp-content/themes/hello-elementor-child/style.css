@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.8.0
+Version: 0.8.1
 */
 
 :root {
@@ -736,6 +736,11 @@ ul {
 /*
  * Date badge: bottom-right of the card, over a dark square offset by 4px
  * (Figma stacks Rectangle 7 behind Rectangle 6 at +4,+4).
+ *
+ * The offset square is a box-shadow rather than a ::before with a negative
+ * z-index: this element is positioned with a z-index of its own, so it forms
+ * a stacking context and such a child paints over the badge's white
+ * background instead of behind it — which hid the dark day number.
  */
 .evento-card__date {
 	position: absolute;
@@ -746,15 +751,8 @@ ul {
 	flex-direction: column;
 	width: 90px;
 	background: #fff;
+	box-shadow: 4px 4px 0 0 var(--apit-black);
 	text-align: center;
-}
-
-.evento-card__date::before {
-	content: "";
-	position: absolute;
-	inset: 4px -4px -4px 4px;
-	z-index: -1;
-	background: var(--apit-black);
 }
 
 .evento-card__month {
