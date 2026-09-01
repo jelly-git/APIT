@@ -22,6 +22,12 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.14.1] - 2026-09-01
+
+### Corrigido
+- Fundo dos campos do formulário da newsletter para o valor do Figma,
+  `rgba(72, 37, 95, 0.1)` — estavam transparentes.
+
 ## [0.14.0] - 2026-09-01
 
 ### Corrigido
