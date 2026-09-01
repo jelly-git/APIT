@@ -1,5 +1,11 @@
 # Deploy para o cPanel
 
+> **Atenção:** o `public_html` desta conta aloja vários projetos lado a lado. O
+> nosso vive em `public_html/apit`, e nada fora dessa pasta pode ser escrito.
+> O `.cpanel.yml` está limitado a ela e aborta o deploy se não encontrar lá o
+> `wp-config.php`, para que um caminho errado não espalhe ficheiros pelos
+> outros projetos.
+
 O git entrega **apenas código**. A base de dados e a pasta de uploads são
 migrações únicas, feitas à mão — o repositório não as contém, por desenho:
 
@@ -26,7 +32,7 @@ O tema filho não funciona sozinho. Instalar antes do primeiro deploy:
 Por SSH, se houver WP-CLI no servidor:
 
 ```bash
-cd ~/public_html
+cd ~/public_html/apit
 wp theme install hello-elementor --version=3.5.1
 wp plugin install elementor --version=4.2.4 --activate
 ```
@@ -47,7 +53,7 @@ O repositório é público, pelo que não são precisas credenciais.
 6. **Create**
 
 O cPanel clona para `~/repositories/APIT` e lê o `.cpanel.yml` do repositório,
-que copia o tema para `~/public_html/wp-content/themes/`.
+que copia o tema para `~/public_html/apit/wp-content/themes/`.
 
 ---
 
@@ -68,7 +74,7 @@ guardam endereços absolutos, e sem esta troca a Home não renderiza.
 Por SSH, substituindo `apitv.com` pelo domínio real:
 
 ```bash
-cd ~/public_html
+cd ~/public_html/apit
 wp search-replace 'http://apit.local' 'https://apitv.com' --all-tables --precise --report-changed-only
 wp cache flush
 wp elementor flush-css
@@ -117,5 +123,10 @@ cd ~/repositories/APIT && git pull && /usr/local/cpanel/scripts/cpanel_deploy
   apagados no git também desapareçam do servidor.
 - Se o site local mudar de conteúdo (páginas, eventos, notícias) esse conteúdo
   **não** viaja no git. Repetir o passo 3 substituiria o que estiver no servidor.
+- O `wp-config.php` no servidor está com permissões **0666** (escrita para
+  todos). Deve ser `0644`, ou `0600` se o PHP correr como o dono da conta:
+  `chmod 644 ~/public_html/apit/wp-config.php`
+- A conta tem `~/.wp-cli`, pelo que o WP-CLI está provavelmente instalado —
+  confirmar com `wp --info`.
 - Confirmar a versão de PHP do cPanel em **MultiPHP Manager**: o site local corre
   em PHP 7.4 pelo Local, mas o tema não usa nada específico dessa versão.

@@ -6,11 +6,19 @@
 # here — importing it on every deploy would wipe the live content. The database is
 # a one-time migration, done by hand.
 #
-# $HOME expands to the cPanel account's home directory, so no username is
-# hardcoded and the file works on any account.
+# IMPORTANT: public_html on this account holds several projects side by side.
+# Everything below is scoped to public_html/apit and must stay that way; nothing
+# outside that folder may be written to.
 deployment:
   tasks:
-    - export DEPLOYPATH=$HOME/public_html
+    - export DEPLOYPATH=$HOME/public_html/apit
+
+    # Guard: abort the deploy unless this really is the APIT WordPress install.
+    # A failing task stops the run, so a wrong path cannot scatter files across
+    # the other projects in public_html.
+    - /usr/bin/test -f $DEPLOYPATH/wp-config.php
+    - /usr/bin/test -d $DEPLOYPATH/wp-content/themes
+
     - export TEMA=$DEPLOYPATH/wp-content/themes/hello-elementor-child
 
     # Rebuilt from scratch so files deleted in git also disappear on the server.
