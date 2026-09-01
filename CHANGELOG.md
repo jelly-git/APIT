@@ -22,6 +22,31 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.15.0] - 2026-09-01
+
+### Adicionado
+- Vídeo de fundo no hero, em vez do degradé: `assets/videos/homepage.mp4`, em
+  autoplay silencioso e em ciclo. O degradé continua pintado por baixo, pelo que
+  é o que se vê enquanto o vídeo carrega ou se falhar.
+- Shortcode `[apit_hero_media]`, editável no Elementor, que aceita vídeo,
+  imagem, ou os dois — com a imagem a servir de `poster`, de modo a ser sempre
+  uma imagem a carregar primeiro. Atributos: `video`, `imagem`, `autoplay`,
+  `loop`, `controls`.
+- `apit_media_url()`, que resolve um ficheiro em `assets/`, um URL completo, um
+  caminho absoluto ou um ID da biblioteca de multimédia. A resolução é feita em
+  execução, para que nada fixe o URL do site — o que importa porque o site tem
+  de mudar de domínio no deploy.
+
+### Removido
+- Marca de água "index" do hero.
+
+### Corrigido
+- `gap` predefinido de 20px nos containers do Elementor, que com os três filhos
+  do hero somava 40px antes do texto. Com o gap a zero o padding pode ser os
+  235px do design.
+- Margem inferior que o Elementor dá a todos os widgets menos o último, que
+  acrescentava altura às camadas invisíveis do hero.
+
 ## [0.14.1] - 2026-09-01
 
 ### Corrigido

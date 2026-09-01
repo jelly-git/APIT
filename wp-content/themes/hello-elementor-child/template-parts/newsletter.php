@@ -8,7 +8,7 @@
 ?>
 <section class="newsletter">
 	<div class="apit-container newsletter__inner">
-		<h2 class="newsletter__title">Subscrever APIT News</h2>
+		<h2 class="newsletter__title">Subscrever<br/>APIT News</h2>
 
 		<form class="newsletter__form" action="#" method="post">
 			<div class="newsletter__row">

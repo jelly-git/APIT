@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.14.1
+Version: 0.15.0
 */
 
 :root {
@@ -314,7 +314,7 @@ ul {
 	position: relative;
 	overflow: hidden;
 	min-height: 1143px;
-	padding-top: 215px !important;
+	padding-top: 235px !important;
 	background-color: var(--apit-magenta);
 	background-image:
 		radial-gradient(120% 90% at 78% 8%, #2ec6b0 0%, rgba(46, 198, 176, 0) 55%),
@@ -340,9 +340,15 @@ ul {
 	color: #fff;
 }
 
-/* The decoration widget itself must not take part in the container's flow. */
+/*
+ * The decoration and media widgets are absolutely positioned layers, so their
+ * wrappers must not take part in the container's flow. Elementor also gives
+ * every widget but the last a 20px bottom margin, which would add height the
+ * design does not have.
+ */
 .apit-hero > .elementor-widget-shortcode {
 	position: static;
+	margin: 0 !important;
 }
 
 .hero-decor {
@@ -377,21 +383,6 @@ ul {
 .hero__blob--6 { left: -122px;  top: 558px;  width: 1232px; }
 .hero__blob--7 { left: 1620px;  top: 432px;  width: 1382px; }
 
-.hero__watermark {
-	position: absolute;
-	left: 0;
-	top: 560px;
-	z-index: 1;
-	display: flex;
-	flex-direction: column;
-	font-size: 336px;
-	line-height: 0.82;
-	font-weight: 700;
-	text-transform: uppercase;
-	color: #fff;
-	opacity: 0.18;
-	pointer-events: none;
-}
 
 /*
  * Typography for the hero's Elementor widgets. Sizes match the Figma design;
@@ -461,6 +452,31 @@ ul {
 	height: auto;
 }
 
+/*
+ * Hero background media: fills the section behind everything else, in place
+ * of the gradient. The gradient stays painted on .apit-hero underneath, so it
+ * is what shows while the video buffers or if it fails.
+ */
+.apit-hero__media {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.apit-hero__video,
+.apit-hero__poster {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/*
+ * Video teaser panel — Figma node 9:19615 (329x651 at x=1281, y=445), with
+ * the offset white frame from node 13:19632.
+ */
 .hero__video {
 	position: absolute;
 	right: 310px;
@@ -472,7 +488,6 @@ ul {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	box-shadow: 18px 29px 0 -2px transparent;
 }
 
 .hero__video::after {
@@ -484,14 +499,11 @@ ul {
 }
 
 .hero__play {
-	background: none;
-	border: none;
-	padding: 0;
-	cursor: pointer;
 	font-size: 96px;
 	line-height: 1;
 	color: var(--apit-branco);
 }
+
 
 /* See the !important note above — same Elementor max-width rule applies here. */
 .apit-hero .apit-hero__caption {
@@ -524,8 +536,7 @@ ul {
 	}
 
 	.hero__watch-badge,
-	.hero__video,
-	.hero__watermark {
+	.hero__video {
 		display: none;
 	}
 

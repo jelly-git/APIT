@@ -37,3 +37,56 @@ function apit_shortcode_newsletter() {
 	return apit_render_template_part( 'template-parts/newsletter' );
 }
 add_shortcode( 'apit_newsletter', 'apit_shortcode_newsletter' );
+
+/**
+ * Resolves a media reference to a URL. Accepts a full URL, a root-relative
+ * path, a media library attachment ID, or a bare filename inside the theme
+ * asset folder given by $pasta.
+ *
+ * Filenames resolve at runtime so nothing hardcodes the site URL — which
+ * matters because the site has to move to another domain on deploy.
+ */
+function apit_media_url( $valor, $pasta ) {
+	$valor = trim( (string) $valor );
+
+	if ( '' === $valor ) {
+		return '';
+	}
+
+	if ( ctype_digit( $valor ) ) {
+		return (string) wp_get_attachment_url( (int) $valor );
+	}
+
+	if ( preg_match( '#^(https?:)?//#', $valor ) || '/' === $valor[0] ) {
+		return $valor;
+	}
+
+	return get_stylesheet_directory_uri() . '/assets/' . $pasta . '/' . $valor;
+}
+
+/**
+ * Hero background media. Both sources are optional: with only "video" it plays
+ * the file, with only "imagem" it shows the still, and with both the image
+ * becomes the video's poster — so an image is what loads first either way. The
+ * hero's CSS gradient remains underneath as the last fallback.
+ *
+ * Usage: [apit_hero_media video="homepage.mp4" imagem="poster.jpg"]
+ */
+function apit_shortcode_hero_media( $atts ) {
+	$atts = shortcode_atts(
+		[
+			'video'    => '',
+			'imagem'   => '',
+			'autoplay' => 'yes',
+			'loop'     => 'yes',
+			'controls' => 'no',
+		],
+		$atts,
+		'apit_hero_media'
+	);
+
+	ob_start();
+	get_template_part( 'template-parts/hero-media', null, $atts );
+	return ob_get_clean();
+}
+add_shortcode( 'apit_hero_media', 'apit_shortcode_hero_media' );
