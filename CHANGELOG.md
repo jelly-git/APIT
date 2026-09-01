@@ -22,6 +22,21 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.16.0] - 2026-09-01
+
+### Corrigido
+- Painel escuro do vídeo e selo "Watch Portugal" tapados pelo vídeo de fundo. A
+  causa era a ordem no DOM: o vídeo entrava depois da camada de decoração, e um
+  `<video>` é composto na sua própria camada, pintando por cima dos irmãos
+  seguintes independentemente do `z-index` — que sozinho não resolveu. O media
+  passou a ser o primeiro filho do hero, pelo que a ordem do DOM já basta e o
+  `z-index` fica apenas como reforço.
+
+### Removido
+- Blobs desfocados do hero e os respetivos SVGs (`hero-ellipse-*.svg`,
+  `hero-line.svg`). Eram a aproximação em CSS do fundo em degradé, que o vídeo
+  agora substitui — por cima dele só enlameavam a imagem.
+
 ## [0.15.0] - 2026-09-01
 
 ### Adicionado

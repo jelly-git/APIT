@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.15.0
+Version: 0.16.0
 */
 
 :root {
@@ -355,33 +355,9 @@ ul {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
-	z-index: 0;
+	/* Above the background media (-1), below the text widgets (2). */
+	z-index: 1;
 }
-
-.hero-decor__blobs {
-	position: absolute;
-	inset: 0;
-	overflow: hidden;
-}
-
-/*
- * The exported blob SVGs bake in a 200px Gaussian blur, which pads each edge by
- * 400px — so an SVG for an N-px circle measures N+800 and must be offset by -400
- * from the circle's designed position.
- */
-.hero__blob {
-	position: absolute;
-	max-width: none;
-	margin: -400px 0 0 -400px;
-}
-
-.hero__blob--1 { left: -147px;  top: -165px; width: 1382px; }
-.hero__blob--2 { left: 352px;   top: 302px;  width: 1382px; }
-.hero__blob--3 { left: 502px;   top: 729px;  width: 1560px; }
-.hero__blob--4 { left: -157px;  top: 714px;  width: 1560px; }
-.hero__blob--5 { left: -193px;  top: 110px;  width: 1560px; }
-.hero__blob--6 { left: -122px;  top: 558px;  width: 1232px; }
-.hero__blob--7 { left: 1620px;  top: 432px;  width: 1382px; }
 
 
 /*
@@ -456,11 +432,16 @@ ul {
  * Hero background media: fills the section behind everything else, in place
  * of the gradient. The gradient stays painted on .apit-hero underneath, so it
  * is what shows while the video buffers or if it fails.
+ *
+ * The z-index is negative because a <video> is composited on its own layer and
+ * was painting over the teaser panel and the badge despite sitting at 0 with
+ * them above. .apit-hero isolates its stacking context, so -1 keeps the video
+ * inside the section, above its gradient and below every other child.
  */
 .apit-hero__media {
 	position: absolute;
 	inset: 0;
-	z-index: 0;
+	z-index: -1;
 	overflow: hidden;
 	pointer-events: none;
 }
