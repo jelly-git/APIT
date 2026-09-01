@@ -22,6 +22,31 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.10.0] - 2026-09-01
+
+### Adicionado
+- Arrastar o carrossel com o rato, caneta ou dedo, com o cursor a mudar para
+  `grabbing` e a lista a assentar na posição mais próxima ao largar. Um arrasto
+  que termine sobre um cartão não segue o link.
+- O carrossel estende-se até à margem do ecrã, deixando o cartão seguinte a
+  espreitar — é o que sinaliza que há mais conteúdo.
+
+### Corrigido
+- Cartões cortados em cima e em baixo: `overflow-x: auto` obriga o
+  `overflow-y` a recortar também, o que cortava a pill da categoria (5px acima
+  do cartão) e a sombra da badge de data (4px abaixo). O track leva agora
+  padding vertical para os acomodar, compensado por margem negativa.
+- Movimento sem suavidade nas setas: o `scroll-snap-type: mandatory` refazia o
+  snap a cada frame da animação, o que a transformava num salto. O snap passou
+  a ser feito pelo JavaScript.
+- Largura dos cartões: passou a ser calculada a partir da coluna de conteúdo e
+  não do track, que é agora deliberadamente mais largo — de outro modo os
+  cartões esticavam para 512px.
+- Snap do arrasto a desfazer o gesto: como o track passa além da coluna, o
+  scroll restante pode ser menor do que um cartão, e arredondar para um
+  múltiplo da largura devolvia a lista a zero. As posições candidatas incluem
+  agora o fim do track.
+
 ## [0.9.0] - 2026-09-01
 
 ### Adicionado

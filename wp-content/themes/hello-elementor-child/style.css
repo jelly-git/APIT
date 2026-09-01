@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.9.0
+Version: 0.10.0
 */
 
 :root {
@@ -578,6 +578,9 @@ ul {
 /* ---------- Calendário ---------- */
 
 .calendario {
+	--apit-col: min(1300px, calc(100vw - 40px));
+	--apit-card: calc((var(--apit-col) - 2 * 37px) / 3);
+	overflow: hidden;
 	background: #fff;
 	padding-block: 56px 64px;
 }
@@ -640,9 +643,32 @@ ul {
 	display: flex;
 	gap: 37px;
 	overflow-x: auto;
-	scroll-snap-type: x mandatory;
-	/* The arrows are the control; the scrollbar itself is hidden. */
+	/*
+	 * overflow-x forces overflow-y to clip as well, which would cut the
+	 * category pill (5px above the card) and the date badge shadow (4px
+	 * below it). The padding keeps both inside the scroll box; the negative
+	 * margin cancels the space it would otherwise add.
+	 */
+	padding-block: 8px 10px;
+	margin-block: -8px -10px;
+	/*
+	 * Runs past the content column to the viewport edge so the next card
+	 * peeks, which is what signals the carousel.
+	 */
+	margin-right: calc(-1 * (100vw - 100%) / 2);
+	/* The arrows and dragging are the controls; the scrollbar is hidden. */
 	scrollbar-width: none;
+	cursor: grab;
+}
+
+.calendario__track.is-dragging {
+	cursor: grabbing;
+}
+
+/* While dragging, the cards must not start a text selection or a link drag. */
+.calendario__track.is-dragging * {
+	user-select: none;
+	pointer-events: none;
 }
 
 .calendario__track::-webkit-scrollbar {
@@ -651,9 +677,8 @@ ul {
 
 .calendario__item {
 	display: flex;
-	/* Three cards per view, at the designed 409px inside a 1300px column. */
-	flex: 0 0 calc((100% - 2 * 37px) / 3);
-	scroll-snap-align: start;
+	/* Three cards per view, at the designed 409px inside the 1300px column. */
+	flex: 0 0 var(--apit-card);
 }
 
 /*
@@ -806,18 +831,18 @@ ul {
 }
 
 @media (max-width: 1024px) {
-	.calendario__track {
-		gap: 24px;
+	.calendario {
+		--apit-card: calc((var(--apit-col) - 24px) / 2);
 	}
 
-	.calendario__item {
-		flex-basis: calc((100% - 24px) / 2);
+	.calendario__track {
+		gap: 24px;
 	}
 }
 
 @media (max-width: 640px) {
-	.calendario__item {
-		flex-basis: 100%;
+	.calendario {
+		--apit-card: var(--apit-col);
 	}
 
 	.evento-card {
