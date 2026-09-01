@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.4.0
+Version: 0.6.0
 */
 
 :root {
@@ -11,7 +11,8 @@ Version: 0.4.0
 	--apit-azul: #4a85c8;
 	--apit-roxo: #8048a6;
 	--apit-black: #1b2a33;
-	--apit-font: "omnes", sans-serif; /* TODO: confirmar o nome exato da família no kit Adobe Fonts (Typekit) uqy3rtf */
+	/* Family name as served by the Typekit kit uqy3rtf. */
+	--apit-font: "omnes-pro", sans-serif;
 }
 
 * {
@@ -242,18 +243,60 @@ ul {
 	border-color: var(--apit-branco);
 }
 
+/*
+ * Elementor button widgets: the .btn classes land on the widget wrapper, so the
+ * styling has to be pushed onto the inner <a class="elementor-button">.
+ */
+.btn .elementor-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 16px;
+	padding: 17px 30px 15px;
+	border-radius: 200px;
+	border: 2px solid transparent;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 1.68;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: var(--apit-branco);
+	fill: var(--apit-branco);
+}
+
+.btn--solid .elementor-button {
+	background-color: var(--apit-azul);
+	border-color: var(--apit-azul);
+}
+
+.btn--outline .elementor-button {
+	background-color: transparent;
+	border-color: var(--apit-branco);
+}
+
+/* The wrapper itself must not paint a second pill behind the button. */
+.btn.elementor-widget-button {
+	background: none;
+	border: none;
+	padding: 0;
+}
+
 /* ---------- Home hero ---------- */
 
 /*
- * TODO: replace with the real "freepik_abstract-layered-gradient" export from
- * Figma node 9:19574 — the Figma MCP asset download hit the plan's rate limit,
- * so this is a CSS approximation of that artwork.
+ * .apit-hero is the CSS class set on the Elementor container that holds the
+ * hero. The title, subtitle and buttons inside it are native Elementor widgets;
+ * the decoration comes from the [apit_hero_decor] shortcode widget.
+ *
+ * TODO: replace the gradient with the real "freepik_abstract-layered-gradient"
+ * export from Figma node 9:19574 — the Figma MCP asset download hit the plan's
+ * rate limit, so this is a CSS approximation of that artwork.
  */
-.hero {
+.apit-hero {
 	position: relative;
 	overflow: hidden;
 	min-height: 1080px;
-	padding-top: 235px;
+	padding-top: 235px !important;
 	background-color: var(--apit-magenta);
 	background-image:
 		radial-gradient(120% 90% at 78% 8%, #2ec6b0 0%, rgba(46, 198, 176, 0) 55%),
@@ -264,11 +307,33 @@ ul {
 	isolation: isolate;
 }
 
-.hero__blobs {
+/* Hero text widgets sit above the decoration layer. */
+.apit-hero > .elementor-element {
+	position: relative;
+	z-index: 2;
+}
+
+.apit-hero .elementor-widget-heading .elementor-heading-title,
+.apit-hero .elementor-widget-text-editor {
+	color: #fff;
+}
+
+/* The decoration widget itself must not take part in the container's flow. */
+.apit-hero > .elementor-widget-shortcode {
+	position: static;
+}
+
+.hero-decor {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
 	z-index: 0;
+}
+
+.hero-decor__blobs {
+	position: absolute;
+	inset: 0;
+	overflow: hidden;
 }
 
 /*
@@ -306,14 +371,16 @@ ul {
 	pointer-events: none;
 }
 
-.hero__inner {
-	position: relative;
-	z-index: 2;
-}
-
-.hero__title {
+/*
+ * Typography for the hero's Elementor widgets. Sizes match the Figma design;
+ * they stay overridable from the Elementor editor's own Style tab.
+ *
+ * The widget selectors are doubled up (.apit-hero .apit-hero__x) because
+ * Elementor's own `.e-con > .elementor-widget { max-width: 100% }` loads after
+ * the theme stylesheet and would otherwise win on a single-class selector.
+ */
+.apit-hero__title .elementor-heading-title {
 	max-width: 799px;
-	margin: 0;
 	font-family: var(--apit-font);
 	font-weight: 400;
 	font-size: 72px;
@@ -321,9 +388,14 @@ ul {
 	color: #fff;
 }
 
-.hero__subtitle {
-	max-width: 474px;
-	margin: 30px 0 0;
+/*
+ * !important is needed on these widths: Elementor's
+ * `.elementor.elementor .e-con > .elementor-widget { max-width: 100% }` is four
+ * classes deep and its stylesheet loads after the theme's, so no reasonable
+ * selector here can outrank it.
+ */
+.apit-hero .apit-hero__subtitle {
+	max-width: 474px !important;
 	font-family: var(--apit-font);
 	font-weight: 400;
 	font-size: 30px;
@@ -332,24 +404,24 @@ ul {
 	color: #fff;
 }
 
-.hero__actions {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 21px;
-	margin-top: 40px;
+.apit-hero .apit-hero__divider {
+	max-width: 1013px !important;
 }
 
-.hero__divider {
-	max-width: 1013px;
-	margin-top: 115px;
+.apit-hero .apit-hero__divider .elementor-divider-separator {
 	border-top: 2px solid rgba(255, 255, 255, 0.5);
 }
 
+.apit-hero .apit-hero__divider .elementor-divider {
+	padding-block: 0;
+}
+
+/* CSS stand-in for the Watch Portugal badge — see the note in hero-decor.php. */
 .hero__watch-badge {
 	position: absolute;
 	right: 310px;
 	top: 243px;
-	z-index: 2;
+	z-index: 1;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -413,10 +485,34 @@ ul {
 	color: var(--apit-branco);
 }
 
+/* See the !important note above — same Elementor max-width rule applies here. */
+.apit-hero .apit-hero__caption {
+	max-width: 423px !important;
+	margin-left: 518px;
+}
+
+.apit-hero__caption .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 36px;
+	line-height: 1.2;
+	color: #fff;
+}
+
+.apit-hero .apit-hero__caption-text {
+	max-width: 423px !important;
+	margin-left: 518px;
+	font-family: var(--apit-font);
+	font-size: 16px;
+	line-height: 1.68;
+	color: #fff;
+}
+
 @media (max-width: 1400px) {
-	.hero {
+	.apit-hero {
 		min-height: 0;
-		padding-block: 200px 80px;
+		padding-top: 200px !important;
+		padding-bottom: 80px !important;
 	}
 
 	.hero__watch-badge,
@@ -424,24 +520,425 @@ ul {
 	.hero__watermark {
 		display: none;
 	}
+
+	.apit-hero__caption,
+	.apit-hero__caption-text {
+		margin-left: 0;
+	}
 }
 
 @media (max-width: 768px) {
-	.hero {
-		padding-block: 140px 60px;
+	.apit-hero {
+		padding-top: 140px !important;
+		padding-bottom: 60px !important;
 	}
 
-	.hero__title {
+	.apit-hero__title .elementor-heading-title {
 		font-size: 40px;
 	}
 
-	.hero__subtitle {
+	.apit-hero__subtitle {
 		font-size: 20px;
 		letter-spacing: normal;
 	}
 
-	.hero__divider {
-		margin-top: 60px;
+	.apit-hero__caption .elementor-heading-title {
+		font-size: 26px;
+	}
+}
+
+/* ---------- Pills ---------- */
+
+.pill {
+	display: inline-flex;
+	align-items: center;
+	padding: 5px 14px;
+	border-radius: 200px;
+	background: rgba(27, 42, 51, 0.08);
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 1.6;
+	color: var(--apit-black);
+	white-space: nowrap;
+}
+
+.pill--categoria {
+	position: relative;
+	z-index: 2;
+	margin-left: 14px;
+	background: var(--apit-magenta);
+	color: #fff;
+	text-transform: lowercase;
+}
+
+/* ---------- Calendário ---------- */
+
+.calendario {
+	background: var(--apit-branco);
+	padding-block: 56px 64px;
+}
+
+.calendario__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	margin-bottom: 24px;
+}
+
+.calendario__title {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 1.1;
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+	color: var(--apit-black);
+}
+
+.calendario__nav {
+	display: flex;
+	gap: 9px;
+}
+
+.calendario__arrow {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border: none;
+	border-radius: 200px;
+	background: rgba(27, 42, 51, 0.08);
+	font-size: 16px;
+	color: var(--apit-black);
+	cursor: pointer;
+}
+
+.calendario__arrow:hover {
+	background: var(--apit-magenta);
+	color: #fff;
+}
+
+.calendario__track {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 37px;
+	overflow: hidden;
+}
+
+.calendario__item {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.evento-card {
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 16px;
+	width: 100%;
+	min-height: 248px;
+	margin-top: -15px;
+	padding: 49px 38px 30px;
+	border-radius: 8px;
+	background: #fff;
+	box-shadow: 0 2px 16px rgba(27, 42, 51, 0.08);
+}
+
+.evento-card__body {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.evento-card__title {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 24px;
+	line-height: 1.2;
+	color: var(--apit-black);
+}
+
+.evento-card__meta {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 16px;
+	line-height: 1.68;
+	color: rgba(27, 42, 51, 0.7);
+}
+
+.evento-card__pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 12px;
+}
+
+.evento-card__date {
+	display: flex;
+	flex-direction: column;
+	flex-shrink: 0;
+	align-items: center;
+	width: 90px;
+	border-radius: 8px;
+	overflow: hidden;
+	background: var(--apit-branco);
+	text-align: center;
+}
+
+.evento-card__month {
+	display: block;
+	width: 100%;
+	padding: 6px 0;
+	background: var(--apit-magenta);
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 1.6;
+	text-transform: lowercase;
+	color: #fff;
+}
+
+.evento-card__day {
+	display: block;
+	padding: 6px 0 10px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 40px;
+	line-height: 1.2;
+	color: var(--apit-black);
+}
+
+@media (max-width: 1024px) {
+	.calendario__track {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 24px;
+	}
+}
+
+@media (max-width: 640px) {
+	.calendario__track {
+		grid-template-columns: 1fr;
+	}
+
+	.evento-card {
+		padding: 44px 24px 24px;
+	}
+}
+
+/* ---------- Notícias ---------- */
+
+.noticias {
+	background: #fff;
+	padding-block: 40px 72px;
+}
+
+.noticias__grid {
+	display: grid;
+	grid-template-columns: 855fr 407fr;
+	gap: 37px;
+	align-items: stretch;
+}
+
+.noticias__coluna {
+	display: grid;
+	grid-template-rows: 218fr 129fr;
+	gap: 37px;
+}
+
+.noticia {
+	position: relative;
+	display: flex;
+	border-radius: 8px;
+	overflow: hidden;
+	background-color: var(--apit-black);
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+.noticia__link {
+	display: flex;
+	align-items: flex-end;
+	width: 100%;
+	padding: 30px;
+	/* Keeps the title legible over any featured image. */
+	background: linear-gradient(to top, rgba(27, 42, 51, 0.92) 0%, rgba(27, 42, 51, 0.35) 55%, rgba(27, 42, 51, 0.1) 100%);
+}
+
+.noticia--destaque {
+	min-height: 523px;
+}
+
+.noticia--secundaria {
+	min-height: 129px;
+}
+
+.noticia__content {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.noticia__categoria {
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 1.6;
+	text-transform: lowercase;
+	letter-spacing: 0.28px;
+	color: var(--apit-magenta);
+}
+
+.noticia__title {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 24px;
+	line-height: 1.25;
+	color: #fff;
+}
+
+.noticia--destaque .noticia__title {
+	max-width: 496px;
+	font-size: 36px;
+}
+
+@media (max-width: 1024px) {
+	.noticias__grid {
+		grid-template-columns: 1fr;
+	}
+
+	.noticias__coluna {
+		grid-template-rows: auto auto;
+	}
+
+	.noticia--destaque {
+		min-height: 380px;
+	}
+
+	.noticia--destaque .noticia__title {
+		font-size: 28px;
+	}
+}
+
+/* ---------- Newsletter ---------- */
+
+.newsletter {
+	background: var(--apit-black);
+	color: #fff;
+	padding-block: 64px;
+}
+
+.newsletter__inner {
+	display: grid;
+	grid-template-columns: 350fr 670fr;
+	gap: 96px;
+	align-items: start;
+}
+
+.newsletter__title {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 48px;
+	line-height: 1.1;
+	color: #fff;
+}
+
+.newsletter__form {
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+.newsletter__row {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+}
+
+.newsletter__row--bottom {
+	align-items: center;
+	margin-top: 8px;
+}
+
+.newsletter__field input {
+	width: 100%;
+	height: 56px;
+	padding: 0 14px;
+	border: 1px solid rgba(244, 249, 255, 0.35);
+	border-radius: 4px;
+	background: transparent;
+	font-family: var(--apit-font);
+	font-size: 16px;
+	color: #fff;
+}
+
+.newsletter__field input::placeholder {
+	color: rgba(244, 249, 255, 0.65);
+}
+
+.newsletter__field input:focus {
+	outline: 2px solid var(--apit-magenta);
+	outline-offset: 1px;
+}
+
+.newsletter__consent {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-family: var(--apit-font);
+	font-size: 14px;
+	line-height: 1.6;
+	color: rgba(244, 249, 255, 0.85);
+}
+
+.newsletter__consent input {
+	width: 25px;
+	height: 25px;
+	flex-shrink: 0;
+	accent-color: var(--apit-magenta);
+}
+
+.newsletter__consent a {
+	text-decoration: underline;
+}
+
+.newsletter__submit {
+	justify-self: end;
+	border: none;
+	cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+	.newsletter__inner {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+
+	.newsletter__title {
+		font-size: 36px;
+	}
+}
+
+@media (max-width: 640px) {
+	.newsletter__row {
+		grid-template-columns: 1fr;
+	}
+
+	.newsletter__row--bottom {
+		gap: 20px;
+	}
+
+	.newsletter__submit {
+		justify-self: start;
 	}
 }
 

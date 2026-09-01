@@ -6,7 +6,10 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.4.0' );
+define( 'APIT_CHILD_VERSION', '0.6.0' );
+
+require_once get_stylesheet_directory() . '/inc/post-types.php';
+require_once get_stylesheet_directory() . '/inc/shortcodes.php';
 
 function apit_child_enqueue_assets() {
 	wp_enqueue_style(

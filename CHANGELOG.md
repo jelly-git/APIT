@@ -13,10 +13,51 @@ A versão aqui registada corresponde ao campo `Version` de
 ### Por fazer
 - Substituir a aproximação em CSS do gradiente do hero pelo asset real do
   Figma (nó `9:19574`) — o download esgotou o limite de chamadas MCP do plano.
-- Restantes secções da Home: Calendário, Notícias, Newsletter.
+- Substituir o selo "Watch Portugal" do hero (recriado em CSS) pelo artwork
+  branco do Figma (nó `83:3098`).
 - Página "Sobre a APIT" (nó `19:20294`) e layouts mobile (nó `66:643`).
+- Menu hambúrguer: abaixo de 1024px o menu principal desaparece sem alternativa.
+- Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
-- Confirmar o nome exato da família tipográfica Omnes no kit Typekit `uqy3rtf`.
+
+## [0.6.0] - 2026-09-01
+
+### Adicionado
+- Página "Home" construída como página do Elementor, editável no editor visual.
+  O título, subtítulo e botões do hero são widgets nativos; o gradiente e a
+  decoração vêm do tema.
+- Cores e tipografia globais do Elementor definidas com a paleta da marca
+  (magenta, azul, black) e a fonte Omnes, editáveis em Definições do Site.
+- Shortcodes `[apit_hero_decor]`, `[apit_calendario]`, `[apit_noticias]` e
+  `[apit_newsletter]`, que expõem as secções do tema ao editor do Elementor.
+  O Elementor gratuito não tem widgets Posts nem Form, por isso as secções
+  dinâmicas são renderizadas pelo tema.
+- Tipo de conteúdo "Evento" com data, categoria e etiquetas, a alimentar a
+  secção Calendário. Três eventos de exemplo criados.
+- Secção Notícias com um destaque grande e dois cartões secundários. O destaque
+  é o post marcado como fixo (sticky), escolhido por um editor em vez de ser
+  sempre o mais recente. Três notícias de exemplo criadas.
+- Secção Newsletter com campos Nome, Empresa, Email e consentimento de RGPD.
+
+### Alterado
+- A Home passou a ser uma página estática do WordPress em vez do template
+  `front-page.php`, que tinha precedência sobre qualquer página e por isso
+  impedia a edição no Elementor. `front-page.php` e `hero-home.php` removidos.
+- A página "Notícias" passou a ser a página de posts do blogue.
+
+### Corrigido
+- Nome da fonte: o kit Typekit serve a família como `omnes-pro`, não `omnes`,
+  pelo que os títulos caíam para Roboto.
+- Classes CSS no Elementor: containers usam a chave `css_classes`, widgets usam
+  `_css_classes` — usar a chave errada fazia as classes não aparecerem.
+- Botões do Elementor: as classes `btn` ficam no invólucro do widget, pelo que o
+  estilo tem de ser aplicado ao `<a class="elementor-button">` interior.
+
+## [0.5.0] - 2026-08-31
+
+### Adicionado
+- Secções Calendário, Notícias e Newsletter da Home (em template parts).
+- Legenda do vídeo no hero.
 
 ## [0.4.0] - 2026-08-31
 
