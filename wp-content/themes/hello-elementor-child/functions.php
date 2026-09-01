@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.17.0' );
+define( 'APIT_CHILD_VERSION', '0.18.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -38,6 +38,14 @@ function apit_child_enqueue_assets() {
 		get_stylesheet_directory_uri() . '/style.css',
 		[ 'apit-omnes-font', 'font-awesome-free', 'hello-elementor', 'hello-elementor-theme-style', 'hello-elementor-header-footer' ],
 		APIT_CHILD_VERSION
+	);
+
+	wp_enqueue_script(
+		'apit-menu-mobile',
+		get_stylesheet_directory_uri() . '/assets/js/menu-mobile.js',
+		[],
+		APIT_CHILD_VERSION,
+		true
 	);
 
 	wp_enqueue_script(

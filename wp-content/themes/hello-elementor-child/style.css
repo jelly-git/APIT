@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.17.0
+Version: 0.18.0
 */
 
 :root {
@@ -207,16 +207,200 @@ ul {
 	font-size: 16px;
 }
 
+/* ---------- Cabeçalho: hambúrguer ---------- */
+
+.apit-header__burger {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: none;
+	background: none;
+	font-size: 24px;
+	color: #fff;
+	cursor: pointer;
+}
+
 @media (max-width: 1024px) {
+	/* The menu and the CTA move into the mobile panel. */
 	.apit-header__topbar,
-	.apit-header__nav {
+	.apit-header__nav,
+	.apit-header__cta {
 		display: none;
+	}
+
+	.apit-header__burger {
+		display: flex;
 	}
 
 	.apit-header__main {
 		height: auto;
-		padding: 16px 20px;
+		padding: 14px 20px;
 	}
+
+	.apit-header__logo img {
+		width: 130px;
+		height: 52px;
+	}
+}
+
+/* ---------- Menu mobile ---------- */
+
+/*
+ * Full-screen panel. `hidden` keeps it out of the accessibility tree until the
+ * burger opens it, so the rules below only describe the open state.
+ */
+.apit-menu-mobile {
+	position: fixed;
+	inset: 0;
+	z-index: 100;
+	display: flex;
+	flex-direction: column;
+	padding: 24px 32px 40px;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	background-color: var(--apit-magenta);
+	background-image:
+		radial-gradient(80% 55% at 100% 78%, #2ec6b0 0%, rgba(46, 198, 176, 0) 60%),
+		radial-gradient(75% 50% at 96% 52%, var(--apit-azul) 0%, rgba(74, 133, 200, 0) 62%),
+		radial-gradient(90% 45% at 78% 96%, var(--apit-roxo) 0%, rgba(128, 72, 166, 0) 65%);
+	color: #fff;
+}
+
+.apit-menu-mobile[hidden] {
+	display: none;
+}
+
+.apit-menu-mobile__topo {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 56px;
+}
+
+.apit-menu-mobile__logo img {
+	display: block;
+	width: 140px;
+	height: auto;
+}
+
+.apit-menu-mobile__acoes {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.apit-menu-mobile__pesquisa,
+.apit-menu-mobile__fechar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	border: none;
+	background: none;
+	font-size: 22px;
+	color: #fff;
+	cursor: pointer;
+}
+
+.apit-menu-mobile__lista {
+	display: flex;
+	flex-direction: column;
+	gap: 22px;
+}
+
+.apit-menu-mobile__lista a {
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 19px;
+	line-height: 1.2;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+	color: #fff;
+}
+
+.apit-menu-mobile__cta {
+	display: inline-flex;
+	align-self: flex-start;
+	align-items: center;
+	gap: 16px;
+	margin-top: 44px;
+	padding: 15px 30px 13px;
+	border: 2px solid var(--apit-branco);
+	border-radius: 200px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 15px;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: var(--apit-branco);
+}
+
+.apit-menu-mobile__secundario {
+	margin-top: 48px;
+}
+
+.apit-menu-mobile__lista-secundaria {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.apit-menu-mobile__lista-secundaria a {
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 1.2;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.85);
+}
+
+/* Pushed to the bottom of the panel when there is room to spare. */
+.apit-menu-mobile__rodape {
+	margin-top: auto;
+	padding-top: 56px;
+}
+
+.apit-menu-mobile__lang {
+	display: flex;
+	gap: 26px;
+	margin-bottom: 22px;
+}
+
+.apit-menu-mobile__lang a {
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 13px;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: #fff;
+	opacity: 0.55;
+}
+
+.apit-menu-mobile__lang a.is-active {
+	opacity: 1;
+}
+
+.apit-menu-mobile__social {
+	display: flex;
+	align-items: center;
+	gap: 22px;
+}
+
+.apit-menu-mobile__social a {
+	font-size: 18px;
+	color: #fff;
+}
+
+/* Stops the page behind the panel from scrolling. */
+body.apit-menu-aberto {
+	overflow: hidden;
 }
 
 /* ---------- Layout container ---------- */
@@ -453,6 +637,7 @@ ul {
 .hero__watch-badge img {
 	display: block;
 	width: 100%;
+	max-width: 100%;
 	height: auto;
 }
 
@@ -537,41 +722,142 @@ ul {
 	color: #fff;
 }
 
+/*
+ * Below the desktop breakpoint the hero restacks: the badge and the video leave
+ * their absolute positions and flow after the text, and the captions follow
+ * them — the order the mobile design uses. Flex `order` on the hero's children
+ * is what makes that interleaving possible.
+ */
 @media (max-width: 1400px) {
 	.apit-hero {
 		min-height: 0;
-		padding-top: 200px !important;
-		padding-bottom: 80px !important;
+		padding-top: 160px !important;
+		padding-bottom: 72px !important;
 	}
 
-	.hero__watch-badge,
+	/*
+	 * Scoped through the parent: a bare element class loses to Elementor's own
+	 * container rules, which is why the order was ignored at first.
+	 */
+	.apit-hero > .elementor-element-herowrap {
+		order: 1;
+	}
+
+	.apit-hero > .elementor-element-herodecor {
+		order: 2;
+	}
+
+	.apit-hero > .elementor-element-herocaption {
+		order: 3;
+	}
+
+	/* Out of the absolute layer and into the flow. */
+	.hero-decor {
+		position: static;
+		inset: auto;
+		width: min(1300px, calc(100% - 40px));
+		margin-inline: auto;
+	}
+
+	/* The gradient over the video stays full-bleed even though its parent no longer is. */
+	.hero-decor::before {
+		position: fixed;
+		inset: 0;
+		pointer-events: none;
+	}
+
+	.hero__watch-badge {
+		position: static;
+		width: 240px;
+		margin: 48px 0 0;
+	}
+
 	.hero__video {
-		display: none;
+		position: static;
+		width: 100%;
+		height: min(560px, 90vw);
+		margin-top: 32px;
 	}
 
-	.apit-hero__caption,
-	.apit-hero__caption-text {
-		margin-left: 0;
+	.hero__video::after {
+		inset: 20px -12px -14px 12px;
+	}
+
+	.hero__play {
+		font-size: 72px;
+	}
+
+	/*
+	 * The captions sit in a flex container that does not stretch its children,
+	 * so without an explicit width they shrink to the text's own measure.
+	 */
+	/*
+	 * The captions sit in a flex container that does not stretch its children,
+	 * so without an explicit width they shrink to the text's own measure.
+	 *
+	 * margin-left needs !important: the 518px desktop indent comes from the
+	 * widget's Elementor _margin, written three classes deep in the page CSS,
+	 * and left unchecked it pushed the page 518px wider than the viewport.
+	 */
+	.apit-hero .apit-hero__caption,
+	.apit-hero .apit-hero__caption-text {
+		margin-left: 0 !important;
+		width: 100%;
+		max-width: 100% !important;
+	}
+
+	.apit-hero .apit-hero__caption {
+		margin-top: 36px !important;
+	}
+
+	.apit-hero .apit-hero__divider {
+		display: none;
 	}
 }
 
 @media (max-width: 768px) {
 	.apit-hero {
-		padding-top: 140px !important;
-		padding-bottom: 60px !important;
+		padding-top: 120px !important;
+		padding-bottom: 56px !important;
 	}
 
 	.apit-hero__title .elementor-heading-title {
-		font-size: 40px;
+		max-width: 100%;
+		font-size: 34px;
 	}
 
-	.apit-hero__subtitle {
-		font-size: 20px;
+	.apit-hero .apit-hero__subtitle {
+		max-width: 100% !important;
+		font-size: 17px;
+		line-height: 1.5;
 		letter-spacing: normal;
 	}
 
+	/* The design stacks the two hero buttons on mobile. */
+	.elementor-element-herobtns {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
 	.apit-hero__caption .elementor-heading-title {
-		font-size: 26px;
+		font-size: 24px;
+	}
+
+	.apit-hero__caption-text {
+		font-size: 15px;
+	}
+
+	.hero__watch-badge {
+		width: 200px;
+		margin-top: 40px;
+	}
+
+	.hero__video {
+		height: min(460px, 110vw);
+	}
+
+	.hero__play {
+		font-size: 60px;
 	}
 }
 
@@ -1006,29 +1292,51 @@ ul {
 @media (max-width: 1024px) {
 	.noticias__grid {
 		grid-template-columns: 1fr;
+		gap: 40px;
 	}
 
+	.noticias__coluna {
+		gap: 40px;
+	}
+
+	/*
+	 * The featured card loses the overlapping panel and becomes a stack —
+	 * image, then text — matching the other two.
+	 */
 	.noticia--destaque {
-		min-height: 420px;
+		min-height: 0;
+	}
+
+	.noticia--destaque .noticia__imagem {
+		position: static;
+		height: min(300px, 62vw);
 	}
 
 	.noticia--destaque .noticia__painel {
-		width: min(496px, 90%);
+		position: static;
+		width: 100%;
+		min-height: 0;
+		padding: 24px 0 0;
+		background: none;
 	}
 
 	.noticia--destaque .noticia__title {
-		font-size: 28px;
+		margin-top: 12px;
+		font-size: 26px;
 	}
 }
 
 @media (max-width: 640px) {
-	.noticia--destaque .noticia__painel {
-		width: 100%;
-		padding: 20px;
-	}
-
 	.noticia--destaque .noticia__title {
 		font-size: 22px;
+	}
+
+	.noticia--imagem .noticia__title {
+		font-size: 20px;
+	}
+
+	.noticia--imagem .noticia__imagem {
+		height: min(220px, 52vw);
 	}
 }
 
@@ -1177,16 +1485,26 @@ ul {
 }
 
 @media (max-width: 640px) {
-	.newsletter__row {
-		grid-template-columns: 1fr;
+	.newsletter {
+		padding-block: 56px;
 	}
 
+	.newsletter__title {
+		font-size: 30px;
+	}
+
+	/* Nome and Empresa stay paired; only the bottom row stacks. */
 	.newsletter__row--bottom {
-		gap: 20px;
+		grid-template-columns: 1fr;
+		gap: 22px;
 	}
 
 	.newsletter__submit {
 		justify-self: start;
+	}
+
+	.newsletter__field input {
+		height: 48px;
 	}
 }
 
@@ -1210,6 +1528,7 @@ ul {
 .apit-footer__brand img {
 	display: block;
 	width: 250px;
+	max-width: 100%;
 	height: auto;
 }
 
@@ -1263,6 +1582,7 @@ ul {
 .apit-footer__watch img {
 	display: block;
 	width: 261px;
+	max-width: 100%;
 	height: auto;
 }
 

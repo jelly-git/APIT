@@ -13,14 +13,59 @@ A versão aqui registada corresponde ao campo `Version` de
 ### Por fazer
 - Substituir a aproximação em CSS do gradiente do hero pelo asset real do
   Figma (nó `9:19574`) — o download esgotou o limite de chamadas MCP do plano.
-- Substituir o selo "Watch Portugal" do hero (recriado em CSS) pelo artwork
-  branco do Figma (nó `83:3098`).
 - Confirmar as cores por categoria com o design (foram propostas a partir da
   paleta da marca, por o Figma estar em limite de chamadas).
-- Página "Sobre a APIT" (nó `19:20294`) e layouts mobile (nó `66:643`).
-- Menu hambúrguer: abaixo de 1024px o menu principal desaparece sem alternativa.
+- Página "Sobre a APIT" (nó `19:20294`), incluindo o seu responsivo. O da Home
+  está feito; falta o das páginas interiores.
+- Confirmar o responsivo da Home contra o Figma mobile (nó `66:2060`): as
+  medidas foram inferidas dos mockups, por o Figma estar em limite de chamadas.
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
+- Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
+  e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.18.0] - 2026-09-01
+
+### Adicionado
+- **Menu mobile** em painel de ecrã inteiro, com o degradé da marca: logótipo,
+  pesquisa e fecho no topo, menu principal, botão de Área Reservada, menu
+  secundário, seletor PT/EN e redes sociais — o conteúdo do mockup.
+  Abre pelo hambúrguer e fecha pelo X, pela tecla Escape ou ao clicar num link.
+  Bloqueia o scroll da página enquanto está aberto, move o foco para dentro do
+  painel e devolve-o ao hambúrguer ao fechar. Fecha-se sozinho se a janela
+  passar acima do breakpoint, para não deixar a página presa debaixo dele.
+- `assets/js/menu-mobile.js`.
+
+### Alterado
+- **Hero responsivo**: abaixo dos 1400px o selo Watch Portugal e o painel de
+  vídeo saem das posições absolutas e passam a fluir depois do texto, com as
+  legendas a seguir — a ordem do mockup. Antes estavam simplesmente escondidos.
+- As legendas do hero passaram a viver num container próprio
+  (`.apit-hero__legendas`), em vez de dentro do bloco de texto. Sem isso não era
+  possível intercalá-las: o design coloca o selo e o vídeo **entre** os botões e
+  as legendas, e um único container não permite essa ordem.
+- **Notícias em mobile**: o cartão de destaque perde o painel branco sobreposto
+  e passa a empilhar imagem e texto, como os outros dois.
+- **Newsletter em mobile**: Nome e Empresa mantêm-se emparelhados e só a linha
+  de baixo é que empilha, conforme o mockup — a regra anterior punha os três
+  campos em coluna.
+- Cabeçalho abaixo dos 1024px: o menu e o botão de Área Reservada dão lugar ao
+  hambúrguer, e o logótipo reduz para 130px.
+- Logótipos do rodapé e o selo do hero passaram a ter `max-width: 100%`, para
+  não transbordarem nos telefones mais estreitos.
+
+### Corrigido
+- Scroll horizontal em tablet e mobile: as legendas do hero mantinham o recuo de
+  518px do desktop, o que empurrava a página 518px além da janela. Vem do
+  `_margin` do widget, escrito três classes fundo no CSS da página, e precisa de
+  `!important` para ser anulado.
+- Ordem dos blocos do hero ignorada: um seletor de uma só classe perde para as
+  regras de container do Elementor, pelo que o `order` tem de ser aplicado com o
+  pai no seletor.
+- Regra base do hambúrguer estava depois da media query que o mostra, e por isso
+  vencia-a — o botão nunca aparecia.
+- Legendas do hero encolhidas à largura do texto: o container do Elementor é
+  flex e não estica os filhos, o que exige uma largura explícita.
 
 ## [0.17.0] - 2026-09-01
 
