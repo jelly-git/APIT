@@ -22,6 +22,21 @@ A versão aqui registada corresponde ao campo `Version` de
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.14.0] - 2026-09-01
+
+### Corrigido
+- Fundo da secção APIT News: tinha uma base escura (`--apit-black`) com três
+  degradés radiais saturados por cima. O design é um único varrimento pastel —
+  rosa à esquerda, passando por violeta e um meio azul-acinzentado, até
+  turquesa à direita. A base escura foi removida.
+- Botão "Subscrever": estava na variante contornada usada no header, e no design
+  é preenchido a magenta com texto branco.
+
+### Notas
+- O degradé foi aproximado a partir da imagem do mockup, com tonalidades
+  clareadas da paleta da marca. O Figma continua no limite de chamadas MCP, pelo
+  que os preenchimentos reais dos três retângulos (nó `19:19941`) estão por ler.
+
 ## [0.13.0] - 2026-09-01
 
 ### Corrigido

@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.13.0
+Version: 0.14.0
 */
 
 :root {
@@ -1016,17 +1016,26 @@ ul {
 
 /*
  * The design stacks three full-width rectangles here (Figma node 19:19941),
- * i.e. a layered gradient. TODO: replace with the real artwork once the Figma
- * asset download is available again.
+ * producing one soft pastel sweep: pink at the left, through violet and a
+ * blue-grey middle, into turquoise at the right. The stops are lightened
+ * brand colours.
+ *
+ * TODO: approximated from the mockup image — the Figma file is at its MCP
+ * call limit, so the three rectangles' real fills are still unread.
  */
 .newsletter {
 	position: relative;
 	overflow: hidden;
-	background-color: var(--apit-black);
-	background-image:
-		radial-gradient(80% 140% at 12% 50%, var(--apit-magenta) 0%, rgba(244, 24, 146, 0) 62%),
-		radial-gradient(70% 130% at 52% 10%, var(--apit-roxo) 0%, rgba(128, 72, 166, 0) 60%),
-		radial-gradient(90% 150% at 96% 60%, var(--apit-azul) 0%, rgba(74, 133, 200, 0) 65%);
+	background-image: linear-gradient(
+		100deg,
+		#e06aae 0%,
+		#c073c0 18%,
+		#a97fc9 34%,
+		#8ba3cc 50%,
+		#6bbfb4 68%,
+		#4ac9a2 84%,
+		#34c79c 100%
+	);
 	color: #fff;
 	padding-block: 87px;
 }
@@ -1116,22 +1125,23 @@ ul {
 	align-items: center;
 	gap: 16px;
 	padding: 9px 24px 8px;
-	border: 2px solid var(--apit-branco);
+	border: 2px solid var(--apit-magenta);
 	border-radius: 200px;
-	background: transparent;
+	background: var(--apit-magenta);
 	font-family: var(--apit-font);
 	font-weight: 500;
 	font-size: 15px;
 	line-height: 1.68;
 	letter-spacing: 0.3px;
 	text-transform: uppercase;
-	color: var(--apit-branco);
+	color: #fff;
 	cursor: pointer;
 }
 
 .newsletter .newsletter__submit:hover {
-	background: var(--apit-branco);
-	color: var(--apit-black);
+	background: var(--apit-black);
+	border-color: var(--apit-black);
+	color: #fff;
 }
 
 @media (max-width: 1024px) {
