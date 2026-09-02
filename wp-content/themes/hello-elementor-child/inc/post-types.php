@@ -104,7 +104,9 @@ function apit_register_sobre_post_types() {
 		'exclude_from_search' => true,
 		'menu_icon'           => 'dashicons-groups',
 		'supports'            => [ 'title', 'thumbnail', 'page-attributes' ],
-		'show_in_rest'        => true,
+		// Classic editor: neither has a content body, so the block canvas would just
+		// be an empty frame above the fields that matter.
+		'show_in_rest'        => false,
 	] );
 
 	register_post_type( 'apit_orgao_social', [
@@ -120,7 +122,7 @@ function apit_register_sobre_post_types() {
 		'exclude_from_search' => true,
 		'menu_icon'           => 'dashicons-awards',
 		'supports'            => [ 'title', 'page-attributes' ],
-		'show_in_rest'        => true,
+		'show_in_rest'        => false,
 	] );
 }
 add_action( 'init', 'apit_register_sobre_post_types' );

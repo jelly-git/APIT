@@ -35,6 +35,23 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.19.1] - 2026-09-02
+
+### Corrigido
+- Os campos personalizados não tinham onde ser editados no wp-admin.
+  `register_post_meta` declara o campo e a sua sanitização, mas não desenha
+  controlo nenhum, pelo que só eram graváveis por código — o cargo da equipa
+  incluído. Adicionadas caixas de edição para Equipa (cargo), Órgãos Sociais
+  (órgão e função) e Eventos (data, categoria, local, texto e link do botão).
+  Os Eventos tinham o mesmo problema desde a v0.6.0, ainda sem ter sido notado.
+- Equipa e Órgãos Sociais passam a usar o editor clássico
+  (`show_in_rest => false`): não têm corpo de conteúdo, e o editor de blocos
+  mostrava uma tela vazia acima dos campos que interessam.
+
+### Adicionado
+- Colunas na listagem de cada tipo de conteúdo (cargo, órgão, função, data,
+  categoria), para se ver quem tem que função sem abrir cada entrada.
+
 ## [0.19.0] - 2026-09-02
 
 ### Adicionado

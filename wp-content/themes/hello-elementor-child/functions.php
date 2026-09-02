@@ -6,11 +6,16 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.19.0' );
+define( 'APIT_CHILD_VERSION', '0.19.1' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
 require_once get_stylesheet_directory() . '/inc/shortcodes.php';
+
+// The editing UI for the custom fields; nothing in it runs on the front end.
+if ( is_admin() ) {
+	require_once get_stylesheet_directory() . '/inc/admin-campos.php';
+}
 
 function apit_child_enqueue_assets() {
 	wp_enqueue_style(
