@@ -32,8 +32,17 @@ function apit_register_evento_post_type() {
 		'exclude_from_search' => true,
 		'show_ui'             => true,
 		'menu_icon'           => 'dashicons-calendar-alt',
-		'supports'            => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
-		'show_in_rest'        => true,
+		/*
+		 * Only what the card actually renders: its title and its excerpt.
+		 * Content and featured image were supported and never read — with no
+		 * single-event page there is nowhere for a content body to appear.
+		 */
+		'supports'            => [ 'title', 'excerpt' ],
+		/*
+		 * Classic editor, for the same reason as Equipa: without editor support
+		 * the block canvas is an empty frame above the fields that matter.
+		 */
+		'show_in_rest'        => false,
 	] );
 }
 add_action( 'init', 'apit_register_evento_post_type' );
@@ -45,7 +54,6 @@ add_action( 'init', 'apit_register_evento_post_type' );
 function apit_register_evento_meta() {
 	$fields = [
 		'apit_evento_data'       => 'string', // Ymd, the format ACF's date picker stores; drives the day/month badge
-		'apit_evento_categoria'  => 'string', // pill over the top edge, e.g. "Evento APIT"
 		'apit_evento_local'      => 'string', // location pill, e.g. "Lisboa"
 		'apit_evento_acao_texto' => 'string', // optional button label, e.g. "Marcar reunião"
 		'apit_evento_acao_url'   => 'string', // where that button points
@@ -72,6 +80,40 @@ function apit_register_evento_meta() {
 	}
 }
 add_action( 'init', 'apit_register_evento_meta' );
+
+/**
+ * Event categories.
+ *
+ * A taxonomy, replacing the free-text field it grew out of. The category used
+ * to be typed by hand on every event, and its colour lived in a PHP map — so
+ * a new category meant a developer. Now the client adds one and picks its two
+ * gradient stops in the same screen.
+ */
+function apit_register_categoria_evento() {
+	register_taxonomy( 'apit_categoria_evento', [ 'apit_evento' ], [
+		'labels' => [
+			'name'              => __( 'Categorias de evento', 'apit' ),
+			'singular_name'     => __( 'Categoria de evento', 'apit' ),
+			'menu_name'         => __( 'Categorias', 'apit' ),
+			'add_new_item'      => __( 'Adicionar categoria', 'apit' ),
+			'edit_item'         => __( 'Editar categoria', 'apit' ),
+			'not_found'         => __( 'Nenhuma categoria encontrada', 'apit' ),
+			'back_to_items'     => __( '← Voltar às categorias', 'apit' ),
+		],
+		'public'            => false,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'hierarchical'      => true,
+		/*
+		 * ACF's taxonomy field on the event is the only place a category gets
+		 * chosen. Leaving WordPress's own box on as well would put two
+		 * controls on one value — the mistake the hand-written meta boxes made.
+		 */
+		'meta_box_cb'       => false,
+		'show_in_rest'      => false,
+	] );
+}
+add_action( 'init', 'apit_register_categoria_evento' );
 
 /**
  * Upcoming events for the calendar, soonest first.

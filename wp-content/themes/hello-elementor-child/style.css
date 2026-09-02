@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.20.3
+Version: 0.21.0
 */
 
 :root {
@@ -861,31 +861,6 @@ body.apit-menu-aberto {
 	}
 }
 
-/* ---------- Pills ---------- */
-
-.pill {
-	display: inline-flex;
-	align-items: center;
-	padding: 5px 14px;
-	border-radius: 200px;
-	background: rgba(27, 42, 51, 0.08);
-	font-family: var(--apit-font);
-	font-weight: 500;
-	font-size: 13px;
-	line-height: 1.6;
-	color: var(--apit-black);
-	white-space: nowrap;
-}
-
-.pill--categoria {
-	position: relative;
-	z-index: 2;
-	margin-left: 14px;
-	background: var(--apit-cat, var(--apit-magenta));
-	color: #fff;
-	text-transform: lowercase;
-}
-
 /* ---------- Calendário ---------- */
 
 .calendario {
@@ -1005,7 +980,12 @@ body.apit-menu-aberto {
 	width: 100%;
 	min-height: 248px;
 	padding: 49px 38px 30px;
-	background-image: linear-gradient(100deg, var(--apit-cat, var(--apit-magenta)) 0%, var(--apit-cinza) 100%);
+	/*
+	 * The angle and the stop positions are the design and stay the same on
+	 * every card; only the two colours come from the category, as custom
+	 * properties set on the list item.
+	 */
+	background-image: linear-gradient(100deg, var(--apit-cat-inicio, var(--apit-magenta)) 0%, var(--apit-cat-fim, var(--apit-cinza)) 100%);
 	color: #fff;
 }
 
@@ -1016,7 +996,7 @@ body.apit-menu-aberto {
 	left: 14px;
 	padding: 6px 16px;
 	/* A shade darker than the gradient start, as in the design. */
-	background: color-mix(in srgb, var(--apit-cat, var(--apit-magenta)) 82%, #000);
+	background: color-mix(in srgb, var(--apit-cat-inicio, var(--apit-magenta)) 82%, #000);
 	font-family: var(--apit-font);
 	font-weight: 500;
 	font-size: 11px;
@@ -1120,7 +1100,7 @@ body.apit-menu-aberto {
 	justify-content: center;
 	flex-shrink: 0;
 	height: 32px;
-	background: var(--apit-cat, var(--apit-magenta));
+	background: var(--apit-cat-inicio, var(--apit-magenta));
 	font-family: var(--apit-font);
 	font-weight: 500;
 	font-size: 12px;

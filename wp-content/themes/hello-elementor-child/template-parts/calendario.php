@@ -32,16 +32,17 @@ if ( ! $eventos ) {
 			<?php foreach ( $eventos as $evento ) : ?>
 				<?php
 				$data       = get_post_meta( $evento->ID, 'apit_evento_data', true );
-				$categoria  = get_post_meta( $evento->ID, 'apit_evento_categoria', true );
 				$local      = get_post_meta( $evento->ID, 'apit_evento_local', true );
 				$acao_texto = get_post_meta( $evento->ID, 'apit_evento_acao_texto', true );
 				$acao_url   = get_post_meta( $evento->ID, 'apit_evento_acao_url', true );
 				$timestamp  = $data ? strtotime( $data ) : false;
+				// Name and both gradient stops come from the category term.
+				$cores      = apit_cores_evento( $evento->ID );
 				?>
-				<li class="calendario__item" style="<?php echo esc_attr( apit_cor_categoria_style( $categoria ) ); ?>">
+				<li class="calendario__item" style="<?php echo esc_attr( apit_estilo_evento( $cores ) ); ?>">
 					<article class="evento-card">
-						<?php if ( $categoria ) : ?>
-							<span class="evento-card__categoria"><?php echo esc_html( $categoria ); ?></span>
+						<?php if ( $cores['nome'] ) : ?>
+							<span class="evento-card__categoria"><?php echo esc_html( $cores['nome'] ); ?></span>
 						<?php endif; ?>
 
 						<div class="evento-card__body">

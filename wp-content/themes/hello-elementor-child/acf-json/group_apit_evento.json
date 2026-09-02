@@ -22,23 +22,26 @@
         },
         {
             "aria-label": "",
-            "instructions": "",
-            "required": 0,
+            "instructions": "Define o texto da etiqueta e as cores do cartão. Pode acrescentar uma categoria nova aqui mesmo — depois defina-lhe as cores em Eventos › Categorias.",
+            "required": 1,
             "conditional_logic": 0,
             "wrapper": {
                 "width": "50",
                 "class": "",
                 "id": ""
             },
-            "key": "field_evento_categoria",
+            "key": "field_evento_cat",
             "label": "Categoria",
-            "name": "apit_evento_categoria",
-            "type": "text",
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
+            "name": "apit_evento_cat",
+            "type": "taxonomy",
+            "taxonomy": "apit_categoria_evento",
+            "field_type": "select",
+            "allow_null": 0,
+            "add_term": 1,
+            "save_terms": 1,
+            "load_terms": 1,
+            "return_format": "id",
+            "multiple": 0
         },
         {
             "aria-label": "",
@@ -119,5 +122,5 @@
     "active": true,
     "description": "O título e o resumo do cartão vêm do título e do excerto do evento.",
     "show_in_rest": 0,
-    "modified": 1788310800
+    "modified": 1788314400
 }

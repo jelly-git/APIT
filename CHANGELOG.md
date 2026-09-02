@@ -13,8 +13,9 @@ A versão aqui registada corresponde ao campo `Version` de
 ### Por fazer
 - Substituir a aproximação em CSS do gradiente do hero pelo asset real do
   Figma (nó `9:19574`) — o download esgotou o limite de chamadas MCP do plano.
-- Confirmar as cores por categoria com o design (foram propostas a partir da
-  paleta da marca, por o Figma estar em limite de chamadas).
+- Confirmar as cores das categorias de notícias com o design (foram propostas
+  a partir da paleta da marca, por o Figma estar em limite de chamadas). As dos
+  eventos deixaram de estar em código: são campos na categoria.
 - Confirmar o responsivo da Home contra o Figma mobile (nó `66:2060`): as
   medidas foram inferidas dos mockups, por o Figma estar em limite de chamadas.
 - Confirmar as medidas da "Sobre a APIT" contra o Figma (nó `44:21610`): foram
@@ -35,6 +36,49 @@ A versão aqui registada corresponde ao campo `Version` de
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.21.0] - 2026-09-02
+
+### Adicionado
+- Taxonomia "Categorias de evento", em Eventos › Categorias. A categoria era
+  texto livre reescrito em cada evento, e a sua cor vivia num mapa em PHP — uma
+  categoria nova exigia um programador. Agora acrescenta-se no wp-admin, e o
+  próprio campo do evento permite criar uma sem sair do ecrã.
+- Dois color pickers por categoria: cor inicial e cor final do degradé. O
+  ângulo do degradé e a posição das paragens continuam iguais em todos os
+  cartões — só as duas cores mudam. A etiqueta sobre o cartão e a faixa do mês
+  no badge usam a cor inicial, esta última num tom 18% mais escuro.
+- As três categorias em uso foram criadas com as cores que já estavam em
+  código: Evento APIT `#2ec6b0`, Evento Internacional `#f41892` e Stand APIT
+  `#4a85c8`, todas a terminar no cinzento `#e9edf0` em que os cartões já
+  acabavam. Os cartões ficam visualmente iguais; a diferença é quem manda nas
+  cores.
+
+### Removido
+- Meta `apit_evento_categoria` e as três entradas de evento no mapa
+  `apit_categoria_cores()`, substituídas pela taxonomia. O mapa fica só com as
+  categorias de notícias, que continuam a usá-lo.
+- Suportes `editor` e `thumbnail` no tipo de conteúdo Evento: eram declarados e
+  nunca lidos, e sem página de evento não há onde um corpo de conteúdo
+  apareceria. O cartão usa o título e o excerto.
+- Regras CSS `.pill` e `.pill--categoria` — a primeira versão da etiqueta do
+  cartão, substituída por `.evento-card__categoria` e sem uso em template,
+  script ou dados do Elementor.
+- Filtro que sugeria as categorias com cor mapeada, sem sentido agora que a
+  escolha é um select de termos.
+
+### Alterado
+- Evento passa ao editor clássico (`show_in_rest => false`), como Equipa e
+  Órgãos Sociais: sem suporte de editor, o editor de blocos mostrava uma tela
+  vazia acima dos campos.
+- A caixa de taxonomia própria do WordPress está desligada (`meta_box_cb`), para
+  não haver dois controlos sobre o mesmo valor — o campo do ACF é o único.
+
+### Notas
+- O carrossel do calendário já mostrava 3 cartões em desktop e revelava os
+  restantes por arrasto ou setas, pelo que não foi alterado: cartão de 409px,
+  376px para deslizar com 4 eventos, e as setas desactivam-se nos extremos. Em
+  mobile mostra 1 cartão com o seguinte à vista.
 
 ## [0.20.3] - 2026-09-02
 

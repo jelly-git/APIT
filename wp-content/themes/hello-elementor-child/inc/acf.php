@@ -128,20 +128,8 @@ function apit_acf_opcoes_orgao( $campo ) {
 }
 add_filter( 'acf/load_field/name=apit_orgao_social_orgao', 'apit_acf_opcoes_orgao' );
 
-/**
- * Suggests the categories that already have a colour mapped, while leaving the
- * field free text — the value is printed on the card as typed, and the colour
- * is resolved from whatever is entered.
+/*
+ * The event category used to be free text, and this file carried a filter that
+ * listed the categories with a colour mapped in PHP. Both are gone: the
+ * category is a taxonomy term now, and its colours are two fields on the term.
  */
-function apit_acf_ajuda_categoria( $campo ) {
-	$categorias = implode( ', ', array_keys( apit_categoria_cores() ) );
-
-	$campo['instructions'] = sprintf(
-		/* translators: %s: comma-separated list of category slugs. */
-		__( 'Texto da etiqueta sobre o cartão. A cor do cartão vem desta categoria. Já têm cor atribuída: %s.', 'apit' ),
-		$categorias
-	);
-
-	return $campo;
-}
-add_filter( 'acf/load_field/name=apit_evento_categoria', 'apit_acf_ajuda_categoria' );

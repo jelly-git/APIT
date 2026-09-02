@@ -15,12 +15,11 @@ defined( 'ABSPATH' ) || exit;
  */
 function apit_categoria_cores() {
 	$cores = [
-		// Categories as they appear on the mockup cards.
-		'evento-apit'          => '#2ec6b0', // turquesa
-		'evento-internacional' => '#f41892', // magenta
-		'stand-apit'           => '#4a85c8', // azul
-
-		// News categories.
+		/*
+		 * News categories only. The event categories used to live here too,
+		 * until they became a taxonomy whose colours the client picks — see
+		 * apit_cores_evento() below.
+		 */
 		'institucional'        => '#f41892',
 		'mercados-feiras'      => '#4a85c8',
 		'mercados'             => '#4a85c8',
@@ -54,4 +53,61 @@ function apit_cor_categoria( $categoria ) {
  */
 function apit_cor_categoria_style( $categoria ) {
 	return '--apit-cat: ' . esc_attr( apit_cor_categoria( $categoria ) ) . ';';
+}
+
+/* -------------------------------------------------------------------------
+ * Event categories
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Default gradient stops, used when a category has no colours set and when an
+ * event has no category at all. The end stop is the grey every card ended on
+ * before the stops became editable.
+ */
+function apit_cores_evento_padrao() {
+	return [
+		'inicio' => '#f41892',
+		'fim'    => '#e9edf0',
+	];
+}
+
+/**
+ * The gradient stops and name for an event's category.
+ *
+ * The design keeps the gradient's geometry — its angle and where the stops sit
+ * — common to every card. Only the two colours change, which is why the
+ * category owns two colours and nothing more.
+ *
+ * An event takes one category; if more than one is somehow attached, the first
+ * wins rather than the card rendering something undefined.
+ */
+function apit_cores_evento( $post_id ) {
+	$padrao = apit_cores_evento_padrao();
+	$termos = get_the_terms( $post_id, 'apit_categoria_evento' );
+
+	if ( is_wp_error( $termos ) || ! $termos ) {
+		return $padrao + [ 'nome' => '' ];
+	}
+
+	$termo  = $termos[0];
+	$inicio = apit_campo( 'apit_cat_cor_inicio', 'term_' . $termo->term_id );
+	$fim    = apit_campo( 'apit_cat_cor_fim', 'term_' . $termo->term_id );
+
+	return [
+		'inicio' => $inicio ? $inicio : $padrao['inicio'],
+		'fim'    => $fim ? $fim : $padrao['fim'],
+		'nome'   => $termo->name,
+	];
+}
+
+/**
+ * The two stops as custom properties, so the card's gradient stays in CSS and
+ * only its colours come from PHP.
+ */
+function apit_estilo_evento( array $cores ) {
+	return sprintf(
+		'--apit-cat-inicio: %s; --apit-cat-fim: %s;',
+		$cores['inicio'],
+		$cores['fim']
+	);
 }

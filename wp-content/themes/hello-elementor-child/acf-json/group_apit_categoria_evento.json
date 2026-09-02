@@ -1,0 +1,61 @@
+{
+    "key": "group_apit_categoria_evento",
+    "title": "Cores da categoria",
+    "fields": [
+        {
+            "aria-label": "",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "key": "field_cat_cor_inicio",
+            "label": "Cor inicial do degradé",
+            "name": "apit_cat_cor_inicio",
+            "type": "color_picker",
+            "default_value": "#f41892",
+            "enable_opacity": 0,
+            "return_format": "string"
+        },
+        {
+            "aria-label": "",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "key": "field_cat_cor_fim",
+            "label": "Cor final do degradé",
+            "name": "apit_cat_cor_fim",
+            "type": "color_picker",
+            "default_value": "#e9edf0",
+            "enable_opacity": 0,
+            "return_format": "string"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "apit_categoria_evento"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "O ângulo do degradé e a posição das paragens são iguais em todos os cartões — só estas duas cores mudam. A etiqueta sobre o cartão usa um tom mais escuro da cor inicial.",
+    "show_in_rest": 0,
+    "modified": 1788314400
+}
