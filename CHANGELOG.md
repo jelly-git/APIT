@@ -37,6 +37,28 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.5] - 2026-09-02
+
+### Alterado
+- Breadcrumb e título do hero da "Sobre a APIT" passam a brancos, em desktop e
+  em mobile. O parágrafo mantém-se escuro, por indicação do cliente.
+- O degradé do hero deixa de lavar a banda de cima. O vídeo tem luminância
+  medida de 0,32 por trás do título, e qualquer lavado o aproxima do branco e
+  leva o texto com ele — com o lavado de 50% que este ficheiro tinha, o branco
+  caía para 1,6:1, ilegível. Agora o vídeo fica intacto até aos 42% da altura
+  do hero (24% em mobile, onde o bloco é mais alto) e clareia depressa a
+  seguir, para o parágrafo, o "Documentos Institucionais" e os botões, que
+  continuam escuros, ficarem sobre fundo claro.
+
+### Notas
+- Contrastes medidos: título branco 2,83:1 e breadcrumb branco 2,70:1 sobre o
+  vídeo; parágrafo escuro 10,3:1, título dos documentos 7,9:1 e botões 11,2:1.
+  Os escuros estão folgados. Os brancos ficam abaixo dos 4,5:1 das WCAG AA — e
+  o título, a 46px, fica a um cabelo dos 3:1 de texto grande. É a mesma
+  caracterização que o hero da Home já tem, por isso é coerente com o site,
+  mas não é acessível: um véu escuro a 45% na banda de cima levaria o branco a
+  4,65:1, ao custo de escurecer visivelmente o topo do hero.
+
 ## [0.21.4] - 2026-09-02
 
 ### Corrigido
