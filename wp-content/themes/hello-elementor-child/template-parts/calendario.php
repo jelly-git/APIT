@@ -45,15 +45,24 @@ if ( ! $eventos ) {
 						<?php endif; ?>
 
 						<div class="evento-card__body">
-							<h3 class="evento-card__title">
-								<a href="<?php echo esc_url( get_permalink( $evento ) ); ?>"><?php echo esc_html( get_the_title( $evento ) ); ?></a>
-							</h3>
+							<?php
+							/*
+							 * Plain text, not a link: there is no single-event page,
+							 * so linking the title led to an unstyled dead end. The
+							 * only way out of a card is the action button, and that
+							 * only appears when it has somewhere to go.
+							 */
+							?>
+							<h3 class="evento-card__title"><?php echo esc_html( get_the_title( $evento ) ); ?></h3>
 
 							<?php if ( $evento->post_excerpt ) : ?>
 								<p class="evento-card__meta"><?php echo esc_html( $evento->post_excerpt ); ?></p>
 							<?php endif; ?>
 
-							<?php if ( $local || $acao_texto ) : ?>
+							<?php // The button needs both a label and a destination; without a URL there is nowhere to send anyone. ?>
+							<?php $mostrar_acao = $acao_texto && $acao_url; ?>
+
+							<?php if ( $local || $mostrar_acao ) : ?>
 								<div class="evento-card__actions">
 									<?php if ( $local ) : ?>
 										<span class="evento-pill evento-pill--local">
@@ -62,8 +71,8 @@ if ( ! $eventos ) {
 										</span>
 									<?php endif; ?>
 
-									<?php if ( $acao_texto ) : ?>
-										<a class="evento-pill evento-pill--acao" href="<?php echo esc_url( $acao_url ?: get_permalink( $evento ) ); ?>">
+									<?php if ( $mostrar_acao ) : ?>
+										<a class="evento-pill evento-pill--acao" href="<?php echo esc_url( $acao_url ); ?>">
 											<?php echo esc_html( $acao_texto ); ?>
 										</a>
 									<?php endif; ?>

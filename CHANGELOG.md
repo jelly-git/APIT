@@ -36,6 +36,23 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.20.2] - 2026-09-02
+
+### Alterado
+- O título dos cartões do calendário deixa de ser um link. Não existe página
+  de evento, pelo que levava a uma página sem estilo.
+- O botão do cartão passa a exigir link, além do texto: caía no permalink do
+  evento quando o link estava vazio, o que dava no mesmo sítio.
+- Os eventos passam a tipo de conteúdo não público (`public`,
+  `publicly_queryable` e `has_archive` a `false`). Sem template de evento,
+  `/eventos/<slug>/` servia uma página sem estilo e indexável — agora devolve
+  404. Continuam editáveis no wp-admin e a alimentar o calendário da Home.
+
+### Por fazer, relacionado
+- Se vierem a existir páginas de evento, voltar a ligar `public` e
+  `has_archive` em `inc/post-types.php`, actualizar as permalinks e repor o
+  link no título do cartão.
+
 ## [0.20.1] - 2026-09-02
 
 ### Corrigido

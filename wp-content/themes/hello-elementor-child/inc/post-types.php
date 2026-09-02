@@ -17,12 +17,23 @@ function apit_register_evento_post_type() {
 			'edit_item'          => __( 'Editar evento', 'apit' ),
 			'not_found'          => __( 'Nenhum evento encontrado', 'apit' ),
 		],
-		'public'        => true,
-		'has_archive'   => true,
-		'rewrite'       => [ 'slug' => 'eventos' ],
-		'menu_icon'     => 'dashicons-calendar-alt',
-		'supports'      => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
-		'show_in_rest'  => true,
+		/*
+		 * Not public, because there is no single-event template: /eventos/<slug>/
+		 * would serve an unstyled page and let search engines index a dead end.
+		 * Events only ever render inside the home page's calendar, and the card
+		 * title is plain text for the same reason.
+		 *
+		 * If event pages are ever designed, turning public and has_archive back
+		 * on (and flushing the permalinks) is all this needs.
+		 */
+		'public'              => false,
+		'publicly_queryable'  => false,
+		'has_archive'         => false,
+		'exclude_from_search' => true,
+		'show_ui'             => true,
+		'menu_icon'           => 'dashicons-calendar-alt',
+		'supports'            => [ 'title', 'editor', 'thumbnail', 'excerpt' ],
+		'show_in_rest'        => true,
 	] );
 }
 add_action( 'init', 'apit_register_evento_post_type' );
