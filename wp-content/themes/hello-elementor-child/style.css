@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.21.0
+Version: 0.21.1
 */
 
 :root {
@@ -866,8 +866,16 @@ body.apit-menu-aberto {
 .calendario {
 	/* head row at 1190, cards end 1525, band ends 1576 */
 	padding-block: 47px 62px;
-	--apit-col: min(1300px, calc(100vw - 40px));
-	--apit-card: calc((var(--apit-col) - 2 * 37px) / 3);
+	/*
+	 * Three cards and their two gaps, measured as a share of the track itself
+	 * rather than of the viewport. 100vw counts the scrollbar and the track
+	 * does not, so a viewport-based width overshot by the scrollbar's 15px and
+	 * left the last visible card clipped.
+	 *
+	 * The percentage resolves where the value is used — as flex-basis on
+	 * .calendario__item, whose containing block is the track.
+	 */
+	--apit-card: calc((100% - 2 * 37px) / 3);
 	overflow: hidden;
 	background: #fff;
 }
@@ -939,10 +947,12 @@ body.apit-menu-aberto {
 	padding-block: 8px 10px;
 	margin-block: -8px -10px;
 	/*
-	 * Runs past the content column to the viewport edge so the next card
-	 * peeks, which is what signals the carousel.
+	 * No bleed past the content column. The track used to run to the viewport
+	 * edge so the next card peeked, but that showed a sliver of a fourth card
+	 * when the design calls for three — the arrows are the affordance instead.
+	 * Three cards plus their two gaps come to exactly the track width, so the fourth
+	 * starts past the right edge and is fully hidden.
 	 */
-	margin-right: calc(-1 * (100vw - 100%) / 2);
 	/* The arrows and dragging are the controls; the scrollbar is hidden. */
 	scrollbar-width: none;
 	cursor: grab;
@@ -1124,7 +1134,7 @@ body.apit-menu-aberto {
 
 @media (max-width: 1024px) {
 	.calendario {
-		--apit-card: calc((var(--apit-col) - 24px) / 2);
+		--apit-card: calc((100% - 24px) / 2);
 	}
 
 	.calendario__track {
@@ -1134,16 +1144,12 @@ body.apit-menu-aberto {
 
 @media (max-width: 768px) {
 	/*
-	 * No bleed here: it added scrollable width past the last card, leaving dead
-	 * space at the end of the carousel. The card stays narrower than the column
-	 * so the next one still peeks.
+	 * One card per view, kept 52px narrower than the column so the next one
+	 * peeks. At a single card the peek is what tells you the row scrolls,
+	 * which is why it stays here and not on the wider breakpoints.
 	 */
-	.calendario__track {
-		margin-right: 0;
-	}
-
 	.calendario {
-		--apit-card: calc(var(--apit-col) - 52px);
+		--apit-card: calc(100% - 52px);
 	}
 }
 

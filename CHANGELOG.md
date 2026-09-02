@@ -37,6 +37,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.1] - 2026-09-02
+
+### Corrigido
+- O carrossel do calendário mostrava uma fatia de 33px do quarto cartão. A
+  pista tinha uma margem negativa que a fazia sangrar até à margem do ecrã,
+  para o cartão seguinte espreitar — mas o design pede três, e as setas são
+  já a indicação de que há mais. Sem a sangria, os três cartões e os seus dois
+  intervalos enchem a pista exactamente e o quarto começa fora dela.
+- As larguras dos cartões passam a ser uma percentagem da própria pista em vez
+  de `100vw`. O `100vw` conta a barra de scroll e a pista não, o que em tablet
+  deixava o segundo cartão cortado 15px.
+
 ## [0.21.0] - 2026-09-02
 
 ### Adicionado
