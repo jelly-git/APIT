@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.21.3
+Version: 0.21.4
 */
 
 :root {
@@ -1514,14 +1514,38 @@ body.apit-menu-aberto {
 	padding-top: 64px;
 }
 
+/*
+ * A grid with named areas, because the four blocks regroup on a phone: the
+ * social icons pair with the Watch Portugal mark there, and with the email
+ * here. space-between with auto tracks and no column gap distributes the free
+ * space exactly as the flex row it replaces did, so the desktop x positions
+ * are unchanged.
+ */
 .apit-footer__main {
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+	grid-template-areas:
+		"brand links contact watch"
+		"brand links social  watch";
+	/*
+	 * The first row is sized to the address block and the second takes what is
+	 * left. Without this, the two rows share the extra height the APIT logo
+	 * needs as it spans them both, and the icons drift 16px below the email
+	 * instead of sitting right under it.
+	 */
+	grid-template-rows: max-content 1fr;
 	justify-content: space-between;
-	align-items: flex-start;
-	gap: 40px;
+	align-items: start;
+	column-gap: 0;
+	row-gap: 8px;
 	padding-bottom: 96px;
 }
+
+.apit-footer__brand   { grid-area: brand; }
+.apit-footer__links   { grid-area: links; }
+.apit-footer__contact { grid-area: contact; }
+.apit-footer__social  { grid-area: social; }
+.apit-footer__watch   { grid-area: watch; }
 
 .apit-footer__brand img {
 	display: block;
@@ -1555,11 +1579,11 @@ body.apit-menu-aberto {
 	color: #f41892 !important;
 }
 
+/* The 8px under the email is the grid's row-gap, not a margin here. */
 .apit-footer__social {
 	display: flex;
 	align-items: center;
 	gap: 10px;
-	margin-top: 8px;
 }
 
 .apit-footer__social a {
@@ -1615,8 +1639,58 @@ body.apit-menu-aberto {
 }
 
 @media (max-width: 768px) {
+	/*
+	 * Three rows, as in the mobile design: the APIT logo beside the menu, the
+	 * address across the full width, and the social icons beside the Watch
+	 * Portugal mark.
+	 */
 	.apit-footer__main {
+		grid-template-columns: auto auto;
+		grid-template-areas:
+			"brand   links"
+			"contact contact"
+			"social  watch";
+		/* Three content rows here, so the desktop sizing does not carry over. */
+		grid-template-rows: auto auto auto;
+		column-gap: 20px;
+		row-gap: 34px;
+	}
+
+	.apit-footer__brand img {
+		width: 180px;
+	}
+
+	/* Narrow enough to leave the icons their room on the same row. */
+	.apit-footer__watch img {
+		width: 170px;
+	}
+
+	.apit-footer__watch {
+		margin-top: 0;
+	}
+
+	.apit-footer__social {
+		align-self: center;
+	}
+
+	/* Copyright, then the links one per line, then the Jelly credit. */
+	.apit-footer__bottom {
 		flex-direction: column;
-		gap: 32px;
+		align-items: flex-start;
+		gap: 18px;
+	}
+
+	.apit-footer__legal {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.apit-footer__legal a {
+		margin: 0;
+	}
+
+	.apit-footer__sep {
+		display: none;
 	}
 }

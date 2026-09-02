@@ -37,6 +37,30 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.4] - 2026-09-02
+
+### Corrigido
+- Rodapé em mobile alinhado com o design: o logo da APIT fica ao lado do menu,
+  e os ícones das redes sociais ao lado do lockup Watch Portugal. Estava tudo
+  empilhado numa coluna.
+- Na barra inferior, os três links legais passam a um por linha, com os
+  separadores `/` escondidos, e o crédito Jelly abaixo — como no design.
+
+### Alterado
+- `.apit-footer__main` passa de flex a grelha com áreas nomeadas. É o que
+  permite ao bloco das redes sociais mudar de vizinho entre breakpoints: em
+  desktop fica sob o email, em mobile ao lado do Watch Portugal. Os ícones
+  saíram de dentro do bloco de contactos para o poderem fazer — um filho não
+  pode sair da linha do pai.
+- Os separadores `/` dos links legais passaram de texto a `<span>`, porque um
+  nó de texto não se consegue esconder por CSS.
+
+### Notas
+- A grelha usa `space-between` com pistas automáticas e sem intervalo de coluna,
+  o que distribui o espaço livre exactamente como a linha flex que substitui:
+  as posições em desktop ficaram iguais, com os ícones 4px abaixo do que
+  estavam e o lockup 1px à esquerda.
+
 ## [0.21.3] - 2026-09-02
 
 ### Alterado
