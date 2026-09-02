@@ -74,17 +74,34 @@ function apit_register_evento_meta() {
 add_action( 'init', 'apit_register_evento_meta' );
 
 /**
- * Upcoming events for the calendar, soonest first. Events without a date sort
- * last so a half-filled draft never pushes a dated event off the row.
+ * Upcoming events for the calendar, soonest first.
+ *
+ * Only from today onwards: an event still shows on the day it happens and
+ * drops off the morning after. Without this the query returned every event
+ * ever, and because it sorts ascending the ones already past came first.
+ *
+ * The date is stored as Ymd, which compares correctly as a number, and the
+ * cut-off uses current_time so it turns over at midnight in the site's
+ * timezone rather than UTC.
+ *
+ * An event with no date is excluded rather than sorted last — the date is a
+ * required field, so a missing one means the entry is not ready to show.
  */
 function apit_get_proximos_eventos( $limit = 4 ) {
 	return get_posts( [
 		'post_type'      => 'apit_evento',
 		'post_status'    => 'publish',
 		'posts_per_page' => $limit,
-		'meta_key'       => 'apit_evento_data',
-		'orderby'        => 'meta_value',
-		'order'          => 'ASC',
+		'meta_query'     => [
+			'data' => [
+				'key'     => 'apit_evento_data',
+				'value'   => current_time( 'Ymd' ),
+				'compare' => '>=',
+				'type'    => 'NUMERIC',
+			],
+		],
+		// Ordering by the clause name reuses the join the filter already made.
+		'orderby'        => [ 'data' => 'ASC' ],
 	] );
 }
 

@@ -36,6 +36,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.20.3] - 2026-09-02
+
+### Corrigido
+- Os eventos passados não saíam do calendário. A consulta não filtrava por
+  data e, por ordenar ascendente, os já realizados apareciam **primeiro** no
+  carrossel. Passa a devolver só de hoje em diante: o cartão mantém-se no dia
+  do evento e sai na manhã seguinte.
+- O corte usa `current_time`, pelo que muda à meia-noite no fuso do site e não
+  em UTC. Um evento sem data passa a ser excluído em vez de ordenado no fim —
+  a data é campo obrigatório, e sem ela a entrada não está pronta para
+  aparecer.
+
+### Notas
+- Sem eventos futuros a secção do calendário desaparece por inteiro, o que já
+  era o comportamento do template.
+- Eventos de vários dias não estão modelados: só existe uma data, pelo que um
+  evento de 3 dias sai no dia seguinte ao da data indicada. Se for preciso,
+  acrescentar uma data de fim e usá-la no corte.
+
 ## [0.20.2] - 2026-09-02
 
 ### Alterado
