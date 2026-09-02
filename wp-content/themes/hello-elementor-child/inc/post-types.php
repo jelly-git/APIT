@@ -76,3 +76,132 @@ function apit_get_proximos_eventos( $limit = 4 ) {
 		'order'          => 'ASC',
 	] );
 }
+
+/* -------------------------------------------------------------------------
+ * Sobre a APIT
+ * ---------------------------------------------------------------------- */
+
+/**
+ * "Equipa" (the Equipa APIT row) and "Órgão Social" (Direção, Assembleia
+ * Geral, Conselho Fiscal). Both are plain lists the client extends from
+ * wp-admin, which is what keeps the sections growing without touching code.
+ *
+ * Neither is public: they only ever render inside the Sobre a APIT page, so a
+ * single-post URL for "Susana Gato" would be a dead end for visitors and for
+ * search engines.
+ */
+function apit_register_sobre_post_types() {
+	register_post_type( 'apit_equipa', [
+		'labels' => [
+			'name'          => __( 'Equipa', 'apit' ),
+			'singular_name' => __( 'Membro da equipa', 'apit' ),
+			'add_new_item'  => __( 'Adicionar membro da equipa', 'apit' ),
+			'edit_item'     => __( 'Editar membro da equipa', 'apit' ),
+			'not_found'     => __( 'Nenhum membro encontrado', 'apit' ),
+		],
+		'public'              => false,
+		'show_ui'             => true,
+		'exclude_from_search' => true,
+		'menu_icon'           => 'dashicons-groups',
+		'supports'            => [ 'title', 'thumbnail', 'page-attributes' ],
+		'show_in_rest'        => true,
+	] );
+
+	register_post_type( 'apit_orgao_social', [
+		'labels' => [
+			'name'          => __( 'Órgãos Sociais', 'apit' ),
+			'singular_name' => __( 'Órgão social', 'apit' ),
+			'add_new_item'  => __( 'Adicionar membro de órgão social', 'apit' ),
+			'edit_item'     => __( 'Editar membro de órgão social', 'apit' ),
+			'not_found'     => __( 'Nenhum membro encontrado', 'apit' ),
+		],
+		'public'              => false,
+		'show_ui'             => true,
+		'exclude_from_search' => true,
+		'menu_icon'           => 'dashicons-awards',
+		'supports'            => [ 'title', 'page-attributes' ],
+		'show_in_rest'        => true,
+	] );
+}
+add_action( 'init', 'apit_register_sobre_post_types' );
+
+function apit_register_sobre_meta() {
+	$fields = [
+		'apit_equipa'       => [ 'apit_equipa_cargo' ],
+		'apit_orgao_social' => [ 'apit_orgao_social_orgao', 'apit_orgao_social_cargo' ],
+	];
+
+	foreach ( $fields as $post_type => $keys ) {
+		foreach ( $keys as $key ) {
+			register_post_meta( $post_type, $key, [
+				'type'              => 'string',
+				'single'            => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => 'sanitize_text_field',
+				'auth_callback'     => function () {
+					return current_user_can( 'edit_posts' );
+				},
+			] );
+		}
+	}
+}
+add_action( 'init', 'apit_register_sobre_meta' );
+
+/**
+ * The three órgãos, in the order the design lists them, each with the colour
+ * its name is set in. Filterable so the client can be given a fourth órgão
+ * without this file changing.
+ */
+function apit_get_orgaos() {
+	return apply_filters( 'apit_orgaos', [
+		'direcao'         => [
+			'nome' => __( 'Direção', 'apit' ),
+			'cor'  => '#4a85c8',
+		],
+		'assembleia-geral' => [
+			'nome' => __( 'Assembleia Geral', 'apit' ),
+			'cor'  => '#4a85c8',
+		],
+		'conselho-fiscal' => [
+			'nome' => __( 'Conselho Fiscal', 'apit' ),
+			'cor'  => '#f41892',
+		],
+	] );
+}
+
+/**
+ * Team members in the order set by the Order field in wp-admin.
+ */
+function apit_get_equipa( $limit = -1 ) {
+	return get_posts( [
+		'post_type'      => 'apit_equipa',
+		'post_status'    => 'publish',
+		'posts_per_page' => $limit,
+		'orderby'        => [ 'menu_order' => 'ASC', 'title' => 'ASC' ],
+	] );
+}
+
+/**
+ * Órgão members keyed by órgão slug, so the template can walk the órgãos in
+ * their designed order and skip any that has no members yet.
+ */
+function apit_get_membros_por_orgao() {
+	$membros = get_posts( [
+		'post_type'      => 'apit_orgao_social',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'orderby'        => [ 'menu_order' => 'ASC', 'title' => 'ASC' ],
+	] );
+
+	$agrupados = [];
+
+	foreach ( $membros as $membro ) {
+		$orgao = get_post_meta( $membro->ID, 'apit_orgao_social_orgao', true );
+
+		if ( $orgao ) {
+			$agrupados[ $orgao ][] = $membro;
+		}
+	}
+
+	return $agrupados;
+}

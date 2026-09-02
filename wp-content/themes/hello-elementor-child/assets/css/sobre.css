@@ -1,0 +1,834 @@
+/*
+ * Sobre a APIT — Figma node 44:21610
+ *
+ * Loaded only on this page (see apit_child_enqueue_assets), so it stays out of
+ * the way of the home page and keeps style.css from growing further.
+ *
+ * Measurements come from the design at 1920px wide with a 1340px content
+ * column, which is the same column the home page uses — so the type scale,
+ * buttons and container all carry over unchanged from style.css.
+ */
+
+/* -------------------------------------------------------------------------
+ * Hero
+ * ---------------------------------------------------------------------- */
+
+.apit-sobre-hero {
+	position: relative;
+	/*
+	 * !important because Elementor's own per-page container CSS is printed
+	 * after this file and resets the container to overflow: visible. Without
+	 * the clip, the wordmark would widen the document and give the whole page a
+	 * horizontal scrollbar.
+	 */
+	overflow: hidden !important;
+	/*
+	 * Same reason as the home hero: the media layer sits at z-index -1, and
+	 * without a stacking context of its own it would slide behind the page
+	 * background instead of behind the hero's own content.
+	 */
+	isolation: isolate;
+}
+
+/*
+ * Overrides the home hero's colour wash. Here the video shows through at the
+ * top and is washed out to the page background by the time it reaches the
+ * circles, which is what lets the dark heading stay readable over it.
+ */
+.apit-sobre-hero .apit-hero__media::after {
+	opacity: 1;
+	background-image: linear-gradient(
+		to bottom,
+		rgba(244, 249, 255, 0) 0%,
+		rgba(244, 249, 255, 0.35) 18%,
+		rgba(244, 249, 255, 0.78) 42%,
+		rgba(244, 249, 255, 0.97) 68%,
+		var(--apit-branco) 88%
+	);
+}
+
+.apit-sobre-hero > .elementor-element {
+	position: relative;
+	/* Above the wordmark layer (1) and the background media (-1). */
+	z-index: 2;
+	width: 100%;
+}
+
+/*
+ * The media and wordmark widgets are absolutely positioned layers. Elementor
+ * wraps every widget in a relatively positioned, in-flow box, which would
+ * become their containing block — and since that box is zero-height, an
+ * inset:0 child would collapse to nothing instead of covering the hero. Taking
+ * the wrappers out of positioning hands the job back to the hero itself.
+ *
+ * The 20px bottom margin Elementor puts on every widget but the last goes with
+ * them, since neither occupies space.
+ */
+.apit-sobre-hero > .elementor-element-sbmedia,
+.apit-sobre-hero > .elementor-element-sbdecor {
+	position: static;
+	margin: 0 !important;
+}
+
+/* The circles are in the flow; only the stray margin has to go. */
+.apit-sobre-hero > .elementor-element-sbpilar {
+	margin: 0 !important;
+}
+
+/*
+ * The two hero columns. 640 + 166 gutter puts the right column at the x the
+ * design has it, without needing a magic top offset.
+ */
+.apit-sobre-hero .sobre-hero__col--texto {
+	flex: 0 0 640px;
+	max-width: 640px;
+}
+
+.apit-sobre-hero .sobre-hero__col--docs {
+	flex: 1 1 auto;
+	padding-left: 166px;
+	/*
+	 * Bottom-aligned with the paragraph beside it, which is what puts the
+	 * "Documentos Institucionais" label at its designed height without a
+	 * hardcoded offset.
+	 */
+	justify-content: flex-end;
+}
+
+.apit-sobre-hero .sobre-hero__crumb,
+.apit-sobre-hero .sobre-hero__crumb p {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 12px;
+	font-weight: 500;
+	letter-spacing: 1.5px;
+	text-transform: uppercase;
+	color: rgba(27, 42, 51, 0.5);
+}
+
+.apit-sobre-hero .sobre-hero__crumb a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.apit-sobre-hero .sobre-hero__crumb a:hover {
+	color: var(--apit-magenta);
+}
+
+.apit-sobre-hero .sobre-hero__titulo .elementor-heading-title {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 46px;
+	font-weight: 400;
+	line-height: 1.3;
+	letter-spacing: -0.5px;
+	color: var(--apit-black);
+}
+
+.apit-sobre-hero .sobre-hero__texto,
+.apit-sobre-hero .sobre-hero__texto p {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.65;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+.apit-sobre-hero .sobre-hero__doc-titulo .elementor-heading-title {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 22px;
+	font-weight: 400;
+	line-height: 1.4;
+	color: var(--apit-black);
+}
+
+/*
+ * Dark outline buttons. The shared .btn--outline is white-on-colour for the
+ * home page hero; on this light hero it would be invisible.
+ */
+.btn--escuro,
+.btn.btn--escuro .elementor-button {
+	border-color: rgba(27, 42, 51, 0.45);
+	color: var(--apit-black);
+	fill: var(--apit-black);
+}
+
+.btn--escuro:hover,
+.btn.btn--escuro .elementor-button:hover {
+	border-color: var(--apit-black);
+	background-color: var(--apit-black);
+	color: var(--apit-branco);
+	fill: var(--apit-branco);
+}
+
+/* -------------------------------------------------------------------------
+ * "About Us" wordmark
+ * ---------------------------------------------------------------------- */
+
+.sobre-hero__decor {
+	position: absolute;
+	top: 250px;
+	right: 0;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	/* Both lines end flush against the right edge of the frame, as in the design. */
+	align-items: flex-end;
+	pointer-events: none;
+}
+
+/*
+ * Stand-in for Figma's "Scanline warp": the type is cut by a repeating
+ * horizontal stripe that thins out towards the left, so the letters break up
+ * into lines. The wave distortion in the original has no CSS equivalent — if
+ * it has to match exactly, export the word from Figma as a PNG instead.
+ */
+.sobre-hero__word {
+	display: block;
+	font-family: var(--apit-font);
+	/*
+	 * Sized off the one measurement the screenshot gives reliably: "About"
+	 * spans 897px of the 1920px frame, which puts the type at 280px there.
+	 * Scaling with the viewport rather than stepping at breakpoints keeps the
+	 * word the same share of the screen it has in the design — at a fixed size
+	 * it would swamp a 1440px screen and still be clipped on a phone.
+	 */
+	font-size: clamp(88px, 14.6vw, 280px);
+	font-weight: 700;
+	line-height: 0.82;
+	letter-spacing: -6px;
+	text-transform: uppercase;
+	color: #fff;
+	-webkit-mask-image:
+		repeating-linear-gradient(to bottom, #000 0 4px, rgba(0, 0, 0, 0.18) 4px 9px),
+		linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.6) 42%, #000 78%);
+	mask-image:
+		repeating-linear-gradient(to bottom, #000 0 4px, rgba(0, 0, 0, 0.18) 4px 9px),
+		linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.6) 42%, #000 78%);
+	-webkit-mask-composite: source-in;
+	mask-composite: intersect;
+}
+
+/* -------------------------------------------------------------------------
+ * Pilares (the four circles)
+ * ---------------------------------------------------------------------- */
+
+.sobre-pilares {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 60px;
+	max-width: 1340px;
+	margin: 96px auto 0;
+	padding: 0 20px;
+	list-style: none;
+}
+
+.sobre-pilares__item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+/*
+ * 140px rather than the 183px the design has: the client found the circles at
+ * full size visually noisy.
+ */
+.sobre-pilares__bola {
+	display: block;
+	width: 140px;
+	height: 140px;
+}
+
+.sobre-pilares__bola img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+.sobre-pilares__texto {
+	margin: 24px 0 0;
+	font-family: var(--apit-font);
+	font-size: 15px;
+	line-height: 1.5;
+	color: rgba(27, 42, 51, 0.8);
+}
+
+/* -------------------------------------------------------------------------
+ * Shared section label
+ * ---------------------------------------------------------------------- */
+
+.sobre-rotulo {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 13px;
+	font-weight: 500;
+	letter-spacing: 4px;
+	text-transform: uppercase;
+	color: rgba(27, 42, 51, 0.5);
+}
+
+.sobre-rotulo--centro {
+	text-align: center;
+}
+
+.sobre-rotulo--direita {
+	text-align: right;
+}
+
+/* -------------------------------------------------------------------------
+ * Equipa APIT
+ * ---------------------------------------------------------------------- */
+
+.sobre-equipa {
+	padding: 80px 0 110px;
+	background: #fff;
+}
+
+.sobre-equipa__lista {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 62px;
+	margin: 70px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.sobre-equipa__item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+/*
+ * The gradient sits on the circle, not the image, so a cut-out portrait gets
+ * its background from here. Where the gradient is already part of the upload,
+ * the image simply covers it.
+ */
+.sobre-equipa__retrato {
+	position: relative;
+	display: block;
+	width: 100%;
+	max-width: 280px;
+	aspect-ratio: 1;
+	overflow: hidden;
+	border-radius: 50%;
+}
+
+.sobre-equipa__retrato img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 50%;
+}
+
+.sobre-equipa__retrato--1 { background-image: linear-gradient(150deg, var(--apit-magenta), var(--apit-roxo)); }
+.sobre-equipa__retrato--2 { background-image: linear-gradient(150deg, var(--apit-turquesa), var(--apit-magenta)); }
+.sobre-equipa__retrato--3 { background-image: linear-gradient(150deg, var(--apit-azul), var(--apit-turquesa)); }
+.sobre-equipa__retrato--4 { background-image: linear-gradient(150deg, var(--apit-roxo), var(--apit-azul)); }
+
+.sobre-equipa__nome {
+	margin: 34px 0 0;
+	font-family: var(--apit-font);
+	font-size: 19px;
+	font-weight: 500;
+	line-height: 1.35;
+	color: var(--apit-black);
+}
+
+.sobre-equipa__cargo {
+	margin: 4px 0 0;
+	font-family: var(--apit-font);
+	font-size: 14px;
+	line-height: 1.45;
+	color: rgba(27, 42, 51, 0.6);
+}
+
+/* -------------------------------------------------------------------------
+ * Associados
+ * ---------------------------------------------------------------------- */
+
+.sobre-associados {
+	padding: 80px 0;
+	background: var(--apit-branco);
+}
+
+.sobre-associados__interior {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 40px;
+}
+
+.sobre-associados__descricao {
+	max-width: 640px;
+	margin: 18px 0 0;
+	font-family: var(--apit-font);
+	font-size: 16px;
+	line-height: 1.65;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+/* -------------------------------------------------------------------------
+ * Órgãos Sociais
+ * ---------------------------------------------------------------------- */
+
+.sobre-orgaos {
+	padding: 70px 0 110px;
+	background: #fff;
+}
+
+.sobre-orgaos__linha {
+	display: flex;
+	gap: 60px;
+	margin-top: 60px;
+	padding-top: 44px;
+	border-top: 1px solid var(--apit-cinza);
+}
+
+.sobre-orgaos__nome {
+	flex: 0 0 260px;
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 30px;
+	font-weight: 400;
+	line-height: 1.2;
+}
+
+/*
+ * auto-fit is what lets the client add a fourth or fifth member: the extra
+ * ones wrap onto a second line at the same column width instead of narrowing
+ * the whole row.
+ */
+.sobre-orgaos__membros {
+	flex: 1 1 auto;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	gap: 32px 40px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.sobre-orgaos__membro {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.sobre-orgaos__membro-nome {
+	font-family: var(--apit-font);
+	font-size: 17px;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--apit-black);
+}
+
+.sobre-orgaos__membro-cargo {
+	font-family: var(--apit-font);
+	font-size: 14px;
+	line-height: 1.45;
+	color: rgba(27, 42, 51, 0.6);
+}
+
+/* -------------------------------------------------------------------------
+ * Internacionalização
+ * ---------------------------------------------------------------------- */
+
+.sobre-inter {
+	position: relative;
+	padding: 120px 0;
+	overflow: hidden;
+	/*
+	 * Magenta through to turquoise, with the soft hotspots the design has
+	 * sitting over the linear base.
+	 */
+	background-image:
+		radial-gradient(80% 120% at 8% 20%, rgba(244, 24, 146, 0.9) 0%, rgba(244, 24, 146, 0) 60%),
+		radial-gradient(70% 110% at 62% 8%, rgba(128, 72, 166, 0.55) 0%, rgba(128, 72, 166, 0) 62%),
+		radial-gradient(90% 130% at 100% 85%, rgba(46, 198, 176, 0.95) 0%, rgba(46, 198, 176, 0) 65%),
+		linear-gradient(100deg, var(--apit-magenta) 0%, #e02a9c 30%, #a0459f 54%, #55b8bd 78%, var(--apit-turquesa) 100%);
+}
+
+.sobre-inter__interior {
+	display: flex;
+	align-items: center;
+	gap: 80px;
+}
+
+.sobre-inter__texto {
+	flex: 0 0 46%;
+	max-width: 46%;
+}
+
+.sobre-inter__titulo {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 40px;
+	font-weight: 400;
+	line-height: 1.2;
+	color: #fff;
+}
+
+.sobre-inter__descricao {
+	margin: 26px 0 38px;
+	font-family: var(--apit-font);
+	font-size: 16px;
+	line-height: 1.65;
+	color: rgba(255, 255, 255, 0.92);
+}
+
+.sobre-inter__marca {
+	flex: 1 1 auto;
+	text-align: center;
+}
+
+.sobre-inter__marca img {
+	width: 100%;
+	max-width: 480px;
+	height: auto;
+}
+
+/* -------------------------------------------------------------------------
+ * Contactos
+ * ---------------------------------------------------------------------- */
+
+.sobre-contactos {
+	background: var(--apit-branco);
+}
+
+/*
+ * The map bleeds to the right edge of the viewport, so the split is done on a
+ * full-width flex row and the text column carries its own half of the content
+ * container rather than sitting inside .apit-container.
+ */
+.sobre-contactos__interior {
+	display: flex;
+	align-items: stretch;
+	min-height: 510px;
+}
+
+.sobre-contactos__info {
+	flex: 0 0 50%;
+	display: flex;
+	padding: 110px 60px 110px 20px;
+	/*
+	 * The column is half the viewport, so "100% - 670px" is exactly the gap
+	 * between the viewport edge and the 1340px content column — which lines the
+	 * heading up with every other section instead of with the column's own
+	 * edge. max() keeps the 20px floor once the viewport is narrower than the
+	 * content column.
+	 */
+	padding-left: max(20px, calc(50% - 670px));
+}
+
+.sobre-contactos__info-interior {
+	display: flex;
+	gap: 90px;
+	width: 100%;
+}
+
+.sobre-contactos__titulo {
+	flex: 0 0 auto;
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 40px;
+	font-weight: 400;
+	line-height: 1.2;
+	color: var(--apit-black);
+}
+
+.sobre-contactos__dados {
+	flex: 1 1 auto;
+}
+
+.sobre-contactos__dados p {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 15px;
+	line-height: 1.6;
+	color: var(--apit-black);
+}
+
+.sobre-contactos__email {
+	color: var(--apit-magenta);
+	text-decoration: none;
+}
+
+.sobre-contactos__email:hover {
+	text-decoration: underline;
+}
+
+.sobre-contactos__telefone {
+	margin-top: 26px !important;
+	font-size: 20px !important;
+	font-weight: 600;
+}
+
+.sobre-contactos__telefone a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.sobre-contactos__nota {
+	margin-top: 4px !important;
+	font-size: 12px !important;
+	line-height: 1.4 !important;
+	color: rgba(27, 42, 51, 0.55) !important;
+}
+
+.sobre-contactos__social {
+	display: flex;
+	gap: 18px;
+	margin-top: 30px;
+	font-size: 16px;
+}
+
+.sobre-contactos__social a {
+	color: var(--apit-black);
+	text-decoration: none;
+}
+
+.sobre-contactos__social a:hover {
+	color: var(--apit-magenta);
+}
+
+.sobre-contactos__mapa {
+	flex: 1 1 50%;
+	position: relative;
+	min-height: 510px;
+}
+
+.sobre-contactos__mapa iframe {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+	display: block;
+}
+
+/* -------------------------------------------------------------------------
+ * Tablet
+ * ---------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+	.apit-sobre-hero .sobre-hero__col--texto,
+	.apit-sobre-hero .sobre-hero__col--docs {
+		flex: 1 1 100%;
+		max-width: 100%;
+		padding-left: 0;
+	}
+
+	.apit-sobre-hero .sobre-hero__titulo .elementor-heading-title {
+		font-size: 38px;
+	}
+
+	.sobre-hero__decor {
+		top: 180px;
+	}
+
+	.sobre-pilares {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 48px 40px;
+	}
+
+	.sobre-equipa__lista {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 48px 40px;
+	}
+
+	.sobre-orgaos__linha {
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	.sobre-orgaos__nome {
+		flex: 0 0 auto;
+	}
+
+	.sobre-inter__interior {
+		flex-direction: column;
+		gap: 50px;
+	}
+
+	.sobre-inter__texto {
+		flex: 1 1 auto;
+		max-width: 100%;
+	}
+
+	.sobre-contactos__interior {
+		flex-direction: column;
+		min-height: 0;
+	}
+
+	.sobre-contactos__info {
+		flex: 1 1 auto;
+		justify-content: flex-start;
+		padding: 70px 20px;
+	}
+
+	.sobre-contactos__info-interior {
+		max-width: 100%;
+		gap: 60px;
+	}
+
+	.sobre-contactos__mapa {
+		flex: 1 1 auto;
+		width: 100%;
+		min-height: 380px;
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * Mobile
+ * ---------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+	.apit-sobre-hero {
+		padding-top: 150px !important;
+		padding-bottom: 80px !important;
+	}
+
+	.apit-sobre-hero .sobre-hero__col--texto,
+	.apit-sobre-hero .sobre-hero__col--docs {
+		padding-inline: 20px;
+	}
+
+	.apit-sobre-hero .sobre-hero__col--docs {
+		margin-top: 44px;
+	}
+
+	.apit-sobre-hero .sobre-hero__titulo .elementor-heading-title {
+		font-size: 30px;
+		line-height: 1.25;
+	}
+
+	.apit-sobre-hero .sobre-hero__doc-titulo .elementor-heading-title {
+		font-size: 19px;
+	}
+
+	/*
+	 * The two document buttons stack rather than shrink, so neither label
+	 * wraps mid-word.
+	 */
+	.apit-sobre-hero .sobre-hero__doc-botoes {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	/*
+	 * With no room beside the text, the wordmark has to sit behind the heading.
+	 * Dropping it to a wash keeps it as the texture it is in the design instead
+	 * of a second piece of type competing with the title.
+	 */
+	.sobre-hero__decor {
+		top: 96px;
+		opacity: 0.45;
+	}
+
+	.sobre-hero__word {
+		letter-spacing: -2px;
+	}
+
+	.sobre-pilares {
+		gap: 40px 28px;
+		margin-top: 64px;
+	}
+
+	.sobre-pilares__bola {
+		width: 108px;
+		height: 108px;
+	}
+
+	.sobre-pilares__texto {
+		margin-top: 18px;
+		font-size: 14px;
+	}
+
+	.sobre-equipa {
+		padding: 60px 0 70px;
+	}
+
+	.sobre-equipa__lista {
+		gap: 40px 28px;
+		margin-top: 44px;
+	}
+
+	.sobre-equipa__nome {
+		margin-top: 22px;
+		font-size: 17px;
+	}
+
+	.sobre-associados {
+		padding: 56px 0;
+	}
+
+	.sobre-associados__interior {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 26px;
+	}
+
+	.sobre-orgaos {
+		padding: 56px 0 70px;
+	}
+
+	.sobre-rotulo--direita {
+		text-align: left;
+	}
+
+	.sobre-orgaos__linha {
+		margin-top: 40px;
+		padding-top: 32px;
+	}
+
+	.sobre-orgaos__nome {
+		font-size: 24px;
+	}
+
+	.sobre-orgaos__membros {
+		grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+		gap: 26px 24px;
+	}
+
+	.sobre-inter {
+		padding: 70px 0;
+	}
+
+	.sobre-inter__interior {
+		gap: 40px;
+	}
+
+	.sobre-inter__titulo {
+		font-size: 30px;
+	}
+
+	.sobre-inter__descricao {
+		margin: 20px 0 30px;
+	}
+
+	.sobre-inter__marca img {
+		max-width: 300px;
+	}
+
+	.sobre-contactos__info {
+		padding: 56px 20px;
+	}
+
+	.sobre-contactos__info-interior {
+		flex-direction: column;
+		gap: 30px;
+	}
+
+	.sobre-contactos__titulo {
+		font-size: 30px;
+	}
+
+	.sobre-contactos__mapa {
+		min-height: 300px;
+	}
+}

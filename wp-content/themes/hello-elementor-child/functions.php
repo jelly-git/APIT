@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.18.1' );
+define( 'APIT_CHILD_VERSION', '0.19.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -39,6 +39,20 @@ function apit_child_enqueue_assets() {
 		[ 'apit-omnes-font', 'font-awesome-free', 'hello-elementor', 'hello-elementor-theme-style', 'hello-elementor-header-footer' ],
 		APIT_CHILD_VERSION
 	);
+
+	/*
+	 * Page-specific stylesheets, loaded only where they apply. Keeping them out
+	 * of style.css means a change to one page cannot regress another, and the
+	 * home page does not pay for CSS it never uses.
+	 */
+	if ( is_page( 'sobre-apit' ) ) {
+		wp_enqueue_style(
+			'apit-sobre-style',
+			get_stylesheet_directory_uri() . '/assets/css/sobre.css',
+			[ 'apit-child-style' ],
+			APIT_CHILD_VERSION
+		);
+	}
 
 	wp_enqueue_script(
 		'apit-menu-mobile',

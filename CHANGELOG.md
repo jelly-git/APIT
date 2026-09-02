@@ -15,14 +15,71 @@ A versão aqui registada corresponde ao campo `Version` de
   Figma (nó `9:19574`) — o download esgotou o limite de chamadas MCP do plano.
 - Confirmar as cores por categoria com o design (foram propostas a partir da
   paleta da marca, por o Figma estar em limite de chamadas).
-- Página "Sobre a APIT" (nó `19:20294`), incluindo o seu responsivo. O da Home
-  está feito; falta o das páginas interiores.
 - Confirmar o responsivo da Home contra o Figma mobile (nó `66:2060`): as
   medidas foram inferidas dos mockups, por o Figma estar em limite de chamadas.
+- Confirmar as medidas da "Sobre a APIT" contra o Figma (nó `44:21610`): foram
+  derivadas do screenshot do cliente à escala do design (1920px), com o limite
+  de chamadas MCP ainda ativo.
+- Página "Área Reservada": ainda não é para criar (indicação do cliente). Os
+  botões que lhe apontam ficam em `#` até existir.
+- PDF do "Regulamento Interno": não está na multimédia, o botão aponta
+  entretanto para `/documentos/`.
+- Efeito "Scanline warp" do Figma: está aproximado em CSS no wordmark "About
+  Us" e usa o asset real (`bola4`) nos círculos. Se a aproximação do wordmark
+  não servir, exportar a palavra do Figma como PNG.
+- Secção "Associados" ficou só com rótulo e botão, por indicação do cliente
+  (sem os logos). Confirmar se quer um parágrafo de apoio — o shortcode já
+  aceita `texto="..."`.
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.19.0] - 2026-09-02
+
+### Adicionado
+- Página "Sobre a APIT" (nó `44:21610`), montada na página 6 já existente — a
+  mesma para onde o hero da Home aponta. Sete secções: hero com vídeo, círculos,
+  Equipa APIT, Associados, Órgãos Sociais, Internacionalização, Contactos e
+  newsletter.
+- Vídeo `sobre-a-apit.mp4` no fundo do hero, pelo shortcode
+  `[apit_hero_media]` já usado na Home, com o degradé desta página a lavar o
+  vídeo até ao fundo branco em vez do lavado colorido da Home.
+- Tipos de conteúdo `apit_equipa` (nome, cargo, fotografia) e
+  `apit_orgao_social` (nome, função, órgão), ambos privados: só aparecem dentro
+  desta página. Preenchidos com os 4 membros da equipa e os 8 dos órgãos
+  sociais.
+- Grelha dos órgãos sociais em `auto-fit`: um quarto ou quinto membro passa à
+  linha seguinte com a mesma largura de coluna, em vez de estreitar a linha.
+- Mapa interativo em Contactos, pelo endpoint de embed do Google construído a
+  partir do endereço. Sem chave de API e sem plugin, e como o URL é montado no
+  render sobrevive à mudança de domínio.
+- Shortcodes `apit_sobre_hero_decor`, `apit_sobre_pilares`, `apit_equipa`,
+  `apit_associados`, `apit_orgaos_sociais`, `apit_internacionalizacao` e
+  `apit_contactos`.
+- Variante `.btn--escuro` para botões de contorno sobre fundo claro: o
+  `.btn--outline` é branco, feito para o hero da Home, e aqui desaparecia.
+- CSS da página em `assets/css/sobre.css`, carregado só nesta página. Mantém o
+  `style.css` intocado e evita que uma alteração aqui faça regredir a Home.
+
+### Alterado
+- Notas do cliente aplicadas antes da construção, não como correção depois:
+  Associados sem os logos (fica o rótulo e o botão, o que anula o carrossel que
+  estava previsto), Órgãos Sociais sem logos (nome e função), e os quatro
+  círculos todos com o mesmo tratamento (o `bola4` da multimédia) a 140px em
+  vez dos 183px do design, por criarem ruído visual ao tamanho original.
+- O espaçamento vertical daquelas duas secções foi recomposto: o do design
+  tinha sido desenhado para o volume dos logos.
+
+### Corrigido
+- Camadas do hero: os wrappers dos widgets de shortcode passam a `position:
+  static`, senão o wrapper (relativo e de altura zero) tornava-se o bloco
+  contentor e o vídeo com `inset: 0` colapsava para 0px de altura.
+- Scroll horizontal de 55px: o `overflow: hidden` do hero era reposto a
+  `visible` pelo CSS por página do Elementor, impresso depois deste ficheiro.
+- Alinhamento do título de Contactos: a percentagem em `padding-left` resolve
+  contra a largura do pai, não do elemento, o que empurrava o bloco 712px para
+  a direita e esmagava o mapa.
 
 ## [0.18.1] - 2026-09-01
 

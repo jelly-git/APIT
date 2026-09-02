@@ -90,3 +90,113 @@ function apit_shortcode_hero_media( $atts ) {
 	return ob_get_clean();
 }
 add_shortcode( 'apit_hero_media', 'apit_shortcode_hero_media' );
+
+/* -------------------------------------------------------------------------
+ * Sobre a APIT
+ * ---------------------------------------------------------------------- */
+
+/**
+ * The oversized "ABOUT US" wordmark behind the hero. Decorative, so it is
+ * hidden from assistive technology — the real page title is the h1 beside it.
+ */
+function apit_shortcode_sobre_hero_decor() {
+	return apit_render_template_part( 'template-parts/sobre/hero-decor' );
+}
+add_shortcode( 'apit_sobre_hero_decor', 'apit_shortcode_sobre_hero_decor' );
+
+/**
+ * The four gradient circles under the hero text. The captions are attributes
+ * rather than hardcoded so they stay editable from the Elementor shortcode
+ * widget, and "bola" takes an attachment ID or a filename for the circle art.
+ */
+function apit_shortcode_sobre_pilares( $atts ) {
+	$atts = shortcode_atts(
+		[
+			'bola'    => '',
+			'texto_1' => '',
+			'texto_2' => '',
+			'texto_3' => '',
+			'texto_4' => '',
+		],
+		$atts,
+		'apit_sobre_pilares'
+	);
+
+	ob_start();
+	get_template_part( 'template-parts/sobre/pilares', null, $atts );
+	return ob_get_clean();
+}
+add_shortcode( 'apit_sobre_pilares', 'apit_shortcode_sobre_pilares' );
+
+function apit_shortcode_equipa() {
+	return apit_render_template_part( 'template-parts/sobre/equipa' );
+}
+add_shortcode( 'apit_equipa', 'apit_shortcode_equipa' );
+
+/**
+ * Associados. The client dropped the logo strip, so this is the label and the
+ * link through to the full list.
+ */
+function apit_shortcode_associados( $atts ) {
+	$atts = shortcode_atts(
+		[
+			'texto'  => '',
+			'botao'  => '',
+			'url'    => '',
+		],
+		$atts,
+		'apit_associados'
+	);
+
+	ob_start();
+	get_template_part( 'template-parts/sobre/associados', null, $atts );
+	return ob_get_clean();
+}
+add_shortcode( 'apit_associados', 'apit_shortcode_associados' );
+
+function apit_shortcode_orgaos_sociais() {
+	return apit_render_template_part( 'template-parts/sobre/orgaos-sociais' );
+}
+add_shortcode( 'apit_orgaos_sociais', 'apit_shortcode_orgaos_sociais' );
+
+function apit_shortcode_internacionalizacao( $atts ) {
+	$atts = shortcode_atts(
+		[
+			'titulo' => '',
+			'texto'  => '',
+			'botao'  => '',
+			'url'    => '',
+		],
+		$atts,
+		'apit_internacionalizacao'
+	);
+
+	ob_start();
+	get_template_part( 'template-parts/sobre/internacionalizacao', null, $atts );
+	return ob_get_clean();
+}
+add_shortcode( 'apit_internacionalizacao', 'apit_shortcode_internacionalizacao' );
+
+/**
+ * Contactos, with the address block beside a live Google Maps embed. The embed
+ * URL is built from the address itself and needs no API key, which keeps the
+ * map working on any domain the site moves to.
+ */
+function apit_shortcode_contactos( $atts ) {
+	$atts = shortcode_atts(
+		[
+			'titulo'   => '',
+			'endereco' => '',
+			'email'    => '',
+			'telefone' => '',
+			'nota'     => '',
+		],
+		$atts,
+		'apit_contactos'
+	);
+
+	ob_start();
+	get_template_part( 'template-parts/sobre/contactos', null, $atts );
+	return ob_get_clean();
+}
+add_shortcode( 'apit_contactos', 'apit_shortcode_contactos' );
