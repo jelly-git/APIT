@@ -1,0 +1,120 @@
+{
+    "key": "group_apit_evento",
+    "title": "Dados do evento",
+    "fields": [
+        {
+            "aria-label": "",
+            "instructions": "Alimenta o dia e o mês no canto do cartão, e a ordem do calendário.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "key": "field_evento_data",
+            "label": "Data",
+            "name": "apit_evento_data",
+            "type": "date_picker",
+            "display_format": "d/m/Y",
+            "return_format": "Y-m-d",
+            "first_day": 1
+        },
+        {
+            "aria-label": "",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "key": "field_evento_categoria",
+            "label": "Categoria",
+            "name": "apit_evento_categoria",
+            "type": "text",
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "aria-label": "",
+            "instructions": "Ex.: Lisboa.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "key": "field_evento_local",
+            "label": "Local",
+            "name": "apit_evento_local",
+            "type": "text",
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "aria-label": "",
+            "instructions": "Opcional. Ex.: Marcar reunião. Deixe vazio para o cartão não ter botão.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "key": "field_evento_acao_texto",
+            "label": "Texto do botão",
+            "name": "apit_evento_acao_texto",
+            "type": "text",
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "aria-label": "",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "key": "field_evento_acao_url",
+            "label": "Link do botão",
+            "name": "apit_evento_acao_url",
+            "type": "url",
+            "default_value": "",
+            "placeholder": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "apit_evento"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "O título e o resumo do cartão vêm do título e do excerto do evento.",
+    "show_in_rest": 0,
+    "modified": 1788307200
+}

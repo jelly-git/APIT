@@ -3,12 +3,13 @@
  * Internacionalização — the full-bleed gradient band carrying the Watch
  * Portugal lockup.
  *
- * @var array $args titulo, texto, botao, url
+ * Content comes from the ACF group on the page
+ * (Sobre a APIT › Internacionalização).
  */
-$titulo = trim( (string) ( $args['titulo'] ?? '' ) );
-$texto  = trim( (string) ( $args['texto'] ?? '' ) );
-$botao  = trim( (string) ( $args['botao'] ?? '' ) );
-$url    = trim( (string) ( $args['url'] ?? '' ) );
+$titulo = trim( (string) apit_campo( 'sobre_inter_titulo' ) );
+$texto  = trim( (string) apit_campo( 'sobre_inter_texto' ) );
+$botao  = trim( (string) apit_campo( 'sobre_inter_botao' ) );
+$url    = trim( (string) apit_campo( 'sobre_inter_url' ) );
 ?>
 <section class="sobre-inter">
 	<div class="apit-container sobre-inter__interior">

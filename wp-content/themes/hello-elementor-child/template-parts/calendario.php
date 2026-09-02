@@ -72,7 +72,8 @@ if ( ! $eventos ) {
 						</div>
 
 						<?php if ( $timestamp ) : ?>
-							<time class="evento-card__date" datetime="<?php echo esc_attr( $data ); ?>">
+							<?php // The meta is stored as Ymd, which is not a valid datetime attribute. ?>
+							<time class="evento-card__date" datetime="<?php echo esc_attr( $timestamp ? gmdate( 'Y-m-d', $timestamp ) : $data ); ?>">
 								<span class="evento-card__month"><?php echo esc_html( date_i18n( 'F', $timestamp ) ); ?></span>
 								<span class="evento-card__day"><?php echo esc_html( date_i18n( 'd', $timestamp ) ); ?></span>
 							</time>

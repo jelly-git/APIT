@@ -33,7 +33,7 @@ add_action( 'init', 'apit_register_evento_post_type' );
  */
 function apit_register_evento_meta() {
 	$fields = [
-		'apit_evento_data'       => 'string', // Y-m-d, drives the day/month badge
+		'apit_evento_data'       => 'string', // Ymd, the format ACF's date picker stores; drives the day/month badge
 		'apit_evento_categoria'  => 'string', // pill over the top edge, e.g. "Evento APIT"
 		'apit_evento_local'      => 'string', // location pill, e.g. "Lisboa"
 		'apit_evento_acao_texto' => 'string', // optional button label, e.g. "Marcar reunião"

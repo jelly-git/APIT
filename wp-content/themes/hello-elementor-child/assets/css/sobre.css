@@ -145,6 +145,18 @@
 }
 
 /*
+ * The document buttons used to be an Elementor row, which supplied the gap and
+ * the offset. They are now a repeater rendered by the theme, so the row itself
+ * has to be laid out here.
+ */
+.apit-sobre-hero .sobre-hero__doc-botoes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 21px;
+	margin-top: 24px;
+}
+
+/*
  * Dark outline buttons. The shared .btn--outline is white-on-colour for the
  * home page hero; on this light hero it would be invisible.
  */

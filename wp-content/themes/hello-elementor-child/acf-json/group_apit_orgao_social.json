@@ -1,0 +1,68 @@
+{
+    "key": "group_apit_orgao_social",
+    "title": "Órgão e função",
+    "fields": [
+        {
+            "aria-label": "",
+            "instructions": "Determina em que linha da secção Órgãos Sociais aparece.",
+            "required": 1,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "key": "field_orgao_orgao",
+            "label": "Órgão",
+            "name": "apit_orgao_social_orgao",
+            "type": "select",
+            "choices": [],
+            "default_value": "",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 1,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": ""
+        },
+        {
+            "aria-label": "",
+            "instructions": "Ex.: Presidente, Vice-Presidente, Secretário, Vogal.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "key": "field_orgao_cargo",
+            "label": "Função",
+            "name": "apit_orgao_social_cargo",
+            "type": "text",
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "apit_orgao_social"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "O nome da entidade vem do título.",
+    "show_in_rest": 0,
+    "modified": 1788307200
+}

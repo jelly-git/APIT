@@ -4,19 +4,23 @@
  *
  * The client asked for all four to use the same artwork (the last of the four
  * Figma options) at a smaller size, so one image is reused across the row
- * rather than a different gradient per column.
+ * rather than a different gradient per column — which is why the image is a
+ * single field and only the captions repeat.
  *
- * @var array $args bola, texto_1 … texto_4
+ * Content comes from the ACF group on the page (Sobre a APIT › Círculos).
  */
-$bola = apit_media_url( $args['bola'] ?? '', 'img' );
+$bola   = apit_media_url( (string) apit_campo( 'sobre_bola' ), 'img' );
+$linhas = apit_campo( 'sobre_pilares' );
 
 $textos = [];
 
-for ( $i = 1; $i <= 4; $i++ ) {
-	$texto = trim( (string) ( $args[ 'texto_' . $i ] ?? '' ) );
+if ( is_array( $linhas ) ) {
+	foreach ( $linhas as $linha ) {
+		$texto = trim( (string) ( $linha['texto'] ?? '' ) );
 
-	if ( '' !== $texto ) {
-		$textos[] = $texto;
+		if ( '' !== $texto ) {
+			$textos[] = $texto;
+		}
 	}
 }
 

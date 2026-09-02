@@ -6,11 +6,11 @@
  * the section is the label, an optional line of text and the link through to
  * the full list — which is why it reads as a slim band rather than a block.
  *
- * @var array $args texto, botao, url
+ * Content comes from the ACF group on the page (Sobre a APIT › Associados).
  */
-$texto = trim( (string) ( $args['texto'] ?? '' ) );
-$botao = trim( (string) ( $args['botao'] ?? '' ) );
-$url   = trim( (string) ( $args['url'] ?? '' ) );
+$texto = trim( (string) apit_campo( 'sobre_assoc_texto' ) );
+$botao = trim( (string) apit_campo( 'sobre_assoc_botao' ) );
+$url   = trim( (string) apit_campo( 'sobre_assoc_url' ) );
 ?>
 <section class="sobre-associados">
 	<div class="apit-container sobre-associados__interior">

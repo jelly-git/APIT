@@ -22,18 +22,62 @@ A versão aqui registada corresponde ao campo `Version` de
   de chamadas MCP ainda ativo.
 - Página "Área Reservada": ainda não é para criar (indicação do cliente). Os
   botões que lhe apontam ficam em `#` até existir.
-- PDF do "Regulamento Interno": não está na multimédia, o botão aponta
-  entretanto para `/documentos/`.
+- PDF do "Regulamento Interno": não está na multimédia. Carregar no campo
+  Ficheiro dessa linha, em Sobre a APIT › Documentos; até lá o botão aponta
+  para `/documentos/`.
 - Efeito "Scanline warp" do Figma: está aproximado em CSS no wordmark "About
   Us" e usa o asset real (`bola4`) nos círculos. Se a aproximação do wordmark
   não servir, exportar a palavra do Figma como PNG.
 - Secção "Associados" ficou só com rótulo e botão, por indicação do cliente
-  (sem os logos). Confirmar se quer um parágrafo de apoio — o shortcode já
-  aceita `texto="..."`.
+  (sem os logos). Confirmar se quer um parágrafo de apoio — o campo Texto, em
+  Sobre a APIT › Associados, está lá e vazio.
 - Ligar o formulário da newsletter a um serviço de envio (não tem handler).
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.20.0] - 2026-09-02
+
+### Adicionado
+- ACF Pro 6.8.9 como dependência, com os grupos de campos em Local JSON
+  (`acf-json/` dentro do tema). O ACF lê-os dessa pasta em cada pedido, pelo
+  que um campo criado no local passa a existir no servidor no mesmo commit que
+  o template que o usa. O plugin é licenciado, não vai no git, e por isso
+  continua a ser instalado à mão nas duas pontas — registado no `DEPLOY.md`.
+- Repetidor para os Documentos Institucionais: eram dois botões fixos no
+  Elementor, passam a linhas editáveis com etiqueta e ficheiro (ou link), pelo
+  que um terceiro documento não obriga a alterar código.
+- Quatro grupos de campos: Equipa (cargo), Órgãos Sociais (órgão e função),
+  Eventos (data, categoria, local, botão) e os conteúdos da Sobre a APIT
+  (documentos, círculos, associados, internacionalização, contactos), este
+  último organizado por separadores.
+- Helper `apit_campo()`, que devolve `null` se o ACF não estiver instalado: um
+  deploy sem o plugin faz as secções renderizarem vazias em vez de derrubar a
+  página com um erro fatal.
+
+### Alterado
+- Os textos das secções da Sobre a APIT saíram dos atributos de shortcode para
+  campos ACF na página. Editar uma frase deixa de obrigar a entrar no Elementor
+  e mexer numa linha que parece código. Os shortcodes ficaram sem atributos.
+- O endereço dos contactos é agora uma área de texto com linhas reais, o que
+  dispensa o `|` que marcava a mudança de linha por um atributo de shortcode
+  não poder conter um newline.
+- Os selects de Órgão e as sugestões de Categoria são preenchidos em tempo de
+  execução a partir de `apit_get_orgaos()` e `apit_categoria_cores()`, para não
+  haver uma segunda lista a divergir dentro do grupo de campos.
+- Datas dos eventos normalizadas para `Ymd`, o formato que o date picker do ACF
+  grava. Misturar com o `Y-m-d` anterior teria desordenado o calendário, que
+  ordena pelo valor cru do campo — `"2"` ordena depois de `"-"`.
+- As meta boxes escritas à mão na v0.19.1 foram removidas: o ACF passa a
+  desenhar os mesmos campos, e duas interfaces para o mesmo campo seriam
+  confusas e podiam entrar em conflito na gravação. As chaves de meta não
+  mudaram, pelo que o frontend não precisou de alterações. Equipa e Órgãos
+  Sociais ficam no editor clássico: continuam sem corpo de conteúdo, e o
+  editor de blocos mostraria uma tela vazia acima dos campos.
+
+### Corrigido
+- Atributo `datetime` dos cartões do calendário: com a data guardada em `Ymd`
+  ficava inválido para HTML, e passa a ser convertido para `Y-m-d` na saída.
 
 ## [0.19.1] - 2026-09-02
 

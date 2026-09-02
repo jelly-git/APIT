@@ -48,6 +48,7 @@ O tema filho não funciona sozinho. Instalar antes do primeiro deploy:
 | WordPress core | 7.1 |
 | Tema `hello-elementor` (pai) | 3.5.1 |
 | Plugin `elementor` | 4.2.4 |
+| Plugin `advanced-custom-fields-pro` | 6.8.9 |
 
 Por SSH, se houver WP-CLI no servidor:
 
@@ -58,6 +59,26 @@ wp plugin install elementor --version=4.2.4 --activate
 ```
 
 Sem WP-CLI, instalar pelo wp-admin em Aparência > Temas e Plugins > Adicionar.
+
+### ACF Pro é manual, nas duas pontas
+
+O ACF Pro é licenciado e por isso não está no repositório — o `.gitignore`
+exclui os plugins. Não vem no deploy: tem de ser instalado e actualizado à mão
+no servidor, e a versão tem de ser **a mesma** do local, senão os grupos de
+campos podem não sincronizar.
+
+Os **grupos de campos** já vêm no git, em
+`wp-content/themes/hello-elementor-child/acf-json/`. O ACF lê-os dessa pasta em
+cada pedido, pelo que um campo criado no local passa a existir no servidor no
+mesmo commit que o template que o usa.
+
+Por isso: **não criar nem editar grupos de campos no wp-admin do servidor.** O
+ACF gravaria o ficheiro na pasta do tema no servidor, e o deploy seguinte —
+que apaga e recopia o tema — levava a alteração consigo. Criar sempre no local
+e enviar por git.
+
+A chave de licença serve para as actualizações, não para funcionar. Se a
+licença tiver limite de sites, é o servidor que interessa activar.
 
 ---
 

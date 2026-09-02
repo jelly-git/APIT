@@ -8,18 +8,20 @@
  * would work too, but it sits inside a container and could not bleed to the
  * right edge the way the design has it.
  *
- * @var array $args titulo, endereco, email, telefone, nota
+ * Content comes from the ACF group on the page (Sobre a APIT › Contactos).
  */
-$titulo   = trim( (string) ( $args['titulo'] ?? '' ) );
-$endereco = trim( (string) ( $args['endereco'] ?? '' ) );
-$email    = trim( (string) ( $args['email'] ?? '' ) );
-$telefone = trim( (string) ( $args['telefone'] ?? '' ) );
-$nota     = trim( (string) ( $args['nota'] ?? '' ) );
+$titulo   = trim( (string) apit_campo( 'sobre_contactos_titulo' ) );
+$endereco = trim( (string) apit_campo( 'sobre_contactos_endereco' ) );
+$email    = trim( (string) apit_campo( 'sobre_contactos_email' ) );
+$telefone = trim( (string) apit_campo( 'sobre_contactos_telefone' ) );
+$nota     = trim( (string) apit_campo( 'sobre_contactos_nota' ) );
 
 $mapa = $endereco
 	? add_query_arg(
 		[
-			'q'      => rawurlencode( str_replace( '|', ', ', $endereco ) ),
+			// The address is a textarea, so its line breaks become the commas
+			// the query needs.
+			'q'      => rawurlencode( trim( preg_replace( '/\s*\R\s*/', ', ', $endereco ) ) ),
 			'z'      => 16,
 			'output' => 'embed',
 		],
@@ -37,8 +39,7 @@ $mapa = $endereco
 
 				<div class="sobre-contactos__dados">
 					<?php if ( $endereco ) : ?>
-						<?php // A shortcode attribute cannot hold a newline, so "|" marks the line break. ?>
-						<p class="sobre-contactos__endereco"><?php echo wp_kses( str_replace( '|', '<br>', esc_html( $endereco ) ), [ 'br' => [] ] ); ?></p>
+						<p class="sobre-contactos__endereco"><?php echo nl2br( esc_html( $endereco ) ); ?></p>
 					<?php endif; ?>
 
 					<?php if ( $email ) : ?>
