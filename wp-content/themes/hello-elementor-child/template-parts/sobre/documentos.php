@@ -15,6 +15,10 @@ $documentos = apit_campo( 'sobre_documentos' );
 if ( ! is_array( $documentos ) || ! $documentos ) {
 	return;
 }
+
+// One icon for every row. Falls back to a Font Awesome glyph when unset, so a
+// button is never left with a gap where its icon should be.
+$icone = apit_media_url( (string) apit_campo( 'sobre_doc_icone' ), 'img' );
 ?>
 <div class="sobre-hero__doc-botoes">
 	<?php foreach ( $documentos as $documento ) : ?>
@@ -36,7 +40,11 @@ if ( ! is_array( $documentos ) || ! $documentos ) {
 			<?php echo $e_anexo ? 'target="_blank" rel="noopener"' : ''; ?>
 		>
 			<?php echo esc_html( $etiqueta ); ?>
-			<i class="fa-regular fa-file-lines" aria-hidden="true"></i>
+			<?php if ( $icone ) : ?>
+				<img class="btn__icone" src="<?php echo esc_url( $icone ); ?>" alt="" width="20" height="20">
+			<?php else : ?>
+				<i class="fa-regular fa-file-lines" aria-hidden="true"></i>
+			<?php endif; ?>
 		</a>
 	<?php endforeach; ?>
 </div>

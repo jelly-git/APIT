@@ -37,6 +37,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.2] - 2026-09-02
+
+### Adicionado
+- Campo "Ícone dos botões" em Sobre a APIT › Documentos, ligado ao `icon-pdf`
+  da multimédia. Substitui o glifo do Font Awesome nos botões de documento; sem
+  imagem, o glifo volta, para nenhum botão ficar com um espaço vazio.
+- Campo "Imagem à direita" em Sobre a APIT › Internacionalização, ligado ao
+  `sobre-apit-whatch-portugal` da multimédia (589×262, contra os 356×158 da
+  cópia que vinha no tema). Sem imagem, usa a do tema.
+
+### Corrigido
+- O lockup Watch Portugal era esticado de 589 para 622px. O `max-width` tem a
+  especificidade de uma classe, igual à do `img { max-width: 100% }` do
+  Elementor, que é impresso depois deste ficheiro e ganhava o empate. Passa a
+  ter duas classes.
+- Removida a regra que limitava o lockup a 300px em mobile: nunca se aplicou,
+  pelo mesmo empate. Fica com a largura da coluna de conteúdo, que num
+  telefone lê melhor.
+
 ## [0.21.1] - 2026-09-02
 
 ### Corrigido

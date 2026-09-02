@@ -156,6 +156,14 @@
 	margin-top: 24px;
 }
 
+/* The uploaded icon stands in for a Font Awesome glyph, so it matches its size. */
+.btn__icone {
+	display: block;
+	width: 20px;
+	height: 20px;
+	object-fit: contain;
+}
+
 /*
  * Dark outline buttons. The shared .btn--outline is white-on-colour for the
  * home page hero; on this light hero it would be invisible.
@@ -498,9 +506,15 @@
 	text-align: center;
 }
 
-.sobre-inter__marca img {
+/*
+ * Capped at the artwork's own width so it is never upscaled. Two classes deep
+ * because Elementor's `img { max-width: 100% }` has the same specificity as a
+ * single class and is printed after this file — at equal weight it would win
+ * and stretch the lockup past its native size.
+ */
+.sobre-inter .sobre-inter__marca img {
 	width: 100%;
-	max-width: 480px;
+	max-width: 589px;
 	height: auto;
 }
 
@@ -823,9 +837,12 @@
 		margin: 20px 0 30px;
 	}
 
-	.sobre-inter__marca img {
-		max-width: 300px;
-	}
+	/*
+	 * No cap on the lockup here: it fills the content column, which on a phone
+	 * reads better than a 300px version floating in the middle. The rule that
+	 * used to cap it never applied anyway — same specificity clash with
+	 * Elementor's img rule as the desktop one above.
+	 */
 
 	.sobre-contactos__info {
 		padding: 56px 20px;
