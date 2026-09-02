@@ -36,6 +36,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.20.1] - 2026-09-02
+
+### Corrigido
+- Os campos de link recusavam caminhos internos. Estavam declarados com o tipo
+  `url` do ACF, que exige um esquema e rejeitava `/contactos/` — precisamente o
+  formato que se deve guardar, porque acompanha o site quando muda de domínio,
+  ao contrário de um endereço completo, que teria de ser substituído na base de
+  dados. Passam a texto com validação própria (`Link do botão` nos Eventos, nos
+  Associados, na Internacionalização e nos Documentos).
+- A validação que substitui a do ACF aceita caminhos internos (`/contactos/`),
+  âncoras (`#secao`), queries, endereços protocolo-relativos, endereços
+  completos, `mailto:` e `tel:`, e recusa o resto com uma mensagem que diz o
+  que fazer. Esquemas fora de `wp_allowed_protocols` — `javascript:`, `data:` —
+  continuam barrados, pelo que dispensar o tipo `url` não significou dispensar
+  validação.
+
 ## [0.20.0] - 2026-09-02
 
 ### Adicionado

@@ -78,7 +78,7 @@
                 },
                 {
                     "aria-label": "",
-                    "instructions": "Usado quando não há ficheiro.",
+                    "instructions": "Usado quando não há ficheiro. Aceita um caminho interno (/contactos/), um endereço completo (https://…), uma âncora (#secao), mailto: ou tel:.",
                     "required": 0,
                     "conditional_logic": 0,
                     "wrapper": {
@@ -89,9 +89,12 @@
                     "key": "field_sobre_doc_url",
                     "label": "Ou link",
                     "name": "url",
-                    "type": "url",
+                    "type": "text",
                     "default_value": "",
-                    "placeholder": ""
+                    "maxlength": "",
+                    "placeholder": "/pagina/",
+                    "prepend": "",
+                    "append": ""
                 }
             ]
         },
@@ -230,7 +233,7 @@
         },
         {
             "aria-label": "",
-            "instructions": "",
+            "instructions": "Aceita um caminho interno (/contactos/), um endereço completo (https://…), uma âncora (#secao), mailto: ou tel:.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -241,9 +244,12 @@
             "key": "field_sobre_assoc_url",
             "label": "Link do botão",
             "name": "sobre_assoc_url",
-            "type": "url",
+            "type": "text",
             "default_value": "",
-            "placeholder": ""
+            "maxlength": "",
+            "placeholder": "/pagina/",
+            "prepend": "",
+            "append": ""
         },
         {
             "aria-label": "",
@@ -324,7 +330,7 @@
         },
         {
             "aria-label": "",
-            "instructions": "A Área Reservada ainda não existe; deixe vazio até existir.",
+            "instructions": "A Área Reservada ainda não existe; deixe vazio até existir. Aceita um caminho interno (/contactos/), um endereço completo (https://…), uma âncora (#secao), mailto: ou tel:.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -335,9 +341,12 @@
             "key": "field_sobre_inter_url",
             "label": "Link do botão",
             "name": "sobre_inter_url",
-            "type": "url",
+            "type": "text",
             "default_value": "",
-            "placeholder": ""
+            "maxlength": "",
+            "placeholder": "/pagina/",
+            "prepend": "",
+            "append": ""
         },
         {
             "aria-label": "",
@@ -474,5 +483,5 @@
     "active": true,
     "description": "Os textos das secções desta página. As redes sociais estão em Personalizar › APIT — Redes Sociais.",
     "show_in_rest": 0,
-    "modified": 1788307200
+    "modified": 1788310800
 }

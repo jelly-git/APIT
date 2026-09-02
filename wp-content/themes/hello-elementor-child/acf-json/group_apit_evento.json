@@ -82,7 +82,7 @@
         },
         {
             "aria-label": "",
-            "instructions": "",
+            "instructions": "Aceita um caminho interno (/contactos/), um endereço completo (https://…), uma âncora (#secao), mailto: ou tel:.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -93,9 +93,12 @@
             "key": "field_evento_acao_url",
             "label": "Link do botão",
             "name": "apit_evento_acao_url",
-            "type": "url",
+            "type": "text",
             "default_value": "",
-            "placeholder": ""
+            "maxlength": "",
+            "placeholder": "/pagina/",
+            "prepend": "",
+            "append": ""
         }
     ],
     "location": [
@@ -116,5 +119,5 @@
     "active": true,
     "description": "O título e o resumo do cartão vêm do título e do excerto do evento.",
     "show_in_rest": 0,
-    "modified": 1788307200
+    "modified": 1788310800
 }
