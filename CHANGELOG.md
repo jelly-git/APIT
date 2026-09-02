@@ -37,6 +37,32 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.3] - 2026-09-02
+
+### Alterado
+- Mobile da "Sobre a APIT" alinhado com o Figma (nó `66:2508`):
+  - Equipa passa a um membro por linha, com o retrato a 280px. A dois por
+    linha o retrato caía para 161px, metade do que o design lhe dá — e o
+    retrato é o assunto da secção.
+  - Órgãos Sociais deixa de empilhar: o nome do órgão fica ao lado dos
+    membros, em coluna de 100px que deixa "Assembleia Geral" e "Conselho
+    Fiscal" a quebrar em duas linhas, como no design. Os membros ficam em
+    duas colunas de 106px à direita.
+  - O wordmark "About Us" fica escondido. Sem espaço ao lado do texto só
+    podia ficar atrás do título, e aí é um segundo bloco de tipografia a
+    competir com ele em vez da textura que é num ecrã largo.
+  - A faixa da Internacionalização termina no botão, sem o lockup Watch
+    Portugal — a mesma marca que o rodapé já carrega poucos ecrãs abaixo.
+- Em tablet o nome do órgão fica numa coluna de 180px, também ao lado dos
+  membros.
+
+### Notas
+- O Figma mobile é anterior às notas da cliente e mostra ainda os logos dos
+  associados, os logos dos órgãos sociais e os quatro círculos diferentes. Fica
+  o que a cliente decidiu, que é posterior.
+- Mantive o título "Contactos" em mobile, que no mockup não se distingue. Se
+  for para sair, é uma regra.
+
 ## [0.21.2] - 2026-09-02
 
 ### Adicionado
