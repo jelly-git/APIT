@@ -37,6 +37,38 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.6] - 2026-09-02
+
+### Alterado
+- Os botões dos Documentos Institucionais voltam a ser botões normais do
+  Elementor, como os do hero da Home: etiqueta e link editam-se na interface do
+  Elementor. Estavam num repetidor do ACF, que só é acessível pelo editor do
+  WordPress — não serve para quem edita a página no Elementor.
+- Acrescentar um documento passa a ser duplicar um botão no Elementor, em vez de
+  acrescentar uma linha ao repetidor.
+
+### Adicionado
+- `inc/elementor.php`, com duas coisas que o Elementor gratuito não sabe fazer:
+  - Um botão que aponte para um ficheiro na multimédia passa a **descarregá-lo**
+    em vez de o entregar ao visualizador de PDF do navegador. O campo de link do
+    Elementor gratuito não permite atributos, por isso o `download` é
+    acrescentado por filtro. Só toca em ficheiros dentro de `uploads` e com
+    extensão de documento: num link para outro site o navegador ignoraria o
+    atributo, e um link interno deve navegar.
+  - O ícone dos botões chega por custom property, porque o selector de ícones do
+    Elementor só oferece Font Awesome e o design usa um PNG carregado. Fica
+    editável no campo "Ícone dos botões".
+
+### Removido
+- Shortcode `apit_sobre_documentos`, o seu template-part e o repetidor
+  `sobre_documentos`, que os botões do Elementor substituem.
+
+### Corrigido
+- O empilhar dos botões em mobile só funcionava por acidente: o
+  `flex-direction: column` perdia para o CSS por página do Elementor, e estas
+  duas etiquetas apenas são largas demais para caber lado a lado. Uma etiqueta
+  curta teria posto os botões em linha sem ninguém perceber porquê.
+
 ## [0.21.5] - 2026-09-02
 
 ### Alterado

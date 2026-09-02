@@ -160,19 +160,34 @@
  * the offset. They are now a repeater rendered by the theme, so the row itself
  * has to be laid out here.
  */
+/*
+ * The container is an Elementor flex row and brings its own gap and top margin,
+ * so only the wrapping is added here — two long labels break onto a second line
+ * instead of overflowing.
+ */
 .apit-sobre-hero .sobre-hero__doc-botoes {
-	display: flex;
 	flex-wrap: wrap;
-	gap: 21px;
-	margin-top: 24px;
 }
 
-/* The uploaded icon stands in for a Font Awesome glyph, so it matches its size. */
-.btn__icone {
-	display: block;
+/*
+ * The document icon on the hero buttons.
+ *
+ * These are ordinary Elementor buttons, so their text and link stay editable in
+ * Elementor — but its icon picker only offers Font Awesome, and the design uses
+ * an uploaded PNG. The image arrives as a custom property printed by
+ * inc/elementor.php, and this pseudo-element wears it. The 16px gap comes from
+ * the shared .btn rule, so it sits off the label like a real icon would.
+ */
+.apit-sobre-hero .sobre-hero__doc-botoes .elementor-button::after {
+	content: "";
+	display: inline-block;
+	flex: 0 0 auto;
 	width: 20px;
 	height: 20px;
-	object-fit: contain;
+	background-image: var(--apit-icone-doc, none);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
 }
 
 /*
@@ -769,11 +784,16 @@
 	}
 
 	/*
-	 * The two document buttons stack rather than shrink, so neither label
-	 * wraps mid-word.
+	 * One button per line, so neither label wraps mid-word.
+	 *
+	 * !important because Elementor writes the container's flex-direction into
+	 * its own per-page stylesheet, at a higher specificity and after this file.
+	 * Without it these two happen to stack anyway — their labels are too wide to
+	 * sit side by side — but a shorter pair would not, and the stacking would
+	 * quietly stop working.
 	 */
 	.apit-sobre-hero .sobre-hero__doc-botoes {
-		flex-direction: column;
+		flex-direction: column !important;
 		align-items: flex-start;
 	}
 

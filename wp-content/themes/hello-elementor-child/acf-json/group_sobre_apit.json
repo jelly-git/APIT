@@ -21,7 +21,7 @@
         },
         {
             "aria-label": "",
-            "instructions": "Um só ícone, usado em todos os botões de documento.",
+            "instructions": "Um só ícone, usado em todos os botões de documento. Os botões em si — etiqueta e link — editam-se no Elementor, no hero da página.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -36,85 +36,6 @@
             "return_format": "id",
             "preview_size": "thumbnail",
             "library": "all"
-        },
-        {
-            "aria-label": "",
-            "instructions": "Cada linha é um botão no hero. Acrescente ou remova linhas à vontade.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "key": "field_sobre_documentos",
-            "label": "Documentos Institucionais",
-            "name": "sobre_documentos",
-            "type": "repeater",
-            "layout": "table",
-            "min": 0,
-            "max": 0,
-            "button_label": "Adicionar documento",
-            "sub_fields": [
-                {
-                    "aria-label": "",
-                    "instructions": "",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "30",
-                        "class": "",
-                        "id": ""
-                    },
-                    "key": "field_sobre_doc_etiqueta",
-                    "label": "Etiqueta",
-                    "name": "etiqueta",
-                    "type": "text",
-                    "default_value": "",
-                    "maxlength": "",
-                    "placeholder": "",
-                    "prepend": "",
-                    "append": ""
-                },
-                {
-                    "aria-label": "",
-                    "instructions": "PDF na multimédia. Tem prioridade sobre o link.",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "35",
-                        "class": "",
-                        "id": ""
-                    },
-                    "key": "field_sobre_doc_ficheiro",
-                    "label": "Ficheiro",
-                    "name": "ficheiro",
-                    "type": "file",
-                    "return_format": "array",
-                    "library": "all",
-                    "mime_types": ""
-                },
-                {
-                    "aria-label": "",
-                    "instructions": "Usado quando não há ficheiro. Aceita um caminho interno (/contactos/), um endereço completo (https://…), uma âncora (#secao), mailto: ou tel:.",
-                    "required": 0,
-                    "conditional_logic": 0,
-                    "wrapper": {
-                        "width": "35",
-                        "class": "",
-                        "id": ""
-                    },
-                    "key": "field_sobre_doc_url",
-                    "label": "Ou link",
-                    "name": "url",
-                    "type": "text",
-                    "default_value": "",
-                    "maxlength": "",
-                    "placeholder": "/pagina/",
-                    "prepend": "",
-                    "append": ""
-                }
-            ]
         },
         {
             "aria-label": "",
@@ -519,5 +440,5 @@
     "active": true,
     "description": "Os textos das secções desta página. As redes sociais estão em Personalizar › APIT — Redes Sociais.",
     "show_in_rest": 0,
-    "modified": 1788318000
+    "modified": 1788321600
 }

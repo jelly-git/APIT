@@ -115,11 +115,6 @@ function apit_shortcode_sobre_pilares() {
 }
 add_shortcode( 'apit_sobre_pilares', 'apit_shortcode_sobre_pilares' );
 
-function apit_shortcode_sobre_documentos() {
-	return apit_render_template_part( 'template-parts/sobre/documentos' );
-}
-add_shortcode( 'apit_sobre_documentos', 'apit_shortcode_sobre_documentos' );
-
 function apit_shortcode_equipa() {
 	return apit_render_template_part( 'template-parts/sobre/equipa' );
 }
