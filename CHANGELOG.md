@@ -37,6 +37,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.9] - 2026-09-03
+
+### Corrigido
+- O título "Subscrever APIT News" fica centrado verticalmente com o formulário
+  em desktop. Estava alinhado ao topo (`align-items: start`), o que o punha ao
+  nível do primeiro campo em vez do meio do bloco.
+- Removido o deslocamento de 7px no topo do formulário. Existia para começar os
+  campos ligeiramente abaixo do título enquanto os dois estavam alinhados ao
+  topo; com o título centrado, só puxava a linha 7px para fora do centro.
+
+### Notas
+- Abaixo de 1024px a grelha é de uma coluna e cada item é a sua própria linha,
+  onde `align-items` não tem efeito — o empilhado em mobile fica igual.
+- A Home perde 7px de altura (2986 → 2979) por causa do deslocamento removido.
+
 ## [0.21.8] - 2026-09-03
 
 ### Corrigido
