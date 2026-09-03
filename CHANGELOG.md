@@ -37,6 +37,28 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.8] - 2026-09-03
+
+### Corrigido
+- Os Órgãos Sociais passam a ter sempre três colunas, quaisquer que sejam os
+  membros da linha. O `auto-fit` colapsava uma linha de dois membros em duas
+  colunas largas, e o segundo deixava de alinhar com o membro acima — o
+  "Creart" caía a 918px em vez dos 669px do "Fremantle Portugal". Com três
+  colunas fixas a terceira célula fica vazia, e um quarto membro continua a
+  passar à linha seguinte com a mesma largura.
+- Cor da "Direção" corrigida de azul para o roxo da marca (`#8048a6`).
+  "Assembleia Geral" fica no azul e "Conselho Fiscal" no magenta, como estavam.
+- A coluna do nome do órgão passa de 260px a 180px, o que quebra "Assembleia
+  Geral" e "Conselho Fiscal" em duas linhas — como no design — e deixa
+  "Direção" numa só.
+
+### Notas
+- Em mobile as colunas são duas, também fixas: três deixariam cada membro com
+  cerca de 76px, largura em que nenhum nome de empresa cabe.
+- As três cores vivem em `apit_get_orgaos()`, em `inc/post-types.php`, e o mapa
+  é filtrável. O roxo foi lido do mockup: se o valor exacto for outro, é uma
+  linha.
+
 ## [0.21.7] - 2026-09-03
 
 ### Alterado

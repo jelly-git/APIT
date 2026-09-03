@@ -156,11 +156,6 @@
 }
 
 /*
- * The document buttons used to be an Elementor row, which supplied the gap and
- * the offset. They are now a repeater rendered by the theme, so the row itself
- * has to be laid out here.
- */
-/*
  * The container is an Elementor flex row and brings its own gap and top margin,
  * so only the wrapping is added here — two long labels break onto a second line
  * instead of overflowing.
@@ -449,8 +444,12 @@
 	border-top: 1px solid var(--apit-cinza);
 }
 
+/*
+ * 180px, narrow enough that "Assembleia Geral" and "Conselho Fiscal" break
+ * onto two lines as they do in the design, while "Direção" stays on one.
+ */
 .sobre-orgaos__nome {
-	flex: 0 0 260px;
+	flex: 0 0 180px;
 	margin: 0;
 	font-family: var(--apit-font);
 	font-size: 30px;
@@ -459,14 +458,18 @@
 }
 
 /*
- * auto-fit is what lets the client add a fourth or fifth member: the extra
- * ones wrap onto a second line at the same column width instead of narrowing
- * the whole row.
+ * Always three columns, whatever the row holds.
+ *
+ * auto-fit was wrong here: with two members it collapsed the row to two wide
+ * columns, so the second one no longer lined up with the member above it. Three
+ * fixed columns keep every órgão on the same grid, leave the third cell empty
+ * when there are only two, and still let a fourth member wrap onto a second
+ * line at the same width — which is what the client asked for.
  */
 .sobre-orgaos__membros {
 	flex: 1 1 auto;
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+	grid-template-columns: repeat(3, 1fr);
 	gap: 32px 40px;
 	margin: 0;
 	padding: 0;
@@ -716,10 +719,6 @@
 		gap: 40px;
 	}
 
-	.sobre-orgaos__nome {
-		flex: 0 0 180px;
-	}
-
 	.sobre-inter__interior {
 		flex-direction: column;
 		gap: 50px;
@@ -885,8 +884,12 @@
 		font-size: 21px;
 	}
 
+	/*
+	 * Two columns on a phone, also fixed: three would leave each member about
+	 * 76px wide, which no company name survives.
+	 */
 	.sobre-orgaos__membros {
-		grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+		grid-template-columns: repeat(2, 1fr);
 		gap: 22px 18px;
 	}
 

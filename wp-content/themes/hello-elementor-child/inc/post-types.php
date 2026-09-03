@@ -228,7 +228,7 @@ function apit_get_orgaos() {
 	return apply_filters( 'apit_orgaos', [
 		'direcao'         => [
 			'nome' => __( 'Direção', 'apit' ),
-			'cor'  => '#4a85c8',
+			'cor'  => '#8048a6',
 		],
 		'assembleia-geral' => [
 			'nome' => __( 'Assembleia Geral', 'apit' ),
