@@ -37,6 +37,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.13] - 2026-09-03
+
+### Alterado
+- Os campos da newsletter passam a `border-width: 0 0 2px 0` e
+  `border-radius: 0`, por indicação do cliente: sublinhado de 2px em baixo e
+  nada nos outros três lados, com cantos rectos. A borda ténue que existia à
+  volta deixou de fazer sentido e saiu.
+
 ## [0.21.12] - 2026-09-03
 
 ### Corrigido
