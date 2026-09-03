@@ -37,6 +37,20 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.2] - 2026-09-03
+
+### Alterado
+- `max-width` do título da newsletter fixado em **300px** em desktop, por
+  indicação do cliente.
+- Os breakpoints abaixo de 1024px passam a declarar `11ch`. Antes o valor em
+  `ch` estava só na regra base e servia todos os tamanhos; com 300px fixos ali,
+  os tamanhos menores precisam do seu próprio valor — 300px seriam largos
+  demais para o tipo a 36px e a 30px, e o título quebraria no lugar errado.
+
+### Notas
+- Confirmado em quatro larguras, todas com o título em duas linhas: 1425px
+  (fonte 48px, caixa 300px), 985px (36px, 247px), 390px e 320px (30px, 206px).
+
 ## [0.22.1] - 2026-09-03
 
 ### Alterado

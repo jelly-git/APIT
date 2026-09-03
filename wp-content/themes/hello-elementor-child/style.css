@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.1
+Version: 0.22.2
 */
 
 :root {
@@ -1389,11 +1389,11 @@ body.apit-menu-aberto {
 	line-height: 1.1;
 	/*
 	 * Wide enough for "Subscrever" and too narrow for "Subscrever APIT", so the
-	 * line always breaks in the same place. In ch rather than px because the
-	 * unit scales with the font size: the same rule holds at 48px and at 30px,
-	 * and no breakpoint has to restate it.
+	 * line always breaks in the same place. A fixed 300px here, where the type
+	 * is 48px; the smaller breakpoints below switch to ch, which scales with the
+	 * font and keeps the break in the same place without a value per size.
 	 */
-	max-width: 11ch;
+	max-width: 300px;
 	color: #fff;
 }
 
@@ -1573,8 +1573,14 @@ body.apit-menu-aberto {
 		gap: 32px;
 	}
 
+	/*
+	 * From here down the box is measured in ch, so it follows the type: 300px
+	 * would be wide enough for "Subscrever APIT" at 36px or 30px and the title
+	 * would break in the wrong place.
+	 */
 	.newsletter__title {
 		font-size: 36px;
+		max-width: 11ch;
 	}
 }
 
