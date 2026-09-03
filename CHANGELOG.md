@@ -37,6 +37,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.14] - 2026-09-03
+
+### Alterado
+- Removida a caixa de foco dos campos da newsletter. O contorno magenta
+  disparava em `:focus`, portanto aparecia a cada clique — e uma moldura em
+  volta de um campo que é só sublinhado lia-se como estado de erro.
+- Em vez dela, o próprio sublinhado passa a magenta quando o campo está
+  selecionado, na mesma cor do botão Subscrever. Serve rato e teclado, e não
+  desenha nada em volta do campo.
+
+### Notas
+- O foco não pôde ser exercitado no ambiente de verificação: a pane do
+  navegador não detém o foco da janela (`document.hasFocus()` é `false`), pelo
+  que `:focus` nunca corresponde ali. Confirmado o que era possível — a regra
+  existe na folha com `outline-style: none` e `border-bottom-color:
+  var(--apit-magenta)`, tem especificidade acima da regra base, e a variável
+  resolve para `#f41892` no próprio input. Falta confirmar no navegador.
+- Os outros dois estados de foco do tema (setas do carrossel e caixa de
+  aceitação) já usavam `:focus-visible`, que nunca corresponde a um clique de
+  rato, e por isso não foram tocados.
+
 ## [0.21.13] - 2026-09-03
 
 ### Alterado

@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.21.13
+Version: 0.21.14
 */
 
 :root {
@@ -1442,9 +1442,15 @@ body.apit-menu-aberto {
 	color: rgba(244, 249, 255, 0.65);
 }
 
+/*
+ * No focus box: a magenta rectangle around a field that is only underlined read
+ * as an error state. The underline takes over the job, in the magenta of the
+ * submit button — so the active field is still obvious, by mouse or by
+ * keyboard, without anything being drawn around it.
+ */
 .newsletter__field input:focus {
-	outline: 2px solid var(--apit-magenta);
-	outline-offset: 1px;
+	outline: none;
+	border-bottom-color: var(--apit-magenta);
 }
 
 .newsletter__consent {
