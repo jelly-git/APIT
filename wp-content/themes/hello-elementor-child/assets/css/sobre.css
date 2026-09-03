@@ -380,11 +380,6 @@
 	border-radius: 50%;
 }
 
-.sobre-equipa__retrato--1 { background-image: linear-gradient(150deg, var(--apit-magenta), var(--apit-roxo)); }
-.sobre-equipa__retrato--2 { background-image: linear-gradient(150deg, var(--apit-turquesa), var(--apit-magenta)); }
-.sobre-equipa__retrato--3 { background-image: linear-gradient(150deg, var(--apit-azul), var(--apit-turquesa)); }
-.sobre-equipa__retrato--4 { background-image: linear-gradient(150deg, var(--apit-roxo), var(--apit-azul)); }
-
 .sobre-equipa__nome {
 	margin: 34px 0 0;
 	font-family: var(--apit-font);

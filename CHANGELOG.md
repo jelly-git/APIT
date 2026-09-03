@@ -37,6 +37,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.11] - 2026-09-03
+
+Só documentação — o tema não mudou.
+
+### Corrigido
+- O procedimento de deploy não avisava que **`Deploy HEAD Commit` sozinho não
+  traz nada de novo**. O cPanel publica o HEAD do clone que está no servidor,
+  não o do GitHub: sem `Update from Remote` primeiro, o deploy repõe a versão
+  antiga e o *Commit Date* mostra a data do clone. Foi o que aconteceu na
+  primeira subida — o servidor ficou com o tema v0.17.0, de 1 de setembro,
+  enquanto a base de dados era de hoje, e os shortcodes da Sobre a APIT
+  apareciam em texto cru por não existirem nessa versão. A ordem, agora
+  explícita nos dois documentos: **Update from Remote → Deploy HEAD Commit**.
+- Acrescentado como confirmar que versão está no ar (`style.css?ver=`) e o
+  sintoma que denuncia o problema (nomes de shortcode em texto cru).
+
 ## [0.21.10] - 2026-09-03
 
 Só documentação — o tema não mudou.

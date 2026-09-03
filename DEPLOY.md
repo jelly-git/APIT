@@ -174,7 +174,21 @@ no tema e vão pelo git, mas as imagens destacadas das notícias não.
 
 ---
 
-## 5. Deploys seguintes
+## 5. Deploys — sempre em dois passos
+
+> **`Deploy HEAD Commit` sozinho não traz nada de novo.** O cPanel publica o
+> HEAD do **clone que está no servidor**, não o do GitHub. Sem actualizar esse
+> clone primeiro, o deploy repõe fielmente a versão antiga, e o *Commit Date*
+> mostra a data do clone em vez da de hoje.
+>
+> Ordem correcta, tanto na primeira subida como nas seguintes:
+> **Update from Remote** → **Deploy HEAD Commit**.
+
+Para confirmar que versão está no ar, ver o código-fonte do site: a folha de
+estilos do tema traz a versão no endereço, `style.css?ver=0.21.10`. Outro sinal,
+mais visível: nomes de shortcode em texto cru na página (`[apit_equipa]`,
+`[apit_contactos]`) significam que o tema no servidor é anterior ao commit que
+os criou.
 
 Depois do primeiro arranque, cada actualização é:
 
