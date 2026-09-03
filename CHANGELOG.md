@@ -37,6 +37,28 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.7] - 2026-09-03
+
+### Alterado
+- O ícone dos botões de documento passa a usar o SVG carregado na multimédia,
+  em vez do PNG.
+- O ícone toma agora a cor do texto do botão, incluindo no hover. O SVG deixa
+  de ser imagem de fundo e passa a **máscara** pintada com `currentColor`: o
+  ícone segue a cor da etiqueta sozinho, sem uma segunda regra a manter em
+  sincronia. Como imagem de fundo era impossível — o SVG traz o `#1B2A33`
+  embutido no path, e sobre o fundo escuro do hover desaparecia.
+
+### Notas
+- A máscara tem como recurso um degradé transparente, que não deixa passar
+  nada. Sem ele, um campo de ícone vazio desligava a máscara e pintava um
+  quadrado sólido de 20px.
+- O PNG `icon-pdf` fica sem uso na multimédia; não foi apagado.
+- O WordPress bloqueia o carregamento de SVG por omissão, e este ficheiro não
+  passou pela lista de tipos permitidos. Se for preciso carregar mais SVGs pelo
+  wp-admin, é preciso permitir o tipo — de preferência com sanitização, porque
+  um SVG pode transportar script. Este foi verificado: não tem `<script>`,
+  atributos `on*` nem referências externas.
+
 ## [0.21.6] - 2026-09-02
 
 ### Alterado

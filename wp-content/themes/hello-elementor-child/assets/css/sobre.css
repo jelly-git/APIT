@@ -174,9 +174,18 @@
  *
  * These are ordinary Elementor buttons, so their text and link stay editable in
  * Elementor — but its icon picker only offers Font Awesome, and the design uses
- * an uploaded PNG. The image arrives as a custom property printed by
+ * an uploaded file. The image arrives as a custom property printed by
  * inc/elementor.php, and this pseudo-element wears it. The 16px gap comes from
  * the shared .btn rule, so it sits off the label like a real icon would.
+ *
+ * The file is a mask rather than a background, and the paint is currentColor:
+ * that way the icon is always exactly the colour of the label beside it,
+ * including on hover, with no second rule to keep in step. As a background it
+ * would keep its own colour and go invisible against the dark hover fill.
+ *
+ * The fallback masks everything out, so a button shows no icon at all when the
+ * field is empty — without it, an unset property would leave the mask off and
+ * paint a solid 20px square.
  */
 .apit-sobre-hero .sobre-hero__doc-botoes .elementor-button::after {
 	content: "";
@@ -184,10 +193,15 @@
 	flex: 0 0 auto;
 	width: 20px;
 	height: 20px;
-	background-image: var(--apit-icone-doc, none);
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: contain;
+	background-color: currentColor;
+	-webkit-mask-image: var(--apit-icone-doc, linear-gradient(transparent, transparent));
+	mask-image: var(--apit-icone-doc, linear-gradient(transparent, transparent));
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
 }
 
 /*
