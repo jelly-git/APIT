@@ -8,7 +8,14 @@
 ?>
 <section class="newsletter">
 	<div class="apit-container newsletter__inner">
-		<h2 class="newsletter__title">Subscrever<br/>APIT News</h2>
+		<?php
+		/*
+		 * No <br> here: the line break comes from a max-width in ch units, so it
+		 * happens after "Subscrever" at every size instead of being frozen into
+		 * the markup — which is what broke the title on a phone.
+		 */
+		?>
+		<h2 class="newsletter__title">Subscrever APIT News</h2>
 
 		<form class="newsletter__form" action="#" method="post">
 			<div class="newsletter__row">

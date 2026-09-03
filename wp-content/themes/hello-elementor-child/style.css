@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.21.11
+Version: 0.21.12
 */
 
 :root {
@@ -1387,6 +1387,13 @@ body.apit-menu-aberto {
 	font-weight: 400;
 	font-size: 48px;
 	line-height: 1.1;
+	/*
+	 * Wide enough for "Subscrever" and too narrow for "Subscrever APIT", so the
+	 * line always breaks in the same place. In ch rather than px because the
+	 * unit scales with the font size: the same rule holds at 48px and at 30px,
+	 * and no breakpoint has to restate it.
+	 */
+	max-width: 11ch;
 	color: #fff;
 }
 
@@ -1417,6 +1424,8 @@ body.apit-menu-aberto {
 	height: 56px;
 	padding: 0 14px;
 	border: 1px solid rgba(244, 249, 255, 0.35);
+	/* The design underlines each field: the bottom edge is white, not faint. */
+	border-bottom-color: var(--apit-branco);
 	border-radius: 4px;
 	/* Fill from the Figma spec. */
 	background: rgba(72, 37, 95, 0.1);
@@ -1444,11 +1453,48 @@ body.apit-menu-aberto {
 	color: rgba(244, 249, 255, 0.85);
 }
 
+/*
+ * 20x20 and transparent, as in the design.
+ *
+ * A native checkbox cannot be either: the browser draws its own box at its own
+ * size and fills it on check. appearance: none removes that drawing and leaves
+ * a plain element to style, with the tick drawn as a pseudo-element.
+ */
 .newsletter__consent input {
-	width: 25px;
-	height: 25px;
+	appearance: none;
+	-webkit-appearance: none;
+	position: relative;
 	flex-shrink: 0;
-	accent-color: var(--apit-magenta);
+	width: 20px;
+	height: 20px;
+	margin: 0;
+	border: 1px solid var(--apit-branco);
+	border-radius: 2px;
+	background: transparent;
+	cursor: pointer;
+}
+
+.newsletter__consent input::after {
+	content: "";
+	position: absolute;
+	/* A tick, drawn as two sides of a box and rotated. */
+	top: 3px;
+	left: 6px;
+	width: 5px;
+	height: 9px;
+	border: solid var(--apit-branco);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+	opacity: 0;
+}
+
+.newsletter__consent input:checked::after {
+	opacity: 1;
+}
+
+.newsletter__consent input:focus-visible {
+	outline: 2px solid var(--apit-branco);
+	outline-offset: 2px;
 }
 
 .newsletter__consent a {
@@ -1506,8 +1552,9 @@ body.apit-menu-aberto {
 		gap: 22px;
 	}
 
-	.newsletter__submit {
-		justify-self: start;
+	/* Stays on the right once it drops below the consent line, as in the design. */
+	.newsletter .newsletter__submit {
+		justify-self: end;
 	}
 
 	.newsletter__field input {

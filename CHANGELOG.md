@@ -37,7 +37,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
-## [0.21.11] - 2026-09-03
+## [0.21.12] - 2026-09-03
+
+### Corrigido
+- O título "Subscrever APIT News" tinha um `<br>` no markup, que congelava a
+  quebra e a punha no lugar errado em mobile. Passa a ser controlada por
+  `max-width: 11ch` — largura suficiente para "Subscrever" e insuficiente para
+  "Subscrever APIT", pelo que a linha quebra sempre no mesmo sítio. Em `ch` e
+  não em px porque a unidade acompanha o tamanho da fonte: a mesma regra serve
+  aos 48px do desktop e aos 30px do telefone, sem nenhum breakpoint a repeti-la.
+- Os campos do formulário passam a ter a linha branca em baixo que o design
+  tem. A borda continua ténue nos outros três lados.
+- A caixa de aceitação passa de 25px a **20x20**, transparente e com bordo
+  branco, como no design. Um checkbox nativo não consegue ser nenhuma das
+  coisas — o navegador desenha a sua própria caixa, ao seu tamanho, e preenche-a
+  ao marcar. O `appearance: none` remove esse desenho, e o visto passa a ser um
+  pseudo-elemento.
+- Em mobile o botão de submeter volta à direita. Tinha `justify-self: start` no
+  breakpoint de 640px, o que o encostava à esquerda quando descia para baixo da
+  linha de aceitação.
+
+
 
 Só documentação — o tema não mudou.
 
