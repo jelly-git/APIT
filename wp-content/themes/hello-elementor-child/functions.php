@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.22.0' );
+define( 'APIT_CHILD_VERSION', '0.22.1' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -142,6 +142,13 @@ add_action( 'customize_register', 'apit_child_customize_register' );
 /**
  * Prints the row of icon links.
  *
+ * They open in a new tab, so a visitor following one does not lose the page
+ * they were on. `noopener` goes with it: without it the opened page can reach
+ * back into this one through window.opener.
+ *
+ * The label says so too — the icon alone gives a screen reader no hint that the
+ * link leaves for somewhere else.
+ *
  * A network with no address set is skipped rather than linked to "#", so an
  * empty field leaves no dead icon behind.
  */
@@ -154,9 +161,10 @@ function apit_redes_sociais_html() {
 		}
 
 		printf(
-			'<a href="%s" aria-label="%s"><i class="fa-brands %s" aria-hidden="true"></i></a>',
+			'<a href="%s" target="_blank" rel="noopener" aria-label="%s"><i class="fa-brands %s" aria-hidden="true"></i></a>',
 			esc_url( $url ),
-			esc_attr( $rede['nome'] ),
+			/* translators: %s: social network name. */
+			esc_attr( sprintf( __( '%s (abre num novo separador)', 'apit' ), $rede['nome'] ) ),
 			esc_attr( $rede['icone'] )
 		);
 	}

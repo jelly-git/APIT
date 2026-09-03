@@ -37,6 +37,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.1] - 2026-09-03
+
+### Alterado
+- As redes sociais abrem num novo separador, nos quatro sítios onde aparecem.
+  Uma só edição, no `apit_redes_sociais_html()` — o que a consolidação da
+  v0.22.0 tornou possível.
+- Vai com `rel="noopener"`: sem ele a página aberta consegue alcançar esta
+  através do `window.opener`.
+- A etiqueta passa a dizê-lo — "Instagram (abre num novo separador)". Um ícone
+  sozinho não dá a um leitor de ecrã qualquer indicação de que o link sai do
+  site.
+
 ## [0.22.0] - 2026-09-03
 
 ### Alterado
