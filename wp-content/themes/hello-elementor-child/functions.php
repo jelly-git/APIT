@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.21.15' );
+define( 'APIT_CHILD_VERSION', '0.22.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -84,7 +84,37 @@ function apit_child_setup() {
 add_action( 'after_setup_theme', 'apit_child_setup' );
 
 /**
- * Social links, editable in Customizer > APIT > Redes Sociais without touching code.
+ * The networks the site links to, in the order they are shown.
+ *
+ * One list, read by the Customizer that stores the addresses and by every place
+ * that draws them — the header, the mobile menu, the footer and the contacts
+ * block on Sobre a APIT. The names used to be repeated in each of those, so a
+ * change meant four edits and a chance of them drifting apart.
+ */
+function apit_redes_sociais() {
+	return apply_filters( 'apit_redes_sociais', [
+		'instagram' => [
+			'nome'  => 'Instagram',
+			'icone' => 'fa-instagram',
+		],
+		'x_twitter' => [
+			'nome'  => 'X (Twitter)',
+			'icone' => 'fa-x-twitter',
+		],
+		'facebook'  => [
+			'nome'  => 'Facebook',
+			'icone' => 'fa-facebook-f',
+		],
+		'youtube'   => [
+			'nome'  => 'YouTube',
+			'icone' => 'fa-youtube',
+		],
+	] );
+}
+
+/**
+ * Social links, editable in Personalizar > APIT — Redes Sociais without
+ * touching code.
  */
 function apit_child_customize_register( $wp_customize ) {
 	$wp_customize->add_section( 'apit_social', [
@@ -92,23 +122,16 @@ function apit_child_customize_register( $wp_customize ) {
 		'priority' => 160,
 	] );
 
-	$networks = [
-		'instagram'  => 'Instagram',
-		'x_twitter'  => 'X (Twitter)',
-		'facebook'   => 'Facebook',
-		'linkedin'   => 'LinkedIn',
-	];
-
-	foreach ( $networks as $key => $label ) {
-		$setting_id = 'apit_social_' . $key;
+	foreach ( apit_redes_sociais() as $chave => $rede ) {
+		$setting_id = 'apit_social_' . $chave;
 
 		$wp_customize->add_setting( $setting_id, [
-			'default'           => '#',
+			'default'           => '',
 			'sanitize_callback' => 'esc_url_raw',
 		] );
 
 		$wp_customize->add_control( $setting_id, [
-			'label'   => $label,
+			'label'   => $rede['nome'],
 			'section' => 'apit_social',
 			'type'    => 'url',
 		] );
@@ -116,6 +139,25 @@ function apit_child_customize_register( $wp_customize ) {
 }
 add_action( 'customize_register', 'apit_child_customize_register' );
 
-function apit_child_social_url( $network ) {
-	return esc_url( get_theme_mod( 'apit_social_' . $network, '#' ) );
+/**
+ * Prints the row of icon links.
+ *
+ * A network with no address set is skipped rather than linked to "#", so an
+ * empty field leaves no dead icon behind.
+ */
+function apit_redes_sociais_html() {
+	foreach ( apit_redes_sociais() as $chave => $rede ) {
+		$url = trim( (string) get_theme_mod( 'apit_social_' . $chave, '' ) );
+
+		if ( '' === $url || '#' === $url ) {
+			continue;
+		}
+
+		printf(
+			'<a href="%s" aria-label="%s"><i class="fa-brands %s" aria-hidden="true"></i></a>',
+			esc_url( $url ),
+			esc_attr( $rede['nome'] ),
+			esc_attr( $rede['icone'] )
+		);
+	}
 }

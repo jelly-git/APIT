@@ -38,10 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			 */
 			?>
 			<div class="apit-footer__social">
-				<a href="<?php echo apit_child_social_url( 'instagram' ); ?>" aria-label="Instagram"><i class="fa-brands fa-instagram" aria-hidden="true"></i></a>
-				<a href="<?php echo apit_child_social_url( 'x_twitter' ); ?>" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter" aria-hidden="true"></i></a>
-				<a href="<?php echo apit_child_social_url( 'facebook' ); ?>" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
-				<a href="<?php echo apit_child_social_url( 'linkedin' ); ?>" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in" aria-hidden="true"></i></a>
+				<?php apit_redes_sociais_html(); ?>
 			</div>
 
 			<div class="apit-footer__watch">

@@ -37,6 +37,33 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.0] - 2026-09-03
+
+### Alterado
+- Redes sociais preenchidas com as contas reais, nos quatro sítios onde
+  aparecem: barra superior, menu mobile, rodapé e bloco de contactos da Sobre a
+  APIT. Os endereços ficam em Personalizar › APIT — Redes Sociais, não em
+  código.
+- **LinkedIn substituído por YouTube.** A APIT não tem LinkedIn na lista de
+  contas fornecida, e tinha YouTube, que o tema não previa. Mantêm-se quatro
+  ícones, como no design.
+
+### Adicionado
+- `apit_redes_sociais()`, a lista das redes, e `apit_redes_sociais_html()`, que
+  desenha a linha de ícones. Os nomes e os ícones estavam repetidos em quatro
+  sítios — o `header.php` tinha a sua própria closure e o `footer.php` e o
+  `contactos.php` tinham o markup escrito à mão — pelo que trocar uma rede
+  obrigava a quatro edições coerentes entre si. Agora é uma.
+
+### Removido
+- `apit_child_social_url()`, que os quatro sítios usavam e que o novo renderizador
+  torna desnecessária.
+
+### Corrigido
+- Uma rede sem endereço deixa de gerar um ícone com `href="#"`. O valor por
+  omissão era `#`, pelo que um campo vazio produzia um ícone que não levava a
+  nenhum lado; agora o ícone simplesmente não aparece.
+
 ## [0.21.15] - 2026-09-03
 
 ### Corrigido

@@ -8,26 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 
-/**
- * The social row is repeated in the desktop top bar and in the mobile menu.
- */
-$apit_social = function () {
-	$redes = [
-		'instagram' => [ 'Instagram', 'fa-instagram' ],
-		'x_twitter' => [ 'X (Twitter)', 'fa-x-twitter' ],
-		'facebook'  => [ 'Facebook', 'fa-facebook-f' ],
-		'linkedin'  => [ 'LinkedIn', 'fa-linkedin-in' ],
-	];
-
-	foreach ( $redes as $chave => $rede ) {
-		printf(
-			'<a href="%s" aria-label="%s"><i class="fa-brands %s" aria-hidden="true"></i></a>',
-			apit_child_social_url( $chave ),
-			esc_attr( $rede[0] ),
-			esc_attr( $rede[1] )
-		);
-	}
-};
+// The social row appears twice below — in the desktop top bar and in the mobile
+// menu — and comes from apit_redes_sociais_html(), in functions.php.
 ?>
 <!doctype html>
 <html <?php language_attributes(); ?>>
@@ -60,7 +42,7 @@ $apit_social = function () {
 				<a href="#" class="is-active">PT</a>
 				<a href="#">EN</a>
 			</div>
-			<div class="apit-header__social"><?php $apit_social(); ?></div>
+			<div class="apit-header__social"><?php apit_redes_sociais_html(); ?></div>
 		</div>
 	</div>
 
@@ -151,6 +133,6 @@ $apit_social = function () {
 			<a href="#" class="is-active">PT</a>
 			<a href="#">EN</a>
 		</div>
-		<div class="apit-menu-mobile__social"><?php $apit_social(); ?></div>
+		<div class="apit-menu-mobile__social"><?php apit_redes_sociais_html(); ?></div>
 	</div>
 </div>
