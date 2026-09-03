@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.21.14
+Version: 0.21.15
 */
 
 :root {
@@ -1443,13 +1443,25 @@ body.apit-menu-aberto {
 }
 
 /*
- * No focus box: a magenta rectangle around a field that is only underlined read
- * as an error state. The underline takes over the job, in the magenta of the
- * submit button — so the active field is still obvious, by mouse or by
- * keyboard, without anything being drawn around it.
+ * Nothing is drawn around the field on focus: the underline alone marks it, in
+ * the magenta of the submit button.
+ *
+ * Three things have to be undone, all from the parent theme's reset.css:
+ *   box-shadow: 0 0 0 4px #fff   — the white ring, and what was actually being
+ *                                  seen; an outline reset alone left it there
+ *   outline: 2px solid #000
+ *   border-color: #333           — on input[type=text]:focus
+ *
+ * :focus-visible is listed as well because that is the selector the reset uses,
+ * and a browser matches it on a plain mouse click into a text field — keyboard
+ * entry is expected there, so the ring is not reserved for tab navigation.
+ * Both selectors tie with the reset's on specificity and this file is printed
+ * after it, which is what settles the cascade.
  */
-.newsletter__field input:focus {
+.newsletter__field input:focus,
+.newsletter__field input:focus-visible {
 	outline: none;
+	box-shadow: none;
 	border-bottom-color: var(--apit-magenta);
 }
 
@@ -1502,9 +1514,16 @@ body.apit-menu-aberto {
 	opacity: 1;
 }
 
+/*
+ * The reset's white ring reaches every control in the form, not just the text
+ * fields. Here the box goes and the border takes the magenta, so the checkbox
+ * marks itself the same way the fields above it do.
+ */
+.newsletter__consent input:focus,
 .newsletter__consent input:focus-visible {
-	outline: 2px solid var(--apit-branco);
-	outline-offset: 2px;
+	outline: none;
+	box-shadow: none;
+	border-color: var(--apit-magenta);
 }
 
 .newsletter__consent a {
@@ -1528,6 +1547,18 @@ body.apit-menu-aberto {
 	text-transform: uppercase;
 	color: #fff;
 	cursor: pointer;
+}
+
+/*
+ * The ring goes here too, but the button keeps a cue: it is the control that
+ * submits, and someone arriving by keyboard has to see it is selected before
+ * pressing Enter. A thin outline held off the edge, not a 4px halo.
+ */
+.newsletter .newsletter__submit:focus,
+.newsletter .newsletter__submit:focus-visible {
+	box-shadow: none;
+	outline: 2px solid var(--apit-branco);
+	outline-offset: 3px;
 }
 
 .newsletter .newsletter__submit:hover {

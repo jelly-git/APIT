@@ -37,6 +37,29 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.21.15] - 2026-09-03
+
+### Corrigido
+- O contorno branco em volta do campo selecionado era um **`box-shadow`**, não
+  um `outline` — vinha do `reset.css` do tema pai, que declara
+  `box-shadow: 0 0 0 4px #fff` em `input:focus-visible`. A v0.21.14 anulou o
+  `outline` e deixou o halo, que era precisamente o que se via. Agora fica
+  apenas o sublinhado em baixo, na cor do botão Subscrever.
+- O reset declara também `border-color: #333` em `input[type=text]:focus`, que
+  empatava em especificidade com a regra deste ficheiro. Continua a ganhar por
+  ordem de carregamento, mas fica registado.
+- A mesma regra do reset atinge todos os controlos do formulário, não só os
+  campos de texto. A caixa de aceitação passa a marcar-se com o bordo magenta,
+  como os campos, e o botão perde o halo mas mantém um contorno fino afastado
+  da margem — é o controlo que submete, e quem chega por teclado tem de ver que
+  está selecionado antes de premir Enter.
+
+### Notas
+- Um clique de rato num campo de texto **faz corresponder `:focus-visible`** nos
+  navegadores actuais, porque ali se espera escrita por teclado. Por isso o
+  halo aparecia ao clique, e não só na navegação por tabulação — as regras
+  cobrem agora os dois selectores.
+
 ## [0.21.14] - 2026-09-03
 
 ### Alterado
