@@ -98,11 +98,51 @@ que copia o tema para `~/public_html/apit/wp-content/themes/`.
 
 ---
 
-## 3. Base de dados (uma vez)
+## 3. Base de dados
 
-Já está exportada **com os URLs do servidor aplicados**, em
-`Local Sites/apit/apit-bd-para-servidor.sql` (1,4 MB, 13 tabelas). Não é
-preciso search-replace nem plugin nenhum depois de importar.
+> **A exportação faz-se no momento de subir, não antes.** Um commit não exporta
+> a base de dados e não existe processo automático que o faça: páginas, equipa,
+> órgãos sociais, categorias, campos ACF e multimédia vivem só na base de dados.
+> Um `.sql` de ontem não tem o trabalho de hoje, e importá-lo apagaria-o.
+
+No Local, botão direito no site *apit* > **Open site shell**, e depois:
+
+```bash
+cd "C:\Users\faust\Local Sites\apit"
+
+# troca os URLs e escreve o ficheiro, sem tocar na base de dados local.
+# --precise porque os dados do Elementor estão serializados.
+wp search-replace "http://apit.local" "https://dev.jellycode.agency/apit" \
+    --all-tables --precise --export=bd-sem-cabecalho.sql
+
+# as tabelas do WordPress declaram datas 0000-00-00 por omissão, que um MySQL
+# em modo estrito recusa com "Invalid default value for 'comment_date'".
+# O ficheiro exportado não traz a instrução que desliga esse modo.
+{
+  echo "SET @OLD_SQL_MODE = @@SQL_MODE;"
+  echo "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';"
+  echo "SET NAMES utf8mb4;"
+  echo "SET FOREIGN_KEY_CHECKS = 0;"
+  cat bd-sem-cabecalho.sql
+  echo "SET FOREIGN_KEY_CHECKS = 1;"
+  echo "SET SQL_MODE = @OLD_SQL_MODE;"
+} > apit-bd-servidor.sql
+
+rm bd-sem-cabecalho.sql
+
+# confirmar antes de subir
+grep -c "apit.local" apit-bd-servidor.sql     # 0
+grep -c "CREATE TABLE" apit-bd-servidor.sql   # 13
+```
+
+Referência da exportação verificada a 3 de setembro de 2026: 13 tabelas,
+747 linhas, 344 KB, 79 endereços do servidor e nenhum local. Foi importada numa
+base de dados de teste e reproduziu as 747 linhas tabela a tabela. Um ficheiro
+muito menor é sinal de exportação incompleta.
+
+Os `apit-bd.sql` e `apit-bd-para-servidor.sql` em `Local Sites/apit/` são de
+1 de setembro e **estão obsoletos** — não têm a página Sobre a APIT, a equipa,
+os órgãos sociais nem as categorias de eventos. Não servem para subir.
 
 > **Substitui tudo** o que estiver em `agencydevjellyc_apit`, incluindo os
 > utilizadores. Depois da importação o acesso ao wp-admin passa a ser o do site
@@ -115,9 +155,9 @@ preciso search-replace nem plugin nenhum depois de importar.
 O ficheiro traz `DROP TABLE IF EXISTS` em cada tabela, pelo que não é preciso
 esvaziar a base de dados antes.
 
-Se preferir manter o dump com os URLs locais, existe também
-`apit-bd.sql`; nesse caso a troca tem de ser feita depois, e obriga a
-`--precise` porque os dados do Elementor estão serializados:
+Em alternativa, exportar com os URLs locais (`wp db export`) e trocá-los já no
+servidor, depois de importar. Dá o mesmo resultado, mas deixa o site com os
+endereços errados no intervalo entre a importação e a troca:
 
 ```bash
 cd ~/public_html/apit

@@ -37,7 +37,30 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
-## [0.21.9] - 2026-09-03
+## [0.21.10] - 2026-09-03
+
+Só documentação — o tema não mudou.
+
+### Corrigido
+- O `DEPLOY.md` dizia que a base de dados "já está exportada" e apontava para
+  `apit-bd-para-servidor.sql`. Esse ficheiro é de 1 de setembro e **está
+  obsoleto**: não tem a página Sobre a APIT, a equipa, os órgãos sociais, as
+  categorias de eventos nem os campos ACF. Subi-lo apagaria tudo isso. O passo
+  passa a mandar exportar **no momento de subir**, com os comandos, e avisa que
+  os dois ficheiros antigos não servem.
+- O procedimento de importação estava incompleto. As tabelas do WordPress
+  declaram datas `0000-00-00` por omissão e um MySQL em modo estrito recusa-as
+  com `Invalid default value for 'comment_date'` — erro que apanhei ao importar
+  o dump numa base de dados de teste. O `wp search-replace --export` não escreve
+  a instrução que desliga esse modo, pelo que o passo passa a acrescentá-la.
+
+### Adicionado
+- `APIT-subir-producao.pdf` em `Local Sites/apit/` (7 páginas): o passo a passo
+  para produção, do lado do cPanel e da base de dados, com a ordem das
+  operações, os comandos, a lista de verificação e as armadilhas já
+  encontradas. Fica fora do repositório; a fonte é o `DEPLOY.md`.
+
+
 
 ### Corrigido
 - O título "Subscrever APIT News" fica centrado verticalmente com o formulário
