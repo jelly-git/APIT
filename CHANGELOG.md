@@ -37,6 +37,35 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.5] - 2026-09-04
+
+### Corrigido
+- Hero da Home em mobile: o vídeo de fundo mostrava **15% da sua largura**. O
+  `object-fit: cover` numa caixa de 390x1432 recorta os 1920px do ficheiro para
+  uma fatia de 294px, pelo que um telefone via uma tira vertical da arte —
+  turquesa no topo, azul a meio e vermelho sólido em baixo. Era isso que dava a
+  impressão de a cor acabar a meio da secção. Nenhum `object-position` resolve:
+  o hero tem proporção 0,27 contra 1,78 do vídeo, e a altura vem do
+  empilhamento do conteúdo. A camada de vídeo passa a estar oculta abaixo dos
+  768px e o degradé do próprio hero — o mesmo que existia antes do vídeo —
+  carrega a secção.
+- Retirados 118px de cor vazia no fim do hero. Era a margem inferior da legenda,
+  um valor definido no widget para o espaçamento do desktop, que em mobile se
+  somava aos 56px de padding do hero. O hero desce de 1432px para 1311px, e o
+  espaço depois da legenda passa a ser exactamente o padding.
+
+### Notas
+- Não foi possível comparar com o Figma: o nó do mobile da Home (`66:2060`)
+  continua inacessível por limite de chamadas. A decisão de usar o degradé em
+  vez da fatia de vídeo é minha, apoiada no mockup enviado pelo cliente e no
+  facto de uma fatia de 15% não poder corresponder a nenhuma intenção de
+  desenho.
+- O ficheiro de vídeo continua a ser descarregado em mobile, apenas não é
+  mostrado. Evitá-lo exige carregar o `src` por script acima de uma largura —
+  não feito.
+- O painel do teaser (a caixa escura com o play) não foi alterado: mantém-se a
+  350x429, como ficou na v0.18.1.
+
 ## [0.22.4] - 2026-09-04
 
 ### Alterado

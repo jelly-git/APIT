@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.4
+Version: 0.22.5
 */
 
 :root {
@@ -886,13 +886,39 @@ body.apit-menu-aberto {
 		font-size: 24px;
 	}
 
-	.apit-hero__caption-text {
+	/*
+	 * The 118px bottom margin is a desktop value, set on the widget in
+	 * Elementor to give the hero its spacing under the caption. Here it lands on
+	 * top of the hero's own 56px of padding and leaves a band of empty colour at
+	 * the end of the section. !important because Elementor writes the widget's
+	 * margin into its per-page stylesheet.
+	 */
+	.apit-hero .apit-hero__caption-text {
+		margin-bottom: 0 !important;
 		font-size: 15px;
 	}
 
 	.hero__watch-badge {
 		width: 200px;
 		margin-top: 40px;
+	}
+
+	/*
+	 * The background video is dropped on a phone and the hero's own gradient
+	 * carries the section.
+	 *
+	 * object-fit: cover into a 390x1432 box crops the 1920px-wide file to a
+	 * 294px slice — 15% of its width. What showed was a vertical sliver of the
+	 * artwork, turquoise at the top and solid red by the bottom, which is why
+	 * the colour appeared to stop halfway down. No object-position helps: the
+	 * hero's aspect is 0.27 against the video's 1.78, and the height comes from
+	 * the content stacking, so it cannot be brought closer.
+	 *
+	 * The gradient underneath is the same one the hero used before the video
+	 * existed, and it holds at any height.
+	 */
+	.apit-hero__media {
+		display: none;
 	}
 
 	.hero__video {
