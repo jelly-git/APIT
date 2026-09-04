@@ -37,6 +37,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.3] - 2026-09-04
+
+### Corrigido
+- A borda do botão "Área Reservada" fica da cor do texto no hover. Passa a
+  `currentColor` em vez de um branco fixo, pelo que acompanha a etiqueta em
+  qualquer estado — em repouso continua branca, como estava. Aplicado também ao
+  mesmo botão no menu mobile.
+
+### Notas
+- O botão não tem, nem tinha, regra de hover própria: a cor do texto no hover
+  vem do `a:hover { color: #336 }` genérico do tema pai. Esse azul-escuro sobre
+  o véu do cabeçalho dá pouco contraste — não é uma escolha de design, é o que
+  o tema pai aplica a qualquer link. Fica por decidir se o hover deve manter-se
+  branco ou tomar uma cor da marca.
+
 ## [0.22.2] - 2026-09-03
 
 ### Alterado

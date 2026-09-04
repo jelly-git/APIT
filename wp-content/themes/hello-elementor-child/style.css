@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.2
+Version: 0.22.3
 */
 
 :root {
@@ -193,7 +193,13 @@ ul {
 	align-items: center;
 	gap: 16px;
 	padding: 12px 30px 11px;
-	border: 2px solid var(--apit-branco);
+	/*
+	 * currentColor, not a fixed white: the border then follows the label in
+	 * every state. On hover the label takes its colour from the parent theme's
+	 * generic a:hover, and the border used to stay white behind a text that had
+	 * already changed.
+	 */
+	border: 2px solid currentColor;
 	border-radius: 42px;
 	background: rgba(74, 133, 200, 0);
 	font-family: var(--apit-font);
@@ -331,7 +337,8 @@ ul {
 	gap: 16px;
 	margin-top: 44px;
 	padding: 15px 30px 13px;
-	border: 2px solid var(--apit-branco);
+	/* Same button as the header's, so the border follows the label here too. */
+	border: 2px solid currentColor;
 	border-radius: 200px;
 	font-family: var(--apit-font);
 	font-weight: 500;
