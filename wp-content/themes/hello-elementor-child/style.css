@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.9
+Version: 0.22.10
 */
 
 :root {
@@ -582,8 +582,18 @@ body.apit-menu-aberto {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
-	/* Above the background media (-1), below the text widgets (2). */
-	z-index: 1;
+	/*
+	 * No z-index of its own, on purpose: with one it became a stacking context
+	 * and sealed the badge and the teaser panel inside it, so neither could be
+	 * ordered against the text widgets — and the divider, which runs the width
+	 * of the column, was painting a stub of white line across the black panel.
+	 *
+	 * Left at `auto` the layer still sits above the background media (-1) and
+	 * below the text (2), and its children order themselves in the hero's own
+	 * context: the badge at 1 stays under the text, the panel at 2 ties with it
+	 * and wins on document order, since the decoration comes after the text in
+	 * the markup. The line passes behind the panel and is unbroken elsewhere.
+	 */
 }
 
 /*
@@ -720,7 +730,21 @@ body.apit-menu-aberto {
 	position: absolute;
 	right: 310px;
 	top: 445px;
-	z-index: 2;
+	/*
+	 * 3, above the text widgets at 2: the divider runs the width of the column
+	 * and reaches into the panel, and at 2 it painted a stub of white line
+	 * across the black. The line now passes behind the panel and stays
+	 * unbroken everywhere else.
+	 *
+	 * 2 was not enough even though it ties with the text, because the ties
+	 * break on document order and the decoration comes before the text in the
+	 * markup. It only takes effect at all because .hero-decor has no z-index of
+	 * its own — see the note there.
+	 *
+	 * Nothing else has to give way: at this width the title ends at 941px and
+	 * the caption at 941px, both clear of the panel's 946px.
+	 */
+	z-index: 3;
 	width: 329px;
 	height: 651px;
 	background: var(--apit-black);

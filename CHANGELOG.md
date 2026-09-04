@@ -37,6 +37,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.10] - 2026-09-04
+
+### Corrigido
+- Hero da Home: o risco branco passa por trás do painel preto do teaser em vez
+  de lhe atravessar um pedaço de linha por cima. O painel subiu para
+  `z-index: 3` e a camada de decoração deixou de ter `z-index` próprio — com
+  ele era um contexto de empilhamento e selava o painel lá dentro, sem forma de
+  o ordenar contra os widgets de texto. A linha continua inteira em todo o
+  resto do seu percurso.
+
 ## [0.22.9] - 2026-09-04
 
 ### Corrigido
