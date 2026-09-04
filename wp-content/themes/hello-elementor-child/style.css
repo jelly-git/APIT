@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.6
+Version: 0.22.7
 */
 
 :root {
@@ -822,8 +822,17 @@ body.apit-menu-aberto {
 		margin-top: 32px;
 	}
 
+	/*
+	 * The offset white frame behind the teaser panel is dropped from here down.
+	 *
+	 * It works on a wide screen, where the panel is 329px inside a 1425px
+	 * viewport and the frame sits 292px clear of the edge. Once the panel goes
+	 * full width the frame has nowhere to be offset to: its right border lands
+	 * 8px from the edge of the screen at 390px and at 985px alike, so instead of
+	 * framing the panel it reads as a stray white line down the side of the page.
+	 */
 	.hero__video::after {
-		inset: 20px -12px -14px 12px;
+		display: none;
 	}
 
 	.hero__play {

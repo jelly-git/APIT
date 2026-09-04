@@ -37,6 +37,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.7] - 2026-09-04
+
+### Corrigido
+- Removida a moldura branca desencontrada do painel do teaser abaixo dos
+  1024px, que era a origem das linhas brancas que o cliente reportou. É o
+  `.hero__video::after`, com `border: 2px solid #fff` e um inset negativo.
+  Funciona num ecrã largo, onde o painel tem 329px dentro de 1425px e a moldura
+  fica 292px afastada da margem; assim que o painel passa a ocupar a largura
+  toda, a moldura não tem para onde se deslocar e a sua borda direita fica a
+  **8px da margem do ecrã** — tanto a 390px como a 985px. Em vez de emoldurar o
+  painel, lia-se como uma linha branca ao lado da página.
+
+### Notas
+- Removida também em tablet, e não só em mobile como pedido: a geometria é
+  idêntica nas duas larguras, com a borda a 8px da margem em ambas. Em desktop
+  a moldura fica intacta.
+- Na versão anterior tinha concluído que a linha vinha da moldura do modo
+  dispositivo das ferramentas de desenvolvimento. Estava errado: a minha busca
+  procurou bordas nos **elementos** e não nos pseudo-elementos, e foi por isso
+  que não a encontrou. O cliente localizou-a.
+
 ## [0.22.6] - 2026-09-04
 
 ### Corrigido
