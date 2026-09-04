@@ -37,6 +37,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.4] - 2026-09-04
+
+### Alterado
+- A lupa do cabeçalho passa a ser o SVG carregado, em vez do glifo do Font
+  Awesome. O mesmo no botão de pesquisa do menu mobile, que usava o mesmo
+  glifo.
+- Desenhada como **máscara** pintada com `currentColor`, não como `<img>`: o
+  ficheiro traz `fill="white"` embutido no path, pelo que como imagem só
+  poderia ser branca. A máscara aproveita a forma e deixa a cor ao botão.
+
+### Notas
+- O ficheiro foi **copiado para `assets/img/icon-lupa.svg`**, não referenciado
+  da multimédia. É onde vivem os outros assets do cabeçalho e do rodapé — os
+  logótipos e o véu — e a razão é prática: assim viaja no git e funciona no
+  servidor logo após o deploy, sem depender da pasta de uploads nem da base de
+  dados. A cópia na multimédia fica sem uso.
+- SVG inspecionado antes de ser usado: sem `<script>`, sem atributos `on*` e
+  sem referências externas.
+
 ## [0.22.3] - 2026-09-04
 
 ### Corrigido

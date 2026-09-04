@@ -61,9 +61,8 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 					'fallback_cb'    => false,
 				] );
 				?>
-				<button class="apit-header__search-toggle" aria-label="<?php esc_attr_e( 'Pesquisar', 'apit' ); ?>">
-					<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-				</button>
+				<?php // The glass comes from assets/img/icon-lupa.svg, drawn by CSS. ?>
+				<button class="apit-header__search-toggle" aria-label="<?php esc_attr_e( 'Pesquisar', 'apit' ); ?>"></button>
 			</nav>
 
 			<a href="#" class="apit-header__cta">
@@ -92,9 +91,7 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 		</a>
 
 		<div class="apit-menu-mobile__acoes">
-			<button class="apit-menu-mobile__pesquisa" aria-label="<?php esc_attr_e( 'Pesquisar', 'apit' ); ?>">
-				<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-			</button>
+			<button class="apit-menu-mobile__pesquisa" aria-label="<?php esc_attr_e( 'Pesquisar', 'apit' ); ?>"></button>
 			<button class="apit-menu-mobile__fechar" aria-label="<?php esc_attr_e( 'Fechar menu', 'apit' ); ?>">
 				<i class="fa-solid fa-xmark" aria-hidden="true"></i>
 			</button>

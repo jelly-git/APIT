@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.3
+Version: 0.22.4
 */
 
 :root {
@@ -180,12 +180,39 @@ ul {
 	justify-content: center;
 	width: 30px;
 	height: 30px;
-	font-size: 24px;
 	color: #fff;
 	background: none;
 	border: none;
 	cursor: pointer;
 	padding: 0;
+}
+
+/*
+ * The magnifying glass, from the uploaded SVG rather than a Font Awesome glyph.
+ *
+ * A mask painted with currentColor, not an <img>: the file has fill="white"
+ * baked into its path, so as an image it could only ever be white — the mask
+ * takes the shape and leaves the colour to the button, which is what lets it
+ * follow the header on a page whose header is not white.
+ *
+ * The artwork is 30x30 with the glass drawn inside 24 of those, which is the
+ * size the glyph it replaces occupied.
+ */
+.apit-header__search-toggle::before,
+.apit-menu-mobile__pesquisa::before {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 100%;
+	background-color: currentColor;
+	-webkit-mask-image: url("assets/img/icon-lupa.svg");
+	mask-image: url("assets/img/icon-lupa.svg");
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
 }
 
 .apit-header__cta {
@@ -312,6 +339,15 @@ ul {
 	font-size: 22px;
 	color: #fff;
 	cursor: pointer;
+}
+
+/*
+ * Slightly smaller than the button so the glass keeps the weight of the X
+ * beside it, which is a 22px glyph in a 32px box.
+ */
+.apit-menu-mobile__pesquisa::before {
+	width: 28px;
+	height: 28px;
 }
 
 .apit-menu-mobile__lista {
