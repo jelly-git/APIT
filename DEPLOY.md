@@ -105,7 +105,30 @@ que copia o tema para `~/public_html/apit/wp-content/themes/`.
 > órgãos sociais, categorias, campos ACF e multimédia vivem só na base de dados.
 > Um `.sql` de ontem não tem o trabalho de hoje, e importá-lo apagaria-o.
 
-No Local, botão direito no site *apit* > **Open site shell**, e depois:
+No Local, botão direito no site *apit* > **Open site shell**.
+
+### 3.1 Limpar o que não deve viajar
+
+Correr **antes** de exportar, ainda na pasta do site:
+
+```bash
+# Um autosave do Elementor mais recente do que a própria página é oferecido no
+# editor e substitui o layout ao gravar. Escrever o _elementor_data por código
+# não actualiza o post_modified, pelo que qualquer autosave parece mais recente
+# do que a página — foi o que aconteceu à Home a 1 de setembro.
+wp post list --post_type=revision --field=post_name --format=csv | grep autosave
+wp eval 'global $wpdb; foreach ( $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_name LIKE \"%autosave%\"" ) as $id ) { wp_delete_post( $id, true ); }'
+
+# Caches do Elementor e do ACF, incluindo avisos de actualização. Regeneram-se.
+wp transient delete --all
+
+# Instantâneo de diagnóstico do ACF: guarda o URL local com as barras
+# escapadas (http:\\/\\/apit.local), forma que o search-replace não apanha.
+# O ACF reconstrói-o no primeiro acesso ao wp-admin.
+wp option delete acf_site_health
+```
+
+### 3.2 Exportar
 
 ```bash
 cd "C:\Users\faust\Local Sites\apit"
@@ -132,13 +155,15 @@ rm bd-sem-cabecalho.sql
 
 # confirmar antes de subir
 grep -c "apit.local" apit-bd-servidor.sql     # 0
+grep -c "autosave-v1" apit-bd-servidor.sql    # 0
 grep -c "CREATE TABLE" apit-bd-servidor.sql   # 13
 ```
 
-Referência da exportação verificada a 3 de setembro de 2026: 13 tabelas,
-747 linhas, 344 KB, 79 endereços do servidor e nenhum local. Foi importada numa
-base de dados de teste e reproduziu as 747 linhas tabela a tabela. Um ficheiro
-muito menor é sinal de exportação incompleta.
+Referência da exportação verificada a 4 de setembro de 2026: 13 tabelas,
+715 linhas, 258 KB, 81 endereços do servidor e nenhum local. Foi importada numa
+base de dados de teste e reproduziu as 715 linhas tabela a tabela, sem uma
+única opção ou post a diferir do local. Um ficheiro muito menor é sinal de
+exportação incompleta.
 
 Os `apit-bd.sql` e `apit-bd-para-servidor.sql` em `Local Sites/apit/` são de
 1 de setembro e **estão obsoletos** — não têm a página Sobre a APIT, a equipa,
@@ -150,7 +175,7 @@ os órgãos sociais nem as categorias de eventos. Não servem para subir.
 > que usa hoje no servidor.
 
 1. phpMyAdmin > base de dados `agencydevjellyc_apit`
-2. **Importar** > carregar `apit-bd-para-servidor.sql` > **Executar**
+2. **Importar** > carregar `apit-bd-servidor.sql` > **Executar**
 
 O ficheiro traz `DROP TABLE IF EXISTS` em cada tabela, pelo que não é preciso
 esvaziar a base de dados antes.
