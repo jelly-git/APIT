@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.7
+Version: 0.22.8
 */
 
 :root {
@@ -870,9 +870,30 @@ body.apit-menu-aberto {
 }
 
 @media (max-width: 768px) {
+	/*
+	 * On a phone the colour is a band across the top of the section, not the
+	 * whole of it — Figma node 66:1660. The teaser panel starts inside the
+	 * band and crosses out of it, and the caption underneath sits on white in
+	 * dark text.
+	 *
+	 * Rather than a second layer, the band is the hero's own gradient given a
+	 * height: no-repeat leaves `background-color` showing below it, and
+	 * `background-position: top` keeps the artwork's radials placed as they
+	 * are on a wide screen instead of stretching them over the full section.
+	 *
+	 * 819px puts the edge 90px into the panel, which starts at 729px at this
+	 * width. It is a measured value: the panel's offset is the sum of the
+	 * title, subtitle, buttons and badge above it, so copy long enough to wrap
+	 * onto another line moves the edge a line-height further into the panel.
+	 * Nothing breaks if it does — the edge simply sits lower.
+	 */
 	.apit-hero {
 		padding-top: 120px !important;
 		padding-bottom: 56px !important;
+		background-color: #fff;
+		background-repeat: no-repeat;
+		background-position: top center;
+		background-size: 100% 819px;
 	}
 
 	.apit-hero__title .elementor-heading-title {
@@ -893,8 +914,16 @@ body.apit-menu-aberto {
 		align-items: flex-start;
 	}
 
-	.apit-hero__caption .elementor-heading-title {
+	/*
+	 * Below the band the caption is on white, so it takes the body colour.
+	 *
+	 * Scoped through .apit-hero for the colour to land: the white it overrides
+	 * comes from `.apit-hero .elementor-widget-heading .elementor-heading-title`
+	 * further up, which a two-class selector here cannot outrank.
+	 */
+	.apit-hero .apit-hero__caption .elementor-heading-title {
 		font-size: 24px;
+		color: var(--apit-black);
 	}
 
 	/*
@@ -907,6 +936,7 @@ body.apit-menu-aberto {
 	.apit-hero .apit-hero__caption-text {
 		margin-bottom: 0 !important;
 		font-size: 15px;
+		color: var(--apit-black);
 	}
 
 	.hero__watch-badge {

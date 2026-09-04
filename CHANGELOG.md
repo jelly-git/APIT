@@ -37,6 +37,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.8] - 2026-09-04
+
+### Corrigido
+- Hero da Home em mobile: a cor passa a ser uma banda no topo da secção e não
+  o fundo de toda ela, como no nó `66:1660` do Figma. O painel do vídeo começa
+  dentro da banda e atravessa-a; a legenda que fica por baixo passou a estar
+  sobre branco, com o título e o texto em `--apit-black` em vez de branco.
+  A banda é o próprio gradiente do hero com altura definida (`background-size`
+  com `no-repeat`), o que evita uma segunda camada e mantém os radiais na
+  posição que têm em ecrã largo. Os 819px colocam o limite 90px dentro do
+  painel, que arranca aos 729px nesta largura.
+
 ## [0.22.7] - 2026-09-04
 
 ### Corrigido
