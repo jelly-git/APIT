@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.8
+Version: 0.22.9
 */
 
 :root {
@@ -1254,12 +1254,17 @@ body.apit-menu-aberto {
 
 @media (max-width: 768px) {
 	/*
-	 * One card per view, kept 52px narrower than the column so the next one
-	 * peeks. At a single card the peek is what tells you the row scrolls,
-	 * which is why it stays here and not on the wider breakpoints.
+	 * One card per view and nothing else: the card fills the column, so the
+	 * next one starts past the right edge and is fully hidden — the same rule
+	 * the wider breakpoints follow, where three cards and their gaps come to
+	 * exactly the track width.
+	 *
+	 * It used to be 52px narrower so the next card peeked and signalled that
+	 * the row scrolls. The arrows already say that, and the peek read as a
+	 * second card cut in half.
 	 */
 	.calendario {
-		--apit-card: calc(100% - 52px);
+		--apit-card: 100%;
 	}
 }
 

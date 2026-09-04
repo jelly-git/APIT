@@ -37,6 +37,19 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.9] - 2026-09-04
+
+### Corrigido
+- Calendário em mobile: passa a mostrar um card completo de cada vez, sem o
+  segundo a espreitar. O card enche a coluna (`--apit-card: 100%`), pelo que o
+  seguinte arranca já fora da margem direita — o mesmo critério dos ecrãs mais
+  largos, onde três cards e os dois intervalos dão exatamente a largura do
+  track. As setas continuam a ser o controlo.
+
+### Alterado
+- Logo da Jelly no rodapé: `title="Jelly Digital Agency"` na ligação e
+  `alt="Logo Jelly Digital Agency"` na imagem.
+
 ## [0.22.8] - 2026-09-04
 
 ### Corrigido

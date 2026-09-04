@@ -56,8 +56,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<span class="apit-footer__sep" aria-hidden="true">/</span>
 				<a href="#">Livro de Reclamações</a>
 			</p>
-			<a href="https://jelly.pt" class="apit-footer__credit" target="_blank" rel="noopener">
-				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/logo-jelly.svg' ); ?>" alt="Jelly" width="61" height="23">
+			<a href="https://jelly.pt" class="apit-footer__credit" target="_blank" rel="noopener" title="Jelly Digital Agency">
+				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/logo-jelly.svg' ); ?>" alt="Logo Jelly Digital Agency" width="61" height="23">
 			</a>
 		</div>
 	</footer>
