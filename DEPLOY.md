@@ -149,14 +149,18 @@ wp search-replace "http://apit.local" "https://dev.jellycode.agency/apit" \
   cat bd-sem-cabecalho.sql
   echo "SET FOREIGN_KEY_CHECKS = 1;"
   echo "SET SQL_MODE = @OLD_SQL_MODE;"
-} > apit-bd-servidor.sql
+} > apit-bd-para-servidor.sql
 
 rm bd-sem-cabecalho.sql
 
 # confirmar antes de subir
-grep -c "apit.local" apit-bd-servidor.sql     # 0
-grep -c "autosave-v1" apit-bd-servidor.sql    # 0
-grep -c "CREATE TABLE" apit-bd-servidor.sql   # 13
+grep -c "apit.local" apit-bd-para-servidor.sql     # 0
+grep -c "autosave-v1" apit-bd-para-servidor.sql    # 0
+grep -c "CREATE TABLE" apit-bd-para-servidor.sql   # 13
+
+# arquivar a cópia versionada, com a versão lida do próprio tema
+VERSAO=$(sed -n 's/^Version: //p' app/public/wp-content/themes/hello-elementor-child/style.css | tr -d '\r')
+cp apit-bd-para-servidor.sql "bd/apit-bd-v$VERSAO-$(date +%F).sql"
 ```
 
 Referência da exportação verificada a 4 de setembro de 2026: 13 tabelas,
@@ -165,9 +169,22 @@ base de dados de teste e reproduziu as 715 linhas tabela a tabela, sem uma
 única opção ou post a diferir do local. Um ficheiro muito menor é sinal de
 exportação incompleta.
 
-Os `apit-bd.sql` e `apit-bd-para-servidor.sql` em `Local Sites/apit/` são de
-1 de setembro e **estão obsoletos** — não têm a página Sobre a APIT, a equipa,
-os órgãos sociais nem as categorias de eventos. Não servem para subir.
+### Onde ficam os ficheiros
+
+**`Local Sites/apit/apit-bd-para-servidor.sql` é sempre o ficheiro a subir.** O
+nome não muda, para que este documento nunca aponte para um `.sql` errado.
+
+O histórico fica em `Local Sites/apit/bd/`, uma exportação por versão do tema,
+com o `LEIA-ME.md` dessa pasta a dizer o estado de cada uma. Base de dados e
+código sobem em par: os dados do Elementor gravados na base de dados dependem
+das classes CSS que o tema dessa versão define.
+
+As exportações da **v0.17.0** que lá estão não servem para subir — não têm a
+página Sobre a APIT, a equipa, os órgãos sociais nem as categorias de eventos, e
+a que tem os URLs trocados não traz o cabeçalho `SQL_MODE`.
+
+Nada disto entra no git: os ficheiros contêm a tabela `wp_users`, e com ela o
+*hash* da palavra-passe do administrador.
 
 > **Substitui tudo** o que estiver em `agencydevjellyc_apit`, incluindo os
 > utilizadores. Depois da importação o acesso ao wp-admin passa a ser o do site
@@ -175,7 +192,7 @@ os órgãos sociais nem as categorias de eventos. Não servem para subir.
 > que usa hoje no servidor.
 
 1. phpMyAdmin > base de dados `agencydevjellyc_apit`
-2. **Importar** > carregar `apit-bd-servidor.sql` > **Executar**
+2. **Importar** > carregar `apit-bd-para-servidor.sql` > **Executar**
 
 O ficheiro traz `DROP TABLE IF EXISTS` em cada tabela, pelo que não é preciso
 esvaziar a base de dados antes.
