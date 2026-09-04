@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.5
+Version: 0.22.6
 */
 
 :root {
@@ -833,10 +833,6 @@ body.apit-menu-aberto {
 	/*
 	 * The captions sit in a flex container that does not stretch its children,
 	 * so without an explicit width they shrink to the text's own measure.
-	 */
-	/*
-	 * The captions sit in a flex container that does not stretch its children,
-	 * so without an explicit width they shrink to the text's own measure.
 	 *
 	 * margin-left needs !important: the 518px desktop indent comes from the
 	 * widget's Elementor _margin, written three classes deep in the page CSS,
@@ -853,8 +849,14 @@ body.apit-menu-aberto {
 		margin-top: 36px !important;
 	}
 
+	/*
+	 * The rule kept the divider, which the design has under the buttons. It was
+	 * hidden here and the reason was never recorded — most likely because the
+	 * 112px top margin the widget carries for the desktop layout looked wrong at
+	 * this width. The margin is what needed fixing, not the line.
+	 */
 	.apit-hero .apit-hero__divider {
-		display: none;
+		margin-top: 40px !important;
 	}
 }
 

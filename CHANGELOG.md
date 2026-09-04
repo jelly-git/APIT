@@ -37,6 +37,26 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.6] - 2026-09-04
+
+### Corrigido
+- O divisor do hero volta a aparecer abaixo dos 1024px. Estava com
+  `display: none` desde o trabalho de responsivo da v0.18.x, sem razão
+  registada — provavelmente porque os 112px de margem superior que o widget
+  carrega para o desktop ficavam absurdos a esta largura. Era a margem que
+  precisava de correcção, não a linha: fica em 40px e a linha sai a 350x2 em
+  `rgba(255,255,255,0.5)`, entre os botões e o lockup Watch Portugal.
+- Removido um comentário duplicado no bloco de tablet, sobra de uma edição
+  anterior.
+
+### Notas
+- Procurei a linha branca vertical que o cliente reporta e **não existe no
+  CSS**: varri todos os elementos da página por bordas, contornos, sombras e
+  caixas finas, e a única linha é o divisor, horizontal. A vertical aparece
+  tanto na captura que fiz como no screenshot do cliente, sempre encostada à
+  margem, o que aponta para a moldura do modo dispositivo das ferramentas de
+  desenvolvimento e não para o site.
+
 ## [0.22.5] - 2026-09-04
 
 ### Corrigido
