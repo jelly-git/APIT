@@ -37,6 +37,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.22.11] - 2026-09-07
+
+### Alterado
+- Lupa do cabeçalho a 24x24px. A caixa do botão desceu de 30 para 24 e o
+  `mask-size` passou a `30px`, para que o glifo — que mede 24 unidades no
+  ficheiro de 30 — assente exactamente nas arestas da caixa. Com `contain`
+  ficaria a 19px.
+
+### Corrigido
+- Hover da lupa: muda a cor do ícone, não o fundo da caixa. O rosa `#c36` que
+  aparecia vinha do `reset.css` do tema pai, que o aplica a todos os
+  `button:hover`; não pertence a nenhuma paleta do projecto. A caixa fica
+  transparente e o glifo passa a magenta da marca — a máscara pinta com
+  `currentColor`, pelo que basta a `color`. Vale também para o botão de
+  pesquisa do menu mobile, com o mesmo defeito.
+
 ## [0.22.10] - 2026-09-04
 
 ### Corrigido

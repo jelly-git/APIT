@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.10
+Version: 0.22.11
 */
 
 :root {
@@ -178,8 +178,8 @@ ul {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 30px;
-	height: 30px;
+	width: 24px;
+	height: 24px;
 	color: #fff;
 	background: none;
 	border: none;
@@ -195,8 +195,9 @@ ul {
  * takes the shape and leaves the colour to the button, which is what lets it
  * follow the header on a page whose header is not white.
  *
- * The artwork is 30x30 with the glass drawn inside 24 of those, which is the
- * size the glyph it replaces occupied.
+ * The artwork is 30x30 with the glass drawn inside 24 of those, so `contain`
+ * renders the glass at 80% of whatever box it sits in. The two buttons size it
+ * differently from there — see each one below.
  */
 .apit-header__search-toggle::before,
 .apit-menu-mobile__pesquisa::before {
@@ -213,6 +214,49 @@ ul {
 	mask-position: center;
 	-webkit-mask-size: contain;
 	mask-size: contain;
+}
+
+/*
+ * The glass measures 24 units inside the file's 30-unit canvas, so rendering
+ * that canvas at 30px inside a 24px box lands the glass exactly on the box
+ * edges: the icon is 24x24 and so is the element around it.
+ *
+ * `contain` would fit the canvas instead of the glass and leave the glass at
+ * 19px, smaller than it was before the box shrank.
+ */
+.apit-header__search-toggle::before {
+	-webkit-mask-size: 30px 30px;
+	mask-size: 30px 30px;
+}
+
+/*
+ * Hover and focus.
+ *
+ * The parent theme's reset.css sets `background-color: #c36` and `color: #fff`
+ * on every `button:hover` and `button:focus`, which turned the whole box a pink
+ * that belongs to no palette here. The box stays transparent and the glass is
+ * what takes the colour — the mask paints with currentColor, so `color` alone
+ * recolours it.
+ *
+ * The colour goes on :focus-visible rather than :focus so it answers the
+ * keyboard without firing on a plain mouse click, but the background is killed
+ * on both, or clicking would still flash pink.
+ *
+ * No !important: a class outranks reset.css's bare `button:hover`, and the
+ * child stylesheet is printed after the parent's.
+ */
+.apit-header__search-toggle:hover,
+.apit-header__search-toggle:focus,
+.apit-menu-mobile__pesquisa:hover,
+.apit-menu-mobile__pesquisa:focus {
+	background: none;
+}
+
+.apit-header__search-toggle:hover,
+.apit-header__search-toggle:focus-visible,
+.apit-menu-mobile__pesquisa:hover,
+.apit-menu-mobile__pesquisa:focus-visible {
+	color: var(--apit-magenta);
 }
 
 .apit-header__cta {
