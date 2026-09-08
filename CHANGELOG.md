@@ -37,6 +37,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.25.4] - 2026-09-08
+
+### Corrigido
+- Cartões dos Documentos. Faltava o degradé deslocado que o desenho usa em vez
+  de uma sombra: turquesa no canto de cima a correr para magenta em baixo,
+  8px à direita e abaixo da capa, com cantos arredondados. O `overflow: hidden`
+  da capa teve de sair — recortava justamente o que tem de sobressair; o corte
+  passa a vir do `object-fit`, que já era quem fazia o trabalho.
+- Botão de download: contorno fino e texto no azul da marca, como no desenho,
+  em vez do contorno quase preto que tinha. Usa o `icon-download.svg` carregado,
+  copiado para o tema como se fez com a lupa — é interface, viaja com o código.
+  O glifo é uma máscara pintada com `currentColor`, pelo que segue o texto no
+  hover sem um segundo ficheiro.
+- **Altura das imagens**: `.elementor img { height: auto }` tem a mesma
+  especificidade que uma classe e é impressa depois desta folha, pelo que ganhava
+  o empate e cada capa tomava a proporção do ficheiro em vez da da caixa. Uma
+  capa horizontal saía com 150px numa moldura de 333px; uma vertical só parecia
+  certa por coincidência. Resolvido com duas classes, como já se fazia no logo
+  da banda Internacionalização — e aplicado também aos círculos e aos logótipos
+  dos Associados, onde era a mesma falha à espera.
+
 ## [0.25.3] - 2026-09-08
 
 ### Alterado

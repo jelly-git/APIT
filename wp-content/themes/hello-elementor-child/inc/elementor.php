@@ -84,35 +84,22 @@ add_filter( 'elementor/widget/render_content', 'apit_botao_descarrega_ficheiro',
  */
 function apit_sobre_icones_inline() {
 	/*
-	 * The Documentos page wears the same icon on its download links, and the
-	 * only place it is stored is the field on Sobre a APIT — so that page is
-	 * read for it rather than duplicating the field. A second copy would drift
-	 * from the first the moment one of them changed.
+	 * Only Sobre a APIT: the Documentos page has its own download glyph, which
+	 * ships with the theme and is drawn straight from the stylesheet — there is
+	 * no field to read for it and so nothing to print here.
 	 */
-	$id_sobre = 0;
-	$sobre    = get_page_by_path( 'sobre-apit' );
-
-	if ( $sobre ) {
-		$id_sobre = $sobre->ID;
-	}
-
-	if ( is_page( 'sobre-apit' ) ) {
-		$alvo = '.apit-sobre-hero';
-	} elseif ( is_page( 'documentos' ) ) {
-		$alvo = '.documentos';
-	} else {
+	if ( ! is_page( 'sobre-apit' ) ) {
 		return;
 	}
 
-	$icone = apit_media_url( (string) apit_campo( 'sobre_doc_icone', $id_sobre ), 'img' );
+	$icone = apit_media_url( (string) apit_campo( 'sobre_doc_icone', get_queried_object_id() ), 'img' );
 
 	if ( ! $icone ) {
 		return;
 	}
 
 	printf(
-		'<style id="apit-sobre-icones">%s{--apit-icone-doc:url("%s");}</style>' . "\n",
-		$alvo, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- a literal chosen above.
+		'<style id="apit-sobre-icones">.apit-sobre-hero{--apit-icone-doc:url("%s");}</style>' . "\n",
 		esc_url( $icone )
 	);
 }

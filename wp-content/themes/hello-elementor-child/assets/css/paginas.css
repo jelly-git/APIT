@@ -271,7 +271,7 @@
 	overflow: hidden;
 }
 
-.assoc-beneficios__circulo img {
+.assoc-beneficios .assoc-beneficios__circulo img {
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -386,7 +386,7 @@
 	overflow: hidden;
 }
 
-.assoc-passos__circulo img {
+.assoc-passos .assoc-passos__circulo img {
 	position: absolute;
 	inset: 0;
 	width: 100%;
@@ -522,7 +522,7 @@
 	height: 60px;
 }
 
-.assoc-logos__item img {
+.assoc-logos .assoc-logos__item img {
 	display: block;
 	width: auto;
 	height: 100%;
@@ -950,12 +950,55 @@
 }
 
 .documentos__capa {
+	position: relative;
 	aspect-ratio: 3 / 4;
-	overflow: hidden;
 	background: rgba(27, 42, 51, 0.06);
 }
 
-.documentos__capa img {
+/*
+ * The design uses an offset gradient behind each cover in place of a drop
+ * shadow — turquoise along the top edge running down to magenta at the bottom.
+ * Shifted 8px right and down, so only that band of it shows past the cover.
+ *
+ * A ::before with the image painted over it, rather than a negative z-index:
+ * at -1 it would fall behind the section's own background and disappear.
+ *
+ * `overflow: hidden` had to go — it was clipping the very thing that has to
+ * stick out. The crop now comes from object-fit on the image, which is what
+ * was doing the work anyway.
+ */
+.documentos__capa::before {
+	content: "";
+	position: absolute;
+	inset: 8px -8px -8px 8px;
+	/* Rounded, as the exported artwork is — the cover over it stays square. */
+	border-radius: 8px;
+	/*
+	 * Diagonal, from the turquoise corner down to the magenta one, matching the
+	 * asset the client sent. A vertical gradient read as a different shape
+	 * entirely once the band showing past the cover is only 8px wide: on the
+	 * right edge it is the diagonal that puts turquoise at the top and magenta
+	 * at the bottom, and along the bottom edge that it keeps magenta.
+	 */
+	background-image: linear-gradient(
+		148deg,
+		#35e3ab 0%,
+		#3fa9c9 34%,
+		#6b74c6 56%,
+		#c2459c 84%,
+		var(--apit-magenta) 100%
+	);
+}
+
+/*
+ * Two classes deep, and that is the whole point: Elementor's
+ * `.elementor img { height: auto }` has the same weight as a single class and
+ * is printed after this file, so at equal specificity it won and the cover took
+ * its own aspect ratio instead of the box's. A landscape cover came out 150px
+ * tall in a 333px frame; a portrait one only looked right by coincidence.
+ */
+.documentos .documentos__capa img {
+	position: relative;
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -971,27 +1014,46 @@
 	color: var(--apit-black);
 }
 
+/*
+ * The download pill: a thin outline and the label in the brand blue, as the
+ * design has it — not the near-black outline this used to be.
+ */
 .documentos__download {
 	display: inline-flex;
 	align-items: center;
-	gap: 8px;
-	margin-top: 12px;
-	padding: 7px 14px;
-	border: 1px solid rgba(27, 42, 51, 0.2);
+	gap: 9px;
+	margin-top: 14px;
+	padding: 10px 20px 9px;
+	border: 1px solid var(--apit-azul);
 	border-radius: 200px;
+	font-family: var(--apit-font);
+	font-weight: 500;
 	font-size: 11px;
-	letter-spacing: 1.2px;
+	line-height: 1;
+	letter-spacing: 1.4px;
 	text-transform: uppercase;
-	color: var(--apit-black);
+	color: var(--apit-azul);
+	transition: background-color 0.2s, color 0.2s;
 }
 
+/*
+ * The uploaded glyph, from the theme rather than the media library — the same
+ * choice the header's magnifier made, and for the same reason: it is part of
+ * the interface, so it travels with the code instead of depending on a media
+ * item nobody knows not to delete.
+ *
+ * A mask painted with currentColor, so the glyph follows the label on hover
+ * without a second file. The artwork is 11x12, and those are its own
+ * proportions — `contain` in a square box would letterbox it.
+ */
 .documentos__download::before {
 	content: "";
-	width: 12px;
+	width: 11px;
 	height: 12px;
+	flex-shrink: 0;
 	background-color: currentColor;
-	-webkit-mask-image: var(--apit-icone-doc, none);
-	mask-image: var(--apit-icone-doc, none);
+	-webkit-mask-image: url("../img/icon-download.svg");
+	mask-image: url("../img/icon-download.svg");
 	-webkit-mask-repeat: no-repeat;
 	mask-repeat: no-repeat;
 	-webkit-mask-position: center;
@@ -1001,7 +1063,8 @@
 }
 
 .documentos__download:hover {
-	border-color: var(--apit-black);
+	background-color: var(--apit-azul);
+	color: #fff;
 }
 
 /* ---------- Calendário em grelha ---------- */
