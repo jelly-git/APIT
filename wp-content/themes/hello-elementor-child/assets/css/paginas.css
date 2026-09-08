@@ -1013,12 +1013,14 @@
 	object-fit: cover;
 }
 
+/* Values from the Figma panel, not estimated from an export. */
 .documentos__titulo {
-	margin: 18px 0 0;
+	margin: 22px 0 0;
 	font-family: var(--apit-font);
-	font-weight: 400;
-	font-size: 16px;
-	line-height: 1.4;
+	font-weight: 500;
+	font-size: 22px;
+	line-height: 1.2;
+	letter-spacing: normal;
 	color: var(--apit-black);
 }
 
@@ -1026,22 +1028,30 @@
  * The download pill: a thin outline and the label in the brand blue, as the
  * design has it — not the near-black outline this used to be.
  */
+/*
+ * The outline is lighter than the label, which is the part that was off: both
+ * were the same blue, and the pill read as heavier than the design's. The
+ * border tint comes from the label colour rather than a second hex, so a change
+ * to one carries to the other.
+ */
 .documentos__download {
 	display: inline-flex;
 	align-items: center;
-	gap: 9px;
-	margin-top: 14px;
-	padding: 10px 20px 9px;
-	border: 1px solid var(--apit-azul);
+	gap: 10px;
+	margin-top: 16px;
+	padding: 11px 22px 10px;
+	/* The literal first, for a browser without color-mix. */
+	border: 1px solid rgba(74, 133, 200, 0.45);
+	border-color: color-mix(in srgb, var(--apit-azul) 45%, transparent);
 	border-radius: 200px;
 	font-family: var(--apit-font);
-	font-weight: 500;
+	font-weight: 400;
 	font-size: 11px;
 	line-height: 1;
 	letter-spacing: 1.4px;
 	text-transform: uppercase;
 	color: var(--apit-azul);
-	transition: background-color 0.2s, color 0.2s;
+	transition: border-color 0.2s, background-color 0.2s, color 0.2s;
 }
 
 /*

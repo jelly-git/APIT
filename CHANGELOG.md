@@ -37,6 +37,19 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.25.6] - 2026-09-08
+
+### Corrigido
+- Título do cartão de documento com os valores do Figma que o cliente forneceu:
+  Omnes Medium 22px, entrelinha 120%, sem letter-spacing. As minhas estimativas
+  a partir da imagem exportada estavam erradas nos três — 18px, peso 400 e
+  −0,2px.
+- Botão de download: o contorno passa a ser mais claro do que a etiqueta. Os
+  dois usavam o mesmo azul e a pastilha lia-se mais pesada do que no desenho. O
+  tom do contorno é derivado da cor do texto com `color-mix`, para não haver um
+  segundo valor a manter em sincronia; com um literal antes, para um browser sem
+  `color-mix`.
+
 ## [0.25.5] - 2026-09-08
 
 ### Corrigido
