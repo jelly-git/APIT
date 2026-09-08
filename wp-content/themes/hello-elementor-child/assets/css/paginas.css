@@ -68,11 +68,38 @@
 	margin: 0 !important;
 }
 
-.pagina-hero__col {
-	max-width: 1340px;
-	margin-inline: auto;
-	padding-inline: 20px;
+/*
+ * The content columns are Elementor containers, and Elementor writes
+ * `margin: 0` plus its own padding for every container into the per-page
+ * stylesheet — three classes deep and printed after this file. A plain
+ * `margin-inline: auto` here is simply ignored, which is what left the hero,
+ * the "Quem pode associar-se" band and the double block flush against the left
+ * edge of the screen.
+ *
+ * Grouped rather than repeated on each, so a fifth column joining them is one
+ * more selector and not another chance to forget the !important.
+ */
+.pagina-hero__col,
+.banda-aderir__col,
+.faq__linha {
 	width: 100%;
+	max-width: 1340px !important;
+	margin-inline: auto !important;
+	padding-inline: 20px !important;
+}
+
+/*
+ * These two paint a full-bleed background, so the box itself has to stay the
+ * width of the screen and the content is centred with padding instead — the
+ * same trick the Sobre a APIT contacts block uses.
+ *
+ * 670px is half the 1340px column; max() keeps a 20px gutter once the screen is
+ * narrower than the column. The vertical padding set on the container in
+ * Elementor is left alone.
+ */
+.apit-bloco-duplo,
+.apit-banda-inter {
+	padding-inline: max(20px, calc(50% - 670px)) !important;
 }
 
 .pagina-hero__crumb,
@@ -1128,4 +1155,15 @@
 	.banda-inter__col {
 		max-width: 100%;
 	}
+}
+
+/*
+ * The container that holds a shared template. Elementor gives every container
+ * 10px of horizontal padding by default, which inset the block by 10px on each
+ * side — visible as a pale strip down both edges of the Internacionalização
+ * band, whose background is a gradient. The block below it centres its own
+ * content, so the wrapper has no reason to add any.
+ */
+.apit-sangra {
+	padding-inline: 0 !important;
 }

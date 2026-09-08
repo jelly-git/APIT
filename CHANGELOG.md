@@ -37,6 +37,33 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.25.1] - 2026-09-08
+
+### Corrigido
+- O hero das páginas novas, a banda "Quem pode associar-se" e o bloco
+  "Documentação de Apoio / Ainda não é associado?" estavam encostados à
+  esquerda. São containers do Elementor, e o Elementor escreve `margin: 0` e o
+  seu próprio padding para cada container na folha por página — três classes de
+  profundidade e depois da nossa. A `margin-inline: auto` era simplesmente
+  ignorada.
+  - Colunas de conteúdo: `max-width`, `margin-inline` e `padding-inline` com
+    `!important`.
+  - Blocos com fundo a sangrar: a caixa fica à largura do ecrã e o conteúdo
+    centra-se por `padding-inline: max(20px, calc(50% - 670px))`, o mesmo que a
+    secção de contactos da Sobre a APIT já usava.
+- Os containers que envolvem um Saved Template levavam os 10px de padding por
+  omissão do Elementor, o que inseria a banda 10px de cada lado — visível como
+  uma tira clara nas arestas do degradé. Passaram a ter a classe `apit-sangra`,
+  com o padding a zero.
+
+### Alterado
+- O vídeo do hero passa a vir sempre do campo ACF, nas seis páginas. A Home e a
+  Sobre a APIT ainda tinham o nome do ficheiro dentro do shortcode
+  (`video="homepage.mp4"`), que era precisamente o hardcoding que o grupo de
+  campos veio remover — e que continuava a ganhar ao campo, por desenho.
+  As quatro páginas novas ficam com `homepage.mp4` como ponto de partida
+  visível; é um campo por página, pelo que trocar uma não afecta as outras.
+
 ## [0.25.0] - 2026-09-08
 
 ### Adicionado
