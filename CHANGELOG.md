@@ -37,6 +37,33 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.24.0] - 2026-09-08
+
+### Adicionado
+- Base das páginas **Associados**, **Internacionalização**, **Calendário** e
+  **Documentos**. Só estrutura e campos; templates e CSS vêm a seguir.
+- CPT `apit_documento` com a taxonomia `apit_area_documento` e os três termos
+  do desenho: Anuários, Brochuras, Estudos. Um tipo com taxonomia em vez de
+  três tipos — uma quarta área passa a ser um termo que o cliente acrescenta.
+  Ordena por `menu_order`, não pela data, porque o desenho mostra uma sequência
+  deliberada de capas.
+- Página Internacionalização (#137), fora do menu por indicação do cliente.
+- Grupos `Associados — conteúdos` e `Internacionalização — conteúdos`. O
+  Calendário e os Documentos não têm grupo: o conteúdo vem dos CPT e o texto do
+  hero de widgets do Elementor, como na Sobre a APIT.
+- `[apit_template id="X"]` — renderiza um Saved Template do Elementor ao vivo,
+  pela API `get_builder_content_for_display`. É o que o widget de Template do
+  Pro faz e o grátis não tem: um Saved Template inserido pela via normal é
+  **copiado**, e editá-lo depois não muda as páginas que levaram cópia. Assim os
+  blocos repetidos das três páginas editam-se uma vez, dentro do Elementor.
+- O grupo `Hero — fundo` passa a cobrir as seis páginas com hero.
+
+### Notas
+- As medidas destas páginas vão ser derivadas dos screenshots do cliente à
+  escala do desenho (1920px): o limite de chamadas do MCP do Figma esgotou-se
+  outra vez, com os nós `351:958`, `351:1869`, `353:3042` e `353:3832` ainda por
+  ler. Confirmar quando o limite renovar.
+
 ## [0.23.2] - 2026-09-08
 
 ### Corrigido

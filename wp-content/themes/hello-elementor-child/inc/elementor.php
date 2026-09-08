@@ -99,3 +99,44 @@ function apit_sobre_icones_inline() {
 	);
 }
 add_action( 'wp_head', 'apit_sobre_icones_inline', 20 );
+
+/**
+ * Renders a saved Elementor template by ID: [apit_template id="123"].
+ *
+ * This is what Elementor Pro's Template widget does, and what the free plugin
+ * leaves out. It matters because a saved template inserted the normal way is
+ * *copied* into the page: editing the template afterwards changes nothing on
+ * the pages that took a copy. Pro's Global Widget is the feature that
+ * propagates, and it is not in the free plugin — nor is an
+ * [elementor-template] shortcode, which only registers [elementor-element].
+ *
+ * Rendering through Elementor's own get_builder_content_for_display means the
+ * block is read live from the template on every request, so the same block on
+ * the Internacionalização, Calendário and Documentos pages is edited once, in
+ * Elementor, and changes on all three.
+ *
+ * with_css is left on so the template's own generated CSS is printed on a page
+ * that Elementor would not otherwise know needs it.
+ */
+function apit_shortcode_template( $atts ) {
+	$atts = shortcode_atts( [ 'id' => '' ], $atts, 'apit_template' );
+	$id   = (int) $atts['id'];
+
+	if ( ! $id || ! class_exists( '\Elementor\Plugin' ) ) {
+		return '';
+	}
+
+	$template = get_post( $id );
+
+	/*
+	 * Only from the template library, and only if published. Without this the
+	 * shortcode would render any post by ID — including a draft, or a page,
+	 * which would nest a whole page inside another.
+	 */
+	if ( ! $template || 'elementor_library' !== $template->post_type || 'publish' !== $template->post_status ) {
+		return '';
+	}
+
+	return \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( $id, true );
+}
+add_shortcode( 'apit_template', 'apit_shortcode_template' );
