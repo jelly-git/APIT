@@ -3,17 +3,25 @@
  * Internacionalização — the full-bleed gradient band carrying the Watch
  * Portugal lockup.
  *
- * Content comes from the ACF group on the page
- * (Sobre a APIT › Internacionalização).
+ * Used on Sobre a APIT, on the Calendário page and on Documentos. The copy is
+ * the same on all three, so the fields are always read from Sobre a APIT
+ * whichever page is rendering: one source and one screen to edit it in, rather
+ * than the same paragraph typed three times and drifting apart.
+ *
+ * That is also why this is the band those pages use instead of a second
+ * implementation — the block already existed here, styled and editable.
  */
-$titulo = trim( (string) apit_campo( 'sobre_inter_titulo' ) );
-$texto  = trim( (string) apit_campo( 'sobre_inter_texto' ) );
-$botao  = trim( (string) apit_campo( 'sobre_inter_botao' ) );
-$url    = trim( (string) apit_campo( 'sobre_inter_url' ) );
+$origem = get_page_by_path( 'sobre-apit' );
+$origem = $origem ? $origem->ID : null;
+
+$titulo = trim( (string) apit_campo( 'sobre_inter_titulo', $origem ) );
+$texto  = trim( (string) apit_campo( 'sobre_inter_texto', $origem ) );
+$botao  = trim( (string) apit_campo( 'sobre_inter_botao', $origem ) );
+$url    = trim( (string) apit_campo( 'sobre_inter_url', $origem ) );
 
 // Falls back to the copy that ships with the theme, so the band is never left
 // with an empty half if the field is cleared.
-$marca = apit_media_url( (string) apit_campo( 'sobre_inter_marca' ), 'img' );
+$marca = apit_media_url( (string) apit_campo( 'sobre_inter_marca', $origem ), 'img' );
 
 if ( ! $marca ) {
 	$marca = get_stylesheet_directory_uri() . '/assets/img/logo-watch-portugal-branco.png';

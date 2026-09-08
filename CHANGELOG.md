@@ -37,6 +37,38 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.25.3] - 2026-09-08
+
+### Alterado
+- A banda **Internacionalização** do Calendário e dos Documentos passa a ser o
+  módulo que já existia na Sobre a APIT, em vez de um Saved Template paralelo.
+  Duas implementações do mesmo bloco era uma a mais: a da Sobre já estava
+  estilada e editável. O template duplicado foi apagado.
+- Esse módulo passa a ler os campos **sempre da Sobre a APIT**, qualquer que
+  seja a página que o renderiza — uma origem e um ecrã para a editar, em vez do
+  mesmo parágrafo escrito três vezes.
+- A CSS dele saiu de `sobre.css` para `assets/css/internacionalizacao.css`,
+  carregada nas três páginas que o mostram. Ficheiro próprio e não `style.css`,
+  para as outras três não a levarem sem uso.
+- Os nove círculos dos Associados ficaram ligados aos repetidores, casando pelo
+  nome do ficheiro. Um deles precisou de ligação directa: o ficheiro chama-se
+  `envie-a-cadidatura.png`, sem o «n».
+
+### Corrigido
+- O bloco *Documentação de Apoio / Ainda não é associado?* amontoava-se à
+  esquerda: como container flex sem folga, as duas colunas ficavam encostadas.
+  Passou a grelha de duas colunas de 470px com 77px de intervalo, centrada — no
+  desenho os títulos começam aos 429px e 966px do quadro de 1920px; ficaram aos
+  454px e 1001px.
+- O `gap` e o `justify-content` precisaram de `!important`, e não por
+  especificidade: o Elementor conduz o container por propriedades
+  personalizadas (`gap: var(--gap)` em `.e-con`, com `--gap` a 0), e a sua
+  `frontend.min.css` é impressa depois desta folha — a declaração perdia o
+  empate por ordem de origem.
+- Em mobile o bloco mantinha duas colunas de 136px e provocava 19px de
+  overflow: a regra antiga usava `flex-direction`, que deixou de se aplicar a
+  uma grelha.
+
 ## [0.25.1] - 2026-09-08
 
 ### Corrigido

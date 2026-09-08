@@ -785,12 +785,36 @@
 
 /* ---------- Blocos partilhados ---------- */
 
+/*
+ * Two columns spread across the page, not two boxes pushed against the left.
+ *
+ * The Elementor container is a flex row with no gap, so `max-width` on each
+ * column left them adjacent and the pair sat at the start of the content
+ * column. In the design they are a pair of ~470px columns with ~77px between
+ * them, centred — measured from the client's export: the headings start at
+ * 429px and 966px of the 1920px frame.
+ *
+ * display and grid-template-columns need !important because Elementor writes
+ * `display: flex` and `flex-direction: row` for the container into the per-page
+ * stylesheet, after this file.
+ */
 .apit-bloco-duplo {
+	display: grid !important;
+	grid-template-columns: repeat(2, minmax(0, 470px));
+	/*
+	 * gap and justify-content need !important as well, and not because of
+	 * specificity: Elementor's frontend.min.css and the per-page stylesheet are
+	 * both printed after this file, and it drives the container through custom
+	 * properties — `gap: var(--gap)` on .e-con, with --gap set to 0 for this
+	 * container. A plain declaration here loses the tie on source order.
+	 */
+	justify-content: center !important;
+	gap: 77px !important;
 	background: var(--apit-branco);
 }
 
 .bloco-duplo__col {
-	max-width: 470px;
+	max-width: 100%;
 }
 
 .apit-bloco-duplo .bloco-duplo__titulo .elementor-heading-title {
@@ -830,10 +854,19 @@
 	color: #fff;
 }
 
+/*
+ * Text on the left, the lockup on the right, each taking half the width — in
+ * the design the logo sits from 1009px to 1610px of the 1920px frame, well
+ * clear of the text. As a flex row with no gap it was landing near the middle
+ * instead, at less than half the size.
+ */
 .apit-banda-inter {
 	position: relative;
 	overflow: hidden;
+	display: grid !important;
+	grid-template-columns: 1fr 1fr;
 	align-items: center;
+	gap: 60px;
 	background-color: #f41892;
 	background-image:
 		radial-gradient(70% 130% at 4% 50%, #f41892 0%, rgba(244, 24, 146, 0) 56%),
@@ -874,10 +907,16 @@
 	justify-content: center;
 }
 
+/*
+ * 600px, the width the lockup has in the design — the file is 356px wide, so
+ * it is being scaled up. It is a PNG of outlined lettering, which survives
+ * that better than solid type would, but an SVG export would survive it
+ * outright.
+ */
 .apit-watch-portugal img {
 	display: block;
 	width: 100%;
-	max-width: 340px;
+	max-width: 600px;
 	height: auto;
 }
 
@@ -1140,8 +1179,14 @@
 		margin-top: 44px;
 	}
 
+	/*
+	 * One column on a phone. `flex-direction` no longer does anything here —
+	 * the block is a grid on wider screens — so it is the template that has to
+	 * collapse, and the 77px gutter becomes vertical space between the two.
+	 */
 	.apit-bloco-duplo {
-		flex-direction: column !important;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 56px !important;
 	}
 
 	.bloco-duplo__col {

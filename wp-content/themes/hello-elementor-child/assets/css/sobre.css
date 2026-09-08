@@ -493,70 +493,6 @@
 }
 
 /* -------------------------------------------------------------------------
- * Internacionalização
- * ---------------------------------------------------------------------- */
-
-.sobre-inter {
-	position: relative;
-	padding: 120px 0;
-	overflow: hidden;
-	/*
-	 * Magenta through to turquoise, with the soft hotspots the design has
-	 * sitting over the linear base.
-	 */
-	background-image:
-		radial-gradient(80% 120% at 8% 20%, rgba(244, 24, 146, 0.9) 0%, rgba(244, 24, 146, 0) 60%),
-		radial-gradient(70% 110% at 62% 8%, rgba(128, 72, 166, 0.55) 0%, rgba(128, 72, 166, 0) 62%),
-		radial-gradient(90% 130% at 100% 85%, rgba(46, 198, 176, 0.95) 0%, rgba(46, 198, 176, 0) 65%),
-		linear-gradient(100deg, var(--apit-magenta) 0%, #e02a9c 30%, #a0459f 54%, #55b8bd 78%, var(--apit-turquesa) 100%);
-}
-
-.sobre-inter__interior {
-	display: flex;
-	align-items: center;
-	gap: 80px;
-}
-
-.sobre-inter__texto {
-	flex: 0 0 46%;
-	max-width: 46%;
-}
-
-.sobre-inter__titulo {
-	margin: 0;
-	font-family: var(--apit-font);
-	font-size: 40px;
-	font-weight: 400;
-	line-height: 1.2;
-	color: #fff;
-}
-
-.sobre-inter__descricao {
-	margin: 26px 0 38px;
-	font-family: var(--apit-font);
-	font-size: 16px;
-	line-height: 1.65;
-	color: rgba(255, 255, 255, 0.92);
-}
-
-.sobre-inter__marca {
-	flex: 1 1 auto;
-	text-align: center;
-}
-
-/*
- * Capped at the artwork's own width so it is never upscaled. Two classes deep
- * because Elementor's `img { max-width: 100% }` has the same specificity as a
- * single class and is printed after this file — at equal weight it would win
- * and stretch the lockup past its native size.
- */
-.sobre-inter .sobre-inter__marca img {
-	width: 100%;
-	max-width: 589px;
-	height: auto;
-}
-
-/* -------------------------------------------------------------------------
  * Contactos
  * ---------------------------------------------------------------------- */
 
@@ -712,16 +648,6 @@
 	 */
 	.sobre-orgaos__linha {
 		gap: 40px;
-	}
-
-	.sobre-inter__interior {
-		flex-direction: column;
-		gap: 50px;
-	}
-
-	.sobre-inter__texto {
-		flex: 1 1 auto;
-		max-width: 100%;
 	}
 
 	.sobre-contactos__interior {
@@ -894,31 +820,6 @@
 
 	.sobre-orgaos__membro-cargo {
 		font-size: 13px;
-	}
-
-	.sobre-inter {
-		padding: 70px 0;
-	}
-
-	.sobre-inter__interior {
-		gap: 40px;
-	}
-
-	.sobre-inter__titulo {
-		font-size: 30px;
-	}
-
-	.sobre-inter__descricao {
-		margin: 20px 0 30px;
-	}
-
-	/*
-	 * The mobile design ends this band at the button, without the Watch
-	 * Portugal lockup — it is the same mark the footer already carries a few
-	 * screens below. One line to bring back if it is wanted here too.
-	 */
-	.sobre-inter__marca {
-		display: none;
 	}
 
 	.sobre-contactos__info {
