@@ -943,20 +943,32 @@
 	 * that the cover stops reading as a cover.
 	 */
 	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-	gap: 40px 28px;
+	/*
+	 * 37px between columns, the same gutter the calendar cards use — and the
+	 * one the design's row implies: five 230px covers with four gutters come to
+	 * 1298px inside the 1340px column.
+	 */
+	gap: 40px 37px;
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
+/*
+ * Measurements from the Figma panel: the cover and the gradient behind it are
+ * both 230x322 with a 3px radius, and the gradient sits 7px right and down
+ * (top 1581 against the cover's 1574).
+ *
+ * The ratio is written as 230/322 rather than rounded to 3/4 — 0.714 against
+ * 0.75 is a 9px difference in height at this width, enough to crop a cover
+ * differently from the artwork it was made from.
+ */
 .documentos__capa {
 	position: relative;
-	aspect-ratio: 3 / 4;
-	/*
-	 * One value for the cover and for the gradient behind it, so they can never
-	 * end up with different corners.
-	 */
-	--apit-capa-raio: 8px;
+	aspect-ratio: 230 / 322;
+	/* One value for the cover and the gradient, so they cannot diverge. */
+	--apit-capa-raio: 3px;
+	--apit-capa-desvio: 7px;
 	/* Rounds this box's own placeholder background, and clips nothing: without
 	 * `overflow: hidden` the gradient is still free to stick out. */
 	border-radius: var(--apit-capa-raio);
@@ -978,22 +990,22 @@
 .documentos__capa::before {
 	content: "";
 	position: absolute;
-	inset: 8px -8px -8px 8px;
+	inset: var(--apit-capa-desvio) calc(-1 * var(--apit-capa-desvio)) calc(-1 * var(--apit-capa-desvio)) var(--apit-capa-desvio);
 	border-radius: var(--apit-capa-raio);
 	/*
-	 * Diagonal, from the turquoise corner down to the magenta one, matching the
-	 * asset the client sent. A vertical gradient read as a different shape
-	 * entirely once the band showing past the cover is only 8px wide: on the
-	 * right edge it is the diagonal that puts turquoise at the top and magenta
-	 * at the bottom, and along the bottom edge that it keeps magenta.
+	 * The three stops Figma reports, corner to corner. `to bottom right` rather
+	 * than a fixed angle, so the axis stays on the diagonal whatever the box's
+	 * proportions — which is what puts the spring green at the top of the strip
+	 * showing on the right and the magenta along the bottom one.
+	 *
+	 * The magenta here is rgb(230, 54, 146), not the brand --apit-magenta
+	 * (#f41892). Kept as the design gives it rather than snapped to the token.
 	 */
 	background-image: linear-gradient(
-		148deg,
-		#35e3ab 0%,
-		#3fa9c9 34%,
-		#6b74c6 56%,
-		#c2459c 84%,
-		var(--apit-magenta) 100%
+		to bottom right,
+		rgb(57, 240, 185) 0%,
+		rgb(74, 133, 200) 52%,
+		rgb(230, 54, 146) 100%
 	);
 }
 
@@ -1029,10 +1041,13 @@
  * design has it — not the near-black outline this used to be.
  */
 /*
- * The outline is lighter than the label, which is the part that was off: both
- * were the same blue, and the pill read as heavier than the design's. The
- * border tint comes from the label colour rather than a second hex, so a change
- * to one carries to the other.
+ * Values from the Figma panel: Omnes Medium 12px, line-height 100%,
+ * letter-spacing 3% — 0.36px at this size — and a 2px border in the label's own
+ * colour, at full opacity.
+ *
+ * currentColor for the border, since it is the same blue as the text: one
+ * declaration then covers the hover as well, the way the header's Área
+ * Reservada button already does.
  */
 .documentos__download {
 	display: inline-flex;
@@ -1040,18 +1055,16 @@
 	gap: 10px;
 	margin-top: 16px;
 	padding: 11px 22px 10px;
-	/* The literal first, for a browser without color-mix. */
-	border: 1px solid rgba(74, 133, 200, 0.45);
-	border-color: color-mix(in srgb, var(--apit-azul) 45%, transparent);
+	border: 2px solid currentColor;
 	border-radius: 200px;
 	font-family: var(--apit-font);
-	font-weight: 400;
-	font-size: 11px;
+	font-weight: 500;
+	font-size: 12px;
 	line-height: 1;
-	letter-spacing: 1.4px;
+	letter-spacing: 0.36px;
 	text-transform: uppercase;
 	color: var(--apit-azul);
-	transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+	transition: background-color 0.2s, color 0.2s;
 }
 
 /*
@@ -1061,13 +1074,16 @@
  * item nobody knows not to delete.
  *
  * A mask painted with currentColor, so the glyph follows the label on hover
- * without a second file. The artwork is 11x12, and those are its own
- * proportions — `contain` in a square box would letterbox it.
+ * without a second file.
+ *
+ * The frame is the 15x15 the design gives it. The artwork inside is 11x12, so
+ * `contain` fits it to the height and it comes out 13.75 wide — which is the
+ * glyph at its designed size rather than stretched to a square it never was.
  */
 .documentos__download::before {
 	content: "";
-	width: 11px;
-	height: 12px;
+	width: 15px;
+	height: 15px;
 	flex-shrink: 0;
 	background-color: currentColor;
 	-webkit-mask-image: url("../img/icon-download.svg");

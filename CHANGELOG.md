@@ -37,6 +37,26 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.25.8] - 2026-09-08
+
+### Corrigido
+- Cartão de documento com as medidas do painel do Figma, que corrigem quatro
+  aproximações minhas:
+  - **Proporção 230/322** em vez de 3/4 arredondado. 0,714 contra 0,75 são 9px
+    de diferença em altura a esta largura, o que basta para recortar uma capa
+    diferentemente do original.
+  - **Raio 3px**, não 8px — na capa, na imagem e no degradé.
+  - **Desvio do degradé 7px**, não 8px (topo 1581 contra 1574 da capa).
+  - **Degradé com as três paragens que o Figma reporta**, canto a canto:
+    `rgb(57,240,185)` → `rgb(74,133,200)` → `rgb(230,54,146)`. Esta magenta não
+    é a `--apit-magenta` da marca (`#f41892`); fica como o desenho a dá.
+- Botão com os valores fornecidos: Omnes Medium 12px, entrelinha 100%,
+  letter-spacing 3% (0,36px), maiúsculas, e contorno de **2px na cor cheia** —
+  não mais claro, como eu tinha inferido. Sendo igual ao texto, usa
+  `currentColor`. Ícone com moldura de 15×15.
+- Intervalo da grelha a 37px, o mesmo dos cartões do calendário: cinco capas de
+  230px com quatro intervalos dão 1298px na coluna de 1340px.
+
 ## [0.25.6] - 2026-09-08
 
 ### Corrigido
