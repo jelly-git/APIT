@@ -3,7 +3,11 @@
     "title": "Hero — fundo",
     "fields": [
         {
+            "key": "field_hero_fundo_video",
+            "label": "Vídeo",
+            "name": "hero_fundo_video",
             "aria-label": "",
+            "type": "file",
             "instructions": "Ficheiro de vídeo da biblioteca de multimédia. Quando está preenchido, é o vídeo que aparece no desktop e as imagens abaixo ficam de reserva. Para passar a imagem, esvazie este campo.\n\nNão aparece em ecrãs pequenos: um ficheiro de 1920px recortado para a largura de um telemóvel mostra cerca de 15% da imagem. Aí valem as imagens de mobile.",
             "required": 0,
             "conditional_logic": 0,
@@ -12,10 +16,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_hero_fundo_video",
-            "label": "Vídeo",
-            "name": "hero_fundo_video",
-            "type": "file",
             "return_format": "id",
             "library": "all",
             "min_size": "",
@@ -23,7 +23,11 @@
             "mime_types": "mp4, webm"
         },
         {
+            "key": "field_hero_fundo_imagens",
+            "label": "Imagens — desktop",
+            "name": "hero_fundo_imagens",
             "aria-label": "",
+            "type": "gallery",
             "instructions": "Uma imagem fica fixa. Duas ou mais passam a slider, na ordem em que aqui estiverem — arraste para reordenar.\n\nUsadas no desktop quando não há vídeo.",
             "required": 0,
             "conditional_logic": 0,
@@ -32,10 +36,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_hero_fundo_imagens",
-            "label": "Imagens — desktop",
-            "name": "hero_fundo_imagens",
-            "type": "gallery",
             "return_format": "id",
             "library": "all",
             "min": "",
@@ -51,7 +51,11 @@
             "preview_size": "medium"
         },
         {
+            "key": "field_hero_fundo_imagens_mobile",
+            "label": "Imagens — mobile",
+            "name": "hero_fundo_imagens_mobile",
             "aria-label": "",
+            "type": "gallery",
             "instructions": "O mesmo comportamento, para as imagens ao alto. São estas que aparecem abaixo dos 768px, dentro da banda de cor no topo da secção.\n\nSe deixar vazio, usa as imagens de desktop.",
             "required": 0,
             "conditional_logic": 0,
@@ -60,10 +64,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_hero_fundo_imagens_mobile",
-            "label": "Imagens — mobile",
-            "name": "hero_fundo_imagens_mobile",
-            "type": "gallery",
             "return_format": "id",
             "library": "all",
             "min": "",
@@ -79,7 +79,11 @@
             "preview_size": "medium"
         },
         {
+            "key": "field_hero_fundo_intervalo",
+            "label": "Intervalo do slider",
+            "name": "hero_fundo_intervalo",
             "aria-label": "",
+            "type": "number",
             "instructions": "Tempo que cada imagem fica visível, em milésimos de segundo. 4000 são 4 segundos.\n\nSó conta com duas ou mais imagens. Vazio vale 4000, e valores abaixo de 1000 são elevados a 1000 — mais rápido do que isso o slider pisca.",
             "required": 0,
             "conditional_logic": 0,
@@ -88,15 +92,11 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_hero_fundo_intervalo",
-            "label": "Intervalo do slider",
-            "name": "hero_fundo_intervalo",
-            "type": "number",
             "default_value": 4000,
             "min": 1000,
             "max": 30000,
             "step": 500,
-            "placeholder": "4000",
+            "placeholder": 4000,
             "prepend": "",
             "append": "ms"
         }
@@ -126,5 +126,8 @@
     "active": true,
     "description": "O fundo da secção do hero. O degradé da secção continua por baixo, e é ele que se vê enquanto o vídeo carrega ou se nenhum campo estiver preenchido.",
     "show_in_rest": 0,
-    "modified": 1788912000
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1788877782
 }

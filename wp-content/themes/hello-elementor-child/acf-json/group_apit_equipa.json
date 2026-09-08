@@ -3,7 +3,11 @@
     "title": "Dados do membro",
     "fields": [
         {
+            "key": "field_equipa_cargo",
+            "label": "Cargo",
+            "name": "apit_equipa_cargo",
             "aria-label": "",
+            "type": "text",
             "instructions": "Ex.: Presidente Executiva. Aparece sob o nome, na página Sobre a APIT. O nome vem do título e a fotografia da imagem de destaque.",
             "required": 0,
             "conditional_logic": 0,
@@ -12,10 +16,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_equipa_cargo",
-            "label": "Cargo",
-            "name": "apit_equipa_cargo",
-            "type": "text",
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -41,5 +41,8 @@
     "active": true,
     "description": "A ordem em que os membros aparecem vem do campo Ordem, na caixa Atributos.",
     "show_in_rest": 0,
-    "modified": 1788321600
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1788877613
 }

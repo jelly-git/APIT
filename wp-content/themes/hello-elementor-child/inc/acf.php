@@ -32,6 +32,53 @@ function apit_acf_carregar_json( $caminhos ) {
 add_filter( 'acf/settings/load_json', 'apit_acf_carregar_json' );
 
 /**
+ * Keeps machine-specific keys out of the versioned JSON.
+ *
+ * ACF attaches `local_file` to a group it loaded from JSON — an absolute path,
+ * "C:/Users/.../acf-json/group_x.json" on this machine — and writes it straight
+ * back out when the group is saved. A file whose whole job is to describe
+ * fields would then carry one developer's directory layout to the server and
+ * into every diff.
+ *
+ * It runs at 20 because ACF_Local_JSON::update_field_group writes the file at
+ * 10 and the action passes the array by value: there is no way to strip the key
+ * before it goes in, so the file is rewritten after the fact.
+ *
+ * acf_json_encode is ACF's own encoder, so the formatting is identical to what
+ * it would have written and this leaves no diff of its own.
+ */
+function apit_acf_limpar_chaves_de_runtime( $grupo ) {
+	if ( empty( $grupo['key'] ) || ! function_exists( 'acf_json_encode' ) ) {
+		return;
+	}
+
+	$ficheiro = apit_acf_pasta_json() . '/' . $grupo['key'] . '.json';
+
+	if ( ! is_file( $ficheiro ) || ! is_writable( $ficheiro ) ) {
+		return;
+	}
+
+	$dados = json_decode( file_get_contents( $ficheiro ), true );
+
+	if ( ! is_array( $dados ) ) {
+		return;
+	}
+
+	$sujas = array_intersect( [ 'local_file', 'local' ], array_keys( $dados ) );
+
+	if ( ! $sujas ) {
+		return;
+	}
+
+	foreach ( $sujas as $chave ) {
+		unset( $dados[ $chave ] );
+	}
+
+	file_put_contents( $ficheiro, acf_json_encode( $dados ) . PHP_EOL );
+}
+add_action( 'acf/update_field_group', 'apit_acf_limpar_chaves_de_runtime', 20 );
+
+/**
  * Reads a field, and keeps working when ACF is not installed.
  *
  * The plugin is licensed and therefore not in the repository, so a deploy can

@@ -3,7 +3,11 @@
     "title": "Órgão e função",
     "fields": [
         {
+            "key": "field_orgao_orgao",
+            "label": "Órgão",
+            "name": "apit_orgao_social_orgao",
             "aria-label": "",
+            "type": "select",
             "instructions": "Determina em que linha da secção Órgãos Sociais aparece.",
             "required": 1,
             "conditional_logic": 0,
@@ -12,21 +16,27 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_orgao_orgao",
-            "label": "Órgão",
-            "name": "apit_orgao_social_orgao",
-            "type": "select",
-            "choices": [],
-            "default_value": "",
+            "choices": {
+                "direcao": "Direção",
+                "assembleia-geral": "Assembleia Geral",
+                "conselho-fiscal": "Conselho Fiscal"
+            },
+            "default_value": false,
             "return_format": "value",
             "multiple": 0,
             "allow_null": 1,
             "ui": 0,
             "ajax": 0,
-            "placeholder": ""
+            "placeholder": "",
+            "create_options": 0,
+            "save_options": 0
         },
         {
+            "key": "field_orgao_cargo",
+            "label": "Função",
+            "name": "apit_orgao_social_cargo",
             "aria-label": "",
+            "type": "text",
             "instructions": "Ex.: Presidente, Vice-Presidente, Secretário, Vogal.",
             "required": 0,
             "conditional_logic": 0,
@@ -35,10 +45,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_orgao_cargo",
-            "label": "Função",
-            "name": "apit_orgao_social_cargo",
-            "type": "text",
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -64,5 +70,8 @@
     "active": true,
     "description": "O nome da entidade vem do título.",
     "show_in_rest": 0,
-    "modified": 1788321600
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1788877614
 }

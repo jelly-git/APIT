@@ -37,6 +37,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.23.1] - 2026-09-08
+
+### Corrigido
+- Os grupos de campos aparecem agora em **Tudo** e podem ser editados no BO. Só
+  existiam como JSON no tema, e o ACF lista em Tudo os registos da base de
+  dados — um grupo só em JSON aparece a cinzento, em "Sincronização
+  disponível", e não abre. Os seis foram importados: 6 grupos e 36 campos.
+- Guarda em `inc/acf.php` que retira `local_file` e `local` do JSON depois de o
+  ACF o gravar. São chaves de runtime, e o `local_file` é um caminho absoluto —
+  `C:/Users/...` — que iria para o servidor num ficheiro cuja função é
+  descrever campos. Corre à prioridade 20 porque o ACF escreve o ficheiro à 10
+  e a acção passa o array por valor, o que impede tirar a chave antes.
+
+### Alterado
+- Os seis JSON ficaram na forma canónica do ACF: ordem das chaves normalizada e
+  os campos `display_title`, `allow_ai_access` e `ai_description` que esta
+  versão acrescenta. Nada de conteúdo mudou, e daqui em diante uma edição pelo
+  BO produz diferenças mínimas.
+
 ## [0.23.0] - 2026-09-08
 
 ### Adicionado

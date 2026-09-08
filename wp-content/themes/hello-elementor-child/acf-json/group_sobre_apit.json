@@ -3,7 +3,11 @@
     "title": "Sobre a APIT — conteúdos",
     "fields": [
         {
+            "key": "field_sobre_tab_docs",
+            "label": "Documentos",
+            "name": "",
             "aria-label": "",
+            "type": "tab",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -12,15 +16,16 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_tab_docs",
-            "label": "Documentos",
-            "name": "",
-            "type": "tab",
             "placement": "top",
-            "endpoint": 0
+            "endpoint": 0,
+            "selected": 0
         },
         {
+            "key": "field_sobre_doc_icone",
+            "label": "Ícone dos botões",
+            "name": "sobre_doc_icone",
             "aria-label": "",
+            "type": "image",
             "instructions": "Um só ícone, usado em todos os botões de documento. Os botões em si — etiqueta e link — editam-se no Elementor, no hero da página.",
             "required": 0,
             "conditional_logic": 0,
@@ -29,16 +34,23 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_doc_icone",
-            "label": "Ícone dos botões",
-            "name": "sobre_doc_icone",
-            "type": "image",
             "return_format": "id",
             "preview_size": "thumbnail",
-            "library": "all"
+            "library": "all",
+            "min_width": 0,
+            "min_height": 0,
+            "min_size": 0,
+            "max_width": 0,
+            "max_height": 0,
+            "max_size": 0,
+            "mime_types": ""
         },
         {
+            "key": "field_sobre_tab_pilares",
+            "label": "Círculos",
+            "name": "",
             "aria-label": "",
+            "type": "tab",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -47,15 +59,16 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_tab_pilares",
-            "label": "Círculos",
-            "name": "",
-            "type": "tab",
             "placement": "top",
-            "endpoint": 0
+            "endpoint": 0,
+            "selected": 0
         },
         {
+            "key": "field_sobre_bola",
+            "label": "Imagem dos círculos",
+            "name": "sobre_bola",
             "aria-label": "",
+            "type": "image",
             "instructions": "Uma só imagem, usada nos quatro círculos.",
             "required": 0,
             "conditional_logic": 0,
@@ -64,16 +77,23 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_bola",
-            "label": "Imagem dos círculos",
-            "name": "sobre_bola",
-            "type": "image",
             "return_format": "id",
             "preview_size": "thumbnail",
-            "library": "all"
+            "library": "all",
+            "min_width": 0,
+            "min_height": 0,
+            "min_size": 0,
+            "max_width": 0,
+            "max_height": 0,
+            "max_size": 0,
+            "mime_types": ""
         },
         {
+            "key": "field_sobre_pilares",
+            "label": "Frases",
+            "name": "sobre_pilares",
             "aria-label": "",
+            "type": "repeater",
             "instructions": "Uma frase por círculo.",
             "required": 0,
             "conditional_logic": 0,
@@ -82,17 +102,19 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_pilares",
-            "label": "Frases",
-            "name": "sobre_pilares",
-            "type": "repeater",
             "layout": "table",
             "min": 0,
             "max": 0,
             "button_label": "Adicionar círculo",
+            "rows_per_page": 20,
+            "collapsed": "",
             "sub_fields": [
                 {
+                    "key": "field_sobre_pilar_texto",
+                    "label": "Texto",
+                    "name": "texto",
                     "aria-label": "",
+                    "type": "textarea",
                     "instructions": "",
                     "required": 0,
                     "conditional_logic": 0,
@@ -101,20 +123,21 @@
                         "class": "",
                         "id": ""
                     },
-                    "key": "field_sobre_pilar_texto",
-                    "label": "Texto",
-                    "name": "texto",
-                    "type": "textarea",
                     "default_value": "",
                     "maxlength": "",
                     "rows": 2,
                     "placeholder": "",
-                    "new_lines": ""
+                    "new_lines": "",
+                    "parent_repeater": "field_sobre_pilares"
                 }
             ]
         },
         {
+            "key": "field_sobre_tab_assoc",
+            "label": "Associados",
+            "name": "",
             "aria-label": "",
+            "type": "tab",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -123,15 +146,16 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_tab_assoc",
-            "label": "Associados",
-            "name": "",
-            "type": "tab",
             "placement": "top",
-            "endpoint": 0
+            "endpoint": 0,
+            "selected": 0
         },
         {
+            "key": "field_sobre_assoc_texto",
+            "label": "Texto",
+            "name": "sobre_assoc_texto",
             "aria-label": "",
+            "type": "textarea",
             "instructions": "Opcional. Sem texto, a secção fica só com o rótulo e o botão.",
             "required": 0,
             "conditional_logic": 0,
@@ -140,10 +164,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_assoc_texto",
-            "label": "Texto",
-            "name": "sobre_assoc_texto",
-            "type": "textarea",
             "default_value": "",
             "maxlength": "",
             "rows": 3,
@@ -151,28 +171,12 @@
             "new_lines": ""
         },
         {
-            "aria-label": "",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
             "key": "field_sobre_assoc_botao",
             "label": "Texto do botão",
             "name": "sobre_assoc_botao",
-            "type": "text",
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
             "aria-label": "",
-            "instructions": "Aceita um caminho interno (/contactos/), um endereço completo (https://…), uma âncora (#secao), mailto: ou tel:.",
+            "type": "text",
+            "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -180,47 +184,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_assoc_url",
-            "label": "Link do botão",
-            "name": "sobre_assoc_url",
-            "type": "text",
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "/pagina/",
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "aria-label": "",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "key": "field_sobre_tab_inter",
-            "label": "Internacionalização",
-            "name": "",
-            "type": "tab",
-            "placement": "top",
-            "endpoint": 0
-        },
-        {
-            "aria-label": "",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "key": "field_sobre_inter_titulo",
-            "label": "Título",
-            "name": "sobre_inter_titulo",
-            "type": "text",
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -228,7 +191,69 @@
             "append": ""
         },
         {
+            "key": "field_sobre_assoc_url",
+            "label": "Link do botão",
+            "name": "sobre_assoc_url",
             "aria-label": "",
+            "type": "text",
+            "instructions": "Aceita um caminho interno (\/contactos\/), um endereço completo (https:\/\/…), uma âncora (#secao), mailto: ou tel:.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "\/pagina\/",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_sobre_tab_inter",
+            "label": "Internacionalização",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_sobre_inter_titulo",
+            "label": "Título",
+            "name": "sobre_inter_titulo",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_sobre_inter_marca",
+            "label": "Imagem à direita",
+            "name": "sobre_inter_marca",
+            "aria-label": "",
+            "type": "image",
             "instructions": "O lockup Watch Portugal. Sem imagem, usa a versão em branco que vem no tema.",
             "required": 0,
             "conditional_logic": 0,
@@ -237,16 +262,23 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_inter_marca",
-            "label": "Imagem à direita",
-            "name": "sobre_inter_marca",
-            "type": "image",
             "return_format": "id",
             "preview_size": "medium",
-            "library": "all"
+            "library": "all",
+            "min_width": 0,
+            "min_height": 0,
+            "min_size": 0,
+            "max_width": 0,
+            "max_height": 0,
+            "max_size": 0,
+            "mime_types": ""
         },
         {
+            "key": "field_sobre_inter_texto",
+            "label": "Texto",
+            "name": "sobre_inter_texto",
             "aria-label": "",
+            "type": "textarea",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -255,10 +287,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_inter_texto",
-            "label": "Texto",
-            "name": "sobre_inter_texto",
-            "type": "textarea",
             "default_value": "",
             "maxlength": "",
             "rows": 4,
@@ -266,28 +294,12 @@
             "new_lines": ""
         },
         {
-            "aria-label": "",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
             "key": "field_sobre_inter_botao",
             "label": "Texto do botão",
             "name": "sobre_inter_botao",
-            "type": "text",
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
             "aria-label": "",
-            "instructions": "A Área Reservada ainda não existe; deixe vazio até existir. Aceita um caminho interno (/contactos/), um endereço completo (https://…), uma âncora (#secao), mailto: ou tel:.",
+            "type": "text",
+            "instructions": "",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -295,47 +307,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_inter_url",
-            "label": "Link do botão",
-            "name": "sobre_inter_url",
-            "type": "text",
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "/pagina/",
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "aria-label": "",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "key": "field_sobre_tab_contactos",
-            "label": "Contactos",
-            "name": "",
-            "type": "tab",
-            "placement": "top",
-            "endpoint": 0
-        },
-        {
-            "aria-label": "",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "key": "field_sobre_cont_titulo",
-            "label": "Título",
-            "name": "sobre_contactos_titulo",
-            "type": "text",
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -343,7 +314,69 @@
             "append": ""
         },
         {
+            "key": "field_sobre_inter_url",
+            "label": "Link do botão",
+            "name": "sobre_inter_url",
             "aria-label": "",
+            "type": "text",
+            "instructions": "A Área Reservada ainda não existe; deixe vazio até existir. Aceita um caminho interno (\/contactos\/), um endereço completo (https:\/\/…), uma âncora (#secao), mailto: ou tel:.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "\/pagina\/",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_sobre_tab_contactos",
+            "label": "Contactos",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_sobre_cont_titulo",
+            "label": "Título",
+            "name": "sobre_contactos_titulo",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_sobre_cont_endereco",
+            "label": "Endereço",
+            "name": "sobre_contactos_endereco",
+            "aria-label": "",
+            "type": "textarea",
             "instructions": "Uma linha por linha de endereço. Alimenta também o mapa.",
             "required": 0,
             "conditional_logic": 0,
@@ -352,10 +385,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_cont_endereco",
-            "label": "Endereço",
-            "name": "sobre_contactos_endereco",
-            "type": "textarea",
             "default_value": "",
             "maxlength": "",
             "rows": 3,
@@ -363,7 +392,11 @@
             "new_lines": ""
         },
         {
+            "key": "field_sobre_cont_email",
+            "label": "Email",
+            "name": "sobre_contactos_email",
             "aria-label": "",
+            "type": "email",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -372,17 +405,17 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_cont_email",
-            "label": "Email",
-            "name": "sobre_contactos_email",
-            "type": "email",
             "default_value": "",
             "placeholder": "",
             "prepend": "",
             "append": ""
         },
         {
+            "key": "field_sobre_cont_telefone",
+            "label": "Telefone",
+            "name": "sobre_contactos_telefone",
             "aria-label": "",
+            "type": "text",
             "instructions": "",
             "required": 0,
             "conditional_logic": 0,
@@ -391,10 +424,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_cont_telefone",
-            "label": "Telefone",
-            "name": "sobre_contactos_telefone",
-            "type": "text",
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -402,7 +431,11 @@
             "append": ""
         },
         {
+            "key": "field_sobre_cont_nota",
+            "label": "Nota sob o telefone",
+            "name": "sobre_contactos_nota",
             "aria-label": "",
+            "type": "text",
             "instructions": "Ex.: custo da chamada para a rede fixa nacional.",
             "required": 0,
             "conditional_logic": 0,
@@ -411,10 +444,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_sobre_cont_nota",
-            "label": "Nota sob o telefone",
-            "name": "sobre_contactos_nota",
-            "type": "text",
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -440,5 +469,8 @@
     "active": true,
     "description": "Os textos das secções desta página. As redes sociais estão em Personalizar › APIT — Redes Sociais.",
     "show_in_rest": 0,
-    "modified": 1788321600
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1788877614
 }

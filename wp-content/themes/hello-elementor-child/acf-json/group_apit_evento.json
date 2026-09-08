@@ -3,7 +3,11 @@
     "title": "Dados do evento",
     "fields": [
         {
+            "key": "field_evento_data",
+            "label": "Data",
+            "name": "apit_evento_data",
             "aria-label": "",
+            "type": "date_picker",
             "instructions": "Alimenta o dia e o mês no canto do cartão, e a ordem do calendário.",
             "required": 1,
             "conditional_logic": 0,
@@ -12,16 +16,17 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_evento_data",
-            "label": "Data",
-            "name": "apit_evento_data",
-            "type": "date_picker",
-            "display_format": "d/m/Y",
+            "display_format": "d\/m\/Y",
             "return_format": "Y-m-d",
-            "first_day": 1
+            "first_day": 1,
+            "default_to_current_date": 0
         },
         {
+            "key": "field_evento_cat",
+            "label": "Categoria",
+            "name": "apit_evento_cat",
             "aria-label": "",
+            "type": "taxonomy",
             "instructions": "Define o texto da etiqueta e as cores do cartão. Pode acrescentar uma categoria nova aqui mesmo — depois defina-lhe as cores em Eventos › Categorias.",
             "required": 1,
             "conditional_logic": 0,
@@ -30,10 +35,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_evento_cat",
-            "label": "Categoria",
-            "name": "apit_evento_cat",
-            "type": "taxonomy",
             "taxonomy": "apit_categoria_evento",
             "field_type": "select",
             "allow_null": 0,
@@ -41,10 +42,15 @@
             "save_terms": 1,
             "load_terms": 1,
             "return_format": "id",
-            "multiple": 0
+            "multiple": 0,
+            "bidirectional_target": []
         },
         {
+            "key": "field_evento_local",
+            "label": "Local",
+            "name": "apit_evento_local",
             "aria-label": "",
+            "type": "text",
             "instructions": "Ex.: Lisboa.",
             "required": 0,
             "conditional_logic": 0,
@@ -53,10 +59,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_evento_local",
-            "label": "Local",
-            "name": "apit_evento_local",
-            "type": "text",
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -64,7 +66,11 @@
             "append": ""
         },
         {
+            "key": "field_evento_acao_texto",
+            "label": "Texto do botão",
+            "name": "apit_evento_acao_texto",
             "aria-label": "",
+            "type": "text",
             "instructions": "Opcional. Ex.: Marcar reunião. Deixe vazio para o cartão não ter botão.",
             "required": 0,
             "conditional_logic": 0,
@@ -73,10 +79,6 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_evento_acao_texto",
-            "label": "Texto do botão",
-            "name": "apit_evento_acao_texto",
-            "type": "text",
             "default_value": "",
             "maxlength": "",
             "placeholder": "",
@@ -84,8 +86,12 @@
             "append": ""
         },
         {
+            "key": "field_evento_acao_url",
+            "label": "Link do botão",
+            "name": "apit_evento_acao_url",
             "aria-label": "",
-            "instructions": "Aceita um caminho interno (/contactos/), um endereço completo (https://…), uma âncora (#secao), mailto: ou tel:.",
+            "type": "text",
+            "instructions": "Aceita um caminho interno (\/contactos\/), um endereço completo (https:\/\/…), uma âncora (#secao), mailto: ou tel:.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -93,13 +99,9 @@
                 "class": "",
                 "id": ""
             },
-            "key": "field_evento_acao_url",
-            "label": "Link do botão",
-            "name": "apit_evento_acao_url",
-            "type": "text",
             "default_value": "",
             "maxlength": "",
-            "placeholder": "/pagina/",
+            "placeholder": "\/pagina\/",
             "prepend": "",
             "append": ""
         }
@@ -122,5 +124,8 @@
     "active": true,
     "description": "O título e o resumo do cartão vêm do título e do excerto do evento.",
     "show_in_rest": 0,
-    "modified": 1788321600
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1788877613
 }
