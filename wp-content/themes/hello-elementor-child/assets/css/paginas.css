@@ -1,0 +1,1131 @@
+/*
+ * Associados, Internacionalização, Calendário e Documentos.
+ *
+ * Loaded only on those four pages, so a change here cannot regress the Home or
+ * Sobre a APIT, and neither of those pays for CSS it never uses.
+ *
+ * The four heroes are one layout with four gradients. Everything structural
+ * lives on .apit-pagina-hero; each page adds a class that redefines only the
+ * gradient custom properties, so the thing the client asked to differ per page
+ * is the only thing that does.
+ *
+ * The gradients are a CSS approximation: the Figma MCP quota was exhausted, so
+ * the stops were sampled from the client's page exports rather than read from
+ * the file. They are isolated in one block per page precisely so replacing them
+ * with the real values is a six-line edit, not a review of the stylesheet.
+ */
+
+/* ---------- Shared page furniture ---------- */
+
+.apit-secao {
+	background: #fff;
+}
+
+.apit-secao--clara {
+	background: var(--apit-branco);
+}
+
+/*
+ * The small uppercase line above a section. Letter-spacing is what carries it:
+ * at 13px the design reads as spaced capitals rather than a small heading.
+ */
+.apit-secao__etiqueta {
+	margin: 0 0 44px;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 13px;
+	line-height: 1.68;
+	letter-spacing: 3.2px;
+	text-transform: uppercase;
+	color: var(--apit-black);
+}
+
+/* ---------- The hero, shared by all four pages ---------- */
+
+.apit-pagina-hero {
+	position: relative;
+	overflow: hidden;
+	/*
+	 * The section paints the fallback colour and the artwork; the media layer
+	 * from [apit_hero_media] sits on top of it when a video or image is set.
+	 * isolation keeps that layer's negative z-index inside the section.
+	 */
+	background-color: var(--apit-hero-base, var(--apit-magenta));
+	background-image: var(--apit-hero-arte);
+	color: #fff;
+	isolation: isolate;
+}
+
+.apit-pagina-hero > .elementor-element {
+	position: relative;
+	z-index: 2;
+}
+
+/* The media and wordmark widgets are absolute layers, so their wrappers must
+ * not take part in the flow, and Elementor's 20px widget margin must go. */
+.apit-pagina-hero > .elementor-widget-shortcode {
+	position: static;
+	margin: 0 !important;
+}
+
+.pagina-hero__col {
+	max-width: 1340px;
+	margin-inline: auto;
+	padding-inline: 20px;
+	width: 100%;
+}
+
+.pagina-hero__crumb,
+.pagina-hero__crumb p {
+	margin: 0;
+	font-size: 13px;
+	line-height: 1.68;
+	letter-spacing: 2.4px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.85);
+}
+
+.pagina-hero__crumb a {
+	color: inherit;
+}
+
+.pagina-hero__crumb a:hover {
+	color: #fff;
+}
+
+.apit-pagina-hero .pagina-hero__titulo .elementor-heading-title {
+	max-width: 720px;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 54px;
+	line-height: 1.14;
+	letter-spacing: -1px;
+	color: #fff;
+}
+
+.apit-pagina-hero .pagina-hero__texto {
+	/* !important: Elementor's own `.e-con > .elementor-widget { max-width }`
+	 * is four classes deep and loads after this stylesheet. */
+	max-width: 470px !important;
+	font-size: 16px;
+	line-height: 1.68;
+	color: rgba(255, 255, 255, 0.92);
+}
+
+.apit-pagina-hero .pagina-hero__texto p {
+	margin: 0;
+}
+
+.pagina-hero__botoes {
+	flex-wrap: wrap;
+}
+
+/*
+ * The oversized wordmark. Same construction as the Sobre a APIT hero: white
+ * type masked by a repeating stripe so the letters dissolve into lines, which
+ * is the closest CSS gets to Figma's Scanline warp.
+ */
+.pagina-hero__decor {
+	position: absolute;
+	top: 96px;
+	right: 0;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	pointer-events: none;
+	user-select: none;
+}
+
+.pagina-hero__word {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 168px;
+	line-height: 0.92;
+	letter-spacing: -4px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.42);
+	-webkit-mask-image: repeating-linear-gradient(
+		to bottom,
+		#000 0 6px,
+		transparent 6px 10px
+	);
+	mask-image: repeating-linear-gradient(
+		to bottom,
+		#000 0 6px,
+		transparent 6px 10px
+	);
+}
+
+.pagina-hero__word--baixo {
+	margin-top: -18px;
+}
+
+/* ---------- The four gradients ----------
+ *
+ * One block per page. Sampled from the client's exports, not read from Figma —
+ * see the note at the top of this file.
+ */
+
+/* Magenta at the left, turning turquoise and then blue to the right. */
+.hero--associados {
+	--apit-hero-base: #f41892;
+	--apit-hero-arte:
+		radial-gradient(80% 120% at 4% 30%, #f41892 0%, rgba(244, 24, 146, 0) 62%),
+		radial-gradient(70% 100% at 46% 12%, #b98ad4 0%, rgba(185, 138, 212, 0) 58%),
+		radial-gradient(80% 110% at 78% 40%, #2ec6b0 0%, rgba(46, 198, 176, 0) 60%),
+		linear-gradient(96deg, #f41892 0%, #a86ec4 34%, #4fb9c4 66%, #4a85c8 100%);
+}
+
+/* Magenta low-left, a purple core, turquoise and blue across the top right. */
+.hero--inter {
+	--apit-hero-base: #f41892;
+	--apit-hero-arte:
+		radial-gradient(90% 120% at 2% 62%, #f41892 0%, rgba(244, 24, 146, 0) 60%),
+		radial-gradient(70% 90% at 40% 22%, #8048a6 0%, rgba(128, 72, 166, 0) 58%),
+		radial-gradient(85% 110% at 84% 26%, #2ec6b0 0%, rgba(46, 198, 176, 0) 62%),
+		linear-gradient(100deg, #e8199a 0%, #9a5cb8 30%, #35bdb8 64%, #4a85c8 100%);
+}
+
+/* Turquoise across the middle, magenta pushed to the top right. */
+.hero--calendario {
+	--apit-hero-base: #2ec6b0;
+	--apit-hero-arte:
+		radial-gradient(80% 120% at 8% 40%, #7fd5cf 0%, rgba(127, 213, 207, 0) 60%),
+		radial-gradient(75% 100% at 88% 12%, #f41892 0%, rgba(244, 24, 146, 0) 58%),
+		radial-gradient(70% 90% at 54% 70%, #4a85c8 0%, rgba(74, 133, 200, 0) 62%),
+		linear-gradient(94deg, #8fd8d2 0%, #4fbfc6 38%, #9a6cc0 72%, #f41892 100%);
+}
+
+/* The softest of the four: pale magenta into blue, with no strong core. */
+.hero--documentos {
+	--apit-hero-base: #d9a8cf;
+	--apit-hero-arte:
+		radial-gradient(85% 120% at 6% 26%, #f0a8d6 0%, rgba(240, 168, 214, 0) 62%),
+		radial-gradient(70% 100% at 60% 8%, #b28ad0 0%, rgba(178, 138, 208, 0) 58%),
+		radial-gradient(80% 110% at 92% 46%, #6fb4d8 0%, rgba(111, 180, 216, 0) 60%),
+		linear-gradient(98deg, #efa4d4 0%, #c48fd0 36%, #8fa8d8 70%, #6fb4d8 100%);
+}
+
+/* ---------- Associados: benefícios ---------- */
+
+.assoc-beneficios {
+	max-width: 1340px;
+	margin-inline: auto;
+	padding-inline: 20px;
+}
+
+.assoc-beneficios .apit-secao__etiqueta {
+	text-align: center;
+}
+
+.assoc-beneficios__lista {
+	display: grid;
+	/*
+	 * Three per row, and three at any count: auto-fit would collapse a row of
+	 * two into wider columns, which is the bug the órgãos sociais grid had.
+	 */
+	grid-template-columns: repeat(3, 1fr);
+	gap: 64px 40px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.assoc-beneficios__item {
+	text-align: center;
+}
+
+.assoc-beneficios__circulo {
+	width: 172px;
+	margin: 0 auto 28px;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.assoc-beneficios__circulo img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.assoc-beneficios__titulo {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 1.4;
+	letter-spacing: 1.6px;
+	text-transform: uppercase;
+	color: var(--apit-black);
+}
+
+.assoc-beneficios__texto {
+	max-width: 300px;
+	margin: 14px auto 0;
+	font-size: 14px;
+	line-height: 1.6;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+/* ---------- Associados: banda "Como aderir" ---------- */
+
+.apit-banda-aderir {
+	position: relative;
+	overflow: hidden;
+	background-color: #2ec6b0;
+	background-image:
+		radial-gradient(70% 130% at 6% 50%, #2ec6b0 0%, rgba(46, 198, 176, 0) 58%),
+		radial-gradient(80% 120% at 62% 30%, #f41892 0%, rgba(244, 24, 146, 0) 62%),
+		linear-gradient(92deg, #2ec6b0 0%, #7ec3c0 24%, #f41892 62%, #d43a97 100%);
+	color: #fff;
+	isolation: isolate;
+}
+
+.apit-banda-aderir > .elementor-element {
+	position: relative;
+	z-index: 2;
+}
+
+.apit-banda-aderir > .elementor-widget-shortcode {
+	position: static;
+	margin: 0 !important;
+}
+
+.banda-aderir__col {
+	max-width: 1340px;
+	margin-inline: auto;
+	padding-inline: 20px;
+	width: 100%;
+}
+
+.apit-banda-aderir .banda-aderir__titulo .elementor-heading-title {
+	max-width: 520px;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 44px;
+	line-height: 1.16;
+	letter-spacing: -0.8px;
+	color: #fff;
+}
+
+.apit-banda-aderir .banda-aderir__texto {
+	max-width: 470px !important;
+	font-size: 16px;
+	line-height: 1.68;
+	color: rgba(255, 255, 255, 0.92);
+}
+
+.apit-banda-aderir .banda-aderir__texto p {
+	margin: 0;
+}
+
+.banda-aderir__botoes {
+	flex-wrap: wrap;
+}
+
+/* ---------- Associados: passos ---------- */
+
+.assoc-passos {
+	max-width: 1120px;
+	margin-inline: auto;
+	padding-inline: 20px;
+}
+
+.assoc-passos__lista {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 40px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.assoc-passos__item {
+	text-align: center;
+}
+
+.assoc-passos__circulo {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 118px;
+	margin: 0 auto 26px;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	overflow: hidden;
+}
+
+.assoc-passos__circulo img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/*
+ * The number is drawn over the artwork rather than baked into it, so
+ * reordering the steps in the back office does not mean exporting new images.
+ */
+.assoc-passos__numero {
+	position: relative;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 46px;
+	line-height: 1;
+	color: var(--apit-black);
+}
+
+.assoc-passos__titulo {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 1.4;
+	letter-spacing: 1.6px;
+	text-transform: uppercase;
+	color: var(--apit-black);
+}
+
+.assoc-passos__texto {
+	max-width: 260px;
+	margin: 14px auto 0;
+	font-size: 14px;
+	line-height: 1.6;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+/* ---------- Associados: logótipos ---------- */
+
+.assoc-logos {
+	max-width: 1340px;
+	margin-inline: auto;
+	padding-inline: 20px;
+}
+
+.assoc-logos__topo {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 40px;
+	margin-bottom: 48px;
+}
+
+.assoc-logos__intro {
+	max-width: 420px;
+}
+
+.assoc-logos__intro .apit-secao__etiqueta {
+	margin-bottom: 16px;
+}
+
+.assoc-logos__texto {
+	margin: 0;
+	font-size: 15px;
+	line-height: 1.6;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+.assoc-logos__acoes {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-shrink: 0;
+}
+
+.assoc-logos__seta {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 1px solid rgba(27, 42, 51, 0.2);
+	border-radius: 50%;
+	background: none;
+	color: var(--apit-black);
+	cursor: pointer;
+}
+
+.assoc-logos__seta::before {
+	content: "";
+	width: 8px;
+	height: 8px;
+	border-top: 1.5px solid currentColor;
+	border-right: 1.5px solid currentColor;
+}
+
+.assoc-logos__seta[data-dir="anterior"]::before {
+	transform: rotate(-135deg);
+}
+
+.assoc-logos__seta[data-dir="seguinte"]::before {
+	transform: rotate(45deg);
+}
+
+/* The row is on the light section, so the outline button needs a dark edge. */
+.assoc-logos .btn--outline {
+	border-color: rgba(27, 42, 51, 0.25);
+	color: var(--apit-black);
+}
+
+.assoc-logos__track {
+	display: flex;
+	align-items: center;
+	gap: 56px;
+	overflow-x: auto;
+	scrollbar-width: none;
+	cursor: grab;
+}
+
+.assoc-logos__track::-webkit-scrollbar {
+	display: none;
+}
+
+.assoc-logos__item {
+	flex: 0 0 auto;
+	/*
+	 * A fixed height and a free width: the logos are different shapes, and it
+	 * is their optical height that has to agree for the row to read as a line.
+	 */
+	height: 60px;
+}
+
+.assoc-logos__item img {
+	display: block;
+	width: auto;
+	height: 100%;
+	max-width: none;
+	object-fit: contain;
+}
+
+/* ---------- Associados: FAQ ---------- */
+
+.apit-faq {
+	background: var(--apit-branco);
+}
+
+.faq__linha {
+	max-width: 1340px;
+	margin-inline: auto;
+	align-items: flex-start;
+}
+
+.faq__col-titulo {
+	max-width: 340px;
+}
+
+.apit-faq .faq__titulo .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 34px;
+	line-height: 1.18;
+	color: var(--apit-black);
+}
+
+.faq__cartao {
+	padding: 32px 28px 34px;
+	background-color: #2ec6b0;
+	background-image: linear-gradient(150deg, #2ec6b0 0%, #4a85c8 100%);
+	color: #fff;
+}
+
+.apit-faq .faq__cartao-titulo .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 1.4;
+	letter-spacing: 1.6px;
+	text-transform: uppercase;
+	color: #fff;
+}
+
+.faq__cartao .elementor-widget-button {
+	margin-top: 18px;
+}
+
+/*
+ * Elementor's accordion, restyled. Its own CSS loads after this file, so the
+ * item and title selectors are doubled through .faq__acordeao to win.
+ */
+.faq__acordeao .elementor-accordion {
+	border: none;
+}
+
+.faq__acordeao .elementor-accordion .elementor-accordion-item {
+	margin-bottom: 12px;
+	border: none;
+	background: #fff;
+}
+
+.faq__acordeao .elementor-accordion .elementor-tab-title {
+	padding: 20px 24px;
+	border: none;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 1.5;
+	color: var(--apit-black);
+}
+
+/* The open item takes the gradient the design gives it. */
+.faq__acordeao .elementor-accordion .elementor-tab-title.elementor-active {
+	background-image: linear-gradient(100deg, #f41892 0%, #b0559f 100%);
+	color: #fff;
+}
+
+.faq__acordeao .elementor-accordion .elementor-tab-content {
+	padding: 0 24px 24px;
+	border: none;
+	background-image: linear-gradient(100deg, #f41892 0%, #b0559f 100%);
+	font-size: 14px;
+	line-height: 1.7;
+	color: rgba(255, 255, 255, 0.92);
+}
+
+.faq__acordeao .elementor-accordion .elementor-accordion-icon {
+	color: inherit;
+}
+
+/* ---------- Internacionalização: a marca ---------- */
+
+.inter-marca {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	gap: 80px;
+	max-width: 1340px;
+	margin-inline: auto;
+	padding-inline: 20px;
+}
+
+.inter-marca__logo img {
+	display: block;
+	width: 100%;
+	max-width: 384px;
+	height: auto;
+}
+
+.inter-marca__titulo {
+	margin: 0;
+	max-width: 420px;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 34px;
+	line-height: 1.22;
+	color: var(--apit-black);
+}
+
+.inter-marca__paragrafo {
+	max-width: 400px;
+	margin: 26px 0 0;
+	font-size: 15px;
+	line-height: 1.7;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+/* ---------- Internacionalização: áreas de apoio ---------- */
+
+.inter-apoios .apit-secao__etiqueta {
+	max-width: 1340px;
+	margin-inline: auto;
+	padding-inline: 20px;
+	margin-bottom: 30px;
+}
+
+/*
+ * The cards run the full width of the screen, edge to edge, and divide it
+ * equally. The design shows the fourth one cut off at the viewport edge; the
+ * client asked for all of them visible instead, so a fifth narrows the five
+ * rather than pushing one out of sight.
+ */
+.inter-apoios__lista {
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: 1fr;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.inter-apoios__item {
+	padding: 38px 34px 44px;
+	/* The two stops come from the card's own fields, inline. The fallbacks are
+	 * here so a card with no colour set is still legible. */
+	background-image: linear-gradient(
+		180deg,
+		var(--apit-apoio-inicio, #2ec6b0) 0%,
+		var(--apit-apoio-fim, #4a85c8) 100%
+	);
+	color: #fff;
+}
+
+.inter-apoios__titulo {
+	margin: 0;
+	max-width: 200px;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 22px;
+	line-height: 1.24;
+	color: #fff;
+}
+
+.inter-apoios__texto {
+	margin: 20px 0 0;
+	font-size: 14px;
+	line-height: 1.65;
+	color: rgba(255, 255, 255, 0.92);
+}
+
+/* ---------- Internacionalização: banda do stand ---------- */
+
+.apit-banda-stand {
+	position: relative;
+	overflow: hidden;
+	background-color: #f41892;
+	background-image:
+		radial-gradient(70% 120% at 4% 40%, #f41892 0%, rgba(244, 24, 146, 0) 58%),
+		radial-gradient(80% 120% at 56% 24%, #2ec6b0 0%, rgba(46, 198, 176, 0) 60%),
+		linear-gradient(94deg, #f41892 0%, #c65cae 26%, #35bdb8 62%, #4a85c8 100%);
+	color: #fff;
+	isolation: isolate;
+}
+
+.inter-stand {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 80px;
+	max-width: 1340px;
+	margin-inline: auto;
+	padding-inline: 20px;
+}
+
+.inter-stand__titulo {
+	margin: 0;
+	max-width: 340px;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 42px;
+	line-height: 1.16;
+	letter-spacing: -0.8px;
+	color: #fff;
+}
+
+.inter-stand__texto {
+	max-width: 430px;
+	margin: 24px 0 0;
+	font-size: 15px;
+	line-height: 1.7;
+	color: rgba(255, 255, 255, 0.92);
+}
+
+.inter-stand .btn {
+	margin-top: 36px;
+}
+
+.inter-stand__passos-titulo {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 26px;
+	line-height: 1.2;
+	color: #fff;
+}
+
+.inter-stand__passos {
+	margin: 22px 0 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: passo;
+}
+
+.inter-stand__passo {
+	counter-increment: passo;
+	font-size: 13px;
+	line-height: 1.9;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.92);
+}
+
+.inter-stand__passo::before {
+	content: counter(passo) ". ";
+}
+
+/* ---------- Blocos partilhados ---------- */
+
+.apit-bloco-duplo {
+	background: var(--apit-branco);
+}
+
+.bloco-duplo__col {
+	max-width: 470px;
+}
+
+.apit-bloco-duplo .bloco-duplo__titulo .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 32px;
+	line-height: 1.2;
+	color: var(--apit-black);
+}
+
+.apit-bloco-duplo .bloco-duplo__texto {
+	font-size: 14px;
+	line-height: 1.7;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+.apit-bloco-duplo .bloco-duplo__texto p {
+	margin: 0;
+}
+
+.apit-bloco-duplo .elementor-widget-button {
+	margin-top: 28px;
+}
+
+.btn.btn--magenta .elementor-button {
+	background-color: var(--apit-magenta);
+	border-color: var(--apit-magenta);
+}
+
+.btn.btn--turquesa .elementor-button {
+	background-color: var(--apit-turquesa);
+	border-color: var(--apit-turquesa);
+}
+
+.btn.btn--claro .elementor-button {
+	border-color: rgba(255, 255, 255, 0.85);
+	color: #fff;
+}
+
+.apit-banda-inter {
+	position: relative;
+	overflow: hidden;
+	align-items: center;
+	background-color: #f41892;
+	background-image:
+		radial-gradient(70% 130% at 4% 50%, #f41892 0%, rgba(244, 24, 146, 0) 56%),
+		radial-gradient(85% 120% at 74% 40%, #2ec6b0 0%, rgba(46, 198, 176, 0) 62%),
+		linear-gradient(94deg, #f41892 0%, #b95bab 28%, #4a85c8 58%, #2ec6b0 100%);
+	color: #fff;
+	isolation: isolate;
+}
+
+.banda-inter__col {
+	max-width: 520px;
+}
+
+.apit-banda-inter .banda-inter__titulo .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 38px;
+	line-height: 1.18;
+	color: #fff;
+}
+
+.apit-banda-inter .banda-inter__texto {
+	font-size: 15px;
+	line-height: 1.7;
+	color: rgba(255, 255, 255, 0.92);
+}
+
+.apit-banda-inter .banda-inter__texto p {
+	margin: 0;
+}
+
+.apit-banda-inter .elementor-widget-button {
+	margin-top: 30px;
+}
+
+.apit-watch-portugal {
+	display: flex;
+	justify-content: center;
+}
+
+.apit-watch-portugal img {
+	display: block;
+	width: 100%;
+	max-width: 340px;
+	height: auto;
+}
+
+/* ---------- Documentos ---------- */
+
+.documentos {
+	max-width: 1340px;
+	margin-inline: auto;
+	padding-inline: 20px;
+}
+
+.documentos__grupo + .documentos__grupo {
+	margin-top: 62px;
+}
+
+.documentos__area {
+	margin-bottom: 24px;
+}
+
+.documentos__lista {
+	display: grid;
+	/*
+	 * Five per row at the design width, and never fewer than 220px wide: below
+	 * that the cover stops reading as a cover.
+	 */
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 40px 28px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.documentos__capa {
+	aspect-ratio: 3 / 4;
+	overflow: hidden;
+	background: rgba(27, 42, 51, 0.06);
+}
+
+.documentos__capa img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.documentos__titulo {
+	margin: 18px 0 0;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 1.4;
+	color: var(--apit-black);
+}
+
+.documentos__download {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin-top: 12px;
+	padding: 7px 14px;
+	border: 1px solid rgba(27, 42, 51, 0.2);
+	border-radius: 200px;
+	font-size: 11px;
+	letter-spacing: 1.2px;
+	text-transform: uppercase;
+	color: var(--apit-black);
+}
+
+.documentos__download::before {
+	content: "";
+	width: 12px;
+	height: 12px;
+	background-color: currentColor;
+	-webkit-mask-image: var(--apit-icone-doc, none);
+	mask-image: var(--apit-icone-doc, none);
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+}
+
+.documentos__download:hover {
+	border-color: var(--apit-black);
+}
+
+/* ---------- Calendário em grelha ---------- */
+
+/*
+ * The grid reuses the carousel's card wholesale and only changes the track:
+ * from a scrolling row to a wrapping grid of three. !important is needed
+ * because the flex track is set in style.css, which Elementor's per-page CSS
+ * follows — and the card width comes from --apit-card there too.
+ */
+.calendario--grelha .calendario__track {
+	display: grid !important;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 37px;
+	overflow: visible !important;
+	cursor: default;
+}
+
+.calendario--grelha .calendario__item {
+	flex: none;
+	width: auto;
+}
+
+.calendario--grelha .calendario__nav {
+	/* Nothing to scroll, so the arrows are not rendered; this keeps the head
+	 * row from reserving space for them. */
+	gap: 0;
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 1200px) {
+	.apit-pagina-hero .pagina-hero__titulo .elementor-heading-title {
+		font-size: 44px;
+	}
+
+	.pagina-hero__word {
+		font-size: 118px;
+	}
+
+	.inter-marca,
+	.inter-stand {
+		gap: 48px;
+	}
+
+	.inter-apoios__lista {
+		grid-auto-flow: row;
+		grid-auto-columns: auto;
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.calendario--grelha .calendario__track {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 24px;
+	}
+}
+
+@media (max-width: 1024px) {
+	.apit-pagina-hero {
+		padding-top: 160px !important;
+		padding-bottom: 80px !important;
+	}
+
+	/*
+	 * The wordmark stops being a background and becomes a headline-sized word
+	 * behind the text. Kept, rather than hidden, because it is what tells the
+	 * four pages apart at a glance.
+	 */
+	.pagina-hero__decor {
+		top: 72px;
+		font-size: 0;
+	}
+
+	.pagina-hero__word {
+		font-size: 76px;
+	}
+
+	.assoc-beneficios__lista {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 48px 32px;
+	}
+
+	.assoc-logos__topo {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.faq__linha {
+		flex-direction: column !important;
+	}
+
+	.faq__col-titulo {
+		max-width: 100%;
+	}
+
+	.inter-marca {
+		grid-template-columns: 1fr;
+		gap: 36px;
+	}
+
+	.inter-stand {
+		grid-template-columns: 1fr;
+		gap: 44px;
+	}
+}
+
+@media (max-width: 768px) {
+	.apit-pagina-hero {
+		padding-top: 120px !important;
+		padding-bottom: 64px !important;
+	}
+
+	.apit-pagina-hero .pagina-hero__titulo .elementor-heading-title {
+		font-size: 32px;
+		letter-spacing: -0.4px;
+	}
+
+	.apit-pagina-hero .pagina-hero__texto {
+		max-width: 100% !important;
+		font-size: 15px;
+	}
+
+	.pagina-hero__word {
+		font-size: 46px;
+	}
+
+	.pagina-hero__decor {
+		top: 88px;
+		opacity: 0.7;
+	}
+
+	/*
+	 * The design stacks the hero buttons on a phone, as the Home does.
+	 *
+	 * !important because Elementor writes `flex-direction: row` for these
+	 * containers into the per-page stylesheet, three classes deep and printed
+	 * after this file — the same reason the Home's hero buttons needed it.
+	 */
+	.pagina-hero__botoes,
+	.banda-aderir__botoes {
+		flex-direction: column !important;
+		align-items: flex-start;
+	}
+
+	.assoc-beneficios__lista,
+	.assoc-passos__lista {
+		grid-template-columns: 1fr;
+		gap: 44px;
+	}
+
+	.assoc-beneficios__texto,
+	.assoc-passos__texto {
+		max-width: 340px;
+	}
+
+	.apit-banda-aderir .banda-aderir__titulo .elementor-heading-title,
+	.inter-stand__titulo {
+		font-size: 30px;
+	}
+
+	.inter-apoios__lista {
+		grid-template-columns: 1fr;
+	}
+
+	.calendario--grelha .calendario__track {
+		grid-template-columns: 1fr;
+	}
+
+	.documentos__lista {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 28px 20px;
+	}
+
+	.documentos__grupo + .documentos__grupo {
+		margin-top: 44px;
+	}
+
+	.apit-bloco-duplo {
+		flex-direction: column !important;
+	}
+
+	.bloco-duplo__col {
+		max-width: 100%;
+	}
+
+	.apit-banda-inter {
+		flex-direction: column !important;
+	}
+
+	.banda-inter__col {
+		max-width: 100%;
+	}
+}

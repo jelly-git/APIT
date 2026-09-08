@@ -197,26 +197,6 @@
             ]
         },
         {
-            "key": "field_inter_mercados_label",
-            "label": "Etiqueta dos mercados",
-            "name": "inter_mercados_label",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "Acima do carrossel de eventos. Os eventos vêm de Eventos, no menu lateral.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "Próximos mercados",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
             "key": "field_inter_stand_titulo",
             "label": "Título",
             "name": "inter_stand_titulo",
@@ -271,6 +251,46 @@
                 "id": ""
             },
             "default_value": "Passos",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_inter_stand_botao",
+            "label": "Texto do botão",
+            "name": "inter_stand_botao",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Marcar reunião",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_inter_stand_url",
+            "label": "Link do botão",
+            "name": "inter_stand_url",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Caminho relativo ou endereço completo. Vazio esconde o botão.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "#",
             "maxlength": "",
             "placeholder": "",
             "prepend": "",
@@ -342,5 +362,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1788882542
+    "modified": 1788883298
 }

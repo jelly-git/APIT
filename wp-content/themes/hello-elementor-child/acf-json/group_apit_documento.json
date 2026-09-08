@@ -1,0 +1,48 @@
+{
+    "key": "group_apit_documento",
+    "title": "Ficheiro do documento",
+    "fields": [
+        {
+            "key": "field_documento_ficheiro",
+            "label": "Ficheiro",
+            "name": "documento_ficheiro",
+            "aria-label": "",
+            "type": "file",
+            "instructions": "O ficheiro que o botão Download entrega. Escolha da biblioteca de multimédia.\n\nA capa é a imagem de destaque, na coluna à direita, e o nome do documento é o título.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "id",
+            "library": "all",
+            "min_size": "",
+            "max_size": "",
+            "mime_types": "pdf, zip, doc, docx, xls, xlsx, ppt, pptx"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "apit_documento"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "A área — Anuários, Brochuras ou Estudos — escolhe-se na caixa Áreas. A ordem na página vem do campo Ordem, na caixa Atributos.",
+    "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1788883205
+}

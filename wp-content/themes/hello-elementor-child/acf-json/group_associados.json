@@ -245,6 +245,46 @@
             "placeholder": ""
         },
         {
+            "key": "field_assoc_logos_botao",
+            "label": "Texto do botão",
+            "name": "assoc_logos_botao",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Ver todos os associados",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_assoc_logos_url",
+            "label": "Link do botão",
+            "name": "assoc_logos_url",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Caminho relativo, como \/associados\/, ou um endereço completo. Deixe # enquanto a página não existir; vazio esconde o botão.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "#",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
             "key": "field_assoc_logos",
             "label": "Logótipos dos associados",
             "name": "assoc_logos",
@@ -294,5 +334,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1788882542
+    "modified": 1788883098
 }

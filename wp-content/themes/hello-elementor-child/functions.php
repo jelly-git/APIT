@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.24.1' );
+define( 'APIT_CHILD_VERSION', '0.25.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -57,6 +57,21 @@ function apit_child_enqueue_assets() {
 		);
 	}
 
+	/*
+	 * The four pages built from the same set of parts share one stylesheet:
+	 * their hero is one layout with four gradients, and the blocks that repeat
+	 * between them are the same markup. Splitting it per page would mean four
+	 * copies of everything but the gradient.
+	 */
+	if ( is_page( apit_paginas_com_folha_comum() ) ) {
+		wp_enqueue_style(
+			'apit-paginas-style',
+			get_stylesheet_directory_uri() . '/assets/css/paginas.css',
+			[ 'apit-child-style' ],
+			APIT_CHILD_VERSION
+		);
+	}
+
 	wp_enqueue_script(
 		'apit-menu-mobile',
 		get_stylesheet_directory_uri() . '/assets/js/menu-mobile.js',
@@ -89,6 +104,21 @@ function apit_child_enqueue_assets() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'apit_child_enqueue_assets' );
+
+/**
+ * The pages that share assets/css/paginas.css.
+ *
+ * One list, read by the enqueue and by the inline icon rule, so a fifth page
+ * joining them is a single edit instead of a hunt through functions.php.
+ */
+function apit_paginas_com_folha_comum() {
+	return apply_filters( 'apit_paginas_com_folha_comum', [
+		'associados',
+		'internacionalizacao',
+		'calendario',
+		'documentos',
+	] );
+}
 
 function apit_child_setup() {
 	register_nav_menus( [

@@ -37,6 +37,36 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.25.0] - 2026-09-08
+
+### Adicionado
+- Templates e CSS das quatro páginas novas. `assets/css/paginas.css`, carregada
+  só nelas: um hero com quatro degradés, isolados em variáveis por página, mais
+  as secções e os blocos partilhados.
+- `template-parts/wordmark.php` — o wordmark de cada hero, com o texto em
+  atributo do shortcode. Divide em linhas pelos espaços, como o "COMO ADERIR"
+  do desenho.
+- `template-parts/watch-portugal.php`, `template-parts/documentos.php`, os três
+  dos Associados e os três da Internacionalização.
+- Grupo `Ficheiro do documento` no CPT: o título e a capa vêm do WordPress, pelo
+  que só falta o ficheiro.
+- Copy do desenho semeada nos campos, sem sobrepor nada já preenchido. As
+  páginas chegam com texto real e só faltam as imagens.
+
+### Alterado
+- `[apit_calendario]` passa a ler os atributos: `layout=grelha` dá as três
+  colunas do Calendário sem setas, `layout=carrossel` mantém a Home intocada.
+- O ícone de download passou a servir também a página Documentos, lido do campo
+  que já existia na Sobre a APIT em vez de duplicado.
+- Removido `inter_mercados_label`: a etiqueta dos mercados estava em ACF e no
+  shortcode ao mesmo tempo — dois controlos para um valor.
+
+### Notas
+- Os degradés dos heros e as cores dos cartões foram **amostrados dos exports do
+  cliente**, não lidos do Figma: o limite do MCP continua esgotado. Estão
+  isolados num bloco por página, e as cores dos cartões são campos, pelo que
+  corrigi-los é uma edição pontual.
+
 ## [0.24.1] - 2026-09-08
 
 ### Adicionado

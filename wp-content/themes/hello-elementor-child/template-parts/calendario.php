@@ -7,24 +7,64 @@
  * and subtitle, a location pill, an optional action button, and a date badge
  * pinned to the bottom-right corner over an offset dark square.
  */
-// The carousel scrolls, so it is not limited to what fits in one view.
-$eventos = apit_get_proximos_eventos( 12 );
+/*
+ * One component in three shapes, because the card is identical on the Home, on
+ * Internacionalização and on the Calendário page — only the count and whether
+ * the row scrolls or wraps changes. The defaults are the Home's, so the bare
+ * shortcode there behaves exactly as it did.
+ *
+ * @var array $args layout, limite, acao, etiqueta
+ */
+$layout   = 'grelha' === ( $args['layout'] ?? '' ) ? 'grelha' : 'carrossel';
+$etiqueta = trim( (string) ( $args['etiqueta'] ?? '' ) );
+$acao_pag = trim( (string) ( $args['acao'] ?? '' ) );
+
+// The carousel scrolls, so it is not limited to what fits in one view; the grid
+// shows what it is given. Zero or a stray value falls back to the old default
+// rather than fetching nothing.
+$limite = (int) ( $args['limite'] ?? 0 );
+
+if ( $limite < 1 ) {
+	$limite = 12;
+} elseif ( 'carrossel' === $layout ) {
+	// A carousel asked for 3 still needs more than 3 to have somewhere to
+	// scroll to; the visible count is a CSS matter, not a query one.
+	$limite = max( $limite, 12 );
+}
+
+$eventos = apit_get_proximos_eventos( $limite );
 
 if ( ! $eventos ) {
 	return;
 }
+
+if ( '' === $etiqueta ) {
+	$etiqueta = __( 'Calendário', 'apit' );
+}
+
+// The arrows belong to a carousel. A grid wraps and has nothing to scroll.
+$mostrar_setas = 'carrossel' === $layout;
 ?>
-<section class="calendario">
+<section class="calendario calendario--<?php echo esc_attr( $layout ); ?>">
 	<div class="apit-container">
 		<div class="calendario__head">
-			<h2 class="calendario__title">Calendário</h2>
+			<h2 class="calendario__title"><?php echo esc_html( $etiqueta ); ?></h2>
 			<div class="calendario__nav">
-				<button class="calendario__arrow" data-dir="prev" aria-label="<?php esc_attr_e( 'Eventos anteriores', 'apit' ); ?>">
-					<i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i>
-				</button>
-				<button class="calendario__arrow" data-dir="next" aria-label="<?php esc_attr_e( 'Eventos seguintes', 'apit' ); ?>">
-					<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
-				</button>
+				<?php if ( $mostrar_setas ) : ?>
+					<button class="calendario__arrow" data-dir="prev" aria-label="<?php esc_attr_e( 'Eventos anteriores', 'apit' ); ?>">
+						<i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i>
+					</button>
+					<button class="calendario__arrow" data-dir="next" aria-label="<?php esc_attr_e( 'Eventos seguintes', 'apit' ); ?>">
+						<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
+					</button>
+				<?php endif; ?>
+
+				<?php if ( $acao_pag ) : ?>
+					<a class="btn btn--outline calendario__acao" href="<?php echo esc_url( $acao_pag ); ?>">
+						<?php esc_html_e( 'Calendário completo', 'apit' ); ?>
+						<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
+					</a>
+				<?php endif; ?>
 			</div>
 		</div>
 
