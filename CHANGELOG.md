@@ -37,6 +37,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.23.2] - 2026-09-08
+
+### Corrigido
+- Regras de localização dos grupos de campos. Estavam a usar o param `post`,
+  que no ACF é o selector de **Artigos**, com IDs de páginas como valor. Uma
+  página não é um valor válido ali, pelo que ao gravar o ACF trocava-o pelo
+  primeiro artigo real: o grupo **Hero — fundo** ficou com
+  `post == 33` duas vezes e deixou de aparecer em qualquer página.
+  - Home: `page_type == front_page`, sem ID nenhum.
+  - Sobre a APIT: `page == 6`, o param correcto — "Página".
+- O grupo **Sobre a APIT — conteúdos** tinha o mesmo `post == 6` e funcionava
+  por acaso, porque o ACF compara o ID sem olhar ao tipo. Bastava alguém abri-lo
+  e gravar para os 21 campos da página desaparecerem. Corrigido antes de
+  acontecer.
+
 ## [0.23.1] - 2026-09-08
 
 ### Corrigido

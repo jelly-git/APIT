@@ -454,7 +454,7 @@
     "location": [
         [
             {
-                "param": "post",
+                "param": "page",
                 "operator": "==",
                 "value": "6"
             }
@@ -472,5 +472,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1788877614
+    "modified": 1788878265
 }

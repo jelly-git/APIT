@@ -28,11 +28,11 @@
             "name": "hero_fundo_imagens",
             "aria-label": "",
             "type": "gallery",
-            "instructions": "Uma imagem fica fixa. Duas ou mais passam a slider, na ordem em que aqui estiverem — arraste para reordenar.\n\nUsadas no desktop quando não há vídeo.",
+            "instructions": "Uma imagem fica fixa. Duas ou mais passam a slider, na ordem em que aqui estiverem — arraste para reordenar.\r\n\r\nUsadas no desktop quando não há vídeo.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -56,11 +56,11 @@
             "name": "hero_fundo_imagens_mobile",
             "aria-label": "",
             "type": "gallery",
-            "instructions": "O mesmo comportamento, para as imagens ao alto. São estas que aparecem abaixo dos 768px, dentro da banda de cor no topo da secção.\n\nSe deixar vazio, usa as imagens de desktop.",
+            "instructions": "O mesmo comportamento, para as imagens ao alto. São estas que aparecem abaixo dos 768px, dentro da banda de cor no topo da secção.\r\n\r\nSe deixar vazio, usa as imagens de desktop.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
-                "width": "",
+                "width": "50",
                 "class": "",
                 "id": ""
             },
@@ -104,14 +104,14 @@
     "location": [
         [
             {
-                "param": "post",
+                "param": "page_type",
                 "operator": "==",
-                "value": "36"
+                "value": "front_page"
             }
         ],
         [
             {
-                "param": "post",
+                "param": "page",
                 "operator": "==",
                 "value": "6"
             }
@@ -129,5 +129,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1788877782
+    "modified": 1788878265
 }
