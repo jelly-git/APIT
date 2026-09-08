@@ -37,6 +37,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.25.5] - 2026-09-08
+
+### Corrigido
+- A capa do documento passa a ter os mesmos cantos arredondados que o degradé
+  atrás dela. O raio ficou numa propriedade — `--apit-capa-raio` — lida pela
+  capa, pela imagem e pelo degradé, para os três não poderem divergir.
+  Aplicado à imagem e não ao contentor com `overflow: hidden`, que voltaria a
+  recortar a sombra que tem de sobressair.
+
 ## [0.25.4] - 2026-09-08
 
 ### Corrigido
