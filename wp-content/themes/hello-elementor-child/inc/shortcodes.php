@@ -23,8 +23,33 @@ function apit_shortcode_hero_decor() {
 }
 add_shortcode( 'apit_hero_decor', 'apit_shortcode_hero_decor' );
 
-function apit_shortcode_calendario() {
-	return apit_render_template_part( 'template-parts/calendario' );
+/**
+ * The events section, in the three shapes the site needs.
+ *
+ * One component, not three: the card is identical on the Home, on
+ * Internacionalização and on the Calendário page — only the number shown and
+ * whether it scrolls or wraps changes. The defaults are the Home's, so the
+ * bare [apit_calendario] there keeps working untouched.
+ *
+ * layout  carrossel (three at a time, arrows) or grelha (all of them, wrapped)
+ * limite  how many events to fetch
+ * acao    where the section's own button points; empty hides it
+ */
+function apit_shortcode_calendario( $atts ) {
+	$atts = shortcode_atts(
+		[
+			'layout'   => 'carrossel',
+			'limite'   => 4,
+			'acao'     => '',
+			'etiqueta' => '',
+		],
+		$atts,
+		'apit_calendario'
+	);
+
+	ob_start();
+	get_template_part( 'template-parts/calendario', null, $atts );
+	return ob_get_clean();
 }
 add_shortcode( 'apit_calendario', 'apit_shortcode_calendario' );
 
@@ -148,3 +173,86 @@ function apit_shortcode_contactos() {
 	return apit_render_template_part( 'template-parts/sobre/contactos' );
 }
 add_shortcode( 'apit_contactos', 'apit_shortcode_contactos' );
+
+/* -------------------------------------------------------------------------
+ * Páginas Associados, Internacionalização, Calendário e Documentos
+ * ---------------------------------------------------------------------- */
+
+/**
+ * The oversized wordmark behind each page's hero — "ASSOCIADOS", "WORLD",
+ * "EVENTOS", "DOCUMENTOS".
+ *
+ * The text is an attribute rather than a field because it belongs to the hero's
+ * composition, not to the page's content: it is edited in the Elementor panel
+ * beside the title it sits behind. Decorative, so it is hidden from assistive
+ * technology — the real heading is the h1 next to it.
+ */
+function apit_shortcode_wordmark( $atts ) {
+	$atts = shortcode_atts( [ 'texto' => '' ], $atts, 'apit_wordmark' );
+
+	if ( '' === trim( $atts['texto'] ) ) {
+		return '';
+	}
+
+	ob_start();
+	get_template_part( 'template-parts/wordmark', null, $atts );
+	return ob_get_clean();
+}
+add_shortcode( 'apit_wordmark', 'apit_shortcode_wordmark' );
+
+/**
+ * The Watch Portugal lockup, in the dark or light outline the section needs.
+ */
+function apit_shortcode_watch_portugal( $atts ) {
+	$atts = shortcode_atts( [ 'variante' => 'preto' ], $atts, 'apit_watch_portugal' );
+
+	ob_start();
+	get_template_part( 'template-parts/watch-portugal', null, $atts );
+	return ob_get_clean();
+}
+add_shortcode( 'apit_watch_portugal', 'apit_shortcode_watch_portugal' );
+
+/*
+ * The sections below take no attributes: their copy lives in the field group on
+ * the page, so it is edited in wp-admin rather than by hand inside a shortcode
+ * string.
+ */
+
+function apit_shortcode_assoc_beneficios() {
+	return apit_render_template_part( 'template-parts/associados/beneficios' );
+}
+add_shortcode( 'apit_assoc_beneficios', 'apit_shortcode_assoc_beneficios' );
+
+function apit_shortcode_assoc_passos() {
+	return apit_render_template_part( 'template-parts/associados/passos' );
+}
+add_shortcode( 'apit_assoc_passos', 'apit_shortcode_assoc_passos' );
+
+function apit_shortcode_assoc_logos() {
+	return apit_render_template_part( 'template-parts/associados/logos' );
+}
+add_shortcode( 'apit_assoc_logos', 'apit_shortcode_assoc_logos' );
+
+function apit_shortcode_inter_marca() {
+	return apit_render_template_part( 'template-parts/internacionalizacao/marca' );
+}
+add_shortcode( 'apit_inter_marca', 'apit_shortcode_inter_marca' );
+
+function apit_shortcode_inter_apoios() {
+	return apit_render_template_part( 'template-parts/internacionalizacao/apoios' );
+}
+add_shortcode( 'apit_inter_apoios', 'apit_shortcode_inter_apoios' );
+
+function apit_shortcode_inter_stand() {
+	return apit_render_template_part( 'template-parts/internacionalizacao/stand' );
+}
+add_shortcode( 'apit_inter_stand', 'apit_shortcode_inter_stand' );
+
+/**
+ * The document library, grouped by area. Reads the apit_documento post type, so
+ * the page needs no fields of its own.
+ */
+function apit_shortcode_documentos() {
+	return apit_render_template_part( 'template-parts/documentos' );
+}
+add_shortcode( 'apit_documentos', 'apit_shortcode_documentos' );

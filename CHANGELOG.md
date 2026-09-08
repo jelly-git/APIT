@@ -37,6 +37,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.24.1] - 2026-09-08
+
+### Adicionado
+- `_elementor_data` das quatro páginas novas, com o hero de cada uma a partilhar
+  `.apit-pagina-hero` e a acrescentar uma classe própria — a CSS do hero fica
+  num lugar e só o degradé difere por página.
+- Dois Saved Templates, renderizados ao vivo por `[apit_template]`: o bloco
+  *Documentação de Apoio / Ainda não é associado?* (nas três páginas) e a banda
+  *Internacionalização* (em duas). Confirmado no frontend: editam-se uma vez.
+- Shortcodes `[apit_wordmark]`, `[apit_watch_portugal]`, os três dos Associados,
+  os três da Internacionalização e `[apit_documentos]`.
+- `[apit_calendario]` passa a aceitar `layout` (carrossel ou grelha), `limite`,
+  `acao` e `etiqueta`, para um só componente servir a Home, a Internacionalização
+  e o Calendário. Os valores por omissão são os da Home, que fica intocada.
+
+### Por fazer
+- Os *template parts* e a CSS destas secções: por agora os shortcodes existem e
+  devolvem vazio, pelo que as páginas mostram a estrutura sem o conteúdo.
+- O `limite` do `[apit_calendario]` ainda não é lido pelo template — continua a
+  usar o valor interno de 4.
+
 ## [0.24.0] - 2026-09-08
 
 ### Adicionado
