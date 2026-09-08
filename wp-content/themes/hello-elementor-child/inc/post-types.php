@@ -148,6 +148,116 @@ function apit_get_proximos_eventos( $limit = 4 ) {
 }
 
 /* -------------------------------------------------------------------------
+ * Documentos
+ * ---------------------------------------------------------------------- */
+
+/**
+ * The document library on the Documentos page — anuários, brochuras, estudos.
+ *
+ * One post type with a taxonomy for the three areas, rather than three types:
+ * the card is the same in all of them, and a fourth area is then a term the
+ * client adds instead of a developer's release.
+ *
+ * The cover is the featured image and the file is an ACF field. No archive and
+ * no single view: a document is a cover and a download, and there is nothing
+ * to put on a page of its own.
+ */
+function apit_register_documento_post_type() {
+	register_post_type( 'apit_documento', [
+		'labels' => [
+			'name'          => __( 'Documentos', 'apit' ),
+			'singular_name' => __( 'Documento', 'apit' ),
+			'menu_name'     => __( 'Documentos', 'apit' ),
+			'add_new_item'  => __( 'Adicionar documento', 'apit' ),
+			'edit_item'     => __( 'Editar documento', 'apit' ),
+			'not_found'     => __( 'Nenhum documento encontrado', 'apit' ),
+		],
+		'public'             => false,
+		'publicly_queryable' => false,
+		'has_archive'        => false,
+		'show_ui'            => true,
+		'show_in_menu'       => true,
+		'menu_icon'          => 'dashicons-media-document',
+		'supports'           => [ 'title', 'thumbnail', 'page-attributes' ],
+		/*
+		 * The classic editor: every field on a document is either the title,
+		 * the featured image or an ACF field, so the block editor would only
+		 * offer an empty canvas to fill in by mistake.
+		 */
+		'show_in_rest'       => false,
+	] );
+}
+add_action( 'init', 'apit_register_documento_post_type' );
+
+/**
+ * The three areas the Documentos page groups by — Anuários, Brochuras,
+ * Estudos, as named in the design.
+ *
+ * Hierarchical so the box is a checklist and not a free-text tag field: the
+ * areas are a fixed short list, and a typo would silently create a fourth.
+ */
+function apit_register_area_documento() {
+	register_taxonomy( 'apit_area_documento', [ 'apit_documento' ], [
+		'labels' => [
+			'name'          => __( 'Áreas de documento', 'apit' ),
+			'singular_name' => __( 'Área', 'apit' ),
+			'menu_name'     => __( 'Áreas', 'apit' ),
+			'add_new_item'  => __( 'Adicionar área', 'apit' ),
+			'edit_item'     => __( 'Editar área', 'apit' ),
+		],
+		'public'            => false,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'hierarchical'      => true,
+		'show_in_rest'      => false,
+	] );
+}
+add_action( 'init', 'apit_register_area_documento' );
+
+/**
+ * The documents of one area, in the order set on each document.
+ *
+ * menu_order, not the date: the design shows a deliberate sequence of covers,
+ * and a document's publication date has nothing to do with where it belongs in
+ * the row.
+ */
+function apit_get_documentos( $area, $limit = -1 ) {
+	$termo = is_numeric( $area ) ? (int) $area : $area;
+
+	return get_posts( [
+		'post_type'      => 'apit_documento',
+		'post_status'    => 'publish',
+		'posts_per_page' => $limit,
+		'orderby'        => [
+			'menu_order' => 'ASC',
+			'title'      => 'ASC',
+		],
+		'tax_query'      => [
+			[
+				'taxonomy' => 'apit_area_documento',
+				'field'    => is_numeric( $termo ) ? 'term_id' : 'slug',
+				'terms'    => $termo,
+			],
+		],
+	] );
+}
+
+/**
+ * The areas that actually have documents, in the order they are set in
+ * wp-admin — so the page's three groups come from the content, not from a list
+ * repeated in a template.
+ */
+function apit_get_areas_documento() {
+	$termos = get_terms( [
+		'taxonomy'   => 'apit_area_documento',
+		'hide_empty' => true,
+		'orderby'    => 'term_order',
+	] );
+
+	return is_wp_error( $termos ) ? [] : $termos;
+}
+
+/* -------------------------------------------------------------------------
  * Sobre a APIT
  * ---------------------------------------------------------------------- */
 

@@ -115,6 +115,34 @@
                 "operator": "==",
                 "value": "6"
             }
+        ],
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "5"
+            }
+        ],
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "137"
+            }
+        ],
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "8"
+            }
+        ],
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "12"
+            }
         ]
     ],
     "menu_order": 0,
@@ -129,5 +157,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1788878265
+    "modified": 1788882264
 }
