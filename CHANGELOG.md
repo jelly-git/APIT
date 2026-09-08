@@ -37,6 +37,33 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.23.0] - 2026-09-08
+
+### Adicionado
+- Grupo de campos **Hero — fundo**, na Home e na Sobre a APIT, com o fundo da
+  secção editável no back office:
+  - **Vídeo** — campo File restrito a `mp4`/`webm`, escolhido da biblioteca de
+    multimédia. Preenchido, é ele que aparece no desktop.
+  - **Imagens — desktop** — galeria. Uma imagem fica fixa; duas ou mais passam
+    a slider, na ordem definida por arrastamento.
+  - **Imagens — mobile** — galeria própria para os ficheiros ao alto, usada
+    abaixo dos 768px. Vazia, cai para a de desktop, e vice-versa.
+  - **Intervalo do slider** — em milésimos de segundo, por omissão 4000.
+- `assets/js/hero-slider.js`, carregado só nas duas páginas com hero.
+- `inc/hero.php` com os helpers que convertem os campos em marcação.
+
+### Alterado
+- Em mobile a camada de média passa a ocupar a banda de cor no topo da secção e
+  a parar onde ela para — a opção (b) das duas que foram pesadas: o branco por
+  baixo e a legenda escura da v0.22.8 ficam intactos. A altura da banda passou
+  a `--apit-hero-banda`, lida pelo `background-size` e pela camada, para que uma
+  não possa afastar-se da outra.
+- O vídeo continua escondido abaixo dos 768px. A resposta a esse recorte é
+  agora a galeria de mobile, e não um `object-position` melhor.
+- `[apit_hero_media]` deixa de precisar de atributos: lê os campos. Os
+  atributos continuam a ganhar quando existem, o que mantém os vídeos a
+  funcionar da pasta do tema até serem carregados para a multimédia.
+
 ## [0.22.11] - 2026-09-07
 
 ### Alterado

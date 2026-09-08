@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.22.11
+Version: 0.23.0
 */
 
 :root {
@@ -767,6 +767,39 @@ body.apit-menu-aberto {
 }
 
 /*
+ * Image layer, from the galleries in the "Hero — fundo" field group. One slide
+ * shows at a time; a single image means there is only ever one and the
+ * transition never runs.
+ *
+ * It sits before the video in the markup, so on a wide screen the video covers
+ * it without needing a z-index, and on a phone — where the video is hidden —
+ * these are what carry the section.
+ */
+.apit-hero__slider {
+	position: absolute;
+	inset: 0;
+}
+
+.apit-hero__slide {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	/* Reads as a cross-fade without eating much of a 4s slide. */
+	transition: opacity 900ms ease-in-out;
+}
+
+.apit-hero__slide.is-ativo {
+	opacity: 1;
+}
+
+/* <picture> is inline, so the image inside it would have no height to fill. */
+.apit-hero__slide picture {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/*
  * Video teaser panel — Figma node 9:19615 (329x651 at x=1281, y=445), with
  * the offset white frame from node 13:19632.
  */
@@ -956,12 +989,13 @@ body.apit-menu-aberto {
 	 * Nothing breaks if it does — the edge simply sits lower.
 	 */
 	.apit-hero {
+		--apit-hero-banda: 819px;
 		padding-top: 120px !important;
 		padding-bottom: 56px !important;
 		background-color: #fff;
 		background-repeat: no-repeat;
 		background-position: top center;
-		background-size: 100% 819px;
+		background-size: 100% var(--apit-hero-banda);
 	}
 
 	.apit-hero__title .elementor-heading-title {
@@ -1013,8 +1047,23 @@ body.apit-menu-aberto {
 	}
 
 	/*
-	 * The background video is dropped on a phone and the hero's own gradient
-	 * carries the section.
+	 * The media layer covers the colour band and stops where the band stops,
+	 * leaving the white below it — and the caption's dark text — untouched.
+	 *
+	 * Both heights come from --apit-hero-banda, so the image cannot drift away
+	 * from the band it is supposed to fill.
+	 *
+	 * `bottom: auto` is needed because the layer inherits `inset: 0`, which
+	 * would otherwise beat the height and stretch it over the whole section.
+	 */
+	.apit-hero__media {
+		bottom: auto;
+		height: var(--apit-hero-banda);
+	}
+
+	/*
+	 * The video is dropped on a phone; the portrait gallery is what stands in
+	 * for it, and failing that the hero's own gradient.
 	 *
 	 * object-fit: cover into a 390x1432 box crops the 1920px-wide file to a
 	 * 294px slice — 15% of its width. What showed was a vertical sliver of the
@@ -1023,10 +1072,10 @@ body.apit-menu-aberto {
 	 * hero's aspect is 0.27 against the video's 1.78, and the height comes from
 	 * the content stacking, so it cannot be brought closer.
 	 *
-	 * The gradient underneath is the same one the hero used before the video
-	 * existed, and it holds at any height.
+	 * That is also why the field group has a gallery of its own for phones: the
+	 * fix is a portrait file, not a better crop of a landscape one.
 	 */
-	.apit-hero__media {
+	.apit-hero__video {
 		display: none;
 	}
 

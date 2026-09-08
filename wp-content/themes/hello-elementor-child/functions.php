@@ -6,12 +6,13 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.22.11' );
+define( 'APIT_CHILD_VERSION', '0.23.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
 require_once get_stylesheet_directory() . '/inc/acf.php';
 require_once get_stylesheet_directory() . '/inc/elementor.php';
+require_once get_stylesheet_directory() . '/inc/hero.php';
 require_once get_stylesheet_directory() . '/inc/shortcodes.php';
 
 function apit_child_enqueue_assets() {
@@ -71,6 +72,21 @@ function apit_child_enqueue_assets() {
 		APIT_CHILD_VERSION,
 		true
 	);
+
+	/*
+	 * Only the two pages with a hero carry the slider. It does nothing on a
+	 * single-image gallery — the markup then has no data-restantes for it to
+	 * find — but there is no reason to ship it to a page with no hero at all.
+	 */
+	if ( is_front_page() || is_page( 'sobre-apit' ) ) {
+		wp_enqueue_script(
+			'apit-hero-slider',
+			get_stylesheet_directory_uri() . '/assets/js/hero-slider.js',
+			[],
+			APIT_CHILD_VERSION,
+			true
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'apit_child_enqueue_assets' );
 
