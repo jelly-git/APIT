@@ -163,23 +163,34 @@
  * type masked by a repeating stripe so the letters dissolve into lines, which
  * is the closest CSS gets to Figma's Scanline warp.
  */
+/*
+ * The same construction as the Sobre a APIT hero, which is the one that works.
+ *
+ * The break between lines comes from the shortcode's own text — "DOCU MENTOS" —
+ * because each space-separated word is printed as its own line. Letting CSS
+ * choose it gave "DOCUME / NTOS", and the point would move with the font and the
+ * viewport; written into the text it is fixed and editable in the Elementor
+ * panel.
+ */
 .pagina-hero__decor {
 	position: absolute;
-	top: 96px;
+	/*
+	 * Anchored to the bottom rather than the top, and 32px clear of it — the
+	 * gap the design leaves under the last line.
+	 *
+	 * From the top it did not fit: two lines of Omnes at 280px come to 459px
+	 * against the design's 410px, because Gilroy's line box is shorter. Any
+	 * `top` copied from the design therefore clipped the second line, and any
+	 * value that fitted was a number tuned to one page's height. Anchoring the
+	 * block down means it fits whatever the hero and the substitute font do.
+	 */
+	bottom: 32px;
 	right: 0;
-	/*
-	 * 0, under the scrim on .apit-pagina-hero::after: the wordmark is part of
-	 * the artwork and fades with it. Still above the media layer at -1, and
-	 * below the text at 2.
-	 */
-	z-index: 0;
-	/*
-	 * A width is what lets the word break mid-way, as the design does with
-	 * "ASSO / CIADOS". Right-aligned and clipped by the section's own
-	 * overflow, so it runs off the edge the way the design has it.
-	 */
-	width: min(1180px, 92%);
-	text-align: right;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	/* Both lines end flush against the right edge of the frame, as in the design. */
+	align-items: flex-end;
 	pointer-events: none;
 	user-select: none;
 }
@@ -194,27 +205,33 @@
  * breaks the word at a different point than the design does. Gilroy has to be
  * added to the kit, or its files dropped into the theme, before this is right.
  */
+/*
+ * Stand-in for Figma's "Scanline warp": the type is cut by a repeating
+ * horizontal stripe, intersected with a left-to-right fade so the letters break
+ * up into lines and thin out towards the left. The wave distortion in the
+ * original has no CSS equivalent — if it has to match exactly, the word needs
+ * exporting from Figma as an image.
+ *
+ * The panel reports Gilroy-Bold at weight 400, where the weight lives in the
+ * family name: the file is the bold cut. Omnes at 400 came out thin and pale,
+ * which is what made the middle of the hero read as empty, so it takes 700 —
+ * the weight the Sobre a APIT wordmark uses.
+ */
 .pagina-hero__word {
 	display: block;
 	font-family: var(--apit-font);
-	font-weight: 400;
-	font-size: 275px;
+	font-size: 280px;
+	font-weight: 700;
 	line-height: 0.82;
-	letter-spacing: normal;
+	letter-spacing: -6px;
 	text-transform: uppercase;
-	/* So a single long word splits instead of overflowing in one line. */
-	overflow-wrap: anywhere;
-	color: rgba(255, 255, 255, 0.42);
-	-webkit-mask-image: repeating-linear-gradient(
-		to bottom,
-		#000 0 6px,
-		transparent 6px 10px
-	);
-	mask-image: repeating-linear-gradient(
-		to bottom,
-		#000 0 6px,
-		transparent 6px 10px
-	);
+	color: #fff;
+	/* The lines are explicit, so nothing should break inside one. */
+	white-space: nowrap;
+	mask-image:
+		repeating-linear-gradient(to bottom, #000 0 4px, rgba(0, 0, 0, 0.18) 4px 9px),
+		linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.6) 42%, #000 78%);
+	mask-composite: intersect;
 }
 
 .pagina-hero__word--baixo {

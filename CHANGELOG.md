@@ -37,6 +37,31 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.26.1] - 2026-09-09
+
+### Corrigido
+- Wordmark dos heros igual ao da Sobre a APIT, com os cortes indicados: 280px,
+  peso 700, `letter-spacing: -6px`, branco, e a máscara *scanline* com
+  `mask-composite: intersect`. Sem os prefixos `-webkit-`.
+- **A quebra de linha passou a estar no texto do shortcode**, não na CSS:
+  `[apit_wordmark texto="DOCU MENTOS"]`. O template imprime uma linha por
+  palavra, pelo que a quebra é exacta e editável no Elementor. Deixada à CSS,
+  saía "DOCUME / NTOS" e o ponto mudava com a fonte e a largura do ecrã.
+  - Associados `ASSO CIADOS` · Calendário `EVEN TOS` · Documentos
+    `DOCU MENTOS` · Internacionalização `WORLD`
+- O bloco está ancorado à base do hero, 32px acima dela, e não ao topo: duas
+  linhas de Omnes a 280px medem 459px contra os 410px da Gilroy, pelo que
+  qualquer `top` copiado do desenho cortava a segunda linha.
+- Reposto o wordmark "COMO ADERIR" da banda dos Associados, que a passagem
+  anterior tinha substituído por "ASSO CIADOS" — a página tem dois e eu
+  procurei pelo nome do shortcode em vez do id do elemento.
+
+### Notas
+- A geometria do hero **já correspondia ao desenho** antes desta versão: altura
+  569 contra 572, breadcrumb 192 contra 199, primeira capa 675 contra 680. O
+  vazio no meio da secção vinha do wordmark estar fino e pálido, não do
+  espaçamento.
+
 ## [0.26.0] - 2026-09-09
 
 ### Corrigido
