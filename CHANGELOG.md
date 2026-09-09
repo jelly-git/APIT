@@ -37,6 +37,35 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.26.0] - 2026-09-09
+
+### Corrigido
+- **O degradé do hero estava do lado errado da camada de vídeo.** Eu tinha posto
+  os quatro degradés como *fundo* da secção, onde nunca podiam ser vistos: a
+  camada de média é absoluta e cobre a secção em todos os breakpoints — está
+  documentado no `.apit-hero__media::after` da Home, que é justamente por isso
+  que existe. Passam a ser um *overlay* sobre a média, e os degradés de fundo
+  ficam como reserva, para enquanto o vídeo carrega ou quando não há vídeo nem
+  imagem.
+- O overlay usa os valores fornecidos, iguais nas quatro páginas:
+  `linear-gradient(178.03deg, rgba(244,249,255,0) 28.49%, #F4F9FF 66%)`.
+- Geometria do hero: o conteúdo começava demasiado abaixo. O breadcrumb passou
+  de 51% para 34% da altura da secção, contra os 32% do desenho, e o padding
+  inferior dá agora espaço ao degradé para desvanecer sem apanhar o título.
+- Wordmark com os valores do painel: 275px, entrelinha 82%, sem
+  letter-spacing, alinhado à direita, maiúsculas.
+
+### Por fazer
+- **Gilroy-Bold não existe neste site.** O kit do Typekit serve só as famílias
+  omnes e não há ficheiro de fonte no tema. O wordmark cai na Omnes, o que muda
+  a letra e — mais visível — parte a palavra noutro ponto: "ASSOCIADOS" sai em
+  três linhas onde o desenho tem duas. Falta acrescentar a Gilroy ao kit ou
+  colocar os ficheiros no tema.
+- Com o degradé aplicado, os botões do hero dos Associados ficam a 62% da altura
+  da secção, onde o degradé já vai em 89% do tom claro — um botão de contorno
+  branco fica ilegível. Confirmar se nessa página o hero é mais baixo ou se as
+  paragens do degradé são outras.
+
 ## [0.25.8] - 2026-09-08
 
 ### Corrigido

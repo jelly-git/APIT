@@ -46,6 +46,17 @@
 	position: relative;
 	overflow: hidden;
 	/*
+	 * The content starts higher than I had it: measured against the design,
+	 * the breadcrumb sits at 32% of the hero's height and mine was at 51%.
+	 *
+	 * The generous bottom padding is what gives the overlay room to fade —
+	 * without it the light half of the gradient would land on the title.
+	 * !important because both values are written per container into Elementor's
+	 * per-page stylesheet, which is printed after this file.
+	 */
+	padding-top: 182px !important;
+	padding-bottom: 260px !important;
+	/*
 	 * The section paints the fallback colour and the artwork; the media layer
 	 * from [apit_hero_media] sits on top of it when a video or image is set.
 	 * isolation keeps that layer's negative z-index inside the section.
@@ -156,21 +167,43 @@
 	position: absolute;
 	top: 96px;
 	right: 0;
-	z-index: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
+	/*
+	 * 0, under the scrim on .apit-pagina-hero::after: the wordmark is part of
+	 * the artwork and fades with it. Still above the media layer at -1, and
+	 * below the text at 2.
+	 */
+	z-index: 0;
+	/*
+	 * A width is what lets the word break mid-way, as the design does with
+	 * "ASSO / CIADOS". Right-aligned and clipped by the section's own
+	 * overflow, so it runs off the edge the way the design has it.
+	 */
+	width: min(1180px, 92%);
+	text-align: right;
 	pointer-events: none;
 	user-select: none;
 }
 
+/*
+ * Values from the Figma panel: 275px, line-height 82%, no letter-spacing,
+ * right-aligned, uppercase.
+ *
+ * TODO: the panel says Gilroy-Bold, which this site does not have — the Typekit
+ * kit serves only the omnes families and there is no font file in the theme. It
+ * falls back to Omnes here, which is the wrong letterform and, more visibly,
+ * breaks the word at a different point than the design does. Gilroy has to be
+ * added to the kit, or its files dropped into the theme, before this is right.
+ */
 .pagina-hero__word {
+	display: block;
 	font-family: var(--apit-font);
 	font-weight: 400;
-	font-size: 168px;
-	line-height: 0.92;
-	letter-spacing: -4px;
+	font-size: 275px;
+	line-height: 0.82;
+	letter-spacing: normal;
 	text-transform: uppercase;
+	/* So a single long word splits instead of overflowing in one line. */
+	overflow-wrap: anywhere;
 	color: rgba(255, 255, 255, 0.42);
 	-webkit-mask-image: repeating-linear-gradient(
 		to bottom,
@@ -188,10 +221,37 @@
 	margin-top: -18px;
 }
 
-/* ---------- The four gradients ----------
+/*
+ * The gradient the design shows goes OVER the media layer, not under it.
  *
- * One block per page. Sampled from the client's exports, not read from Figma —
- * see the note at the top of this file.
+ * Under it is where I first put it, and it could never be seen: the media layer
+ * is absolute and covers the section at every breakpoint — the comment on
+ * .apit-hero__media::after in style.css says so, and it is why the Home puts
+ * its own wash there too. The section's background only shows while the video
+ * loads, or when neither a video nor an image is set.
+ *
+ * Values from the Figma panel, and the same on all four pages: transparent to
+ * 28.49%, the page's own light tone by 66%. The hero therefore fades into
+ * whatever follows it instead of ending on a hard edge.
+ *
+ * Two classes and opacity: 1 to beat the Home's rule, which is one class with
+ * opacity 0.55.
+ */
+.apit-pagina-hero .apit-hero__media::after {
+	opacity: 1;
+	background-image: linear-gradient(
+		178.03deg,
+		rgba(244, 249, 255, 0) 28.49%,
+		#f4f9ff 66%
+	);
+}
+
+/* ---------- The four fallback gradients ----------
+ *
+ * What shows under the media layer: while the video buffers, and on a page
+ * where no video and no image are set. Sampled from the client's exports, not
+ * read from Figma — the MCP quota was exhausted. They are not the gradient the
+ * visitor normally sees, which is the overlay above.
  */
 
 /* Magenta at the left, turning turquoise and then blue to the right. */
