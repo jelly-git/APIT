@@ -159,11 +159,6 @@
 }
 
 /*
- * The oversized wordmark. Same construction as the Sobre a APIT hero: white
- * type masked by a repeating stripe so the letters dissolve into lines, which
- * is the closest CSS gets to Figma's Scanline warp.
- */
-/*
  * The same construction as the Sobre a APIT hero, which is the one that works.
  *
  * The break between lines comes from the shortcode's own text — "DOCU MENTOS" —
@@ -195,16 +190,6 @@
 	user-select: none;
 }
 
-/*
- * Values from the Figma panel: 275px, line-height 82%, no letter-spacing,
- * right-aligned, uppercase.
- *
- * TODO: the panel says Gilroy-Bold, which this site does not have — the Typekit
- * kit serves only the omnes families and there is no font file in the theme. It
- * falls back to Omnes here, which is the wrong letterform and, more visibly,
- * breaks the word at a different point than the design does. Gilroy has to be
- * added to the kit, or its files dropped into the theme, before this is right.
- */
 /*
  * Stand-in for Figma's "Scanline warp": the type is cut by a repeating
  * horizontal stripe, intersected with a left-to-right fade so the letters break
@@ -1385,4 +1370,53 @@
  */
 .apit-sangra {
 	padding-inline: 0 !important;
+}
+
+/*
+ * The section that rides up into the hero.
+ *
+ * The scrim over the hero's media ends on exactly #F4F9FF, which is the same
+ * --apit-branco this section is painted with — so wherever the fade has already
+ * completed, the section's own background lands on a tone identical to what is
+ * under it and there is no seam to see.
+ *
+ * The fade completes at 66% of the hero, leaving its last 34% already flat. On
+ * a 569px hero that is 193px, which is how far up the section can come while
+ * staying invisible as a join. Any further and the join starts to show, because
+ * the section would be covering colour that has not finished fading.
+ *
+ * position: relative so it paints over the hero rather than under it — they are
+ * siblings, so document order would do it anyway, but the hero isolates its own
+ * stacking context and this makes the intent explicit.
+ *
+ * !important: the margin is written per container into Elementor's per-page
+ * stylesheet, which is printed after this file.
+ */
+.apit-sobrepoe {
+	position: relative;
+	margin-top: -193px !important;
+	/*
+	 * Transparent for exactly the overlapped 193px, then the section's own
+	 * tone. Painted flat, the section covered 161px of the wordmark's second
+	 * line — and there was no need to paint it at all up there, since the
+	 * hero's fade has already arrived at this very colour.
+	 */
+	background: linear-gradient(
+		to bottom,
+		transparent 0 193px,
+		var(--apit-branco) 193px
+	) !important;
+}
+
+@media (max-width: 1024px) {
+	/* The hero is shorter here, so there is less flat fade to hide the join in. */
+	.apit-sobrepoe {
+		margin-top: -90px !important;
+	}
+}
+
+@media (max-width: 768px) {
+	.apit-sobrepoe {
+		margin-top: 0 !important;
+	}
 }

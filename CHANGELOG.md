@@ -37,6 +37,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.26.2] - 2026-09-17
+
+### Alterado
+- A primeira secção do **Calendário** e dos **Documentos** sobe para dentro do
+  hero, como no desenho, através da classe `apit-sobrepoe`:
+  - Margem de −193px. É até onde a secção pode subir sem que a junção se veja:
+    o *scrim* do hero termina exactamente em `#F4F9FF`, a mesma
+    `--apit-branco` da secção, e completa aos 66% da altura — os últimos 34% de
+    um hero de 569px são precisamente 193px já planos.
+  - O fundo da secção é transparente nesses 193px e só depois toma a sua cor.
+    Pintado a direito, tapava 161px da segunda linha do wordmark — e não havia
+    razão para o pintar ali, onde o degradé já chegou a essa mesma cor.
+  - Sem sobreposição abaixo dos 768px, e reduzida a −90px no intervalo
+    intermédio: o hero é mais baixo aí e há menos degradé plano onde esconder a
+    junção.
+- Removidos dois blocos de comentário que tinham ficado órfãos de edições
+  sucessivas sobre o wordmark.
+
 ## [0.26.1] - 2026-09-09
 
 ### Corrigido
