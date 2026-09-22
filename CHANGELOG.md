@@ -87,6 +87,13 @@ A versão aqui registada corresponde ao campo `Version` de
     cartão grande de uma página.
   - O que estava fixado no topo ficou com o campo ligado, para o site continuar
     a mostrar a mesma notícia em destaque depois da troca.
+- A **banda da Internacionalização** passa a fechar também a página das
+  Notícias, logo a seguir à grelha e antes do bloco duplo — é o mesmo bloco das
+  outras três páginas, com a cópia lida sempre da Sobre a APIT, e a sua folha de
+  estilo passa a carregar aqui também.
+- A lista abre com **12 artigos por página** (era 9) em três colunas, ambos
+  campos no painel da página. A paginação aparece a partir do 13.º artigo
+  publicado.
 - **Cor por categoria de notícia**, campo na própria categoria
   (`group_categoria_noticia`). Pinta a etiqueta, o filtro seleccionado e o
   cartão sem imagem. Em branco, a categoria mantém a cor que o tema lhe dá.
@@ -185,7 +192,7 @@ A versão aqui registada corresponde ao campo `Version` de
 ## [0.28.3] - 2026-09-22
 
 ### Adicionado
-- Modificador `btn--doc`: um glifo de PDF antes do rótulo, em máscara pintada
+- Modificador `btn--doc`: um glifo de PDF depois do rótulo, em máscara pintada
   com `currentColor` para seguir a cor do botão. Aplicado a "Consultar os
   Estatutos" e aos dois "Descarregar ficha de inscrição" (hero e FAQ).
 - Os dois botões "Descarregar ficha de inscrição" apontam para a ficha de

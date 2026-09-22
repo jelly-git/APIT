@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.28.3
+Version: 0.28.4
 */
 
 :root {
@@ -719,7 +719,8 @@ body.apit-menu-aberto {
 }
 
 /*
- * A button that opens a PDF says so with the glyph, before the label.
+ * A button that opens a PDF says so with the glyph, after the label — the side
+ * the other buttons on the page carry their arrow and list icons on.
  *
  * A mask painted with currentColor, not an <img>: the uploaded file has
  * fill="#1B2A33" baked into its path, so as an image it could only ever be dark
@@ -730,7 +731,7 @@ body.apit-menu-aberto {
  * The glyph is a flex item of `.btn .elementor-button`, so the 16px gap there
  * already spaces it from the label.
  */
-.btn--doc .elementor-button::before {
+.btn--doc .elementor-button::after {
 	content: "";
 	flex: none;
 	width: 20px;

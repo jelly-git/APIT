@@ -227,8 +227,11 @@
  * A mask painted with currentColor, so it follows the label on hover without a
  * second file. The 15x15 frame is the download button's, and `contain` fits the
  * 14x12 artwork inside it at its own proportions.
+ *
+ * ::after, so it sits to the right of the label — the Documentos button carries
+ * its glyph on the left, and this one reads the other way round on purpose.
  */
-.noticia__ler::before {
+.noticia__ler::after {
 	content: "";
 	width: 15px;
 	height: 15px;
