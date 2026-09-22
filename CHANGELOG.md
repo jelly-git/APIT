@@ -21,6 +21,22 @@ A versão aqui registada corresponde ao campo `Version` de
   categoria, grelha paginada e o mesmo bloco duplo e newsletter das outras
   páginas. Os cartões são os da Home com data, resumo e link acrescentados,
   pelo que a etiqueta de categoria e o título continuam com uma só definição.
+- **Filtro e paginação sem recarregar a página.** O clique num filtro ou num
+  número troca só a lista, por `fetch` a um endpoint no `admin-ajax` que devolve
+  o mesmo `template-parts/noticias/resultados.php` que a página imprime — uma
+  só fonte para os cartões. O endereço acompanha (`history.pushState`), pelo que
+  recuar, avançar, partilhar ou recarregar continuam a dar a mesma lista.
+  - *Progressive enhancement*: os filtros e a paginação continuam a ser links
+    verdadeiros para `?categoria=` e `?pg=`. Sem JavaScript, ou se o pedido
+    falhar, o clique navega e o servidor devolve a mesma página.
+  - O endpoint valida o `pagina` que recebe — página publicada, ou 400 — para
+    não renderizar o bloco com os campos de outro post qualquer. Sem nonce: lê
+    artigos publicados e não escreve nada.
+  - Uma resposta que chegue atrasada, depois de outro clique, é deitada fora em
+    vez de escrever por cima da categoria mais recente.
+  - `aria-live="polite"` na lista e o foco devolvido ao filtro ou ao número que
+    ficou activo — sem isso, a substituição do HTML deixava quem navega por
+    teclado no `body`.
 - Grupo de campos **Notícias — página** (21 campos, em quatro separadores). Não
   há texto nesta página que não seja editável: mostrar ou não o destaque e qual
   a notícia que o ocupa, as etiquetas das duas secções, notícias por página,
@@ -35,6 +51,13 @@ A versão aqui registada corresponde ao campo `Version` de
   galeria do seu hero escolhem-se no back office como nas restantes.
 
 ### Alterado
+- **Etiqueta de secção** (`.apit-secao__etiqueta`) passa aos valores dados pelo
+  cliente: Omnes Medium 20px, altura de linha 110%, tracking 0.4px. Substitui os
+  18px/300 com 35% de tracking da v0.26.8 — a essa distância a linha lia-se como
+  capitais soltas e não como palavra. Muda nas cinco páginas, e tanto nas
+  etiquetas que o template imprime em `h2` como nas que imprime em `p`: é a
+  mesma classe, e uma regra só para os títulos deixaria o site com dois estilos
+  de etiqueta.
 - `apit_cor_categoria()` passa a resolver a categoria pelo termo e a ler
   primeiro o campo de cor. **Corrige "Mercados & Feiras"**, que saía magenta na
   Home: o nome impresso sanitiza para `mercados-amp-feiras` e não coincidia com
@@ -82,6 +105,29 @@ A versão aqui registada corresponde ao campo `Version` de
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.27.8] - 2026-09-22
+
+### Alterado
+- O bloco "Como aderir" passa a fazer parte do hero dos Associados, como no
+  design: o wordmark COMO ADERIR à esquerda, o título, o texto e os botões à
+  direita, tudo sobre a mesma arte. Deixou de ter gradiente próprio — tinha um
+  turquesa que acabava a direito na fronteira do hero.
+- O wordmark ASSOCIADOS passa para dentro da coluna de conteúdo do hero. Está
+  ancorado ao fundo do que o contém, e com o hero a crescer para receber o novo
+  bloco esse fundo deixou de ser onde o design o põe.
+- `[apit_wordmark]` aceita `alinhamento="esquerda"`, que o torna uma coluna em
+  vez de uma camada e espelha o esbatimento — à esquerda ele tem de afinar para
+  a direita, ou apagava-se contra o título ao lado.
+- Hero dos Associados com 96px de espaço em baixo, contra os 260px das outras
+  páginas: o que ali era espaço para o degradé esbater é agora espaço debaixo
+  do bloco, e o design quase não lho dá.
+
+### Corrigido
+- O Elementor põe `position: relative` em todos os `.elementor-element`, e o
+  invólucro do shortcode passou a ser o bloco de referência do wordmark quando
+  este deixou de ser filho directo do hero: uma caixa sem altura no topo da
+  coluna, que punha uma palavra de 441px a -242px, fora da página.
 
 ## [0.27.3] - 2026-09-22
 

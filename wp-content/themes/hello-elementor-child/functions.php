@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.27.3' );
+define( 'APIT_CHILD_VERSION', '0.27.8' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -85,6 +85,20 @@ function apit_child_enqueue_assets() {
 			get_stylesheet_directory_uri() . '/assets/css/noticias.css',
 			[ 'apit-paginas-style' ],
 			APIT_CHILD_VERSION
+		);
+
+		/*
+		 * The filter and the pagination without a page reload. It only enhances
+		 * links the page already prints, so it goes in the footer and nothing
+		 * waits for it — with the script absent or broken, the same links
+		 * navigate and the server renders the same list.
+		 */
+		wp_enqueue_script(
+			'apit-noticias',
+			get_stylesheet_directory_uri() . '/assets/js/noticias.js',
+			[],
+			APIT_CHILD_VERSION,
+			true
 		);
 	}
 

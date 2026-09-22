@@ -19,7 +19,12 @@
  * Decorative, so it is hidden from assistive technology — the real heading is
  * the h1 beside it.
  *
- * @var array $args texto
+ * Alignment is an attribute rather than a class the page carries, because it
+ * changes what the block is: to the right it is a layer behind the hero's text,
+ * to the left it is a column of its own beside it — as "COMO ADERIR" is. The
+ * stylesheet reads the modifier; the Elementor panel is where it is chosen.
+ *
+ * @var array $args texto, alinhamento
  */
 $texto = trim( (string) ( $args['texto'] ?? '' ) );
 
@@ -27,9 +32,10 @@ if ( '' === $texto ) {
 	return;
 }
 
-$palavras = preg_split( '/\s+/', $texto );
+$alinhamento = 'esquerda' === ( $args['alinhamento'] ?? '' ) ? ' pagina-hero__decor--esquerda' : '';
+$palavras    = preg_split( '/\s+/', $texto );
 ?>
-<div class="pagina-hero__decor" aria-hidden="true">
+<div class="pagina-hero__decor<?php echo esc_attr( $alinhamento ); ?>" aria-hidden="true">
 	<?php foreach ( $palavras as $i => $palavra ) : ?>
 		<span class="pagina-hero__word<?php echo $i ? ' pagina-hero__word--baixo' : ''; ?>"><?php echo esc_html( $palavra ); ?></span>
 	<?php endforeach; ?>

@@ -29,11 +29,15 @@
 /*
  * The small uppercase line above a section — Figma's "Section Eyebrown" style.
  *
- * Values from the client's panel: Omnes Light 18px, line-height 120%, tracking
- * 35% (6.3px at this size), uppercase. The 13px/400/3.2px this used to carry
- * was estimated from an export, and at that size the line read as a small
- * heading rather than as spaced capitals — 22px of line box, which happens to
- * be the height the panel reports, but built from the wrong size and weight.
+ * Values given by the client: Omnes Medium 20px, line-height 110%, tracking
+ * 0.4px, uppercase. They replace the 18px/300 with 35% tracking that came from
+ * an earlier reading of the panel (v0.26.8) — at that spacing the label read as
+ * a run of separated capitals rather than as a word.
+ *
+ * One rule for every label, whether the template prints it as an h2 (Documentos,
+ * Notícias) or as a p (Associados, Internacionalização): the class exists so the
+ * line looks the same wherever it appears, and a selector that only caught the
+ * headings would leave the site with two section-label styles.
  *
  * The panel gives pure black; the near-black token is kept, because every other
  * dark text on the site is --apit-black and a lone #000 label beside them
@@ -42,10 +46,10 @@
 .apit-secao__etiqueta {
 	margin: 0 0 44px;
 	font-family: var(--apit-font);
-	font-weight: 300;
-	font-size: 18px;
-	line-height: 1.2;
-	letter-spacing: 6.3px;
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 1.1;
+	letter-spacing: 0.4px;
 	text-transform: uppercase;
 	color: var(--apit-black);
 }
@@ -89,9 +93,17 @@
 	z-index: 2;
 }
 
-/* The media and wordmark widgets are absolute layers, so their wrappers must
- * not take part in the flow, and Elementor's 20px widget margin must go. */
-.apit-pagina-hero > .elementor-widget-shortcode {
+/*
+ * The media and wordmark widgets are absolute layers, so their wrappers must
+ * not take part in the flow, and Elementor's 20px widget margin must go.
+ *
+ * A descendant selector, not a child one: the ASSOCIADOS wordmark now sits
+ * inside the hero's content column. Elementor gives every `.elementor-element`
+ * `position: relative`, so while the wrapper was left alone it became the
+ * wordmark's containing block — a box of no height at the top of the column,
+ * which put a 441px word at -242px, above the page and clipped away.
+ */
+.apit-pagina-hero .elementor-widget-shortcode {
 	position: static;
 	margin: 0 !important;
 }
@@ -249,8 +261,55 @@
 	mask-composite: intersect;
 }
 
+/*
+ * On the Associados page the wordmark sits inside the hero's content column
+ * rather than in the hero, so that it stays with the title it decorates once
+ * the hero grows to hold the "Como aderir" block. The column is 1340px and
+ * centred, and the design runs the word off the right edge of the screen: half
+ * the column minus half the viewport is exactly the distance from one to the
+ * other. It collapses to 0 once the column is the viewport.
+ *
+ * Two classes, so the heroes whose wordmark is still their own direct child are
+ * left on `right: 0` and do not shift.
+ */
+.pagina-hero__col .pagina-hero__decor {
+	right: calc(50% - 50vw);
+}
+
+/* -18px at the 280px the right-hand wordmark uses, in em so it holds at any size. */
 .pagina-hero__word--baixo {
-	margin-top: -18px;
+	margin-top: -0.064em;
+}
+
+/*
+ * The left-hand variant — COMO ADERIR.
+ *
+ * Not a layer here but a column: it is one half of a flex row, beside the
+ * heading and buttons, so it takes part in the flow instead of being pinned to
+ * a corner.
+ */
+.pagina-hero__decor--esquerda {
+	position: static;
+	align-items: flex-start;
+}
+
+/*
+ * Smaller than the right-hand one, and it has to be: "ADERIR" at 280px is over
+ * 1000px of Omnes against the 650px this half has. The design lets it run a
+ * little past the column on the left, which is what the clamp's lower bound
+ * leaves room for.
+ */
+.pagina-hero__decor--esquerda .pagina-hero__word {
+	font-size: clamp(64px, 11vw, 190px);
+	letter-spacing: -0.021em;
+	/*
+	 * The fade is mirrored. It thins the word away from the edge it is anchored
+	 * to, so a block on the left has to thin towards the right — copied as-is it
+	 * would have faded into the heading beside it.
+	 */
+	mask-image:
+		repeating-linear-gradient(to bottom, #000 0 4px, rgba(0, 0, 0, 0.18) 4px 9px),
+		linear-gradient(to left, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.6) 42%, #000 78%);
 }
 
 /*
@@ -317,6 +376,13 @@
  * green at the right, a purple core low down.
  */
 .hero--associados {
+	/*
+	 * This hero holds the "Como aderir" block, so what used to be room for the
+	 * fade is now room below that block — and the design leaves very little of
+	 * it. The 260px the other pages use would add a band of empty artwork under
+	 * the buttons.
+	 */
+	padding-bottom: 96px !important;
 	--apit-hero-scrim: none;
 	--apit-hero-base: #f41892;
 	/*
@@ -442,18 +508,39 @@
 	color: rgba(27, 42, 51, 0.75);
 }
 
-/* ---------- Associados: banda "Como aderir" ---------- */
+/* ---------- Associados: "Como aderir", dentro do hero ----------
+ *
+ * In the design this is not a section of its own: the hero's artwork runs
+ * behind it, the COMO ADERIR wordmark on the left and the heading, text and
+ * buttons on the right. It is a child of the hero in the page's structure, so
+ * everything it needed to paint for itself — its own gradient, its own
+ * isolation — is gone.
+ */
 
 .apit-banda-aderir {
 	position: relative;
-	overflow: hidden;
-	background-color: #2ec6b0;
-	background-image:
-		radial-gradient(70% 130% at 6% 50%, #2ec6b0 0%, rgba(46, 198, 176, 0) 58%),
-		radial-gradient(80% 120% at 62% 30%, #f41892 0%, rgba(244, 24, 146, 0) 62%),
-		linear-gradient(92deg, #2ec6b0 0%, #7ec3c0 24%, #f41892 62%, #d43a97 100%);
 	color: #fff;
-	isolation: isolate;
+	/*
+	 * A row, which is the whole point of this block: the two halves sit side by
+	 * side. Elementor's containers are flex columns by default and it writes
+	 * that per container, after this file.
+	 */
+	flex-direction: row !important;
+	align-items: center;
+	gap: 40px;
+	/* The space under the hero's own buttons, measured off the design. */
+	margin-top: 96px !important;
+	/*
+	 * Its own 110px top and bottom were a section's padding, from when this was
+	 * one. Inside the hero the spacing above is the margin and the spacing below
+	 * is the hero's padding, so this would only add to both.
+	 */
+	padding-block: 0 !important;
+	/* The same column every other block on the page is measured against. */
+	width: 100%;
+	max-width: 1340px !important;
+	margin-inline: auto !important;
+	padding-inline: 20px !important;
 }
 
 .apit-banda-aderir > .elementor-element {
@@ -466,11 +553,30 @@
 	margin: 0 !important;
 }
 
+/*
+ * Half each.
+ *
+ * The flex items are Elementor's own widget wrapper and the column — not the
+ * wordmark itself, which is one level further in. Sizing the wordmark left the
+ * wrapper to shrink to its words and the heading took the rest of the row.
+ */
+.apit-banda-aderir > .elementor-widget-shortcode,
 .banda-aderir__col {
-	max-width: 1340px;
-	margin-inline: auto;
-	padding-inline: 20px;
-	width: 100%;
+	/*
+	 * Fixed at half the row less half the gap, and not allowed to grow: with
+	 * `flex: 1 1 50%` the heading's side refused to shrink below its buttons and
+	 * took 867px of the 1340, which left the wordmark 433 and ran it under the
+	 * text. The buttons wrap instead.
+	 */
+	flex: 0 0 calc(50% - 20px);
+	min-width: 0;
+}
+
+.banda-aderir__col {
+	/* It is a column of the row now, not a centred page column. */
+	max-width: none !important;
+	margin-inline: 0 !important;
+	padding-inline: 0 !important;
 }
 
 .apit-banda-aderir .banda-aderir__titulo .elementor-heading-title {
@@ -1409,6 +1515,24 @@
 	.banda-aderir__botoes {
 		flex-direction: column !important;
 		align-items: flex-start;
+	}
+
+	/*
+	 * Two columns do not fit on a phone: half of 350px left the wordmark 155px
+	 * to put a 212px word in, and it ran under the heading. It stacks, with the
+	 * wordmark above the text as the rest of the page stacks.
+	 */
+	.apit-banda-aderir {
+		flex-direction: column !important;
+		align-items: flex-start;
+		gap: 24px;
+		margin-top: 64px !important;
+	}
+
+	.apit-banda-aderir > .elementor-widget-shortcode,
+	.apit-banda-aderir .banda-aderir__col {
+		flex: 0 0 auto;
+		width: 100%;
 	}
 
 	.assoc-beneficios__lista,

@@ -12,6 +12,32 @@
  * different component out of the same design.
  */
 
+/* ---------- While a filter or a page is loading ---------- */
+
+/*
+ * The list fades and stops taking clicks while the request is in flight. No
+ * spinner and no collapse: the block keeps its height, so nothing under it
+ * jumps, and the fade is short enough that a fast reply reads as an instant
+ * swap rather than as a flash.
+ *
+ * Only the script ever adds this class, so a visitor without it — who gets a
+ * normal page load — never meets a dimmed list.
+ */
+.noticias-arquivo__conteudo {
+	transition: opacity 0.18s ease;
+}
+
+.noticias-arquivo.is-a-carregar .noticias-arquivo__conteudo {
+	opacity: 0.45;
+	pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.noticias-arquivo__conteudo {
+		transition: none;
+	}
+}
+
 /* ---------- The featured card, above the list ---------- */
 
 /*

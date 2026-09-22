@@ -31,6 +31,31 @@ function apit_noticias_var_pagina() {
 }
 
 /**
+ * The page whose fields the section is rendered from.
+ *
+ * On the site it is the page being viewed. Over AJAX there is no queried
+ * object — admin-ajax.php has no main query — so the script says which page it
+ * is asking on behalf of, and that is checked here rather than trusted: a
+ * published page, or nothing. Without the check any post ID would do, and the
+ * endpoint would render the block using another post's meta.
+ */
+function apit_noticias_pagina_id() {
+	if ( ! wp_doing_ajax() ) {
+		return get_queried_object_id();
+	}
+
+	$id = isset( $_REQUEST['pagina'] ) ? (int) $_REQUEST['pagina'] : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- public, read-only.
+
+	if ( $id <= 0 ) {
+		return 0;
+	}
+
+	$post = get_post( $id );
+
+	return ( $post && 'page' === $post->post_type && 'publish' === $post->post_status ) ? $id : 0;
+}
+
+/**
  * The page number being viewed, never below 1.
  */
 function apit_noticias_pagina_atual() {
@@ -71,7 +96,7 @@ function apit_noticias_categoria_ativa() {
  * category that may only have one.
  */
 function apit_noticias_url_categoria( $slug ) {
-	$url = get_permalink( get_queried_object_id() );
+	$url = get_permalink( apit_noticias_pagina_id() );
 
 	if ( ! $url ) {
 		$url = home_url( '/' );
@@ -164,3 +189,30 @@ function apit_noticia_resumo( $post, $palavras ) {
 
 	return wp_trim_words( wp_strip_all_tags( $texto ), $palavras, '…' );
 }
+
+/**
+ * The endpoint the filter and the pagination call.
+ *
+ * It returns the same template the page renders, so there is one source for the
+ * list and no second copy of the card to keep in step. Registered for logged-in
+ * and logged-out visitors alike: the section is public.
+ *
+ * No nonce. A nonce protects against a request being made on someone's behalf
+ * without their intent, and this reads published posts and writes nothing — the
+ * same data the page itself serves to anyone. Adding one would also break the
+ * section on any page cached for longer than the nonce's lifetime.
+ */
+function apit_ajax_noticias() {
+	$pagina_id = apit_noticias_pagina_id();
+
+	if ( ! $pagina_id ) {
+		status_header( 400 );
+		wp_die( '', '', [ 'response' => 400 ] );
+	}
+
+	get_template_part( 'template-parts/noticias/resultados' );
+
+	wp_die();
+}
+add_action( 'wp_ajax_apit_noticias', 'apit_ajax_noticias' );
+add_action( 'wp_ajax_nopriv_apit_noticias', 'apit_ajax_noticias' );

@@ -188,7 +188,10 @@ add_shortcode( 'apit_contactos', 'apit_shortcode_contactos' );
  * technology — the real heading is the h1 next to it.
  */
 function apit_shortcode_wordmark( $atts ) {
-	$atts = shortcode_atts( [ 'texto' => '' ], $atts, 'apit_wordmark' );
+	$atts = shortcode_atts( [
+		'texto'       => '',
+		'alinhamento' => 'direita',
+	], $atts, 'apit_wordmark' );
 
 	if ( '' === trim( $atts['texto'] ) ) {
 		return '';
