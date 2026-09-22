@@ -2,10 +2,14 @@
 /**
  * Associados — how-to-join steps.
  *
- * The numbers painted on the circles are the row's position in the list, not
- * a typed field: an editor reordering the steps in the back office (or
- * inserting a new one in the middle) then gets correct numbering for free,
- * instead of having to re-export artwork or edit a number sub-field to match.
+ * The number is part of the artwork the client uploads, so nothing is drawn
+ * over it here. It used to be printed from the row's position, on the
+ * assumption that the circles would arrive plain — that way reordering the
+ * steps renumbered them for free. The images came with their numbers already
+ * on them and the two were showing on top of each other.
+ *
+ * The cost of this is that reordering the steps in the back office now means
+ * re-exporting the circles.
  */
 $passos = apit_campo( 'assoc_passos' );
 
@@ -34,13 +38,12 @@ if ( ! $itens ) {
 ?>
 <section class="assoc-passos">
 	<ol class="assoc-passos__lista">
-		<?php foreach ( $itens as $indice => $item ) : ?>
+		<?php foreach ( $itens as $item ) : ?>
 			<li class="assoc-passos__item">
 				<div class="assoc-passos__circulo">
 					<?php if ( $item['imagem'] ) : ?>
 						<?php echo wp_get_attachment_image( $item['imagem'], 'medium', false, [ 'alt' => '' ] ); ?>
 					<?php endif; ?>
-					<span class="assoc-passos__numero"><?php echo esc_html( (string) ( $indice + 1 ) ); ?></span>
 				</div>
 
 				<?php if ( $item['titulo'] ) : ?>

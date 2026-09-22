@@ -184,35 +184,79 @@
 }
 
 /*
- * Pushed to the bottom of the card by the auto margin, so the links line up
- * across a row. The arrow is drawn from a character rather than an icon font —
- * the site loads Font Awesome for the social icons only, and this is type.
+ * The button on the card is the Documentos download button: same pill, same
+ * 2px outline, same 12px uppercase label, same fill on hover. One control
+ * across the site, so a visitor who has been on Documentos already knows what
+ * this is.
+ *
+ * What differs is the colour and the glyph. The colour is the card's category
+ * rather than the fixed blue, because on this page everything that belongs to a
+ * category is tinted by it — the label, the filter pill, the card with no
+ * picture. The blue is the fallback for a post with no category, which is the
+ * colour the Documentos button wears anyway.
+ *
+ * `margin-top: auto` collects the card's spare height, so every button in a row
+ * sits on the same line whatever the titles above them do; `align-self` keeps
+ * it hugging its label instead of stretching across the card.
  */
 .noticia__ler {
 	display: inline-flex;
 	align-items: center;
 	gap: 10px;
 	margin-top: auto;
-	padding-top: 20px;
+	align-self: flex-start;
+	padding: 11px 22px 10px;
+	border: 2px solid currentColor;
+	border-radius: 200px;
 	font-family: var(--apit-font);
 	font-weight: 500;
-	font-size: 14px;
-	letter-spacing: 1.4px;
+	font-size: 12px;
+	line-height: 1;
+	letter-spacing: 0.36px;
 	text-transform: uppercase;
-	color: var(--apit-cat, var(--apit-magenta));
+	color: var(--apit-cat, var(--apit-azul));
+	transition: background-color 0.2s, color 0.2s;
 }
 
-.noticia__ler::after {
-	content: "→";
-	transition: transform 0.18s ease;
+/*
+ * The newspaper glyph, from the theme and not the media library — the same
+ * choice the download arrow and the header's magnifier made: it is part of the
+ * interface, so it travels with the code instead of depending on a media item
+ * nobody knows not to delete.
+ *
+ * A mask painted with currentColor, so it follows the label on hover without a
+ * second file. The 15x15 frame is the download button's, and `contain` fits the
+ * 14x12 artwork inside it at its own proportions.
+ */
+.noticia__ler::before {
+	content: "";
+	width: 15px;
+	height: 15px;
+	flex-shrink: 0;
+	background-color: currentColor;
+	-webkit-mask-image: url("../img/icon-noticia.svg");
+	mask-image: url("../img/icon-noticia.svg");
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+}
+
+/*
+ * The whole card is one link, so the button fills on hovering anywhere on it —
+ * which is what already happens on Documentos, where the button is the only
+ * link there is.
+ */
+.noticia--cartao .noticia__link:hover .noticia__ler,
+.noticia--cartao .noticia__link:focus-visible .noticia__ler {
+	background-color: var(--apit-cat, var(--apit-azul));
+	color: #fff;
 }
 
 .noticia--cartao .noticia__link:hover .noticia__title {
 	color: var(--apit-cat, var(--apit-magenta));
-}
-
-.noticia--cartao .noticia__link:hover .noticia__ler::after {
-	transform: translateX(4px);
 }
 
 .noticias-arquivo__vazio {
@@ -317,12 +361,8 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.noticias-filtros__item,
-	.noticia__ler::after,
+	.noticia__ler,
 	.noticias-paginacao .page-numbers {
 		transition: none;
-	}
-
-	.noticia--cartao .noticia__link:hover .noticia__ler::after {
-		transform: none;
 	}
 }

@@ -669,12 +669,18 @@
 	text-align: center;
 }
 
+/*
+ * 59px of a 660px-wide design capture, so 172px at 1920 — a little larger than
+ * the benefit circles beside them, which is how the design has it. It was 118px
+ * here, which put the two the wrong way round.
+ *
+ * No flex centring any more: it was there to hold the number that used to be
+ * drawn over the artwork, and the number is now part of the artwork.
+ */
 .assoc-passos__circulo {
 	position: relative;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 118px;
+	width: 172px;
+	max-width: 100%;
 	margin: 0 auto 26px;
 	aspect-ratio: 1;
 	border-radius: 50%;
@@ -682,24 +688,10 @@
 }
 
 .assoc-passos .assoc-passos__circulo img {
-	position: absolute;
-	inset: 0;
+	display: block;
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-}
-
-/*
- * The number is drawn over the artwork rather than baked into it, so
- * reordering the steps in the back office does not mean exporting new images.
- */
-.assoc-passos__numero {
-	position: relative;
-	font-family: var(--apit-font);
-	font-weight: 400;
-	font-size: 46px;
-	line-height: 1;
-	color: var(--apit-black);
 }
 
 .assoc-passos__titulo {

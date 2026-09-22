@@ -16,10 +16,11 @@ A versão aqui registada corresponde ao campo `Version` de
   magenta, ao contrário do Calendário, para duas páginas vizinhas no menu não
   abrirem no mesmo quadro), wordmark `NOTÍ CIAS`, e a primeira secção a subir
   para dentro do hero pela `apit-sobrepoe` já existente.
-- Secção do arquivo — `[apit_noticias_arquivo]`, em
-  `template-parts/noticias/arquivo.php`: cartão de destaque, filtros por
+- Secção do arquivo — `[apit_noticias_arquivo]`: cartão de destaque, filtros por
   categoria, grelha paginada e o mesmo bloco duplo e newsletter das outras
-  páginas. Os cartões são os da Home com data, resumo e link acrescentados,
+  páginas. Está dividida em duas: `arquivo.php` é a moldura que não muda — o
+  destaque, a etiqueta da lista e a barra de filtros — e `resultados.php` é só a
+  grelha e a paginação, que é o que o AJAX troca. Os cartões são os da Home com data, resumo e link acrescentados,
   pelo que a etiqueta de categoria e o título continuam com uma só definição.
 - **Filtro e paginação sem recarregar a página.** O clique num filtro ou num
   número troca só a lista, por `fetch` a um endpoint no `admin-ajax` que devolve
@@ -74,6 +75,11 @@ A versão aqui registada corresponde ao campo `Version` de
     o atributo `hidden`, nunca removido, pelo que o elemento é o mesmo do
     princípio ao fim. Os dois templates concordam sobre qual é a notícia por
     `apit_noticias_destaque_da_pagina()`, com cache por pedido.
+  - **A etiqueta da lista e a barra de filtros também ficam**, pela mesma razão:
+    nenhuma delas depende do que está a ser listado. O que muda é qual a pílula
+    marcada, e isso o script faz no sítio — classe e `aria-current` — logo no
+    clique, antes mesmo da resposta chegar. Redesenhar a barra piscava a linha
+    toda e tirava o foco a quem tinha acabado de carregar nela.
   - Substitui o *Fixar no topo do blogue* que fazia este trabalho, **também na
     Home**: é o mesmo campo e a mesma regra nos dois sítios, um interruptor só.
     O *sticky* é uma funcionalidade do índice do blogue, com efeitos próprios
@@ -166,6 +172,14 @@ A versão aqui registada corresponde ao campo `Version` de
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.28.2] - 2026-09-22
+
+### Corrigido
+- Passos dos Associados sem o número desenhado por cima do círculo: as imagens
+  do cliente já o trazem, e apareciam os dois sobrepostos.
+- Círculo dos passos com 172px, um pouco maior que os 157px dos benefícios ao
+  lado, como no design. Estava com 118px, que punha os dois ao contrário.
 
 ## [0.28.1] - 2026-09-22
 
