@@ -120,6 +120,57 @@
 		grelha.scrollIntoView( { behavior: 'smooth', block: 'start' } );
 	}
 
+	/**
+	 * Espera que as imagens do HTML que vem a caminho estejam carregadas.
+	 *
+	 * Sem isto via-se um flash: o HTML entra no DOM, as capas dos cartões são
+	 * `background-image` e o browser só as vai buscar depois de as pintar —
+	 * pelo que durante um instante cada cartão mostra a cor de fundo em vez da
+	 * imagem. Carregadas antes da troca, entram já prontas da cache.
+	 *
+	 * Um `decode()` que falhe não trava nada: a imagem pode estar em falta, e
+	 * isso é um cartão sem capa, não uma lista que não aparece. O mesmo vale
+	 * para o tempo — ao fim de 1,5s a lista entra com o que houver, porque
+	 * esperar mais é pior do que o flash que isto evita.
+	 */
+	function comAsImagensProntas( html ) {
+		var caixa = document.createElement( 'div' );
+		caixa.innerHTML = html;
+
+		var enderecos = [];
+
+		Array.prototype.forEach.call( caixa.querySelectorAll( '[style*="background-image"]' ), function ( elemento ) {
+			var achado = /url\(['"]?(.*?)['"]?\)/.exec( elemento.getAttribute( 'style' ) );
+
+			if ( achado ) {
+				enderecos.push( achado[ 1 ] );
+			}
+		} );
+
+		Array.prototype.forEach.call( caixa.querySelectorAll( 'img[src]' ), function ( imagem ) {
+			enderecos.push( imagem.getAttribute( 'src' ) );
+		} );
+
+		if ( ! enderecos.length ) {
+			return Promise.resolve( html );
+		}
+
+		var carregadas = Promise.all( enderecos.map( function ( endereco ) {
+			var imagem = new Image();
+			imagem.src = endereco;
+
+			return imagem.decode ? imagem.decode().catch( function () {} ) : Promise.resolve();
+		} ) );
+
+		var limite = new Promise( function ( resolve ) {
+			window.setTimeout( resolve, 1500 );
+		} );
+
+		return Promise.race( [ carregadas, limite ] ).then( function () {
+			return html;
+		} );
+	}
+
 	function carregar( href, registarNoHistorico, daPaginacao ) {
 		var pedido = window.fetch( enderecoDoPedido( href ), {
 			credentials: 'same-origin',
@@ -138,6 +189,7 @@
 
 				return resposta.text();
 			} )
+			.then( comAsImagensProntas )
 			.then( function ( html ) {
 				// Um clique mais recente já está a caminho: esta resposta é
 				// velha e escrevê-la mostraria a categoria errada.

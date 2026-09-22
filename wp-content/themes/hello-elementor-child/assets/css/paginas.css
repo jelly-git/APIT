@@ -291,17 +291,40 @@
 .pagina-hero__decor--esquerda {
 	position: static;
 	align-items: flex-start;
+	/* The panel gives the block 80%, which is what keeps it behind the heading. */
+	opacity: 0.8;
+	/*
+	 * Left 208 against the content column's 310: the block starts 102px outside
+	 * it. Taken back at the breakpoints below, where there is no room to spare.
+	 */
+	margin-left: -102px;
 }
 
 /*
- * Smaller than the right-hand one, and it has to be: "ADERIR" at 280px is over
- * 1000px of Omnes against the 650px this half has. The design lets it run a
- * little past the column on the left, which is what the clamp's lower bound
- * leaves room for.
+ * The panel's height is 290px for two lines, and 2 x 177.22 x 0.82 is 290.6 —
+ * so the line-height is the whole of the spacing and there is nothing to pull
+ * back. The right-hand wordmark keeps its own overlap.
+ */
+.pagina-hero__decor--esquerda .pagina-hero__word--baixo {
+	margin-top: 0;
+}
+
+/*
+ * Panel values: Gilroy-Bold 177.22px, line-height 82%, no tracking. The 190px
+ * with negative tracking here before was fitted to the column rather than read,
+ * and it was too big.
+ *
+ * Omnes at the panel's own size lands within a few pixels of the panel's width:
+ * "ADERIR" comes to 612px against the 604px reported. The substitute font being
+ * wider is cancelled by the tracking going back to zero.
+ *
+ * The cap is on for the same reason it always was — the half column shrinks
+ * with the viewport while 177px does not. 13vw is the size at which "ADERIR",
+ * about 3.3 times the font size wide, still clears it.
  */
 .pagina-hero__decor--esquerda .pagina-hero__word {
-	font-size: clamp(64px, 11vw, 190px);
-	letter-spacing: -0.021em;
+	font-size: min(177.22px, 13vw);
+	letter-spacing: 0;
 	/*
 	 * The fade is mirrored. It thins the word away from the edge it is anchored
 	 * to, so a block on the left has to thin towards the right — copied as-is it
@@ -1437,6 +1460,15 @@
 	}
 
 	/*
+	 * The design's 102px of bleed to the left of the column is a desktop
+	 * measurement; below this the gutter is 20px and there is nothing to bleed
+	 * into.
+	 */
+	.pagina-hero__decor--esquerda {
+		margin-left: 0;
+	}
+
+	/*
 	 * The wordmark stops being a background and becomes a headline-sized word
 	 * behind the text. Kept, rather than hidden, because it is what tells the
 	 * four pages apart at a glance.
@@ -1533,6 +1565,14 @@
 	.apit-banda-aderir .banda-aderir__col {
 		flex: 0 0 auto;
 		width: 100%;
+	}
+
+	/*
+	 * Stacked, the wordmark has the whole column rather than half of it, so it
+	 * can be a good deal larger than the 13vw the two-column cap allows.
+	 */
+	.pagina-hero__decor--esquerda .pagina-hero__word {
+		font-size: min(177.22px, 26vw);
 	}
 
 	.assoc-beneficios__lista,

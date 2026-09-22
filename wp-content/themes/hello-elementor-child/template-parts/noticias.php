@@ -16,31 +16,27 @@
  */
 
 /*
- * The featured (large) card is whichever post is marked "sticky", so an editor
- * chooses it rather than it always being the newest one. Without a sticky post
- * it falls back to the most recent.
+ * The featured (large) card is the newest post with "Notícia em destaque"
+ * ticked, which is the same field and the same rule as the Notícias page — one
+ * switch in the back office, not one per place the card appears. With nothing
+ * ticked it falls back to the newest post, so the slot is never empty.
  */
-$sticky = get_option( 'sticky_posts' );
+$base = [
+	'post_type'           => 'post',
+	'post_status'         => 'publish',
+	'ignore_sticky_posts' => true,
+];
 
-$noticias = get_posts( [
-	'post_type'      => 'post',
-	'post_status'    => 'publish',
-	'posts_per_page' => 3,
-] );
+$destaque = apit_noticia_destaque( $base, 'marcada' );
 
-if ( ! $noticias ) {
+if ( ! $destaque ) {
 	return;
 }
 
-// Pull the sticky post to the front if it is in the result set.
-if ( $sticky ) {
-	usort( $noticias, function ( $a, $b ) use ( $sticky ) {
-		return ( in_array( $b->ID, $sticky, true ) ? 1 : 0 ) - ( in_array( $a->ID, $sticky, true ) ? 1 : 0 );
-	} );
-}
-
-$destaque   = array_shift( $noticias );
-$secundaria = $noticias;
+$secundaria = get_posts( array_merge( $base, [
+	'posts_per_page' => 2,
+	'post__not_in'   => [ $destaque->ID ],
+] ) );
 
 /*
  * The design stacks the image card above the colour block, so posts with a
@@ -65,7 +61,8 @@ $categoria_de = function ( $post ) {
 		$cat   = $categoria_de( $destaque );
 		$thumb = get_the_post_thumbnail_url( $destaque->ID, 'full' );
 		?>
-		<article class="noticia noticia--destaque">
+		<article class="noticia noticia--destaque<?php echo $thumb ? '' : ' noticia--sem-imagem'; ?>"
+			style="<?php echo esc_attr( apit_cor_categoria_style( $cat ) ); ?>">
 			<a class="noticia__link" href="<?php echo esc_url( get_permalink( $destaque ) ); ?>">
 				<span class="noticia__imagem"
 					<?php if ( $thumb ) : ?>style="background-image: url('<?php echo esc_url( $thumb ); ?>')"<?php endif; ?>></span>

@@ -158,14 +158,11 @@
 }
 
 /*
- * No featured image: a block of the category's colour, which is what the Home
- * does with the same case. The grid keeps its rhythm instead of showing one
- * short card with a gap where the picture should be.
+ * A card with no featured image keeps the picture's height and fills it with
+ * the category's colour — the colour itself comes from style.css, because the
+ * Home has the same case. Without the height the grid would show one short card
+ * with a gap where the picture should be.
  */
-.noticia--sem-imagem .noticia__imagem {
-	background-color: var(--apit-cat, var(--apit-magenta));
-}
-
 .noticia--cartao .noticia__texto {
 	/* Grows so every "ler" link in a row sits on the same line, whatever the
 	 * titles above them do. */

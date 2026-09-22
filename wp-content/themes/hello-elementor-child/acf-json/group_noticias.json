@@ -66,7 +66,7 @@
             "name": "noticias_destaque_fonte",
             "aria-label": "",
             "type": "select",
-            "instructions": "A notícia marcada como destaque é a que tiver \"Fixar no topo do blogue\" ligado na própria notícia. Sem nenhuma marcada, entra a mais recente de qualquer maneira.",
+            "instructions": "A opção \"Notícia em destaque\" liga-se na própria notícia, na barra lateral. Podem ficar várias ligadas — aparece a mais recente delas, e dentro de um filtro a mais recente dessa categoria. Sem nenhuma ligada, entra a mais recente de qualquer maneira.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -75,8 +75,8 @@
                 "id": ""
             },
             "choices": {
-                "marcada": "A marcada como destaque (Fixar no topo do blogue)",
-                "recente": "A mais recente"
+                "marcada": "A mais recente com \"Notícia em destaque\" ligada",
+                "recente": "A mais recente de todas"
             },
             "default_value": "marcada",
             "return_format": "value",
@@ -462,5 +462,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1790084424
+    "modified": 1790087769
 }

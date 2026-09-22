@@ -1,0 +1,48 @@
+{
+    "key": "group_noticia_destaque",
+    "title": "Destaque",
+    "fields": [
+        {
+            "key": "field_noticia_destaque",
+            "label": "Notícia em destaque",
+            "name": "noticia_destaque",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Ocupa a área de destaque da página das Notícias. Podem ficar várias ligadas: a que aparece é sempre a mais recente das que estiverem — e, dentro de um filtro, a mais recente dessa categoria.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "Mostrar em destaque",
+            "default_value": 0,
+            "ui": 1,
+            "ui_on_text": "Sim",
+            "ui_off_text": "Não"
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "post_type",
+                "operator": "==",
+                "value": "post"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "side",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Qual das notícias ocupa a área de destaque.",
+    "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1790087737
+}

@@ -101,7 +101,7 @@ $categorias    = $mostrar_filtros ? apit_noticias_categorias( apit_campo( 'notic
 			<h2 class="apit-secao__etiqueta"><?php echo esc_html( $destaque_label ); ?></h2>
 		<?php endif; ?>
 
-		<article class="noticia noticia--destaque"
+		<article class="noticia noticia--destaque<?php echo $capa_destaque ? '' : ' noticia--sem-imagem'; ?>"
 			style="<?php echo esc_attr( apit_cor_categoria_style( $cat_destaque ) ); ?>">
 			<a class="noticia__link" href="<?php echo esc_url( get_permalink( $destaque ) ); ?>">
 				<span class="noticia__imagem"

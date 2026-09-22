@@ -37,6 +37,13 @@ A versão aqui registada corresponde ao campo `Version` de
   - `aria-live="polite"` na lista e o foco devolvido ao filtro ou ao número que
     ficou activo — sem isso, a substituição do HTML deixava quem navega por
     teclado no `body`.
+  - **A página fica onde estava.** Trocar de filtro já não desloca nada: a barra
+    de filtros é medida antes e reposta à mesma altura na janela depois, o que
+    também absorve a mudança de altura do que está acima dela. Só a paginação
+    reenquadra, e apenas quando a grelha ficou acima da janela — é o caso de
+    quem carrega no "seguinte" a partir do fundo. A correcção é `instant`,
+    porque o tema declara `scroll-behavior: smooth` e um `scrollBy` normal
+    herdava-o: via-se a acontecer, que era o safanão que ela evita.
 - Grupo de campos **Notícias — página** (21 campos, em quatro separadores). Não
   há texto nesta página que não seja editável: mostrar ou não o destaque e qual
   a notícia que o ocupa, as etiquetas das duas secções, notícias por página,
@@ -67,6 +74,15 @@ A versão aqui registada corresponde ao campo `Version` de
   paginação.
 
 ### Notas
+- **Categorias das notícias**: passaram a ser *Institucional* e *Livros e
+  revistas*. Os dois artigos que estavam em *Setor* e em *Mercados & Feiras*
+  foram para Institucional — sem categoria, os cartões perdiam a etiqueta e a
+  cor. As duas categorias antigas ficaram na base de dados, vazias: não é
+  preciso apagá-las para desaparecerem do site, e assim isto desfaz-se. As cores
+  ficaram no campo da categoria: magenta em Institucional, azul em Livros e
+  revistas. O filtro está fixado nestas duas pelo campo *Categorias a mostrar*,
+  porque a lista automática esconde as que não têm notícias e *Livros e
+  revistas* ainda não tem nenhuma.
 - **`page_for_posts` deixou de ser a página Notícias** (Definições › Leitura,
   "Página de artigos" agora vazia). Enquanto era, o WordPress servia `/noticias/`
   pelo `index.php` do tema pai e ignorava tudo o que a página tivesse — hero
@@ -105,6 +121,15 @@ A versão aqui registada corresponde ao campo `Version` de
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.27.9] - 2026-09-22
+
+### Alterado
+- Wordmark COMO ADERIR com os valores do painel do Figma: 177,22px em vez dos
+  190px, sem tracking, opacidade 80% e 102px para fora da coluna à esquerda.
+  O tamanho anterior tinha sido acertado à coluna, não lido.
+- As duas linhas deixam de se sobrepor: 2 × 177,22 × 82% dá os 290px que o
+  painel reporta, portanto a entrelinha é todo o espaçamento.
 
 ## [0.27.8] - 2026-09-22
 

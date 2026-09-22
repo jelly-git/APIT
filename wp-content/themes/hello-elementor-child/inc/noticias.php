@@ -140,29 +140,38 @@ function apit_noticias_categorias( $escolhidas ) {
 }
 
 /**
- * The featured post: the one an editor marked as sticky, or the most recent.
+ * The featured post: the newest one an editor ticked, or simply the newest.
  *
- * The choice is a field, because "the newest one" and "the one we want up
- * there" are different editorial policies and the client should be able to
- * switch between them. With "marcada" and nothing marked it falls back to the
- * most recent, so the slot is never empty.
+ * The tick is a field on the post — "Notícia em destaque", in the sidebar —
+ * and not WordPress's "stick to the top of the blog", which used to do this
+ * job. Sticky is a blog-index feature with effects of its own on queries, and
+ * an editor reading it has no way to know it means the big card on one page.
+ *
+ * Several posts may carry it. The newest wins, so marking today's news is
+ * enough — there is nothing to unmark first, and the slot moves on by itself.
+ *
+ * The choice between "the marked one" and "the newest" is a field on the page,
+ * because those are two different editorial policies. With "marcada" and
+ * nothing marked it falls back to the newest, so the slot is never empty.
  *
  * $base carries the category filter, which is what makes the featured card
- * follow the filter instead of staying on a post from another section.
+ * follow the filter: inside a category it is the newest marked post of that
+ * category, not whichever post is marked site-wide.
  */
 function apit_noticia_destaque( array $base, $fonte ) {
 	if ( 'marcada' === $fonte ) {
-		$marcadas = get_option( 'sticky_posts' );
+		$posts = get_posts( array_merge( $base, [
+			'posts_per_page' => 1,
+			'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+				[
+					'key'   => 'noticia_destaque',
+					'value' => '1',
+				],
+			],
+		] ) );
 
-		if ( $marcadas ) {
-			$posts = get_posts( array_merge( $base, [
-				'post__in'       => $marcadas,
-				'posts_per_page' => 1,
-			] ) );
-
-			if ( $posts ) {
-				return $posts[0];
-			}
+		if ( $posts ) {
+			return $posts[0];
 		}
 	}
 
