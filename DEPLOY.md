@@ -126,6 +126,19 @@ wp transient delete --all
 # escapadas (http:\\/\\/apit.local), forma que o search-replace não apanha.
 # O ACF reconstrói-o no primeiro acesso ao wp-admin.
 wp option delete acf_site_health
+
+# Registo de erros de JavaScript do editor do Elementor. É diagnóstico da
+# máquina local e guarda caminhos com apit.local dentro de dados serializados.
+wp option delete elementor_log
+
+# Cache do HTML já renderizado de cada página. Regenera-se, e duplica o
+# conteúdo — incluindo os URLs escapados que a secção seguinte tem de tratar.
+wp eval 'global $wpdb; echo $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key = \"_elementor_element_cache\"" ) . " caches\n";'
+
+# Caches do WordPress.org: feeds do painel, block patterns e traduções.
+# O `wp transient delete --all` acima não apanha os de nível de site, e eram
+# 894 KB dos 1,47 MB que a exportação de 22 de setembro tinha a mais.
+wp eval 'global $wpdb; echo $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE \"_site_transient_%\"" ) . " transients de site\n";'
 ```
 
 ### 3.2 Exportar
@@ -137,6 +150,19 @@ cd "C:\Users\faust\Local Sites\apit"
 # --precise porque os dados do Elementor estão serializados.
 wp search-replace "http://apit.local" "https://dev.jellycode.agency/apit" \
     --all-tables --precise --export=bd-sem-cabecalho.sql
+
+# O comando acima NÃO apanha os endereços guardados dentro do _elementor_data.
+# Esse campo é JSON, o JSON escapa as barras e o dump escapa depois as barras
+# invertidas, pelo que o ficheiro leva `http:\\/\\/apit.local\\/...`. A 22 de
+# setembro foram assim os dois botões da ficha de inscrição, que teriam ido para
+# produção a apontar para a máquina local. Feito em PHP e não em sed: o padrão é
+# feito de barras invertidas e passá-lo por uma shell intacto já falhou três
+# vezes neste projecto, num caso parecido no acf_site_health.
+php -r '$f="bd-sem-cabecalho.sql"; $b=chr(92).chr(92)."/";
+  $s=file_get_contents($f);
+  $s=str_replace("http:".$b.$b."apit.local", "https:".$b.$b."dev.jellycode.agency".$b."apit", $s);
+  file_put_contents($f,$s);
+  echo substr_count($s,"apit.local")." apit.local que restam\n";'
 
 # as tabelas do WordPress declaram datas 0000-00-00 por omissão, que um MySQL
 # em modo estrito recusa com "Invalid default value for 'comment_date'".
@@ -163,11 +189,17 @@ VERSAO=$(sed -n 's/^Version: //p' app/public/wp-content/themes/hello-elementor-c
 cp apit-bd-para-servidor.sql "bd/apit-bd-v$VERSAO-$(date +%F).sql"
 ```
 
-Referência da exportação verificada a 4 de setembro de 2026: 13 tabelas,
-715 linhas, 258 KB, 81 endereços do servidor e nenhum local. Foi importada numa
-base de dados de teste e reproduziu as 715 linhas tabela a tabela, sem uma
+Referência da exportação verificada a 22 de setembro de 2026: 13 tabelas,
+1415 linhas, 510 KB, 228 endereços do servidor e nenhum local. Foi importada
+numa base de dados de teste e reproduziu as 1415 linhas tabela a tabela, sem uma
 única opção ou post a diferir do local. Um ficheiro muito menor é sinal de
-exportação incompleta.
+exportação incompleta; um muito maior é sinal de que os caches do WordPress.org
+voltaram — em 22 de setembro eram 894 KB dos 1,47 MB iniciais.
+
+A prova que fecha a exportação é decodificar o `_elementor_data` de cada página
+já dentro da base de dados importada. Se a passagem pelos URLs escapados tivesse
+partido uma string, é aqui que se vê. O `#33` dá erro de JSON porque tem o campo
+vazio — está assim também no local, não é da exportação.
 
 ### Onde ficam os ficheiros
 
@@ -179,9 +211,11 @@ com o `LEIA-ME.md` dessa pasta a dizer o estado de cada uma. Base de dados e
 código sobem em par: os dados do Elementor gravados na base de dados dependem
 das classes CSS que o tema dessa versão define.
 
-As exportações da **v0.17.0** que lá estão não servem para subir — não têm a
-página Sobre a APIT, a equipa, os órgãos sociais nem as categorias de eventos, e
-a que tem os URLs trocados não traz o cabeçalho `SQL_MODE`.
+As exportações antigas que lá estão não servem para subir. As da **v0.17.0** não
+têm a página Sobre a APIT, a equipa, os órgãos sociais nem as categorias de
+eventos, e a que tem os URLs trocados não traz o cabeçalho `SQL_MODE`; a da
+**v0.22.10** não tem a Internacionalização, as Notícias, os documentos nem a
+banda dos Associados.
 
 Nada disto entra no git: os ficheiros contêm a tabela `wp_users`, e com ela o
 *hash* da palavra-passe do administrador.
