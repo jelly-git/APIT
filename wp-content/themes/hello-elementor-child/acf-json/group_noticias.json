@@ -241,11 +241,11 @@
         },
         {
             "key": "field_noticias_ler_mais",
-            "label": "Texto do link do cartão",
+            "label": "Texto do botão do cartão",
             "name": "noticias_ler_mais",
             "aria-label": "",
             "type": "text",
-            "instructions": "Em branco, o cartão fica sem essa linha.",
+            "instructions": "O botão no fundo de cada cartão, com o mesmo aspecto do botão de download dos Documentos. Em branco, o cartão fica sem ele.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -462,5 +462,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1790090551
+    "modified": 1790092419
 }

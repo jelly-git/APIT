@@ -110,6 +110,15 @@ A versão aqui registada corresponde ao campo `Version` de
   etiquetas que o template imprime em `h2` como nas que imprime em `p`: é a
   mesma classe, e uma regra só para os títulos deixaria o site com dois estilos
   de etiqueta.
+- O **"Ler notícia"** do cartão passa a ser o botão dos Documentos: a mesma
+  pílula de contorno 2px, o mesmo rótulo em maiúsculas a 12px e o mesmo
+  preenchimento no hover. Um só controlo no site, e quem já esteve nos
+  Documentos reconhece-o. Muda a cor — a da categoria do cartão, e não o azul
+  fixo, porque nesta página tudo o que pertence a uma categoria é tingido por
+  ela; o azul fica como reserva, que é a cor que o botão dos Documentos tem de
+  qualquer maneira. E muda o ícone: um jornal (`assets/img/icon-noticia.svg`),
+  desenhado como máscara pintada com `currentColor` tal como a seta do
+  download, para seguir o rótulo no hover sem um segundo ficheiro.
 - Uma notícia **sem imagem de destaque** deixa de aparecer como um rectângulo
   quase preto: fica com a cor da sua categoria, como já acontecia no cartão
   "bloco" da Home. Vale para o cartão grande e para os da grelha, nas duas
@@ -172,6 +181,15 @@ A versão aqui registada corresponde ao campo `Version` de
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.28.3] - 2026-09-22
+
+### Adicionado
+- Modificador `btn--doc`: um glifo de PDF antes do rótulo, em máscara pintada
+  com `currentColor` para seguir a cor do botão. Aplicado a "Consultar os
+  Estatutos" e aos dois "Descarregar ficha de inscrição" (hero e FAQ).
+- Os dois botões "Descarregar ficha de inscrição" apontam para a ficha de
+  inscrição de 2025 e abrem em nova janela.
 
 ## [0.28.2] - 2026-09-22
 

@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.28.2' );
+define( 'APIT_CHILD_VERSION', '0.28.3' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -103,12 +103,12 @@ function apit_child_enqueue_assets() {
 	}
 
 	/*
-	 * The Internacionalização band is shown on three pages, so its rules live
-	 * in their own file rather than in the stylesheet of any one of them — and
-	 * rather than in style.css, which the other three would then carry for
+	 * The Internacionalização band is shown on four pages, so its rules live in
+	 * their own file rather than in the stylesheet of any one of them — and
+	 * rather than in style.css, which every other page would then carry for
 	 * nothing.
 	 */
-	if ( is_page( [ 'sobre-apit', 'calendario', 'documentos' ] ) ) {
+	if ( is_page( [ 'sobre-apit', 'calendario', 'documentos', 'noticias' ] ) ) {
 		wp_enqueue_style(
 			'apit-inter-style',
 			get_stylesheet_directory_uri() . '/assets/css/internacionalizacao.css',
