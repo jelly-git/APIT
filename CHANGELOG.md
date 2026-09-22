@@ -101,6 +101,20 @@ A versão aqui registada corresponde ao campo `Version` de
   galeria do seu hero escolhem-se no back office como nas restantes.
 
 ### Corrigido
+- **A banda da Internacionalização tinha uma faixa acima e abaixo**, da cor da
+  secção, a cortá-la do que ficava à volta. Eram os 10px de padding que o
+  Elementor dá a qualquer contentor: a `apit-sangra` só zerava os horizontais.
+  Passa a zerar os quatro — um bloco que sangra, sangra. Vale para a banda e
+  para o bloco duplo, nas páginas todas que os têm.
+- **E a banda nunca chegava a pintar o degradé.** Em ecrãs com 1024px de altura
+  ou menos, o Elementor apaga o `background-image` de cada contentor a partir do
+  terceiro — e dos seus descendentes — até o marcar como `e-lazyloaded` quando
+  entra no ecrã. Nesta instalação esse marco nunca chega: percorri a página toda
+  e não há um único `.e-lazyloaded`. A banda ficava um vazio de 505px com o
+  texto e o logótipo a flutuar no branco, o que explica o padding que parecia
+  estar lá. Os contentores da banda no Calendário, nos Documentos e nas Notícias
+  passam a levar `e-no-lazyload`, que é a saída oficial e já era o que o hero e a
+  newsletter usavam pela mesma razão.
 - **O degradé de transparente para branco faltava no hero das Notícias.** Ele
   vivia na camada de média, e essa camada só existe quando há vídeo ou imagem no
   grupo *Hero — fundo* — nas Notícias não há nenhum, pelo que o hero acabava a
