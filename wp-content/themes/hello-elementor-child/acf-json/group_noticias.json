@@ -1,0 +1,466 @@
+{
+    "key": "group_noticias",
+    "title": "Notícias — página",
+    "fields": [
+        {
+            "key": "field_noticias_tab_destaque",
+            "label": "Destaque",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_noticias_destaque_mostrar",
+            "label": "Mostrar a notícia em destaque",
+            "name": "noticias_destaque_mostrar",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "O cartão grande no topo da lista. Desligado, a página começa na grelha.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "ui": 1,
+            "ui_on_text": "Sim",
+            "ui_off_text": "Não"
+        },
+        {
+            "key": "field_noticias_destaque_etiqueta",
+            "label": "Etiqueta do destaque",
+            "name": "noticias_destaque_etiqueta",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "A linha em maiúsculas acima do cartão grande.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Em destaque",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_noticias_destaque_fonte",
+            "label": "Que notícia fica em destaque",
+            "name": "noticias_destaque_fonte",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "A notícia marcada como destaque é a que tiver \"Fixar no topo do blogue\" ligado na própria notícia. Sem nenhuma marcada, entra a mais recente de qualquer maneira.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "marcada": "A marcada como destaque (Fixar no topo do blogue)",
+                "recente": "A mais recente"
+            },
+            "default_value": "marcada",
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": "",
+            "create_options": 0,
+            "save_options": 0
+        },
+        {
+            "key": "field_noticias_tab_lista",
+            "label": "Lista",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_noticias_lista_etiqueta",
+            "label": "Etiqueta da lista",
+            "name": "noticias_lista_etiqueta",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "A linha em maiúsculas acima da grelha, ao lado dos filtros.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Todas as notícias",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_noticias_por_pagina",
+            "label": "Notícias por página",
+            "name": "noticias_por_pagina",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "Quantos cartões a grelha mostra antes da paginação.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 9,
+            "min": 1,
+            "max": 24,
+            "step": 1,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_noticias_colunas",
+            "label": "Colunas em desktop",
+            "name": "noticias_colunas",
+            "aria-label": "",
+            "type": "select",
+            "instructions": "Em tablet são sempre duas e no telemóvel uma — três cartões nessas larguras deixariam os títulos com duas palavras.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "choices": {
+                "2": "2",
+                "3": "3",
+                "4": "4"
+            },
+            "default_value": 3,
+            "return_format": "value",
+            "multiple": 0,
+            "allow_null": 0,
+            "ui": 0,
+            "ajax": 0,
+            "placeholder": "",
+            "create_options": 0,
+            "save_options": 0
+        },
+        {
+            "key": "field_noticias_mostrar_data",
+            "label": "Mostrar a data",
+            "name": "noticias_mostrar_data",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "O formato da data é o do site, em Definições › Gerais.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "ui": 1,
+            "ui_on_text": "Sim",
+            "ui_off_text": "Não"
+        },
+        {
+            "key": "field_noticias_mostrar_resumo",
+            "label": "Mostrar o resumo",
+            "name": "noticias_mostrar_resumo",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "O excerto da notícia; sem excerto escrito, o início do texto.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "ui": 1,
+            "ui_on_text": "Sim",
+            "ui_off_text": "Não"
+        },
+        {
+            "key": "field_noticias_resumo_palavras",
+            "label": "Palavras do resumo",
+            "name": "noticias_resumo_palavras",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 22,
+            "min": 5,
+            "max": 60,
+            "step": 1,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_noticias_ler_mais",
+            "label": "Texto do link do cartão",
+            "name": "noticias_ler_mais",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Em branco, o cartão fica sem essa linha.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Ler notícia",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_noticias_vazio",
+            "label": "Texto quando não há nada a mostrar",
+            "name": "noticias_vazio",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Aparece quando a grelha fica vazia — numa categoria sem notícias, ou numa em que a única notícia é a que está em destaque.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "De momento não há mais notícias para mostrar.",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_noticias_tab_filtros",
+            "label": "Filtros",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_noticias_filtros_mostrar",
+            "label": "Mostrar os filtros por categoria",
+            "name": "noticias_filtros_mostrar",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "ui": 1,
+            "ui_on_text": "Sim",
+            "ui_off_text": "Não"
+        },
+        {
+            "key": "field_noticias_filtros_todas",
+            "label": "Texto do filtro sem categoria",
+            "name": "noticias_filtros_todas",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Todas",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_noticias_filtros_categorias",
+            "label": "Categorias a mostrar",
+            "name": "noticias_filtros_categorias",
+            "aria-label": "",
+            "type": "taxonomy",
+            "instructions": "Em branco, aparecem todas as categorias com notícias. Escolhidas aqui, aparecem só estas e por esta ordem — mesmo as que ainda não tenham notícias. A cor de cada uma é a que estiver definida na própria categoria.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "taxonomy": "category",
+            "field_type": "multi_select",
+            "allow_null": 1,
+            "add_term": 0,
+            "save_terms": 0,
+            "load_terms": 0,
+            "return_format": "object",
+            "multiple": 0,
+            "bidirectional": 0,
+            "bidirectional_target": []
+        },
+        {
+            "key": "field_noticias_tab_paginacao",
+            "label": "Paginação",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_noticias_paginacao_mostrar",
+            "label": "Mostrar a paginação",
+            "name": "noticias_paginacao_mostrar",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "Desligada, a página mostra apenas o primeiro lote de notícias.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "ui": 1,
+            "ui_on_text": "Sim",
+            "ui_off_text": "Não"
+        },
+        {
+            "key": "field_noticias_paginacao_anterior",
+            "label": "Texto do botão anterior",
+            "name": "noticias_paginacao_anterior",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Anterior",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_noticias_paginacao_seguinte",
+            "label": "Texto do botão seguinte",
+            "name": "noticias_paginacao_seguinte",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Seguinte",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "9"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "Tudo o que a página das notícias mostra. Os textos do hero — migalha, título e introdução — estão no Elementor, como nas outras páginas.",
+    "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1790084424
+}

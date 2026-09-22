@@ -249,6 +249,20 @@ function apit_shortcode_inter_stand() {
 add_shortcode( 'apit_inter_stand', 'apit_shortcode_inter_stand' );
 
 /**
+ * The Notícias page: featured card, category filter, grid and pagination.
+ *
+ * No attributes, on purpose. Everything it shows — the labels, how many posts a
+ * page holds, how many columns, which categories the filter offers — is a field
+ * on the page itself, and a value with two controls is a value that will
+ * eventually disagree with itself. The calendar takes attributes because the
+ * same section appears on three pages in three shapes; this one appears once.
+ */
+function apit_shortcode_noticias_arquivo() {
+	return apit_render_template_part( 'template-parts/noticias/arquivo' );
+}
+add_shortcode( 'apit_noticias_arquivo', 'apit_shortcode_noticias_arquivo' );
+
+/**
  * The document library, grouped by area. Reads the apit_documento post type, so
  * the page needs no fields of its own.
  */

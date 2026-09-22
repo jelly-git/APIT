@@ -10,12 +10,58 @@ A versão aqui registada corresponde ao campo `Version` de
 
 ## [Não lançado]
 
+### Adicionado
+- **Página principal das Notícias** (`/noticias/`), no molde das outras quatro:
+  hero partilhado com o degradé próprio `hero--noticias` (azul → roxo →
+  magenta, ao contrário do Calendário, para duas páginas vizinhas no menu não
+  abrirem no mesmo quadro), wordmark `NOTÍ CIAS`, e a primeira secção a subir
+  para dentro do hero pela `apit-sobrepoe` já existente.
+- Secção do arquivo — `[apit_noticias_arquivo]`, em
+  `template-parts/noticias/arquivo.php`: cartão de destaque, filtros por
+  categoria, grelha paginada e o mesmo bloco duplo e newsletter das outras
+  páginas. Os cartões são os da Home com data, resumo e link acrescentados,
+  pelo que a etiqueta de categoria e o título continuam com uma só definição.
+- Grupo de campos **Notícias — página** (21 campos, em quatro separadores). Não
+  há texto nesta página que não seja editável: mostrar ou não o destaque e qual
+  a notícia que o ocupa, as etiquetas das duas secções, notícias por página,
+  colunas em desktop, data, resumo e o seu número de palavras, o texto do link
+  do cartão, o texto de lista vazia, os filtros e as categorias que mostram, e
+  a paginação com os dois rótulos. A migalha, o título e a introdução do hero
+  ficam no Elementor, como nas outras páginas.
+- **Cor por categoria de notícia**, campo na própria categoria
+  (`group_categoria_noticia`). Pinta a etiqueta, o filtro seleccionado e o
+  cartão sem imagem. Em branco, a categoria mantém a cor que o tema lhe dá.
+- A página das Notícias entra no grupo **Hero — fundo**: o vídeo, a imagem ou a
+  galeria do seu hero escolhem-se no back office como nas restantes.
+
+### Alterado
+- `apit_cor_categoria()` passa a resolver a categoria pelo termo e a ler
+  primeiro o campo de cor. **Corrige "Mercados & Feiras"**, que saía magenta na
+  Home: o nome impresso sanitiza para `mercados-amp-feiras` e não coincidia com
+  a chave da tabela nem com o slug do termo.
+- `paginas.css` passa a servir cinco páginas; a folha nova `noticias.css` traz
+  só o que não existe em mais lado nenhum — filtros, grelha, resumo e
+  paginação.
+
+### Notas
+- **`page_for_posts` deixou de ser a página Notícias** (Definições › Leitura,
+  "Página de artigos" agora vazia). Enquanto era, o WordPress servia `/noticias/`
+  pelo `index.php` do tema pai e ignorava tudo o que a página tivesse — hero
+  incluído. É uma opção da base de dados: viaja na exportação, e num servidor
+  onde a base de dados seja mais antiga tem de se desmarcar à mão.
+- A paginação e o filtro viajam em `?pg=` e `?categoria=`, não em segmentos do
+  caminho: numa página estática o `/2/` é a variável `page` do WordPress, feita
+  para o `<!--nextpage-->`, e o `redirect_canonical` devolve-a à página 1.
+- As páginas de notícia individual e os arquivos de categoria continuam com o
+  aspecto por omissão do tema pai — não estavam no desenho desta passagem.
+
 ### Por fazer
 - Substituir a aproximação em CSS do gradiente do hero pelo asset real do
   Figma (nó `9:19574`) — o download esgotou o limite de chamadas MCP do plano.
 - Confirmar as cores das categorias de notícias com o design (foram propostas
-  a partir da paleta da marca, por o Figma estar em limite de chamadas). As dos
-  eventos deixaram de estar em código: são campos na categoria.
+  a partir da paleta da marca, por o Figma estar em limite de chamadas). Já não
+  é preciso mexer em código para as trocar: são um campo na categoria, como nas
+  dos eventos — o que está no tema é só o ponto de partida.
 - Confirmar o responsivo da Home contra o Figma mobile (nó `66:2060`): as
   medidas foram inferidas dos mockups, por o Figma estar em limite de chamadas.
 - Confirmar as medidas da "Sobre a APIT" contra o Figma (nó `44:21610`): foram
@@ -36,6 +82,30 @@ A versão aqui registada corresponde ao campo `Version` de
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.27.3] - 2026-09-22
+
+### Alterado
+- Hero dos Associados com o fundo enviado pelo cliente. A imagem entra na
+  multimédia e no campo ACF da página, não no tema: é o campo que já existe
+  para isto e permite trocá-la no back office. O vídeo que lá estava era o
+  ficheiro da Home, emprestado enquanto a página se construía, e saiu.
+- O véu que esbate o hero para branco passa a uma propriedade
+  (`--apit-hero-scrim`) e está desligado nos Associados, cujo design corre a
+  cor cheia até baixo. Com ele o título branco, os botões de contorno branco e
+  o wordmark ficavam sobre quase-branco.
+- Gradiente de recurso dos Associados reescrito segundo a imagem: magenta em
+  cima à esquerda, turquesa à esquerda, verde à direita, núcleo roxo em baixo.
+  É o que se vê no telemóvel, onde a camada de media não é usada.
+
+### Corrigido
+- `.elementor img { height: auto }` ganhava o empate com a regra da imagem do
+  hero: um fundo de 1920x1261 ficava com 1251px de altura dentro de uma camada
+  de 957px — sem recorte nenhum e a transbordar 294px. Afecta qualquer página
+  com imagem no hero, não só esta.
+- `overflow: hidden` do hero estava a ser substituído pelo Elementor e
+  calculava `visible`, o que deixava a camada de media passar para a secção
+  seguinte.
 
 ## [0.27.0] - 2026-09-22
 

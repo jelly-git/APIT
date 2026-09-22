@@ -6,13 +6,14 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.27.0' );
+define( 'APIT_CHILD_VERSION', '0.27.3' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
 require_once get_stylesheet_directory() . '/inc/acf.php';
 require_once get_stylesheet_directory() . '/inc/elementor.php';
 require_once get_stylesheet_directory() . '/inc/hero.php';
+require_once get_stylesheet_directory() . '/inc/noticias.php';
 require_once get_stylesheet_directory() . '/inc/shortcodes.php';
 
 function apit_child_enqueue_assets() {
@@ -58,9 +59,9 @@ function apit_child_enqueue_assets() {
 	}
 
 	/*
-	 * The four pages built from the same set of parts share one stylesheet:
-	 * their hero is one layout with four gradients, and the blocks that repeat
-	 * between them are the same markup. Splitting it per page would mean four
+	 * The pages built from the same set of parts share one stylesheet: their
+	 * hero is one layout with a gradient each, and the blocks that repeat
+	 * between them are the same markup. Splitting it per page would mean five
 	 * copies of everything but the gradient.
 	 */
 	if ( is_page( apit_paginas_com_folha_comum() ) ) {
@@ -68,6 +69,21 @@ function apit_child_enqueue_assets() {
 			'apit-paginas-style',
 			get_stylesheet_directory_uri() . '/assets/css/paginas.css',
 			[ 'apit-child-style' ],
+			APIT_CHILD_VERSION
+		);
+	}
+
+	/*
+	 * Notícias takes the shared hero above and adds this: the filter, the grid
+	 * and the pagination, which exist nowhere else. It depends on the shared
+	 * sheet so the archive's own rules are printed after it — the card is the
+	 * Home's card with pieces added, and those additions have to win.
+	 */
+	if ( is_page( 'noticias' ) ) {
+		wp_enqueue_style(
+			'apit-noticias-style',
+			get_stylesheet_directory_uri() . '/assets/css/noticias.css',
+			[ 'apit-paginas-style' ],
 			APIT_CHILD_VERSION
 		);
 	}
@@ -123,7 +139,7 @@ add_action( 'wp_enqueue_scripts', 'apit_child_enqueue_assets' );
 /**
  * The pages that share assets/css/paginas.css.
  *
- * One list, read by the enqueue and by the inline icon rule, so a fifth page
+ * One list, read by the enqueue and by the inline icon rule, so another page
  * joining them is a single edit instead of a hunt through functions.php.
  */
 function apit_paginas_com_folha_comum() {
@@ -132,6 +148,7 @@ function apit_paginas_com_folha_comum() {
 		'internacionalizacao',
 		'calendario',
 		'documentos',
+		'noticias',
 	] );
 }
 

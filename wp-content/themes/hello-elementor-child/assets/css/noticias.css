@@ -1,0 +1,305 @@
+/*
+ * Notícias — the archive page.
+ *
+ * Loaded on that page only, after paginas.css (the hero and the section
+ * furniture, shared with the other four) and after style.css (the card, shared
+ * with the Home). What is here is what exists nowhere else: the category
+ * filter, the grid, the summary and date on a card, and the pagination.
+ *
+ * The cards are deliberately not boxed. On the Home the news sit straight on
+ * the section's --apit-branco, with no panel and no shadow, and the archive is
+ * the same cards in greater number — a white box around each would make a
+ * different component out of the same design.
+ */
+
+/* ---------- The featured card, above the list ---------- */
+
+/*
+ * The section rides up into the hero (.apit-sobrepoe), so this card lands on
+ * the artwork exactly as the first row of covers does on the Documentos page.
+ */
+.noticias-arquivo__destaque {
+	margin-bottom: 80px;
+}
+
+/*
+ * The category and the date on one line, wherever the card puts them. Both
+ * cards use it — the featured one inside its white panel, the grid ones above
+ * the title — which is why it is defined once here and not per variant.
+ */
+.noticia__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 6px 14px;
+}
+
+.noticia__data {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 1.7;
+	color: rgba(27, 42, 51, 0.55);
+}
+
+/* On the featured card the panel is white, so the date keeps the dark tone. */
+.noticia--destaque .noticia__title {
+	margin-top: 16px;
+}
+
+/* ---------- Label and filter, on one line ---------- */
+
+.noticias-arquivo__cabecalho {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px 40px;
+	margin-bottom: 44px;
+}
+
+/*
+ * The shared eyebrow carries 44px of bottom margin for a section that stacks;
+ * here it shares a row with the filter and the row carries the spacing.
+ */
+.noticias-arquivo__etiqueta {
+	margin-bottom: 0;
+}
+
+.noticias-filtros__lista {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+/*
+ * Pills in the shape of the site's buttons — 200px radius, 2px border — at
+ * label size. Each one carries its own category colour as --apit-cat, so the
+ * selected pill and the hover are the colour of the section being filtered
+ * rather than one accent for all of them.
+ */
+.noticias-filtros__item {
+	display: inline-flex;
+	align-items: center;
+	padding: 9px 22px 7px;
+	border: 2px solid rgba(27, 42, 51, 0.18);
+	border-radius: 200px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 1.7;
+	letter-spacing: 0.28px;
+	color: var(--apit-black);
+	transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.noticias-filtros__item:hover,
+.noticias-filtros__item:focus-visible {
+	border-color: var(--apit-cat, var(--apit-magenta));
+	color: var(--apit-cat, var(--apit-magenta));
+}
+
+/*
+ * "Todas" has no category and therefore no --apit-cat: the fallback is the
+ * brand magenta, which is what the selected state is elsewhere on the site.
+ */
+.noticias-filtros__item.is-ativo {
+	background: var(--apit-cat, var(--apit-magenta));
+	border-color: transparent;
+	color: #fff;
+}
+
+/* ---------- The grid ---------- */
+
+/*
+ * The column count is a field, printed inline as --apit-colunas. Fixed columns
+ * rather than auto-fit: a last row of two must stay the width of the other
+ * rows' cards, which is the bug the órgãos sociais grid had.
+ */
+.noticias-arquivo__grelha {
+	display: grid;
+	grid-template-columns: repeat(var(--apit-colunas, 3), 1fr);
+	gap: 56px 37px;
+}
+
+.noticia--cartao .noticia__link {
+	display: flex;
+	flex-direction: column;
+}
+
+.noticia--cartao .noticia__imagem {
+	height: 218px;
+}
+
+/*
+ * No featured image: a block of the category's colour, which is what the Home
+ * does with the same case. The grid keeps its rhythm instead of showing one
+ * short card with a gap where the picture should be.
+ */
+.noticia--sem-imagem .noticia__imagem {
+	background-color: var(--apit-cat, var(--apit-magenta));
+}
+
+.noticia--cartao .noticia__texto {
+	/* Grows so every "ler" link in a row sits on the same line, whatever the
+	 * titles above them do. */
+	flex: 1;
+	padding-top: 24px;
+}
+
+.noticia--cartao .noticia__title {
+	margin-top: 12px;
+	font-size: 24px;
+}
+
+.noticia__resumo {
+	margin-top: 14px;
+	font-family: var(--apit-font);
+	font-size: 16px;
+	line-height: 1.6;
+	color: rgba(27, 42, 51, 0.72);
+}
+
+/*
+ * Pushed to the bottom of the card by the auto margin, so the links line up
+ * across a row. The arrow is drawn from a character rather than an icon font —
+ * the site loads Font Awesome for the social icons only, and this is type.
+ */
+.noticia__ler {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: auto;
+	padding-top: 20px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 14px;
+	letter-spacing: 1.4px;
+	text-transform: uppercase;
+	color: var(--apit-cat, var(--apit-magenta));
+}
+
+.noticia__ler::after {
+	content: "→";
+	transition: transform 0.18s ease;
+}
+
+.noticia--cartao .noticia__link:hover .noticia__title {
+	color: var(--apit-cat, var(--apit-magenta));
+}
+
+.noticia--cartao .noticia__link:hover .noticia__ler::after {
+	transform: translateX(4px);
+}
+
+.noticias-arquivo__vazio {
+	margin: 0;
+	font-size: 18px;
+	color: rgba(27, 42, 51, 0.72);
+}
+
+/* ---------- Pagination ---------- */
+
+.noticias-paginacao {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+	margin-top: 64px;
+}
+
+/*
+ * paginate_links prints a flat run of links and spans, all carrying
+ * .page-numbers — so the nav is the flex row and every child is sized here.
+ */
+.noticias-paginacao .page-numbers {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 44px;
+	height: 44px;
+	padding: 2px 14px 0;
+	border: 2px solid transparent;
+	border-radius: 200px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 16px;
+	color: var(--apit-black);
+	transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.noticias-paginacao a.page-numbers:hover,
+.noticias-paginacao a.page-numbers:focus-visible {
+	border-color: var(--apit-magenta);
+	color: var(--apit-magenta);
+}
+
+.noticias-paginacao .page-numbers.current {
+	background: var(--apit-magenta);
+	color: #fff;
+}
+
+.noticias-paginacao .page-numbers.dots {
+	min-width: 0;
+	padding-inline: 4px;
+	color: rgba(27, 42, 51, 0.45);
+}
+
+.noticias-paginacao .prev,
+.noticias-paginacao .next {
+	font-size: 14px;
+	letter-spacing: 1.4px;
+	text-transform: uppercase;
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 1024px) {
+	/*
+	 * Two columns whatever the field says: three cards at this width leave the
+	 * titles two words wide. The field decides the desktop grid, which is the
+	 * only place where three or four can breathe.
+	 */
+	.noticias-arquivo__grelha {
+		grid-template-columns: repeat(2, 1fr);
+		gap: 44px 30px;
+	}
+
+	.noticias-arquivo__destaque {
+		margin-bottom: 56px;
+	}
+}
+
+@media (max-width: 640px) {
+	.noticias-arquivo__grelha {
+		grid-template-columns: 1fr;
+		gap: 40px;
+	}
+
+	.noticias-arquivo__cabecalho {
+		/* The filter drops under the label rather than squeezing beside it. */
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.noticia--cartao .noticia__title {
+		font-size: 20px;
+	}
+
+	.noticia--cartao .noticia__imagem {
+		height: min(220px, 52vw);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.noticias-filtros__item,
+	.noticia__ler::after,
+	.noticias-paginacao .page-numbers {
+		transition: none;
+	}
+
+	.noticia--cartao .noticia__link:hover .noticia__ler::after {
+		transform: none;
+	}
+}

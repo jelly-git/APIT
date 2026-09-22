@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.27.0
+Version: 0.27.3
 */
 
 :root {
@@ -913,8 +913,18 @@ body.apit-menu-aberto {
 	pointer-events: none;
 }
 
+/*
+ * Two classes on the poster, and that is the point: Elementor's
+ * `.elementor img { height: auto }` weighs the same as a single class and is
+ * printed after this file, so at a tie it won and the image took its own
+ * height. A 1920x1261 background came out 1251px tall inside a 957px layer —
+ * not cropped to the hero at all, overflowing it by 294px, and with object-fit
+ * and object-position doing nothing because there was nothing left to fit.
+ *
+ * The video is not affected: the rule is about `img`.
+ */
 .apit-hero__video,
-.apit-hero__poster {
+.apit-hero__media .apit-hero__poster {
 	display: block;
 	width: 100%;
 	height: 100%;

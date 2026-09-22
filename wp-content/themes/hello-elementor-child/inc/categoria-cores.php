@@ -11,7 +11,11 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Category name (or slug) => brand colour.
+ * Category slug => brand colour, for a category with no colour of its own.
+ *
+ * Since the categories carry a colour field, this is the starting point rather
+ * than the rule: it is what the three categories the design named look like
+ * until someone changes them in wp-admin.
  */
 function apit_categoria_cores() {
 	$cores = [
@@ -34,7 +38,34 @@ function apit_categoria_cores() {
 }
 
 /**
+ * The category term behind a label, whether the label is a slug or a name.
+ *
+ * The cards pass the name they print, and a name is not always its own slug:
+ * "Mercados &amp; Feiras" sanitises to "mercados-amp-feiras", which matches
+ * neither the term's slug nor the table above — that category was falling back
+ * to magenta with a colour of its own sitting right there.
+ *
+ * Null when nothing matches, which is the case for the calendar's older
+ * free-text categories.
+ */
+function apit_categoria_termo( $categoria ) {
+	$termo = get_term_by( 'slug', sanitize_title( $categoria ), 'category' );
+
+	if ( ! $termo ) {
+		$termo = get_term_by( 'name', wp_specialchars_decode( $categoria, ENT_QUOTES ), 'category' );
+	}
+
+	return ( $termo && ! is_wp_error( $termo ) ) ? $termo : null;
+}
+
+/**
  * Resolves a category label to its colour, falling back to magenta.
+ *
+ * The client's own choice first: the colour field on the category itself, which
+ * is what an editor sees and can change. The table above is what a category
+ * with no colour set gets, so the three the design named keep looking right
+ * without anyone having to open them; and magenta is what is left for a
+ * category that is in neither.
  */
 function apit_cor_categoria( $categoria ) {
 	if ( ! $categoria ) {
@@ -42,9 +73,21 @@ function apit_cor_categoria( $categoria ) {
 	}
 
 	$cores = apit_categoria_cores();
-	$chave = sanitize_title( $categoria );
+	$termo = apit_categoria_termo( $categoria );
 
-	return $cores[ $chave ] ?? '#f41892';
+	if ( $termo ) {
+		$cor = apit_campo( 'apit_noticia_cor', 'term_' . $termo->term_id );
+
+		if ( is_string( $cor ) && '' !== trim( $cor ) ) {
+			return trim( $cor );
+		}
+
+		if ( isset( $cores[ $termo->slug ] ) ) {
+			return $cores[ $termo->slug ];
+		}
+	}
+
+	return $cores[ sanitize_title( $categoria ) ] ?? '#f41892';
 }
 
 /**

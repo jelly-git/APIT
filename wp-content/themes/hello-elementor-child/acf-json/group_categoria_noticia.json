@@ -1,0 +1,49 @@
+{
+    "key": "group_categoria_noticia",
+    "title": "Cor da categoria",
+    "fields": [
+        {
+            "key": "field_noticia_cor",
+            "label": "Cor da categoria",
+            "name": "apit_noticia_cor",
+            "aria-label": "",
+            "type": "color_picker",
+            "instructions": "Pinta a etiqueta da categoria, o filtro seleccionado e o cartão sem imagem. Em branco, a categoria usa a cor que o tema lhe dá.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "enable_opacity": 0,
+            "return_format": "string",
+            "custom_palette_source": "",
+            "palette_colors": "",
+            "show_color_wheel": true
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "taxonomy",
+                "operator": "==",
+                "value": "category"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "A cor com que a categoria aparece nas notícias — na Home, na página das Notícias e nos filtros.",
+    "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1790084229
+}

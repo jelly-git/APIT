@@ -1,13 +1,14 @@
 /*
- * Associados, Internacionalização, Calendário e Documentos.
+ * Associados, Internacionalização, Calendário, Documentos e Notícias.
  *
- * Loaded only on those four pages, so a change here cannot regress the Home or
+ * Loaded only on those pages, so a change here cannot regress the Home or
  * Sobre a APIT, and neither of those pays for CSS it never uses.
  *
- * The four heroes are one layout with four gradients. Everything structural
- * lives on .apit-pagina-hero; each page adds a class that redefines only the
- * gradient custom properties, so the thing the client asked to differ per page
- * is the only thing that does.
+ * The heroes are one layout with a gradient each. Everything structural lives
+ * on .apit-pagina-hero; each page adds a class that redefines only the gradient
+ * custom properties, so the thing the client asked to differ per page is the
+ * only thing that does. Notícias adds a second sheet (noticias.css) for the
+ * filter and the grid, which no other page has.
  *
  * The gradients are a CSS approximation: the Figma MCP quota was exhausted, so
  * the stops were sampled from the client's page exports rather than read from
@@ -49,11 +50,17 @@
 	color: var(--apit-black);
 }
 
-/* ---------- The hero, shared by all four pages ---------- */
+/* ---------- The hero, shared by every page in this sheet ---------- */
 
 .apit-pagina-hero {
 	position: relative;
-	overflow: hidden;
+	/*
+	 * !important because Elementor writes the container's overflow into the
+	 * per-page stylesheet, printed after this file — without it this computed
+	 * `visible`, and the media layer spilled past the hero into the section
+	 * below instead of being cut off at its edge.
+	 */
+	overflow: hidden !important;
 	/*
 	 * 221px puts the breadcrumb's box at 231px from the top of the page, which
 	 * is the Top the client's Figma panel gives for it. The 182 here before was
@@ -255,23 +262,42 @@
  * its own wash there too. The section's background only shows while the video
  * loads, or when neither a video nor an image is set.
  *
- * Values from the Figma panel, and the same on all four pages: transparent to
- * 28.49%, the page's own light tone by 66%. The hero therefore fades into
- * whatever follows it instead of ending on a hard edge.
+ * Values from the Figma panel: transparent to 28.49%, the page's own light tone
+ * by 66%. The hero therefore fades into whatever follows it instead of ending
+ * on a hard edge.
+ *
+ * Held in a property so a page can turn it off, because not every design has
+ * it: the Associados hero runs at full strength from top to bottom, and there
+ * the fade left the white title, the white outlined buttons and the white
+ * wordmark sitting on near-white.
  *
  * Two classes and opacity: 1 to beat the Home's rule, which is one class with
  * opacity 0.55.
  */
-.apit-pagina-hero .apit-hero__media::after {
-	opacity: 1;
-	background-image: linear-gradient(
+.apit-pagina-hero {
+	--apit-hero-scrim: linear-gradient(
 		178.03deg,
 		rgba(244, 249, 255, 0) 28.49%,
 		#f4f9ff 66%
 	);
 }
 
-/* ---------- The four fallback gradients ----------
+.apit-pagina-hero .apit-hero__media::after {
+	opacity: 1;
+	background-image: var(--apit-hero-scrim);
+}
+
+/*
+ * Which part of the artwork survives the crop. Centred by default, which is
+ * what cover does anyway; a page sets it when its picture is taller than the
+ * hero and the design says which end to keep.
+ */
+.apit-pagina-hero .apit-hero__poster,
+.apit-pagina-hero .apit-hero__video {
+	object-position: var(--apit-hero-pos, center);
+}
+
+/* ---------- The fallback gradients, one per page ----------
  *
  * What shows under the media layer: while the video buffers, and on a page
  * where no video and no image are set. Sampled from the client's exports, not
@@ -279,14 +305,34 @@
  * visitor normally sees, which is the overlay above.
  */
 
-/* Magenta at the left, turning turquoise and then blue to the right. */
+/*
+ * Associados is the one page whose hero the client sent as a picture, and its
+ * design carries no fade: the artwork runs at full strength to the bottom edge,
+ * which is what the white type and the white outlined buttons need.
+ *
+ * The picture itself is not here — it is an attachment on the page's own ACF
+ * gallery, so it can be swapped in the back office. What is left below is the
+ * fallback the section paints while that image loads, and it keeps the
+ * picture's own reading: magenta at the top left, turquoise along the left,
+ * green at the right, a purple core low down.
+ */
 .hero--associados {
+	--apit-hero-scrim: none;
 	--apit-hero-base: #f41892;
+	/*
+	 * The file is 1920x1216 and the hero is 1920x957, so cover has to drop
+	 * 259px of height. Centred it dropped them off the top, which put the
+	 * turquoise band in the top-left corner where the design has magenta;
+	 * anchored to the top the hero shows the picture from its first row, which
+	 * is the part of it the design puts here.
+	 */
+	--apit-hero-pos: center top;
 	--apit-hero-arte:
-		radial-gradient(80% 120% at 4% 30%, #f41892 0%, rgba(244, 24, 146, 0) 62%),
-		radial-gradient(70% 100% at 46% 12%, #b98ad4 0%, rgba(185, 138, 212, 0) 58%),
-		radial-gradient(80% 110% at 78% 40%, #2ec6b0 0%, rgba(46, 198, 176, 0) 60%),
-		linear-gradient(96deg, #f41892 0%, #a86ec4 34%, #4fb9c4 66%, #4a85c8 100%);
+		radial-gradient(62% 55% at 24% 6%, #ee1b8f 0%, rgba(238, 27, 143, 0) 62%),
+		radial-gradient(55% 62% at 4% 52%, #2bbfb4 0%, rgba(43, 191, 180, 0) 62%),
+		radial-gradient(46% 56% at 93% 44%, #19d36b 0%, rgba(25, 211, 107, 0) 60%),
+		radial-gradient(56% 46% at 58% 94%, #6f4fb0 0%, rgba(111, 79, 176, 0) 62%),
+		linear-gradient(118deg, #ee1b8f 0%, #8f5fb8 36%, #2bbfb4 62%, #19d36b 100%);
 }
 
 /* Magenta low-left, a purple core, turquoise and blue across the top right. */
@@ -309,7 +355,21 @@
 		linear-gradient(94deg, #8fd8d2 0%, #4fbfc6 38%, #9a6cc0 72%, #f41892 100%);
 }
 
-/* The softest of the four: pale magenta into blue, with no strong core. */
+/*
+ * Notícias reads the other way round from the Calendário, so two pages a click
+ * apart in the menu do not open on the same picture: blue at the left, a purple
+ * core, magenta at the right.
+ */
+.hero--noticias {
+	--apit-hero-base: #4a85c8;
+	--apit-hero-arte:
+		radial-gradient(85% 120% at 4% 34%, #6fb4d8 0%, rgba(111, 180, 216, 0) 60%),
+		radial-gradient(70% 95% at 44% 16%, #8048a6 0%, rgba(128, 72, 166, 0) 58%),
+		radial-gradient(80% 110% at 90% 52%, #f41892 0%, rgba(244, 24, 146, 0) 62%),
+		linear-gradient(97deg, #4a85c8 0%, #7a6cc2 34%, #b44ab0 68%, #f41892 100%);
+}
+
+/* The softest of them: pale magenta into blue, with no strong core. */
 .hero--documentos {
 	--apit-hero-base: #d9a8cf;
 	--apit-hero-arte:
