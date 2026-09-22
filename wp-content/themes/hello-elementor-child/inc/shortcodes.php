@@ -231,10 +231,10 @@ function apit_shortcode_assoc_passos() {
 }
 add_shortcode( 'apit_assoc_passos', 'apit_shortcode_assoc_passos' );
 
-function apit_shortcode_assoc_logos() {
-	return apit_render_template_part( 'template-parts/associados/logos' );
+function apit_shortcode_assoc_banda() {
+	return apit_render_template_part( 'template-parts/associados/banda' );
 }
-add_shortcode( 'apit_assoc_logos', 'apit_shortcode_assoc_logos' );
+add_shortcode( 'apit_assoc_banda', 'apit_shortcode_assoc_banda' );
 
 function apit_shortcode_inter_marca() {
 	return apit_render_template_part( 'template-parts/internacionalizacao/marca' );

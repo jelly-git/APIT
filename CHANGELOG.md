@@ -101,6 +101,25 @@ A versão aqui registada corresponde ao campo `Version` de
   galeria do seu hero escolhem-se no back office como nas restantes.
 
 ### Corrigido
+- **O degradé de transparente para branco faltava no hero das Notícias.** Ele
+  vivia na camada de média, e essa camada só existe quando há vídeo ou imagem no
+  grupo *Hero — fundo* — nas Notícias não há nenhum, pelo que o hero acabava a
+  direito contra a secção seguinte. Passou para a própria secção
+  (`.apit-pagina-hero::after`, a z-index 1: por cima da arte e da média, por
+  baixo do conteúdo e do wordmark, que é exactamente onde estava). As páginas
+  que já o tinham ficam iguais, a camada de média deixa de pintar o seu, e a
+  Associados continua a desligá-lo pela `--apit-hero-scrim: none`.
+- **O botão do cartão colava-se ao texto** no cartão mais alto de cada linha: o
+  `margin-top: auto` que alinha os botões não tem folga nenhuma para recolher aí.
+  Passa a haver um mínimo de 26px acima dele, ao qual o `auto` só acrescenta.
+  Aplicado ao que estiver imediatamente antes do botão, porque uma notícia sem
+  resumo tem lá o título — que é o caso das três de demonstração, sem corpo de
+  texto, e foi assim que se viu.
+- **Os cartões de uma linha passam a ter todos a altura do maior**, como os dos
+  Documentos. A grelha já esticava o `<article>`, mas a cadeia parava aí: o
+  artigo passa a coluna para a ligação o preencher, e a ligação a coluna para o
+  bloco de texto crescer — sem isso o botão seguia o seu próprio título para
+  cima e para baixo. Medido: dois cartões a 413px e os dois botões a 1587px.
 - A paginação levava consigo os parâmetros do pedido AJAX
   (`?pg=1&action=apit_noticias&pagina=9` na barra de endereço). O
   `paginate_links()` não constrói só a partir da base que recebe: lê também o
@@ -124,8 +143,9 @@ A versão aqui registada corresponde ao campo `Version` de
   fixo, porque nesta página tudo o que pertence a uma categoria é tingido por
   ela; o azul fica como reserva, que é a cor que o botão dos Documentos tem de
   qualquer maneira. E muda o ícone: um jornal (`assets/img/icon-noticia.svg`),
-  desenhado como máscara pintada com `currentColor` tal como a seta do
-  download, para seguir o rótulo no hover sem um segundo ficheiro.
+  **à direita do rótulo** — o dos Documentos leva a seta à esquerda —, desenhado
+  como máscara pintada com `currentColor` tal como ela, para seguir o rótulo no
+  hover sem um segundo ficheiro.
 - Uma notícia **sem imagem de destaque** deixa de aparecer como um rectângulo
   quase preto: fica com a cor da sua categoria, como já acontecia no cartão
   "bloco" da Home. Vale para o cartão grande e para os da grelha, nas duas

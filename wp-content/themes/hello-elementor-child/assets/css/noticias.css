@@ -148,9 +148,27 @@
 	gap: 56px 37px;
 }
 
+/*
+ * Every card in a row takes the height of the tallest, which is what the grid's
+ * default `align-items: stretch` already does — but only for the article. The
+ * chain has to be continued by hand: the article becomes a column so the link
+ * fills it, the link becomes a column so the text block fills that, and the
+ * text block grows so the spare height collects above the button.
+ *
+ * Without the two links in that chain the card was as tall as the row and
+ * everything inside it still sat at the top, so the button followed its own
+ * title up and down. It is the same construction as the Documentos cards, and
+ * the reason is the same.
+ */
+.noticia--cartao {
+	display: flex;
+	flex-direction: column;
+}
+
 .noticia--cartao .noticia__link {
 	display: flex;
 	flex-direction: column;
+	flex: 1;
 }
 
 .noticia--cartao .noticia__imagem {
@@ -171,12 +189,27 @@
 }
 
 .noticia--cartao .noticia__title {
-	margin-top: 12px;
+	margin-top: 14px;
 	font-size: 24px;
 }
 
+/*
+ * The air above the button, at least.
+ *
+ * `margin-top: auto` on the button collects the card's spare height, which is
+ * what lines the buttons of a row up — but on the tallest card of the row there
+ * is no spare height to collect, and the button ended up against the text.
+ * This is the floor; the auto margin only ever adds to it.
+ *
+ * Aimed at whatever comes before the button rather than at the summary, because
+ * a card whose post has no summary has the title there instead.
+ */
+.noticia--cartao .noticia__texto > :nth-last-child(2) {
+	margin-bottom: 26px;
+}
+
 .noticia__resumo {
-	margin-top: 14px;
+	margin-top: 16px;
 	font-family: var(--apit-font);
 	font-size: 16px;
 	line-height: 1.6;

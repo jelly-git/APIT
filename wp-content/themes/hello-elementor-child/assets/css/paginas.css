@@ -346,10 +346,11 @@
 }
 
 /*
- * The gradient the design shows goes OVER the media layer, not under it.
+ * The gradient the design shows goes OVER everything the hero paints: the
+ * fallback artwork, and the video or the image when there is one.
  *
- * Under it is where I first put it, and it could never be seen: the media layer
- * is absolute and covers the section at every breakpoint — the comment on
+ * Under the media is where I first put it, and it could never be seen: that
+ * layer is absolute and covers the section at every breakpoint — the comment on
  * .apit-hero__media::after in style.css says so, and it is why the Home puts
  * its own wash there too. The section's background only shows while the video
  * loads, or when neither a video nor an image is set.
@@ -362,9 +363,6 @@
  * it: the Associados hero runs at full strength from top to bottom, and there
  * the fade left the white title, the white outlined buttons and the white
  * wordmark sitting on near-white.
- *
- * Two classes and opacity: 1 to beat the Home's rule, which is one class with
- * opacity 0.55.
  */
 .apit-pagina-hero {
 	--apit-hero-scrim: linear-gradient(
@@ -374,9 +372,35 @@
 	);
 }
 
-.apit-pagina-hero .apit-hero__media::after {
-	opacity: 1;
+/*
+ * The fade belongs to the section, not to the media layer, which is where it
+ * used to live. On a page with no video and no image there is no media layer at
+ * all — the Notícias hero had none — so the fade simply did not exist and the
+ * hero ended on a hard edge against the section below it. Drawn here it is
+ * there whatever the back office has filled in, and a page that wants no fade
+ * still sets --apit-hero-scrim to none and this paints nothing.
+ *
+ * z-index 1: above the artwork and above the media layer, which sits at -1, and
+ * below the content and the wordmark, which are at 2. That is exactly where the
+ * media layer's own ::after put it, so the pages that already had it are
+ * unchanged.
+ */
+.apit-pagina-hero::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	pointer-events: none;
 	background-image: var(--apit-hero-scrim);
+}
+
+/*
+ * And the media layer stops painting one of its own: the Home's colourful wash
+ * has no business on these pages, and a second copy of the fade would double
+ * it.
+ */
+.apit-pagina-hero .apit-hero__media::after {
+	display: none;
 }
 
 /*
@@ -507,20 +531,15 @@
 	padding: 0;
 }
 
-/*
- * Ranged left, not centred. At a sixth of the row the paragraphs are three or
- * four lines deep and centring them left every column with a different ragged
- * shape; the design ranges them left under a circle set to the same edge.
- */
 .assoc-beneficios__item {
-	text-align: left;
+	text-align: center;
 }
 
 .assoc-beneficios__circulo {
 	/* 54px of a 660px-wide design capture, so 157px at 1920. */
 	width: 157px;
 	max-width: 100%;
-	margin: 0 0 24px;
+	margin: 0 auto 24px;
 	aspect-ratio: 1;
 	border-radius: 50%;
 	overflow: hidden;
@@ -545,7 +564,7 @@
 }
 
 .assoc-beneficios__texto {
-	/* The column is the limit now, so no cap of its own. */
+	/* The column is the limit, so no cap of its own. */
 	margin: 12px 0 0;
 	font-size: 14px;
 	line-height: 1.6;
@@ -713,108 +732,73 @@
 	color: rgba(27, 42, 51, 0.75);
 }
 
-/* ---------- Associados: logótipos ---------- */
 
-.assoc-logos {
-	max-width: 1340px;
-	margin-inline: auto;
-	padding-inline: 20px;
-}
+/* ---------- Associados: banda do directório ---------- */
 
-.assoc-logos__topo {
-	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
-	gap: 40px;
-	margin-bottom: 48px;
-}
-
-.assoc-logos__intro {
-	max-width: 420px;
-}
-
-.assoc-logos__intro .apit-secao__etiqueta {
-	margin-bottom: 16px;
-}
-
-.assoc-logos__texto {
-	margin: 0;
-	font-size: 15px;
-	line-height: 1.6;
-	color: rgba(27, 42, 51, 0.75);
-}
-
-.assoc-logos__acoes {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-	flex-shrink: 0;
-}
-
-.assoc-logos__seta {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	width: 36px;
-	height: 36px;
-	padding: 0;
-	border: 1px solid rgba(27, 42, 51, 0.2);
-	border-radius: 50%;
+/*
+ * Full bleed, so the box stays the width of the screen and the content is
+ * centred with padding instead — the same trick .apit-bloco-duplo uses. 670px
+ * is half the 1340px column; max() keeps a 20px gutter on a narrow screen.
+ *
+ * The artwork is a theme asset: it belongs to this block's design, not to the
+ * page's content, so it travels with the code the way the header's scrim does.
+ * The magenta under it is what shows while it loads.
+ *
+ * The vertical padding is read off the client's full-page capture: the band is
+ * 409px tall there, with the title starting 116px down and the button ending
+ * 83px above the bottom edge.
+ */
+/*
+ * The Elementor container around it paints and pads nothing: the band is full
+ * bleed and does both itself. Without this, the section's own white showed as a
+ * frame around the artwork.
+ *
+ * !important because Elementor writes the container's padding into the per-page
+ * stylesheet, printed after this file.
+ */
+.apit-banda-assoc {
+	padding: 0 !important;
 	background: none;
-	color: var(--apit-black);
-	cursor: pointer;
 }
 
-.assoc-logos__seta::before {
-	content: "";
-	width: 8px;
-	height: 8px;
-	border-top: 1.5px solid currentColor;
-	border-right: 1.5px solid currentColor;
+.assoc-banda {
+	padding-block: 116px 84px;
+	padding-inline: max(20px, calc(50% - 670px));
+	background-color: var(--apit-magenta);
+	background-image: url("../img/fundo-bloco-associados.png");
+	background-position: center;
+	background-size: cover;
+	background-repeat: no-repeat;
+	color: #fff;
+	text-align: center;
 }
 
-.assoc-logos__seta[data-dir="anterior"]::before {
-	transform: rotate(-135deg);
+.assoc-banda__col {
+	/* Two lines of copy at this size, which is how the design breaks it. */
+	max-width: 660px;
+	margin-inline: auto;
 }
 
-.assoc-logos__seta[data-dir="seguinte"]::before {
-	transform: rotate(45deg);
+.assoc-banda__titulo {
+	margin: 0;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 40px;
+	line-height: 1.2;
+	letter-spacing: -0.4px;
+	color: #fff;
 }
 
-/* The row is on the light section, so the outline button needs a dark edge. */
-.assoc-logos .btn--outline {
-	border-color: rgba(27, 42, 51, 0.25);
-	color: var(--apit-black);
+.assoc-banda__texto {
+	margin: 20px 0 0;
+	font-size: 16px;
+	line-height: 1.68;
+	color: rgba(255, 255, 255, 0.92);
 }
 
-.assoc-logos__track {
-	display: flex;
-	align-items: center;
-	gap: 56px;
-	overflow-x: auto;
-	scrollbar-width: none;
-	cursor: grab;
-}
-
-.assoc-logos__track::-webkit-scrollbar {
-	display: none;
-}
-
-.assoc-logos__item {
-	flex: 0 0 auto;
-	/*
-	 * A fixed height and a free width: the logos are different shapes, and it
-	 * is their optical height that has to agree for the row to read as a line.
-	 */
-	height: 60px;
-}
-
-.assoc-logos .assoc-logos__item img {
-	display: block;
-	width: auto;
-	height: 100%;
-	max-width: none;
-	object-fit: contain;
+/* The wrapper is centred by text-align; the pill itself must not stretch. */
+.assoc-banda__botao {
+	margin-top: 26px;
 }
 
 /* ---------- Associados: FAQ ---------- */
@@ -1038,7 +1022,7 @@
 }
 
 .inter-stand .btn {
-	margin-top: 36px;
+	margin-top: 26px;
 }
 
 .inter-stand__passos-titulo {
@@ -1505,10 +1489,6 @@
 		gap: 48px 32px;
 	}
 
-	.assoc-logos__topo {
-		flex-direction: column;
-		align-items: flex-start;
-	}
 
 	.faq__linha {
 		flex-direction: column !important;
@@ -1609,6 +1589,15 @@
 		font-size: 30px;
 	}
 
+	/* The design's 116/84 is desktop breathing room; on a phone it is dead space. */
+	.assoc-banda {
+		padding-block: 72px 60px;
+	}
+
+	.assoc-banda__titulo {
+		font-size: 32px;
+	}
+
 	.inter-apoios__lista {
 		grid-template-columns: 1fr;
 	}
@@ -1650,14 +1639,18 @@
 }
 
 /*
- * The container that holds a shared template. Elementor gives every container
- * 10px of horizontal padding by default, which inset the block by 10px on each
- * side — visible as a pale strip down both edges of the Internacionalização
- * band, whose background is a gradient. The block below it centres its own
- * content, so the wrapper has no reason to add any.
+ * The container that holds a full-bleed block. Elementor gives every container
+ * 10px of padding by default, on all four sides, which inset the block by 10px
+ * all round — a pale strip down both edges of the Internacionalização band and,
+ * less obviously, one above and one below it, where the section's own colour
+ * showed through and cut the band off from what it sits between.
+ *
+ * All four go, and not only the horizontal pair as before: a block that bleeds
+ * bleeds. The blocks inside carry their own spacing — the band's own 120px top
+ * and bottom, for one — so the wrapper has no reason to add any.
  */
 .apit-sangra {
-	padding-inline: 0 !important;
+	padding: 0 !important;
 }
 
 /*

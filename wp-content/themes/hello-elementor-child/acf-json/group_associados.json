@@ -205,9 +205,9 @@
             ]
         },
         {
-            "key": "field_assoc_logos_label",
-            "label": "Etiqueta da secção",
-            "name": "assoc_logos_label",
+            "key": "field_assoc_banda_titulo",
+            "label": "Título",
+            "name": "assoc_banda_titulo",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -225,9 +225,9 @@
             "append": ""
         },
         {
-            "key": "field_assoc_logos_texto",
+            "key": "field_assoc_banda_texto",
             "label": "Texto",
-            "name": "assoc_logos_texto",
+            "name": "assoc_banda_texto",
             "aria-label": "",
             "type": "textarea",
             "instructions": "",
@@ -245,9 +245,9 @@
             "placeholder": ""
         },
         {
-            "key": "field_assoc_logos_botao",
+            "key": "field_assoc_banda_botao",
             "label": "Texto do botão",
-            "name": "assoc_logos_botao",
+            "name": "assoc_banda_botao",
             "aria-label": "",
             "type": "text",
             "instructions": "",
@@ -265,9 +265,9 @@
             "append": ""
         },
         {
-            "key": "field_assoc_logos_url",
+            "key": "field_assoc_banda_url",
             "label": "Link do botão",
-            "name": "assoc_logos_url",
+            "name": "assoc_banda_url",
             "aria-label": "",
             "type": "text",
             "instructions": "Caminho relativo, como \/associados\/, ou um endereço completo. Deixe # enquanto a página não existir; vazio esconde o botão.",
@@ -283,34 +283,6 @@
             "placeholder": "",
             "prepend": "",
             "append": ""
-        },
-        {
-            "key": "field_assoc_logos",
-            "label": "Logótipos dos associados",
-            "name": "assoc_logos",
-            "aria-label": "",
-            "type": "gallery",
-            "instructions": "Passam num carrossel, na ordem em que aqui estiverem. PNG ou SVG com fundo transparente, e a mesma altura em todos para não ficarem desalinhados.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "return_format": "id",
-            "library": "all",
-            "insert": "append",
-            "preview_size": "thumbnail",
-            "min": 0,
-            "max": 0,
-            "min_width": 0,
-            "min_height": 0,
-            "min_size": 0,
-            "max_width": 0,
-            "max_height": 0,
-            "max_size": 0,
-            "mime_types": ""
         }
     ],
     "location": [
@@ -334,5 +306,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1788883098
+    "modified": 1790094312
 }
