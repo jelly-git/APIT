@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.26.8
+Version: 0.27.0
 */
 
 :root {
@@ -172,6 +172,139 @@ ul {
 	letter-spacing: -0.16px;
 	text-transform: uppercase;
 	color: #fff;
+}
+
+/*
+ * Drop-downs in the main menu.
+ *
+ * Written against WordPress's own markup — `.menu-item-has-children` and
+ * `.sub-menu`, both added by the menu walker — and never against a particular
+ * item, so any sub-item the client adds under any entry gets this without a
+ * line of CSS being written for it.
+ */
+.apit-header__menu .menu-item-has-children {
+	position: relative;
+}
+
+/*
+ * The chevron says the item opens before the pointer arrives, which is the only
+ * hint there is when the panel itself only exists on hover.
+ *
+ * Drawn from two borders rather than an icon font: it inherits the link's
+ * colour, so it follows the header on a page whose header is not white, and it
+ * costs no glyph.
+ */
+.apit-header__menu .menu-item-has-children > a::after {
+	content: "";
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	margin-left: 9px;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform: translateY(-2px) rotate(45deg);
+	transition: transform 0.18s ease;
+}
+
+.apit-header__menu .menu-item-has-children:hover > a::after,
+.apit-header__menu .menu-item-has-children:focus-within > a::after {
+	transform: translateY(2px) rotate(-135deg);
+}
+
+/*
+ * The panel. White on a header that floats over artwork, because the menu's own
+ * white type has nothing to sit on once it leaves the scrim.
+ *
+ * visibility rather than display, so the fade has something to animate; its
+ * transition is delayed on the way out only, which is what keeps the panel
+ * clickable while it fades in and gone for the pointer once it has faded out.
+ */
+.apit-header__menu .sub-menu {
+	position: absolute;
+	top: calc(100% + 12px);
+	left: 0;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	min-width: 100%;
+	margin: 0;
+	padding: 10px 0;
+	list-style: none;
+	background: #fff;
+	border-radius: 3px;
+	box-shadow: 0 18px 40px rgba(27, 42, 51, 0.18);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-6px);
+	transition: opacity 0.18s ease, transform 0.18s ease, visibility 0s 0.18s;
+}
+
+/*
+ * The 12px between the link and the panel is a gap the pointer has to cross,
+ * and crossing it would close the panel. This spans it — invisible, and only
+ * as wide as the panel.
+ */
+.apit-header__menu .sub-menu::before {
+	content: "";
+	position: absolute;
+	right: 0;
+	bottom: 100%;
+	left: 0;
+	height: 12px;
+}
+
+.apit-header__menu li:hover > .sub-menu,
+.apit-header__menu li:focus-within > .sub-menu {
+	opacity: 1;
+	visibility: visible;
+	transform: none;
+	transition-delay: 0s;
+}
+
+/*
+ * Two classes and an element, against one for `.apit-header__menu a` — enough
+ * to take over the white and the padding without an !important.
+ */
+.apit-header__menu .sub-menu a {
+	padding: 9px 24px;
+	font-size: 15px;
+	letter-spacing: 0;
+	color: var(--apit-black);
+	white-space: nowrap;
+	transition: color 0.18s ease;
+}
+
+.apit-header__menu .sub-menu a:hover,
+.apit-header__menu .sub-menu a:focus-visible,
+.apit-header__menu .sub-menu .current-menu-item > a {
+	color: var(--apit-magenta);
+}
+
+/* A third level opens to the side, since there is no room left below. */
+.apit-header__menu .sub-menu .sub-menu {
+	top: -10px;
+	left: 100%;
+	margin-left: 4px;
+}
+
+.apit-header__menu .sub-menu .sub-menu::before {
+	top: 0;
+	right: 100%;
+	bottom: 0;
+	left: auto;
+	width: 4px;
+	height: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.apit-header__menu .sub-menu,
+	.apit-header__menu .menu-item-has-children > a::after {
+		transition: none;
+	}
+
+	.apit-header__menu .sub-menu {
+		transform: none;
+	}
 }
 
 .apit-header__search-toggle {
@@ -408,6 +541,28 @@ ul {
 	letter-spacing: 0.4px;
 	text-transform: uppercase;
 	color: #fff;
+}
+
+/*
+ * The same sub-items on the phone panel, where there is no hover to open them
+ * with: they are simply listed under their parent, indented and a size down.
+ *
+ * Generic in the same way as the desktop rule — it is `.sub-menu` that is
+ * matched, so an item added under any entry appears here too.
+ */
+.apit-menu-mobile__lista .sub-menu {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	margin: 18px 0 0;
+	padding: 0 0 0 20px;
+	list-style: none;
+	border-left: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.apit-menu-mobile__lista .sub-menu a {
+	font-size: 16px;
+	color: rgba(255, 255, 255, 0.82);
 }
 
 .apit-menu-mobile__cta {

@@ -37,6 +37,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.27.0] - 2026-09-22
+
+### Adicionado
+- Submenus no menu principal, abertos ao passar o rato e fechados ao sair.
+  Painel branco com cantos de 3px e sombra suave, itens a `--apit-black` que
+  passam a magenta no hover, e uma seta no item que abre.
+- As regras são escritas contra a marcação do próprio WordPress
+  (`.menu-item-has-children` e `.sub-menu`), nunca contra um item em concreto:
+  qualquer subitem que o cliente crie em qualquer entrada do menu fica com este
+  aspecto sem se tocar em CSS. Um terceiro nível abre para o lado.
+- No menu do telemóvel, onde não há hover, os subitens ficam listados sob o seu
+  item, indentados e com um filete à esquerda.
+- A página de Internacionalização entra no menu como subitem da APIT (alteração
+  em base de dados, não em código).
+
 ## [0.26.8] - 2026-09-22
 
 ### Alterado
