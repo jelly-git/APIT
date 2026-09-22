@@ -293,11 +293,21 @@
 	align-items: flex-start;
 	/* The panel gives the block 80%, which is what keeps it behind the heading. */
 	opacity: 0.8;
-	/*
-	 * Left 208 against the content column's 310: the block starts 102px outside
-	 * it. Taken back at the breakpoints below, where there is no room to spare.
-	 */
-	margin-left: -102px;
+}
+
+/*
+ * The panel puts the block's Left at 208 against the content column's 310, so
+ * it starts 102px outside it.
+ *
+ * Only where those 102px exist: the column is 1340 wide with a 20px gutter, so
+ * the margin beside it covers 102px from 1504px of viewport up. Below that the
+ * bleed would run off the screen, and the hero — which clips — would simply eat
+ * the first letters.
+ */
+@media (min-width: 1504px) {
+	.pagina-hero__decor--esquerda {
+		margin-left: -102px;
+	}
 }
 
 /*
@@ -483,23 +493,34 @@
 .assoc-beneficios__lista {
 	display: grid;
 	/*
-	 * Three per row, and three at any count: auto-fit would collapse a row of
-	 * two into wider columns, which is the bug the órgãos sociais grid had.
+	 * All six on one row, as the design now sets them — they were three and
+	 * three. Fixed at six rather than auto-fit, which would collapse a shorter
+	 * list into wider columns: the bug the órgãos sociais grid had.
+	 *
+	 * 32px of gutter leaves 190px columns inside the 1300px of content, which
+	 * is the width the design's three-line paragraphs wrap to.
 	 */
-	grid-template-columns: repeat(3, 1fr);
-	gap: 64px 40px;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 48px 32px;
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
 
+/*
+ * Ranged left, not centred. At a sixth of the row the paragraphs are three or
+ * four lines deep and centring them left every column with a different ragged
+ * shape; the design ranges them left under a circle set to the same edge.
+ */
 .assoc-beneficios__item {
-	text-align: center;
+	text-align: left;
 }
 
 .assoc-beneficios__circulo {
-	width: 172px;
-	margin: 0 auto 28px;
+	/* 54px of a 660px-wide design capture, so 157px at 1920. */
+	width: 157px;
+	max-width: 100%;
+	margin: 0 0 24px;
 	aspect-ratio: 1;
 	border-radius: 50%;
 	overflow: hidden;
@@ -524,8 +545,8 @@
 }
 
 .assoc-beneficios__texto {
-	max-width: 300px;
-	margin: 14px auto 0;
+	/* The column is the limit now, so no cap of its own. */
+	margin: 12px 0 0;
 	font-size: 14px;
 	line-height: 1.6;
 	color: rgba(27, 42, 51, 0.75);
@@ -1453,20 +1474,25 @@
 	}
 }
 
+/*
+ * Six columns need the full 1340px behind them: below that they fall under the
+ * ~190px the three-line paragraphs wrap to and the words start breaking. Two
+ * rows of three is the next step down, and it is where the design's own earlier
+ * version sat.
+ */
+@media (max-width: 1380px) {
+	.assoc-beneficios__lista {
+		grid-template-columns: repeat(3, 1fr);
+		gap: 56px 40px;
+	}
+}
+
 @media (max-width: 1024px) {
 	.apit-pagina-hero {
 		padding-top: 160px !important;
 		padding-bottom: 80px !important;
 	}
 
-	/*
-	 * The design's 102px of bleed to the left of the column is a desktop
-	 * measurement; below this the gutter is 20px and there is nothing to bleed
-	 * into.
-	 */
-	.pagina-hero__decor--esquerda {
-		margin-left: 0;
-	}
 
 	/*
 	 * The wordmark stops being a background and becomes a headline-sized word

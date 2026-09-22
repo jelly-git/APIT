@@ -154,9 +154,9 @@ function apit_noticias_categorias( $escolhidas ) {
  * because those are two different editorial policies. With "marcada" and
  * nothing marked it falls back to the newest, so the slot is never empty.
  *
- * $base carries the category filter, which is what makes the featured card
- * follow the filter: inside a category it is the newest marked post of that
- * category, not whichever post is marked site-wide.
+ * $base is deliberately given without the category filter by the archive: the
+ * featured post is the site's, and stays put while the list under it is
+ * filtered. It is still a parameter because the Home passes its own base.
  */
 function apit_noticia_destaque( array $base, $fonte ) {
 	if ( 'marcada' === $fonte ) {
@@ -178,6 +178,66 @@ function apit_noticia_destaque( array $base, $fonte ) {
 	$posts = get_posts( array_merge( $base, [ 'posts_per_page' => 1 ] ) );
 
 	return $posts ? $posts[0] : null;
+}
+
+/*
+ * The three field readers, shared by the two templates that make up the page.
+ *
+ * A missing field and an emptied field both fall back to the value the design
+ * shows, and a number the client clears cannot turn into a query for zero
+ * posts. They were closures inside the template until the featured card moved
+ * out of it and a second template needed the same three.
+ */
+
+function apit_noticias_texto( $nome, $omissao, $pagina_id = null ) {
+	$valor = trim( (string) apit_campo( $nome, $pagina_id ? $pagina_id : apit_noticias_pagina_id() ) );
+
+	return '' === $valor ? $omissao : $valor;
+}
+
+function apit_noticias_bool( $nome, $omissao, $pagina_id = null ) {
+	$valor = apit_campo( $nome, $pagina_id ? $pagina_id : apit_noticias_pagina_id() );
+
+	return null === $valor ? $omissao : (bool) $valor;
+}
+
+function apit_noticias_numero( $nome, $omissao, $minimo, $maximo, $pagina_id = null ) {
+	$valor = (int) apit_campo( $nome, $pagina_id ? $pagina_id : apit_noticias_pagina_id() );
+
+	return $valor > 0 ? max( $minimo, min( $maximo, $valor ) ) : $omissao;
+}
+
+/**
+ * The page's featured post, worked out once per request.
+ *
+ * Two templates ask for it — the shell, which draws the card, and the list,
+ * which has to leave that post out of the grid — and they must agree. The
+ * static cache is what makes asking twice free, and what guarantees they cannot
+ * end up with different posts if something changes mid-request.
+ */
+function apit_noticias_destaque_da_pagina( $pagina_id ) {
+	static $cache = [];
+
+	if ( array_key_exists( $pagina_id, $cache ) ) {
+		return $cache[ $pagina_id ];
+	}
+
+	if ( ! apit_noticias_bool( 'noticias_destaque_mostrar', true, $pagina_id ) ) {
+		$cache[ $pagina_id ] = null;
+
+		return null;
+	}
+
+	$cache[ $pagina_id ] = apit_noticia_destaque(
+		[
+			'post_type'           => 'post',
+			'post_status'         => 'publish',
+			'ignore_sticky_posts' => true,
+		],
+		apit_noticias_texto( 'noticias_destaque_fonte', 'marcada', $pagina_id )
+	);
+
+	return $cache[ $pagina_id ];
 }
 
 /**

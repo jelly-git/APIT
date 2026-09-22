@@ -47,21 +47,20 @@
 	}
 
 	/**
-	 * Devolve o foco a quem o tinha.
+	 * Devolve o foco a quem o tinha, depois de trocar a lista.
 	 *
-	 * A substituição do HTML destrói o elemento carregado e o foco cairia no
-	 * body — quem navega por teclado perdia o lugar. O link com o mesmo href
-	 * volta a existir, a não ser que tenha passado a ser o seleccionado: nesse
-	 * caso vai para o que ficou activo — o filtro ou o número da página, consoante
-	 * o sítio de onde se carregou, que é onde a pessoa está.
+	 * Só é preciso na paginação: esses botões estão dentro da caixa trocada,
+	 * pelo que o elemento carregado deixa de existir e o foco cairia no body —
+	 * quem navega por teclado perdia o lugar. O botão com o mesmo endereço volta
+	 * a existir, a não ser que tenha passado a ser a página actual: nesse caso
+	 * vai para o número que ficou marcado, que é onde a pessoa está.
+	 *
+	 * Os filtros estão fora da caixa e não são substituídos — o foco fica onde
+	 * estava sozinho, e mexer-lhe seria mexer onde ninguém pediu.
 	 */
-	function devolverFoco( href, daPaginacao ) {
-		var reserva = daPaginacao
-			? '.noticias-paginacao .current'
-			: '.noticias-filtros__item.is-ativo';
-
+	function devolverFoco( href ) {
 		var alvo = conteudo.querySelector( '[href="' + href + '"]' ) ||
-			conteudo.querySelector( reserva );
+			conteudo.querySelector( '.noticias-paginacao .current' );
 
 		if ( ! alvo ) {
 			return;
@@ -75,6 +74,59 @@
 	}
 
 	/**
+	 * A categoria de um endereço, ou "" para a lista sem filtro.
+	 */
+	function categoriaDe( href ) {
+		return new URL( href, window.location.href ).searchParams.get( 'categoria' ) || '';
+	}
+
+	/**
+	 * Marca a pílula do filtro escolhido, sem tocar na barra.
+	 *
+	 * A barra é impressa uma vez e fica: o que muda com o filtro é só qual
+	 * delas está marcada. Redesenhá-la piscava a linha toda — e tirava o foco a
+	 * quem tinha acabado de carregar, porque o elemento onde ele estava deixava
+	 * de existir.
+	 *
+	 * Corre no clique, antes do pedido, para a marca acompanhar o dedo em vez de
+	 * esperar pela resposta.
+	 */
+	function marcarFiltro( href ) {
+		var escolhida = categoriaDe( href );
+
+		Array.prototype.forEach.call( raiz.querySelectorAll( '.noticias-filtros__item' ), function ( item ) {
+			var ativo = categoriaDe( item.href ) === escolhida;
+
+			item.classList.toggle( 'is-ativo', ativo );
+
+			if ( ativo ) {
+				item.setAttribute( 'aria-current', 'page' );
+			} else {
+				item.removeAttribute( 'aria-current' );
+			}
+		} );
+	}
+
+	/**
+	 * O cartão de destaque só aparece na primeira página da lista.
+	 *
+	 * Escondido e mostrado, nunca substituído: é o mesmo elemento do princípio
+	 * ao fim, pelo que a imagem dele não é pedida nem pintada outra vez a cada
+	 * filtro — era isso que se via como a área de destaque a recarregar.
+	 */
+	function ajustarDestaque( href ) {
+		var caixa = raiz.querySelector( '[data-noticias-destaque]' );
+
+		if ( ! caixa ) {
+			return;
+		}
+
+		var pg = new URL( href, window.location.href ).searchParams.get( 'pg' );
+
+		caixa.hidden = !! pg && '1' !== pg;
+	}
+
+	/**
 	 * Onde está a barra de filtros dentro da janela, agora.
 	 *
 	 * É o ponto de referência para a página não fugir: a altura do que está
@@ -84,7 +136,7 @@
 	 * barra é o que a pessoa está a olhar quando carrega num filtro.
 	 */
 	function ancora() {
-		var barra = conteudo.querySelector( '.noticias-filtros' ) || conteudo;
+		var barra = raiz.querySelector( '.noticias-filtros' ) || conteudo;
 
 		return barra.getBoundingClientRect().top;
 	}
@@ -172,6 +224,10 @@
 	}
 
 	function carregar( href, registarNoHistorico, daPaginacao ) {
+		// Antes do pedido: a marca no filtro acompanha o dedo em vez de esperar
+		// pela resposta.
+		marcarFiltro( href );
+
 		var pedido = window.fetch( enderecoDoPedido( href ), {
 			credentials: 'same-origin',
 			headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -200,15 +256,15 @@
 				var antes = ancora();
 
 				conteudo.innerHTML = html;
+				ajustarDestaque( href );
 				manterNoSitio( antes );
 
 				if ( registarNoHistorico ) {
 					window.history.pushState( { noticias: true }, '', href );
 				}
 
-				devolverFoco( href, daPaginacao );
-
 				if ( daPaginacao ) {
+					devolverFoco( href );
 					reenquadrar();
 				}
 			} )
@@ -229,8 +285,9 @@
 	}
 
 	/*
-	 * Delegado na secção, e não ligado a cada botão: os botões são substituídos
-	 * a cada pedido, e ligá-los um a um obrigaria a voltar a ligá-los sempre.
+	 * Delegado na secção, e não ligado a cada botão: os da paginação são
+	 * substituídos a cada pedido, e ligá-los um a um obrigaria a voltar a
+	 * ligá-los sempre. Apanha os filtros pelo mesmo caminho, que ficam.
 	 */
 	raiz.addEventListener( 'click', function ( evento ) {
 		// Deixa passar o que o browser trata melhor: abrir noutro separador,

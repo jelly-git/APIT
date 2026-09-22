@@ -37,6 +37,12 @@ A versão aqui registada corresponde ao campo `Version` de
   - `aria-live="polite"` na lista e o foco devolvido ao filtro ou ao número que
     ficou activo — sem isso, a substituição do HTML deixava quem navega por
     teclado no `body`.
+  - **Sem *flash* nas imagens.** O HTML que vem a caminho é lido fora do
+    documento, as capas que traz são carregadas e descodificadas, e só depois a
+    lista é trocada — as `background-image` dos cartões, postas a direito no
+    DOM, só eram pedidas ao servidor depois de pintadas, e durante um instante
+    cada cartão mostrava a cor de fundo em vez da capa. Uma imagem em falta ou
+    lenta não trava nada: ao fim de 1,5s a lista entra com o que houver.
   - **A página fica onde estava.** Trocar de filtro já não desloca nada: a barra
     de filtros é medida antes e reposta à mesma altura na janela depois, o que
     também absorve a mudança de altura do que está acima dela. Só a paginação
@@ -51,11 +57,44 @@ A versão aqui registada corresponde ao campo `Version` de
   do cartão, o texto de lista vazia, os filtros e as categorias que mostram, e
   a paginação com os dois rótulos. A migalha, o título e a introdução do hero
   ficam no Elementor, como nas outras páginas.
+- **Campo "Notícia em destaque"**, na barra lateral do artigo
+  (`group_noticia_destaque`). A mais recente das notícias com a opção ligada é a
+  que ocupa a área de destaque. Podem ficar várias ligadas: marcar a de hoje
+  chega, não é preciso desmarcar a de ontem.
+  - **O destaque não acompanha o filtro**: é o mesmo em toda a página, e só a
+    lista por baixo dele é que estreita. O lugar é da página e não da lista —
+    quem marca uma notícia espera encontrá-la ali, e não dentro de um filtro.
+    Continua a sair da grelha em todas as páginas da lista, para não aparecer
+    duas vezes.
+  - **E não é redesenhado.** O cartão passou para fora da caixa que o AJAX
+    troca (`arquivo.php`, e não `resultados.php`): como não depende do filtro,
+    voltar a imprimi-lo a cada clique era substituir um cartão igual e obrigar o
+    browser a pintar a imagem outra vez — era isso que se via como a área de
+    destaque a recarregar. Da segunda página da lista em diante é escondido com
+    o atributo `hidden`, nunca removido, pelo que o elemento é o mesmo do
+    princípio ao fim. Os dois templates concordam sobre qual é a notícia por
+    `apit_noticias_destaque_da_pagina()`, com cache por pedido.
+  - Substitui o *Fixar no topo do blogue* que fazia este trabalho, **também na
+    Home**: é o mesmo campo e a mesma regra nos dois sítios, um interruptor só.
+    O *sticky* é uma funcionalidade do índice do blogue, com efeitos próprios
+    nas consultas, e quem o lê no editor não tem como adivinhar que significa o
+    cartão grande de uma página.
+  - O que estava fixado no topo ficou com o campo ligado, para o site continuar
+    a mostrar a mesma notícia em destaque depois da troca.
 - **Cor por categoria de notícia**, campo na própria categoria
   (`group_categoria_noticia`). Pinta a etiqueta, o filtro seleccionado e o
   cartão sem imagem. Em branco, a categoria mantém a cor que o tema lhe dá.
 - A página das Notícias entra no grupo **Hero — fundo**: o vídeo, a imagem ou a
   galeria do seu hero escolhem-se no back office como nas restantes.
+
+### Corrigido
+- A paginação levava consigo os parâmetros do pedido AJAX
+  (`?pg=1&action=apit_noticias&pagina=9` na barra de endereço). O
+  `paginate_links()` não constrói só a partir da base que recebe: lê também o
+  `get_pagenum_link()` — o endereço que está a ser servido — e acrescenta a cada
+  ligação os parâmetros que lá encontrar. Em AJAX esse endereço é o
+  `admin-ajax.php`. Durante a chamada passa a receber a permalink limpa da
+  página, e é removida a seguir.
 
 ### Alterado
 - **Etiqueta de secção** (`.apit-secao__etiqueta`) passa aos valores dados pelo
@@ -65,6 +104,10 @@ A versão aqui registada corresponde ao campo `Version` de
   etiquetas que o template imprime em `h2` como nas que imprime em `p`: é a
   mesma classe, e uma regra só para os títulos deixaria o site com dois estilos
   de etiqueta.
+- Uma notícia **sem imagem de destaque** deixa de aparecer como um rectângulo
+  quase preto: fica com a cor da sua categoria, como já acontecia no cartão
+  "bloco" da Home. Vale para o cartão grande e para os da grelha, nas duas
+  páginas — a regra está no `style.css`, e não na folha só das Notícias.
 - `apit_cor_categoria()` passa a resolver a categoria pelo termo e a ler
   primeiro o campo de cor. **Corrige "Mercados & Feiras"**, que saía magenta na
   Home: o nome impresso sanitiza para `mercados-amp-feiras` e não coincidia com
@@ -74,15 +117,17 @@ A versão aqui registada corresponde ao campo `Version` de
   paginação.
 
 ### Notas
-- **Categorias das notícias**: passaram a ser *Institucional* e *Livros e
-  revistas*. Os dois artigos que estavam em *Setor* e em *Mercados & Feiras*
-  foram para Institucional — sem categoria, os cartões perdiam a etiqueta e a
-  cor. As duas categorias antigas ficaram na base de dados, vazias: não é
-  preciso apagá-las para desaparecerem do site, e assim isto desfaz-se. As cores
-  ficaram no campo da categoria: magenta em Institucional, azul em Livros e
-  revistas. O filtro está fixado nestas duas pelo campo *Categorias a mostrar*,
-  porque a lista automática esconde as que não têm notícias e *Livros e
-  revistas* ainda não tem nenhuma.
+- **Categorias das notícias**: *Institucional* (magenta), *Mercados & Feiras*
+  (azul) e *Eventos* (turquesa), com a cor no campo da própria categoria. O
+  filtro está fixado nestas três, por esta ordem, pelo campo *Categorias a
+  mostrar* — a lista automática esconde as que ainda não têm notícias.
+  *Mercados & Feiras* é a categoria que já existia, reaproveitada em vez de
+  criada de novo. *Setor* foi apagada, já sem artigos.
+- **Os três artigos de demonstração foram distribuídos** pelas três categorias,
+  um em cada. Enquanto estiveram todos na mesma, o destaque parecia não
+  responder ao filtro — e não respondia mesmo: não havia outra notícia para
+  mostrar. É conteúdo de exemplo; a categoria de cada notícia é do cliente, no
+  editor.
 - **`page_for_posts` deixou de ser a página Notícias** (Definições › Leitura,
   "Página de artigos" agora vazia). Enquanto era, o WordPress servia `/noticias/`
   pelo `index.php` do tema pai e ignorava tudo o que a página tivesse — hero
@@ -121,6 +166,21 @@ A versão aqui registada corresponde ao campo `Version` de
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.28.1] - 2026-09-22
+
+### Alterado
+- Na página Associados os três passos passam para antes dos seis benefícios,
+  como no design: primeiro como se adere, depois o que se ganha.
+- Os seis benefícios passam a uma só linha de seis colunas, alinhados à
+  esquerda e com círculos de 157px. Eram três e três, centrados.
+- O sangramento de 102px do wordmark COMO ADERIR só existe a partir dos
+  1504px de janela, que é onde a margem ao lado da coluna o comporta.
+
+### Corrigido
+- A Internacionalização tinha voltado a ser item de topo do menu — a relação
+  de subitem perdeu-se algures depois de ter sido criada. Com 186px a mais na
+  barra, o header transbordava a janela entre os 1024px e os 1418px.
 
 ## [0.27.9] - 2026-09-22
 

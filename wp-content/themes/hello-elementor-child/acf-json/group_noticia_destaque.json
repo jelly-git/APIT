@@ -8,7 +8,7 @@
             "name": "noticia_destaque",
             "aria-label": "",
             "type": "true_false",
-            "instructions": "Ocupa a área de destaque da página das Notícias. Podem ficar várias ligadas: a que aparece é sempre a mais recente das que estiverem — e, dentro de um filtro, a mais recente dessa categoria.",
+            "instructions": "Ocupa a área de destaque da página das Notícias, e o cartão grande da Home. Podem ficar várias ligadas: a que aparece é sempre a mais recente das que estiverem. Sem nenhuma ligada, a área de destaque fica com a notícia mais recente. O destaque não muda com o filtro de categorias — é o mesmo em toda a página.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -44,5 +44,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1790087737
+    "modified": 1790091070
 }
