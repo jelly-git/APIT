@@ -37,6 +37,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.26.3] - 2026-09-22
+
+### Alterado
+- Os cartões de documento de uma linha passam a ter todos a altura do mais alto
+  e os botões de download alinhados entre si, independentemente do número de
+  linhas do título. A grelha já igualava as alturas — por linha, não pela
+  grelha toda; faltava o botão descolar do título e assentar no fundo do
+  cartão.
+
 ## [0.26.2] - 2026-09-17
 
 ### Alterado

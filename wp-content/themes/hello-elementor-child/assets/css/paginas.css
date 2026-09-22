@@ -1017,6 +1017,25 @@
 }
 
 /*
+ * A column, so the download can be pushed to the bottom of the card.
+ *
+ * The grid already gives every item in a row the height of the tallest one —
+ * that is what `align-items: stretch` does by default, and it is per row, so a
+ * long title in the second row does not stretch the first. What was missing is
+ * that the button sat directly under its own title and so followed it up and
+ * down. With `margin-top: auto` on the button the spare height collects above
+ * it, and the buttons of a row line up whatever the titles do.
+ *
+ * `stretch` stays on the cross axis so the cover keeps the card's full width;
+ * it is the button that opts out, further down, or the pill would be stretched
+ * across the whole card.
+ */
+.documentos__item {
+	display: flex;
+	flex-direction: column;
+}
+
+/*
  * Measurements from the Figma panel: the cover and the gradient behind it are
  * both 230x322 with a 3px radius, and the gradient sits 7px right and down
  * (top 1581 against the cover's 1574).
@@ -1089,7 +1108,8 @@
 
 /* Values from the Figma panel, not estimated from an export. */
 .documentos__titulo {
-	margin: 22px 0 0;
+	/* The 16px below is the button's minimum gap — its own margin is `auto`. */
+	margin: 22px 0 16px;
 	font-family: var(--apit-font);
 	font-weight: 500;
 	font-size: 22px;
@@ -1115,7 +1135,10 @@
 	display: inline-flex;
 	align-items: center;
 	gap: 10px;
-	margin-top: 16px;
+	/* Collects the card's spare height above it — see .documentos__item. */
+	margin-top: auto;
+	/* Hugs its label instead of filling the card's width. */
+	align-self: flex-start;
 	padding: 11px 22px 10px;
 	border: 2px solid currentColor;
 	border-radius: 200px;
