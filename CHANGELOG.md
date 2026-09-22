@@ -37,6 +37,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.26.8] - 2026-09-22
+
+### Alterado
+- Hero das quatro páginas com os valores do painel do Figma em vez das
+  proporções lidas de exportações: breadcrumb a 231px do topo (Omnes Medium
+  14px/140%/10%), título a 278px (Omnes Regular 52px/120%, sem tracking) e a
+  primeira etiqueta de secção a 379px. As três caixas assentam agora nos Top
+  exactos do painel.
+- Etiqueta de secção ("Section Eyebrown") passa a Omnes Light 18px/120% com
+  35% de tracking. Estava a 13px/400, estimada de uma exportação — afecta todas
+  as etiquetas das quatro páginas.
+- A sobreposição da grelha sobre o hero passa a uma só medida, usada pela
+  margem e pela extensão transparente do fundo. No tablet as duas tinham
+  divergido e 103px abaixo do hero mostravam o branco do body em vez do
+  #F4F9FF da secção.
+
+### Corrigido
+- No Calendário o branco de `.calendario` pintava por cima da metade inferior
+  do hero e da segunda linha do wordmark. Nada dentro da secção sobreposta
+  pinta fundo próprio.
+
 ## [0.26.3] - 2026-09-22
 
 ### Alterado

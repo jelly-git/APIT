@@ -26,16 +26,25 @@
 }
 
 /*
- * The small uppercase line above a section. Letter-spacing is what carries it:
- * at 13px the design reads as spaced capitals rather than a small heading.
+ * The small uppercase line above a section — Figma's "Section Eyebrown" style.
+ *
+ * Values from the client's panel: Omnes Light 18px, line-height 120%, tracking
+ * 35% (6.3px at this size), uppercase. The 13px/400/3.2px this used to carry
+ * was estimated from an export, and at that size the line read as a small
+ * heading rather than as spaced capitals — 22px of line box, which happens to
+ * be the height the panel reports, but built from the wrong size and weight.
+ *
+ * The panel gives pure black; the near-black token is kept, because every other
+ * dark text on the site is --apit-black and a lone #000 label beside them
+ * reads as a mistake.
  */
 .apit-secao__etiqueta {
 	margin: 0 0 44px;
 	font-family: var(--apit-font);
-	font-weight: 400;
-	font-size: 13px;
-	line-height: 1.68;
-	letter-spacing: 3.2px;
+	font-weight: 300;
+	font-size: 18px;
+	line-height: 1.2;
+	letter-spacing: 6.3px;
 	text-transform: uppercase;
 	color: var(--apit-black);
 }
@@ -46,15 +55,16 @@
 	position: relative;
 	overflow: hidden;
 	/*
-	 * The content starts higher than I had it: measured against the design,
-	 * the breadcrumb sits at 32% of the hero's height and mine was at 51%.
+	 * 221px puts the breadcrumb's box at 231px from the top of the page, which
+	 * is the Top the client's Figma panel gives for it. The 182 here before was
+	 * derived from a proportion read off an export.
 	 *
 	 * The generous bottom padding is what gives the overlay room to fade —
 	 * without it the light half of the gradient would land on the title.
 	 * !important because both values are written per container into Elementor's
 	 * per-page stylesheet, which is printed after this file.
 	 */
-	padding-top: 182px !important;
+	padding-top: 221px !important;
 	padding-bottom: 260px !important;
 	/*
 	 * The section paints the fallback colour and the artwork; the media layer
@@ -113,12 +123,14 @@
 	padding-inline: max(20px, calc(50% - 670px)) !important;
 }
 
+/* Panel values: Omnes Medium 14px, line-height 140%, tracking 10% — 1.4px. */
 .pagina-hero__crumb,
 .pagina-hero__crumb p {
 	margin: 0;
-	font-size: 13px;
-	line-height: 1.68;
-	letter-spacing: 2.4px;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 1.4;
+	letter-spacing: 1.4px;
 	text-transform: uppercase;
 	color: rgba(255, 255, 255, 0.85);
 }
@@ -131,13 +143,24 @@
 	color: #fff;
 }
 
+/*
+ * The panel puts the breadcrumb's box at 231 and the title's at 278: 27px
+ * between them. The !important replaces Elementor's own widget margin, so the
+ * value is the whole gap and not something added to it.
+ */
+.apit-pagina-hero .pagina-hero__titulo {
+	margin-top: 27px !important;
+}
+
 .apit-pagina-hero .pagina-hero__titulo .elementor-heading-title {
-	max-width: 720px;
+	/* Panel: 799px wide, so the column, not the 720 this was capped at. */
+	max-width: 800px;
 	font-family: var(--apit-font);
 	font-weight: 400;
-	font-size: 54px;
-	line-height: 1.14;
-	letter-spacing: -1px;
+	/* Panel values: Omnes Regular 52px, line-height 120%, no tracking. */
+	font-size: 52px;
+	line-height: 1.2;
+	letter-spacing: 0;
 	color: #fff;
 }
 
@@ -1403,10 +1426,21 @@
  * completed, the section's own background lands on a tone identical to what is
  * under it and there is no seam to see.
  *
- * The fade completes at 66% of the hero, leaving its last 34% already flat. On
- * a 569px hero that is 193px, which is how far up the section can come while
- * staying invisible as a join. Any further and the join starts to show, because
- * the section would be covering colour that has not finished fading.
+ * How far up it comes is not limited by the fade, as this comment used to
+ * claim. The transparent run below is always the same length as the overlap, so
+ * the section's own tone begins at the hero's bottom edge whatever the margin
+ * is — the join sits there and nowhere else. What the overlap decides is only
+ * how much of the hero the cards sit on, and the design puts them well inside
+ * it, the wordmark showing between them.
+ *
+ * 291px comes from the panel: the first area label sits at 379px from the top
+ * first area label is about the same as the gap from that label down to the
+ * covers. Those two were 154px and 30px here, which is what made the label look
+ * stranded below the title.
+ *
+ * The container keeps its own 60px of top padding — it is the client's to
+ * change in Elementor — so the margin carries that 60 on top of the 254 the
+ * content actually has to move.
  *
  * position: relative so it paints over the hero rather than under it — they are
  * siblings, so document order would do it anyway, but the hero isolates its own
@@ -1417,29 +1451,53 @@
  */
 .apit-sobrepoe {
 	position: relative;
-	margin-top: -193px !important;
 	/*
-	 * Transparent for exactly the overlapped 193px, then the section's own
-	 * tone. Painted flat, the section covered 161px of the wordmark's second
-	 * line — and there was no need to paint it at all up there, since the
-	 * hero's fade has already arrived at this very colour.
+	 * One number for both the margin and the gradient stop — they have to stay
+	 * equal, and at the tablet breakpoint they had drifted apart: the margin
+	 * dropped to 90px and the transparent run stayed at 193px, so 103px below
+	 * the hero showed the body's white instead of this section's #F4F9FF.
+	 */
+	--apit-sobe: 291px;
+	margin-top: calc(-1 * var(--apit-sobe)) !important;
+	/*
+	 * Transparent for exactly the overlap, then the section's own tone. Painted
+	 * flat, the section covered the wordmark's second line — and there is no
+	 * need to paint it up there at all, since the hero's fade has already
+	 * arrived at this very colour.
 	 */
 	background: linear-gradient(
 		to bottom,
-		transparent 0 193px,
-		var(--apit-branco) 193px
+		transparent 0 var(--apit-sobe),
+		var(--apit-branco) var(--apit-sobe)
 	) !important;
 }
 
+/*
+ * Nothing inside may paint its own background, or it paints over the hero.
+ *
+ * .calendario carries `background: #fff` from .apit-secao, and on the Calendário
+ * page that white started at the top of the block — 234px above the hero's
+ * bottom edge — covering the lower half of the hero and the second line of the
+ * wordmark. The Documentos grid has no background of its own, which is why the
+ * same overlap looked right there and wrong here.
+ *
+ * The gradient above is the one thing that should be painting this stretch.
+ */
+.apit-sobrepoe .apit-secao,
+.apit-sobrepoe .calendario {
+	background: transparent;
+}
+
 @media (max-width: 1024px) {
-	/* The hero is shorter here, so there is less flat fade to hide the join in. */
+	/* The hero is 356px here against 569px, so the same proportion of it. */
 	.apit-sobrepoe {
-		margin-top: -90px !important;
+		--apit-sobe: 132px;
 	}
 }
 
 @media (max-width: 768px) {
+	/* Stacked, and the hero has no room to spare: the section starts below it. */
 	.apit-sobrepoe {
-		margin-top: 0 !important;
+		--apit-sobe: 0px;
 	}
 }
