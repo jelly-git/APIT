@@ -223,6 +223,28 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.29.19] - 2026-09-23
+
+### Alterado
+- Linha fechada das FAQ pelo painel do próprio elemento: 24px acima e abaixo,
+  raio de 2px, e uma borda de 1px que não é uma cor mas um degradé de cinco —
+  roxo, laranja, magenta, azul, turquesa. Um degradé não pode ser
+  `border-color`, e o `border-image` ignora o raio, por isso a borda é pintada
+  como segunda camada de fundo: o branco enche a caixa interior, o degradé a
+  exterior, e o 1px de borda transparente é o único sítio onde a segunda se vê.
+- A borda vai a 40% e não à força total dos tons do painel. A ampliação enviada
+  pelo cliente lê 192,177,211 onde a primeira paragem é o roxo 103,65,150, e
+  sobre branco isso dá 0,41 nos três canais — a camada está esbatida no
+  ficheiro, coisa que o recorte do painel não mostra.
+- Colunas das FAQ a 410 e 855 dentro dos 1340, o que deixa 35px entre elas e
+  não os 40 do Elementor; e a coluna da lista deixa de ficar com os seus 10px
+  de cada lado, que punham as linhas a 830.
+
+### Corrigido
+- A borda de topo das linhas: o Elementor põe-na a zero, porque os seus
+  acordeões são feitos para ler como uma pilha de caixas que partilham arestas,
+  e o design tem caixas separadas fechadas dos quatro lados.
+
 ## [0.29.17] - 2026-09-23
 
 ### Alterado

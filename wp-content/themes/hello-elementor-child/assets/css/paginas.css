@@ -844,10 +844,22 @@
 	background: var(--apit-branco);
 }
 
+/*
+ * The two columns are 410 and 855 inside the 1340 column, which leaves 35
+ * between them — not the 40 Elementor writes. And the list column cannot keep
+ * its own 10px each side, or the rows come to 830 instead of the 855 the panel
+ * reports. Both need !important: Elementor writes gap and padding for every
+ * container into the per-page stylesheet, printed after this file.
+ */
 .faq__linha {
 	max-width: 1340px;
 	margin-inline: auto;
 	align-items: flex-start;
+	gap: 35px !important;
+}
+
+.faq__col-lista {
+	padding: 0 !important;
 }
 
 /*
@@ -936,11 +948,45 @@
 	border: none;
 }
 
-/* Panel: 10px of gap between the items. */
+/*
+ * Panel for a closed row: 10px of gap, a 2px radius, and a 1px border that is
+ * not a colour but a five-stop gradient — purple, orange, magenta, blue, teal.
+ *
+ * A gradient cannot be a border-color, and `border-image` ignores the radius,
+ * which would square the corners the panel asks for. So the border is painted
+ * as a second background layer: the white fills the padding box, the gradient
+ * fills the border box, and the 1px of transparent border is the only place the
+ * second layer shows.
+ *
+ * overflow: hidden so the open row's own gradient, which is painted by the
+ * title and the content inside, is cut to the same 2px.
+ *
+ * At 40%, not at the full strength the panel's stops carry. The client's zoom
+ * of the border reads 192,177,211 where the first stop is purple 103,65,150,
+ * and over white that is an alpha of 0.41 on all three channels — the layer
+ * itself is faded in the file, which the crop of the panel does not show. At
+ * full strength the row would be ringed in a hard rainbow.
+ */
 .faq__acordeao .elementor-accordion .elementor-accordion-item {
 	margin-bottom: 10px;
-	border: none;
-	background: #fff;
+	/*
+	 * !important on the width because Elementor sets the item's top border to 0
+	 * — its accordions are meant to read as a stack sharing edges — and the
+	 * design's rows are separate boxes, each closed on all four sides.
+	 */
+	border: 1px solid transparent !important;
+	border-radius: 2px;
+	overflow: hidden;
+	background:
+		linear-gradient(#fff, #fff) padding-box,
+		linear-gradient(
+			to right,
+			rgba(103, 65, 150, 0.4) 0%,
+			rgba(239, 99, 65, 0.4) 25%,
+			rgba(230, 54, 146, 0.4) 50%,
+			rgba(74, 133, 200, 0.4) 75%,
+			rgba(40, 196, 186, 0.4) 100%
+		) border-box;
 }
 
 /*
@@ -952,9 +998,8 @@
  * have and no other block uses. Omnes carries the metrics; if that family is
  * really meant to be here it has to go into the Typekit kit first.
  *
- * The panel's 42px of padding is the open row's — that is the element measured,
- * 855 wide and 238 tall. A closed row is one line and sits tighter, or the list
- * would be a column of tall empty boxes.
+ * The closed row's own panel gives 24px above and below against the open row's
+ * 42 — and with them the row measures the 73px it reports.
  *
  * Flex, because the sign has to sit at the far end: Elementor floats it left
  * and its own rule for that wins, so turning the float around had no effect.
@@ -965,7 +1010,7 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: 16px;
-	padding: 14px 42px;
+	padding: 24px 42px;
 	border: none;
 	font-family: var(--apit-font);
 	font-weight: 500;
