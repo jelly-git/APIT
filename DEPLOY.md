@@ -135,6 +135,14 @@ wp option delete elementor_log
 # conteúdo — incluindo os URLs escapados que a secção seguinte tem de tratar.
 wp eval 'global $wpdb; echo $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key = \"_elementor_element_cache\"" ) . " caches\n";'
 
+# CSS por página do Elementor. O `_elementor_css` de cada página diz "o CSS está
+# no ficheiro uploads/elementor/css/post-<id>.css" — e no servidor esse ficheiro
+# é o que lá ficou da última vez, com o layout antigo. A 23 de setembro a
+# Internacionalização refeita subiu assim sem o padding dos contentores, sem o
+# degradé dos cartões e sem o fundo da Área Reservada. Sem esta meta, o
+# Elementor gera o ficheiro de novo no primeiro acesso a cada página.
+wp eval '\Elementor\Plugin::$instance->files_manager->clear_cache(); global $wpdb; echo $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE meta_key = \"_elementor_css\"" ) . " _elementor_css\n";'
+
 # Caches do WordPress.org: feeds do painel, block patterns e traduções.
 # O `wp transient delete --all` acima não apanha os de nível de site, e eram
 # 894 KB dos 1,47 MB que a exportação de 22 de setembro tinha a mais.
@@ -183,6 +191,7 @@ rm bd-sem-cabecalho.sql
 grep -c "apit.local" apit-bd-para-servidor.sql     # 0
 grep -c "autosave-v1" apit-bd-para-servidor.sql    # 0
 grep -c "CREATE TABLE" apit-bd-para-servidor.sql   # 13
+grep -c "'_elementor_css'" apit-bd-para-servidor.sql  # 0
 
 # arquivar a cópia versionada, com a versão lida do próprio tema
 VERSAO=$(sed -n 's/^Version: //p' app/public/wp-content/themes/hello-elementor-child/style.css | tr -d '\r')
