@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.31.1
+Version: 0.32.0
 */
 
 :root {
@@ -381,14 +381,18 @@ ul {
 .apit-header__search-toggle:hover,
 .apit-header__search-toggle:focus,
 .apit-menu-mobile__pesquisa:hover,
-.apit-menu-mobile__pesquisa:focus {
+.apit-menu-mobile__pesquisa:focus,
+.apit-menu-mobile__fechar:hover,
+.apit-menu-mobile__fechar:focus {
 	background: none;
 }
 
 .apit-header__search-toggle:hover,
 .apit-header__search-toggle:focus-visible,
 .apit-menu-mobile__pesquisa:hover,
-.apit-menu-mobile__pesquisa:focus-visible {
+.apit-menu-mobile__pesquisa:focus-visible,
+.apit-menu-mobile__fechar:hover,
+.apit-menu-mobile__fechar:focus-visible {
 	color: var(--apit-magenta);
 }
 
@@ -417,6 +421,22 @@ ul {
 	font-size: 16px;
 }
 
+/*
+ * The same hover as every white-outline button on a coloured band: it fills
+ * with white. Left alone it took Hello's `a:hover { color: #336 }`, and the
+ * label and its border went navy over the header artwork.
+ */
+.apit-header__cta {
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.apit-header__cta:hover,
+.apit-header__cta:focus-visible {
+	background: #fff;
+	border-color: #fff;
+	color: var(--apit-black);
+}
+
 /* ---------- Cabeçalho: hambúrguer ---------- */
 
 .apit-header__burger {
@@ -431,6 +451,18 @@ ul {
 	font-size: 24px;
 	color: #fff;
 	cursor: pointer;
+}
+
+/* Hello's reset paints every button:hover and :focus #c36. */
+.apit-header__burger:hover,
+.apit-header__burger:focus {
+	background: none;
+	color: #fff;
+}
+
+.apit-header__burger:hover,
+.apit-header__burger:focus-visible {
+	color: var(--apit-magenta);
 }
 
 @media (max-width: 1024px) {
@@ -769,6 +801,53 @@ body.apit-menu-aberto {
 	background-color: var(--apit-black);
 	color: var(--apit-branco);
 	fill: var(--apit-branco);
+}
+
+/*
+ * Hover and keyboard focus, one rule per family of button.
+ *
+ * Before this, only the dark outline and the newsletter's submit had a hover.
+ * The Elementor buttons had none at all, and the ones the templates print as
+ * <a class="btn"> took Hello's reset — `a:hover { color: #336 }` — which
+ * turned a white label navy on a coloured band.
+ *
+ * - Solid (blue, magenta, turquoise): fills with the near-black, as the
+ *   newsletter's submit already did.
+ * - White outline, on a coloured band: fills with white, label dark.
+ * - Dark outline: fills with the near-black (above).
+ *
+ * `a.btn` for the templates, not `.btn`: an Elementor widget wrapper carries
+ * the same classes, and must not be painted itself.
+ */
+.btn,
+.btn .elementor-button {
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, fill 0.2s ease;
+}
+
+a.btn--solid:hover,
+a.btn--solid:focus-visible,
+.btn.btn--solid .elementor-button:hover,
+.btn.btn--solid .elementor-button:focus-visible {
+	background-color: var(--apit-black);
+	border-color: var(--apit-black);
+	color: #fff;
+	fill: #fff;
+}
+
+a.btn--outline:not(.btn--escuro):hover,
+a.btn--outline:not(.btn--escuro):focus-visible,
+.btn.btn--outline:not(.btn--escuro) .elementor-button:hover,
+.btn.btn--outline:not(.btn--escuro) .elementor-button:focus-visible {
+	background-color: #fff;
+	border-color: #fff;
+	color: var(--apit-black);
+	fill: var(--apit-black);
+}
+
+/* The dark outline's own hover, for the template links Hello would recolour. */
+a.btn--escuro:hover,
+a.btn--escuro:focus-visible {
+	color: var(--apit-branco);
 }
 
 /* The wrapper itself must not paint a second pill behind the button. */
@@ -1344,8 +1423,13 @@ body.apit-menu-aberto {
 	color: var(--apit-black);
 }
 
+/*
+ * Centred: with the 57px button beside them, the 40px arrows sat at the top of
+ * the row, above the line of the title and of the button.
+ */
 .calendario__nav {
 	display: flex;
+	align-items: center;
 	gap: 9px;
 }
 
@@ -1361,6 +1445,16 @@ body.apit-menu-aberto {
 	font-size: 16px;
 	color: var(--apit-black);
 	cursor: pointer;
+}
+
+/*
+ * Hello's reset paints every `button:focus` #c36, and a click leaves the
+ * arrow focused — so after one click it stayed pink until the next click
+ * elsewhere. Reset here, before the hover so the hover still wins.
+ */
+.calendario__arrow:focus {
+	background: rgba(27, 42, 51, 0.08);
+	color: var(--apit-black);
 }
 
 .calendario__arrow:hover,

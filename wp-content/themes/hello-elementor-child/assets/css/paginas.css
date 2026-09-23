@@ -121,7 +121,8 @@
  */
 .pagina-hero__col,
 .banda-aderir__col,
-.faq__linha {
+.faq__linha,
+.inter-coluna {
 	width: 100%;
 	max-width: 1340px !important;
 	margin-inline: auto !important;
@@ -503,6 +504,41 @@
 		radial-gradient(70% 90% at 40% 22%, #8048a6 0%, rgba(128, 72, 166, 0) 58%),
 		radial-gradient(85% 110% at 84% 26%, #2ec6b0 0%, rgba(46, 198, 176, 0) 62%),
 		linear-gradient(100deg, #e8199a 0%, #9a5cb8 30%, #35bdb8 64%, #4a85c8 100%);
+}
+
+/*
+ * WORLD is one line, not two, so the bottom anchor the other heroes need left
+ * it 280px below where the design has it: level with the title and the text,
+ * its letters starting 290px from the top of the page. Down to 1025px, where
+ * the hero still has its desktop geometry.
+ */
+@media (min-width: 1025px) {
+	/*
+	 * This design keeps the colour behind the buttons and fades it under them,
+	 * into the Watch Portugal block: still strong at 527px, light by 690px,
+	 * where the logo starts.
+	 */
+	.hero--inter {
+		--apit-hero-scrim: linear-gradient(
+			to bottom,
+			rgba(244, 249, 255, 0) 540px,
+			#f4f9ff 700px
+		);
+	}
+
+	.hero--inter .pagina-hero__decor {
+		top: 262px;
+		bottom: auto;
+	}
+
+	/*
+	 * 280px is 14.6vw of the 1920px design. Scaled with the screen below that,
+	 * so the word keeps to the right of the title instead of running over it.
+	 */
+	.hero--inter .pagina-hero__word {
+		font-size: min(280px, 14.6vw);
+		letter-spacing: -0.02em;
+	}
 }
 
 /* Turquoise across the middle, magenta pushed to the top right. */
@@ -1192,169 +1228,251 @@
 	}
 }
 
-/* ---------- Internacionalização: a marca ---------- */
+/* ---------- Internacionalização ---------- */
+
+/*
+ * The three blocks below the hero are Elementor widgets — Imagem, Título,
+ * Editor de texto, Botão and Lista de ícones — so their words, the logo and each
+ * card's colour are edited in the Elementor panel. This sheet only sets what the
+ * panel would otherwise have to repeat on every widget: the type, and the
+ * geometry of the columns.
+ */
+
+/* ----- A marca ----- */
+
+/*
+ * The design starts the logo at 690px from the top of the page, inside the
+ * hero's fade: 142px above where the hero ends. 202 is those 142 plus the 60px
+ * of top padding the container keeps in Elementor. Desktop only — the tablet
+ * and phone values of .apit-sobrepoe still apply below.
+ */
+@media (min-width: 1025px) {
+	.apit-sobrepoe.inter-marca-secao {
+		--apit-sobe: 202px;
+	}
+}
 
 .inter-marca {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	align-items: center;
-	gap: 80px;
-	max-width: 1340px;
-	margin-inline: auto;
-	padding-inline: 20px;
+	align-items: center !important;
+	gap: 50px !important;
 }
 
-.inter-marca__logo img {
-	display: block;
-	width: 100%;
-	max-width: 384px;
-	height: auto;
+.inter-marca > .inter-marca__logo {
+	flex: 0 0 calc(50% - 25px) !important;
+	align-items: flex-end !important;
 }
 
-.inter-marca__titulo {
-	margin: 0;
-	max-width: 420px;
-	font-family: var(--apit-font);
-	font-weight: 400;
-	font-size: 34px;
-	line-height: 1.22;
-	color: var(--apit-black);
-}
-
-.inter-marca__paragrafo {
-	max-width: 400px;
-	margin: 26px 0 0;
-	font-size: 15px;
-	line-height: 1.7;
-	color: rgba(27, 42, 51, 0.75);
-}
-
-/* ---------- Internacionalização: áreas de apoio ---------- */
-
-.inter-apoios .apit-secao__etiqueta {
-	max-width: 1340px;
-	margin-inline: auto;
-	padding-inline: 20px;
-	margin-bottom: 30px;
+.inter-marca > .inter-marca__corpo {
+	flex: 1 1 0 !important;
 }
 
 /*
- * The cards run the full width of the screen, edge to edge, and divide it
- * equally. The design shows the fourth one cut off at the viewport edge; the
- * client asked for all of them visible instead, so a fifth narrows the five
- * rather than pushing one out of sight.
+ * The widget has to take the column: in a flex column aligned to the end it
+ * shrank to the file's own 261px, and the logo with it.
  */
-.inter-apoios__lista {
-	display: grid;
-	grid-auto-flow: column;
-	grid-auto-columns: 1fr;
-	list-style: none;
-	margin: 0;
-	padding: 0;
+.inter-marca .inter-marca__imagem {
+	width: 100%;
 }
 
-.inter-apoios__item {
-	padding: 38px 34px 44px;
-	/* The two stops come from the card's own fields, inline. The fallbacks are
-	 * here so a card with no colour set is still legible. */
-	background-image: linear-gradient(
-		180deg,
-		var(--apit-apoio-inicio, #2ec6b0) 0%,
-		var(--apit-apoio-fim, #4a85c8) 100%
-	);
-	color: #fff;
+.inter-marca__imagem img {
+	display: block;
+	width: 100%;
+	max-width: 734px;
+	height: auto;
+	margin-left: auto;
 }
 
-.inter-apoios__titulo {
-	margin: 0;
-	max-width: 200px;
+/*
+ * The design draws the lockup 734px wide, starting ~100px to the left of the
+ * content column. Only where that margin exists; below it the logo keeps to its
+ * column.
+ */
+@media (min-width: 1504px) {
+	/* Its right edge on the column's: 625px of column, 734px of logo. */
+	.inter-marca .inter-marca__imagem img {
+		width: 734px;
+		max-width: none;
+		margin-left: -109px;
+	}
+}
+
+.inter-marca .inter-marca__titulo .elementor-heading-title {
+	max-width: 580px;
 	font-family: var(--apit-font);
 	font-weight: 400;
-	font-size: 22px;
-	line-height: 1.24;
+	font-size: 48px;
+	line-height: 1.25;
+	color: var(--apit-black);
+}
+
+/* The design indents the paragraph under the title. */
+.inter-marca .inter-marca__paragrafo {
+	max-width: 596px !important;
+	margin-top: 40px !important;
+	padding-left: 76px;
+	font-size: 15px;
+	line-height: 1.8;
+	color: rgba(27, 42, 51, 0.8);
+}
+
+.inter-marca__paragrafo p {
+	margin: 0;
+}
+
+/* ----- Como apoiamos os associados ----- */
+
+.inter-apoios .apit-secao__etiqueta {
+	margin: 0 0 40px !important;
+}
+
+/*
+ * The etiqueta rule sets the type; the heading inside must take it. Three
+ * classes, because the kit colours `.elementor-widget-heading
+ * .elementor-heading-title` with its primary colour, and prints after this file.
+ */
+.inter-apoios .apit-secao__etiqueta .elementor-heading-title {
+	font: inherit;
+	letter-spacing: inherit;
+	text-transform: inherit;
+	color: inherit;
+}
+
+/*
+ * Four equal cards inside the content column. The colour of each one is the
+ * container's own background gradient in Elementor, so a fifth card is a
+ * duplicate of a fourth with a new colour picked.
+ */
+.inter-apoios__lista {
+	flex-wrap: nowrap !important;
+	align-items: stretch !important;
+}
+
+.inter-apoios__lista > .inter-apoio {
+	flex: 1 1 0 !important;
+	min-height: 300px;
+	justify-content: flex-start !important;
+}
+
+.inter-apoio .inter-apoio__titulo .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 30px;
+	line-height: 1.3;
 	color: #fff;
 }
 
-.inter-apoios__texto {
-	margin: 20px 0 0;
+.inter-apoio .inter-apoio__texto {
+	margin-top: 20px !important;
 	font-size: 14px;
-	line-height: 1.65;
+	line-height: 1.9;
 	color: rgba(255, 255, 255, 0.92);
 }
 
-/* ---------- Internacionalização: banda do stand ---------- */
+.inter-apoio__texto p {
+	margin: 0;
+}
 
-.apit-banda-stand {
+/* ----- Próximos mercados ----- */
+
+/*
+ * The section is painted #F4F9FF, but the calendar block carries the white of
+ * .apit-secao and painted a white box inside a light band. The design has the
+ * whole section light.
+ */
+#mercados .calendario {
+	background: transparent;
+}
+
+/* ----- Área Reservada ----- */
+
+/*
+ * The artwork is the client's (fundo-bloco-area-reservada.png), set as the
+ * container's background image in Elementor, so it is swapped in the panel.
+ * The magenta here is only what shows while it loads.
+ */
+.apit-banda-area {
 	position: relative;
 	overflow: hidden;
 	background-color: #f41892;
-	background-image:
-		radial-gradient(70% 120% at 4% 40%, #f41892 0%, rgba(244, 24, 146, 0) 58%),
-		radial-gradient(80% 120% at 56% 24%, #2ec6b0 0%, rgba(46, 198, 176, 0) 60%),
-		linear-gradient(94deg, #f41892 0%, #c65cae 26%, #35bdb8 62%, #4a85c8 100%);
-	color: #fff;
-	isolation: isolate;
-}
-
-.inter-stand {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 80px;
-	max-width: 1340px;
-	margin-inline: auto;
-	padding-inline: 20px;
-}
-
-.inter-stand__titulo {
-	margin: 0;
-	max-width: 340px;
-	font-family: var(--apit-font);
-	font-weight: 400;
-	font-size: 42px;
-	line-height: 1.16;
-	letter-spacing: -0.8px;
 	color: #fff;
 }
 
-.inter-stand__texto {
-	max-width: 430px;
-	margin: 24px 0 0;
-	font-size: 15px;
-	line-height: 1.7;
-	color: rgba(255, 255, 255, 0.92);
+.inter-area > .inter-area__col:first-child {
+	flex: 0 0 56% !important;
 }
 
-.inter-stand .btn {
-	margin-top: 26px;
+.inter-area > .inter-area__col:last-child {
+	flex: 1 1 0 !important;
 }
 
-.inter-stand__passos-titulo {
-	margin: 0;
+.inter-area .inter-area__titulo .elementor-heading-title {
 	font-family: var(--apit-font);
 	font-weight: 400;
-	font-size: 26px;
+	font-size: 48px;
 	line-height: 1.2;
 	color: #fff;
 }
 
-.inter-stand__passos {
-	margin: 22px 0 0;
-	padding: 0;
-	list-style: none;
-	counter-reset: passo;
-}
-
-.inter-stand__passo {
-	counter-increment: passo;
-	font-size: 13px;
-	line-height: 1.9;
-	letter-spacing: 0.6px;
-	text-transform: uppercase;
+.inter-area .inter-area__texto {
+	max-width: 560px !important;
+	margin-top: 24px !important;
+	font-size: 16px;
+	line-height: 1.8;
 	color: rgba(255, 255, 255, 0.92);
 }
 
-.inter-stand__passo::before {
-	content: counter(passo) ". ";
+.inter-area__texto p {
+	margin: 0;
+}
+
+.inter-area .elementor-widget-button {
+	margin-top: 40px !important;
+}
+
+.inter-area .inter-area__subtitulo .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 36px;
+	line-height: 1.2;
+	color: #fff;
+}
+
+.inter-area .inter-area__lista {
+	margin-top: 32px !important;
+}
+
+/*
+ * Prefixed with the column: the kit colours the icons and the text of every
+ * icon list, three classes deep and printed after this file.
+ */
+.inter-area .inter-area__lista .elementor-icon-list-item {
+	padding: 0 0 14px !important;
+	align-items: center;
+}
+
+.inter-area .inter-area__lista .elementor-icon-list-icon {
+	margin-right: 14px;
+}
+
+.inter-area .inter-area__lista .elementor-icon-list-icon i {
+	width: 16px;
+	font-size: 16px;
+	color: #fff;
+}
+
+.inter-area .inter-area__lista .elementor-icon-list-icon svg {
+	width: 16px;
+	height: 16px;
+	fill: #fff;
+}
+
+.inter-area .inter-area__lista .elementor-icon-list-item > .elementor-icon-list-text {
+	font-family: var(--apit-font);
+	font-size: 13px;
+	line-height: 1.4;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.92);
 }
 
 /* ---------- Blocos partilhados ---------- */
@@ -1736,15 +1854,18 @@
 		font-size: 118px;
 	}
 
-	.inter-marca,
-	.inter-stand {
-		gap: 48px;
+	/* Two rows of two: four across leaves each card under 250px. */
+	.inter-apoios__lista {
+		flex-wrap: wrap !important;
 	}
 
-	.inter-apoios__lista {
-		grid-auto-flow: row;
-		grid-auto-columns: auto;
-		grid-template-columns: repeat(2, 1fr);
+	.inter-apoios__lista > .inter-apoio {
+		flex: 0 0 50% !important;
+	}
+
+	.inter-marca .inter-marca__titulo .elementor-heading-title,
+	.inter-area .inter-area__titulo .elementor-heading-title {
+		font-size: 40px;
 	}
 
 	.calendario--grelha .calendario__track {
@@ -1811,14 +1932,30 @@
 		max-width: 100%;
 	}
 
-	.inter-marca {
-		grid-template-columns: 1fr;
-		gap: 36px;
+	/* The two-column blocks stack, logo and title first. */
+	.inter-marca,
+	.inter-area {
+		flex-direction: column !important;
+		align-items: flex-start !important;
+		gap: 44px !important;
 	}
 
-	.inter-stand {
-		grid-template-columns: 1fr;
-		gap: 44px;
+	.inter-marca > .inter-marca__logo,
+	.inter-area > .inter-area__col:first-child {
+		flex: 0 0 auto !important;
+		align-items: flex-start !important;
+	}
+
+	.inter-marca__imagem img {
+		max-width: 420px;
+	}
+
+	.inter-marca .inter-marca__paragrafo {
+		padding-left: 0;
+	}
+
+	.apit-banda-area {
+		padding-block: 90px !important;
 	}
 }
 
@@ -1898,12 +2035,26 @@
 	}
 
 	.apit-banda-aderir .banda-aderir__titulo .elementor-heading-title,
-	.inter-stand__titulo {
+	.inter-marca .inter-marca__titulo .elementor-heading-title,
+	.inter-area .inter-area__titulo .elementor-heading-title {
 		font-size: 30px;
 	}
 
-	.inter-apoios__lista {
-		grid-template-columns: 1fr;
+	.inter-area .inter-area__subtitulo .elementor-heading-title {
+		font-size: 26px;
+	}
+
+	.inter-apoio .inter-apoio__titulo .elementor-heading-title {
+		font-size: 24px;
+	}
+
+	.inter-apoios__lista > .inter-apoio {
+		flex: 0 0 100% !important;
+		min-height: 0;
+	}
+
+	.apit-banda-area {
+		padding-block: 70px !important;
 	}
 
 	.calendario--grelha .calendario__track {

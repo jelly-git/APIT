@@ -247,6 +247,65 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.32.0] - 2026-09-23
+
+### Alterado
+- **Internacionalização conforme o design, e em widgets do Elementor.** As três
+  secções abaixo do hero deixam de ser shortcodes com campos ACF e passam a ser
+  widgets nativos — Imagem, Título, Editor de texto, Botão e Lista de ícones —
+  editados no painel do Elementor; o tema só dá a tipografia e a geometria.
+  - **Watch Portugal**: o logótipo volta a aparecer (o campo estava vazio), agora
+    o ficheiro do cliente de 738px, `whach-portugal-logo-preto-738px.png`
+    (media ID 449), a 734px como no design — nítido, onde o de 261px do tema
+    ficava esbatido ao ser ampliado. A
+    secção sobe para dentro do esbatimento do hero pela `apit-sobrepoe`, com o
+    logótipo a começar nos 690px. Título a 48px e parágrafo recuado 76px.
+  - **Como apoiamos os associados**: os quatro cartões ficam dentro da coluna de
+    1300px, em vez de irem de ponta a ponta do ecrã; título a 30px com a quebra
+    do design; e o degradé de cada cartão, da cor para cinza, é o fundo em
+    degradé do próprio contentor no Elementor — mudar a cor não precisa de código.
+  - **Área Reservada** em vez de "Reserve a sua mesa no stand": título, texto e
+    botão à esquerda, "Serviços disponíveis" com a lista de vistos à direita,
+    sobre a arte do cliente, `fundo-bloco-area-reservada.png` (media ID 447),
+    posta como imagem de fundo do contentor no Elementor — troca-se no painel.
+    O CSS (`.apit-banda-area`) só dá o magenta que aparece enquanto carrega.
+  - **Hero**: o WORLD fica à altura do título (topo nos 262px) e já não por baixo
+    dos botões; e o esbatimento desta página começa nos 540px, para os botões
+    brancos não se apagarem no claro.
+  - **Próximos mercados**: a secção passa a ter o id `mercados`, o destino que o
+    botão "Ver próximos mercados" do hero já apontava e não existia; e o bloco
+    do calendário deixa de pintar uma caixa branca dentro da faixa clara.
+  - **Cabeçalho do calendário**: as setas ficam centradas com o título e com o
+    botão (`.calendario__nav` com `align-items: center` — com o botão de 57px
+    ao lado, as setas de 40px encostavam-se ao topo); e o "Calendário completo"
+    passa a `btn--escuro`, porque o contorno branco num fundo claro só se via
+    no hover. É a única página que mostra esse botão.
+  - Entre 1025px e 1920px o WORLD escala com o ecrã (`min(280px, 14.6vw)`) em
+    vez de passar por cima do título, e o logótipo Watch Portugal ocupa a
+    coluna — encolhia para os 261px do ficheiro. A posição do WORLD e o
+    esbatimento mais baixo passam a valer desde os 1025px: só começavam nos
+    1201px, e entre os dois o WORLD voltava para baixo e os botões do hero
+    apagavam-se no claro.
+
+- **Hover de todos os botões**, com um sistema só. Até aqui só o contorno escuro
+  e o botão da newsletter tinham hover: os botões do Elementor não tinham
+  nenhum, e os que os templates imprimem como `<a class="btn">` apanhavam o
+  reset do Hello, `a:hover { color: #336 }`, que punha o texto azul-marinho
+  sobre as bandas de cor.
+  - **Sólidos** (azul, magenta, turquesa) enchem de preto `--apit-black`, como
+    já fazia o botão da newsletter.
+  - **Contorno branco**, sobre cor, enche de branco com o texto escuro — também
+    o "Área Reservada" do cabeçalho.
+  - **Contorno escuro** enche de preto (já existia).
+  - Transição de 0,2s, e o mesmo estado no foco por teclado (`:focus-visible`).
+  - O reset do Hello pinta ainda todo o `button:hover` e `button:focus` de
+    `#c36`: o hambúrguer e o fechar do menu móvel ficavam com fundo rosa no
+    hover, e as setas do calendário ficavam rosa depois de clicadas. Os três
+    repostos, como a lupa do cabeçalho já estava.
+  - O "voltar às notícias" da notícia individual passa a `btn--escuro`: era
+    contorno branco em fundo claro, invisível fora do hover — o mesmo caso do
+    "Calendário completo".
+
 ## [0.31.1] - 2026-09-23
 
 ### Alterado

@@ -80,7 +80,8 @@ $mostrar_setas = 'carrossel' === $layout;
 				<?php endif; ?>
 
 				<?php if ( $acao_pag ) : ?>
-					<a class="btn btn--outline calendario__acao" href="<?php echo esc_url( $acao_pag ); ?>">
+					<?php // Dark outline: the calendar sits on a light section, where the white one only showed on hover. ?>
+					<a class="btn btn--outline btn--escuro calendario__acao" href="<?php echo esc_url( $acao_pag ); ?>">
 						<?php esc_html_e( 'Calendário completo', 'apit' ); ?>
 						<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
 					</a>

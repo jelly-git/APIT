@@ -118,7 +118,7 @@ while ( have_posts() ) :
 					<?php endif; ?>
 
 					<?php if ( $voltar ) : ?>
-						<a class="btn btn--outline noticia-single__voltar" href="<?php echo esc_url( $url_noticias ); ?>">
+						<a class="btn btn--outline btn--escuro noticia-single__voltar" href="<?php echo esc_url( $url_noticias ); ?>">
 							<?php echo esc_html( $voltar ); ?>
 						</a>
 					<?php endif; ?>
