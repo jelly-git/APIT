@@ -355,9 +355,23 @@
  * its own wash there too. The section's background only shows while the video
  * loads, or when neither a video nor an image is set.
  *
- * Values from the Figma panel: transparent to 28.49%, the page's own light tone
- * by 66%. The hero therefore fades into whatever follows it instead of ending
- * on a hard edge.
+ * The stops are in pixels, not percentages, and that is the whole point.
+ *
+ * In Figma the fade is a rectangle of its own: 1920x649, Top 108, transparent
+ * to #F4F9FF. Measured off the file the client sent, it starts to take at 292px
+ * from the top of the page and is solid at 537px — fixed distances, whatever
+ * the hero below it happens to be.
+ *
+ * Written as percentages they resolved against the hero's own box instead, so
+ * the fade moved every time a hero changed height. On the 610px Calendário hero
+ * it was finishing at 403px against the design's 537: 134px too early, which is
+ * what made the artwork look washed out halfway up and the fade look like it
+ * was not there at all.
+ *
+ * The last stop extends, so anything below 537px stays solid however tall the
+ * hero is. Below the desktop breakpoint the values go back to percentages: 292
+ * and 537 are measurements of a 1920px-wide design and mean nothing on a phone
+ * whose hero is 289px tall.
  *
  * Held in a property so a page can turn it off, because not every design has
  * it: the Associados hero runs at full strength from top to bottom, and there
@@ -366,9 +380,9 @@
  */
 .apit-pagina-hero {
 	--apit-hero-scrim: linear-gradient(
-		178.03deg,
-		rgba(244, 249, 255, 0) 28.49%,
-		#f4f9ff 66%
+		to bottom,
+		rgba(244, 249, 255, 0) 292px,
+		#f4f9ff 537px
 	);
 }
 
@@ -1467,6 +1481,16 @@
 	.apit-pagina-hero {
 		padding-top: 160px !important;
 		padding-bottom: 80px !important;
+		/*
+		 * Back to percentages: the 292px and 537px above are read off a 1920px
+		 * design and would put the whole fade below a hero that is 356px tall
+		 * here and 289px on a phone — which is to say, no fade at all.
+		 */
+		--apit-hero-scrim: linear-gradient(
+			to bottom,
+			rgba(244, 249, 255, 0) 28.4%,
+			#f4f9ff 66%
+		);
 	}
 
 
