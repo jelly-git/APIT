@@ -409,12 +409,35 @@
 }
 
 /*
- * And the media layer stops painting one of its own: the Home's colourful wash
- * has no business on these pages, and a second copy of the fade would double
- * it.
+ * Except over a video, where no z-index will do it.
+ *
+ * Chromium hands a playing <video> its own compositing layer, and that layer is
+ * painted above the section's ::after whatever the two are told: the media sits
+ * at z-index -1 and the fade at 1, and the video still covered it. Proved by
+ * removing the <video> from the page with the media layer left in place — the
+ * fade appeared at once — and by setting the media to z-index 0, which changed
+ * nothing.
+ *
+ * So over a video the fade rides on the media layer's own ::after, which is a
+ * sibling of the video inside the same compositing subtree and therefore does
+ * paint above it. That is where the fade lived before, which is why nobody had
+ * seen this.
+ *
+ * :has() is what keeps the two from doubling: the section paints the fade only
+ * on a page with no media layer at all — the Notícias hero has none, and that
+ * is why the fade moved to the section in the first place.
+ */
+.apit-pagina-hero:has(.apit-hero__media)::after {
+	background-image: none;
+}
+
+/*
+ * The Home's colourful wash has no business on these pages, so the layer is
+ * reused for the fade at full strength rather than left painting that.
  */
 .apit-pagina-hero .apit-hero__media::after {
-	display: none;
+	opacity: 1;
+	background-image: var(--apit-hero-scrim);
 }
 
 /*
