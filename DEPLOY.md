@@ -107,6 +107,32 @@ que copia o tema para `~/public_html/apit/wp-content/themes/`.
 
 No Local, botão direito no site *apit* > **Open site shell**.
 
+### 3.0 As ligações internas têm de ser absolutas
+
+O servidor serve o site de uma subpasta — `dev.jellycode.agency/apit` — e é isso
+que torna as ligações relativas à raiz uma armadilha. `/contactos/` funciona
+perfeitamente no local, que está na raiz, e no servidor resolve para
+`dev.jellycode.agency/contactos/`: 404, ou pior, outro projecto da mesma conta.
+A migalha `href="/"` das sete páginas apontava exactamente para aí.
+
+Guardar sempre o endereço completo (`http://apit.local/...`), que o
+`search-replace` da exportação depois converte. Para confirmar antes de exportar,
+o teste é o HTML servido e não a base de dados:
+
+```bash
+for p in "" associados/ calendario/ documentos/ noticias/ internacionalizacao/ \
+         sobre-apit/ contactos/ estatutos/ associados/todos-os-associados/; do
+  n=$(curl -s "http://apit.local/$p" | grep -oE 'href="/[^"]*"' | grep -v '^href="//' | sort -u | wc -l)
+  printf "  %-34s %s\n" "${p:-home}" "$n"
+done
+```
+
+Todas as linhas têm de dar `0`. A 23 de setembro eram 51 ligações em três
+formatos diferentes, e cada formato precisou da sua passagem: `link.url` nos
+botões do Elementor, atributos dentro dos shortcodes (`url=`, mas também `acao=`
+no calendário) e `href=` no HTML dos editores de texto — este último é o que
+guarda as migalhas, e foi o que sobrou depois das duas primeiras passagens.
+
 ### 3.1 Limpar o que não deve viajar
 
 Correr **antes** de exportar, ainda na pasta do site:
