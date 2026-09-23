@@ -247,6 +247,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.32.1] - 2026-09-23
+
+### Corrigido
+- **Links internos no servidor.** O site está em `dev.jellycode.agency/apit/`, e os
+  links guardados como caminho — `/associados/todos-os-associados/`,
+  `/contactos/`, `/calendario/`, o `/` das migalhas — levavam à raiz do
+  domínio, fora do WordPress: o 404 do próprio Apache. Eram 27, no Elementor
+  (19), nos campos de link ACF (6) e no menu (2), em quase todas as páginas.
+  - Corrigido à saída, em `inc/links.php`, e não nos dados: quando o WordPress
+    está numa subpasta, os `href` e `src` começados por um só `/` recebem o
+    caminho do site. Os dados continuam relativos — e portáveis, que é a razão
+    de o serem —, e um link acrescentado amanhã no painel do Elementor fica
+    coberto sem ninguém saber disto.
+  - Não toca nos que já trazem `/apit/` (os que o tema constrói com
+    `home_url()`), nos absolutos, nos `//cdn`, nas âncoras nem em atributos
+    `data-`. Na raiz de um domínio — o site local — não faz nada.
+  - Fora do wp-admin, do editor do Elementor, de feeds, REST e AJAX.
+
 ## [0.32.0] - 2026-09-23
 
 ### Alterado
