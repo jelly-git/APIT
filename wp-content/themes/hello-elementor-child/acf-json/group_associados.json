@@ -270,7 +270,7 @@
             "name": "assoc_banda_url",
             "aria-label": "",
             "type": "text",
-            "instructions": "Caminho relativo, como \/associados\/, ou um endereço completo. Deixe # enquanto a página não existir; vazio esconde o botão.",
+            "instructions": "Caminho relativo, como \/associados\/todos-os-associados\/, ou um endereço completo. Vazio esconde o botão.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {

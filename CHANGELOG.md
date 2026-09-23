@@ -11,6 +11,30 @@ A versão aqui registada corresponde ao campo `Version` de
 ## [Não lançado]
 
 ### Adicionado
+- **A notícia individual** (`single.php`), desenhada a partir do que o tema já
+  tem: o hero das outras páginas com o degradé das Notícias e a imagem de
+  destaque do artigo por trás, wordmark `NOTÍ CIAS`, migalha até à categoria,
+  título, etiqueta da categoria na cor dela e data; o corpo; as ligações à
+  notícia anterior e à seguinte com o botão de voltar ao meio; uma fila de
+  outras notícias; e o bloco que a fecha.
+  - **O que é do Elementor ficou no Elementor.** O grátis não tem Theme
+    Builder, pelo que o que rodeia o artigo tem de ser um template do tema — e
+    por isso o tema só desenha o que é mesmo de cada notícia. O corpo é
+    `the_content()`: uma notícia aberta com "Editar com Elementor" é feita dos
+    widgets que o editor quiser. E o que fecha o artigo é um **Saved Template**,
+    "Rodapé das notícias" (banda da Internacionalização + bloco duplo +
+    newsletter), lido ao vivo pelo `[apit_template]`: editá-lo uma vez muda
+    todas as notícias.
+  - A fila de outras notícias usa o **cartão do arquivo**, sem uma linha de
+    markup nova: as da mesma categoria primeiro e as mais recentes a completar,
+    porque uma fila de dois ao lado de um vazio lê-se como coisa que falhou.
+  - Seis campos novos no separador *Notícia individual* da página das Notícias:
+    texto do botão de voltar, mostrar a anterior/seguinte, mostrar as outras
+    notícias, quantas, a etiqueta dessa fila, e **qual o template que fecha a
+    notícia** — um seletor dos modelos guardados, para o cliente trocar o bloco
+    sem tocar em código.
+  - A capa leva um véu escuro por baixo do degradé do hero: uma fotografia é um
+    fundo mais atarefado do que um degradé, e o título é branco.
 - **Página principal das Notícias** (`/noticias/`), no molde das outras quatro:
   hero partilhado com o degradé próprio `hero--noticias` (azul → roxo →
   magenta, ao contrário do Calendário, para duas páginas vizinhas no menu não
@@ -222,6 +246,64 @@ A versão aqui registada corresponde ao campo `Version` de
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.31.0] - 2026-09-23
+
+### Adicionado
+- **Página Todos os Associados** (`/associados/todos-os-associados/`, filha de
+  Associados, ID 352): hero, grelha de logótipos, as FAQ e a newsletter.
+- Grelha de logótipos — `[apit_assoc_lista]`. Cinco por linha em desktop, em
+  células de 230x150, que é o tamanho a que os ficheiros vieram; quatro em
+  tablet, três num telemóvel largo, dois abaixo dos 480px. Os 50 logótipos
+  enviados estão na biblioteca com o nome da produtora como título e texto
+  alternativo, pela ordem do design.
+  - Metade dos ficheiros vem sobre branco e a outra metade transparente. Com
+    `mix-blend-mode: multiply` o branco toma o tom da página, pelo que nenhum
+    aparece como uma caixa sobre o #F4F9FF, e os que são cor de ponta a ponta,
+    como o vermelho da No Murphy, ficam como estão.
+  - Um associado sem logótipo não é desenhado: um buraco numa grelha de cinco
+    lê-se como um erro.
+- Grupo de campos **Todos os Associados — conteúdos**: a etiqueta, o texto de
+  introdução, e um repetidor com logótipo, nome e site por associado. O nome é
+  o texto alternativo da imagem; o site, opcional, faz do logótipo um link que
+  abre num novo separador, validado como os outros campos de link.
+- Hero `hero--todos-associados`: a mesma arte da Associados, mas recortada por
+  baixo — o que tira o magenta do topo e deixa o turquesa, o roxo e o verde do
+  design — e esbatida no tom da página, com o texto e o botão escuros. O
+  esbatimento é desta página, e não o 292/537 partilhado: aqui o hero acaba no
+  botão, sem a folga que as outras páginas lhe deixam por baixo.
+- As FAQ são o mesmo módulo da Associados, clonado no Elementor com as mesmas
+  perguntas e respostas.
+
+### Alterado
+- O botão "Ver todos os associados" da banda aponta para a nova página, na
+  Associados e na Sobre a APIT. A Sobre deixa o `url` próprio: com o directório
+  a existir, as duas colocações vão para o mesmo sítio, e o destino fica num só
+  campo.
+- `.btn--escuro` passa do `sobre.css` para o `style.css`, porque há agora um
+  segundo hero claro que precisa dele.
+
+### Corrigido
+- No telemóvel, a camada de fundo do hero desta página ficava com 0px de
+  altura: a regra da Home que a mede pela banda de cor (`--apit-hero-banda`)
+  apanha todos os `.apit-hero__media`, e estas páginas não têm essa banda. Sem a
+  camada ia-se a imagem e o esbatimento. Corrigido só aqui — as outras páginas
+  da folha comum foram afinadas com a camada a 0px (o título branco do
+  Calendário depende de não haver esbatimento no telemóvel), e repô-la lá é uma
+  alteração própria.
+
+## [0.30.1] - 2026-09-23
+
+### Corrigido
+- O contorno dos botões `btn--outline` passa a `currentColor`, pelo que nunca é
+  de cor diferente do rótulo que rodeia, em qualquer estado.
+- E o rótulo deixa de mudar de cor sozinho. O `reset.css` do tema pai pinta
+  todos os links de `#336` no hover, e um pseudo-selector mais um elemento
+  pesam mais do que uma classe: qualquer `.btn` que seja um `<a>` perdia a sua
+  cor assim que o ponteiro lhe tocava. Na banda dos Associados o rótulo ficava
+  azul-escuro e o contorno branco, que foi como isto se viu. São nove botões,
+  em seis páginas; os que são widgets do Elementor nunca foram afectados,
+  porque aí a cor está em `.btn .elementor-button`.
 
 ## [0.30.0] - 2026-09-23
 

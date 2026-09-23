@@ -402,3 +402,275 @@
 		transition: none;
 	}
 }
+
+/* ---------- A notícia, por dentro ---------- */
+
+/*
+ * The article view. It shares the hero, the card and the section furniture with
+ * the list, which is why it lives in this file and not in one of its own.
+ */
+
+/*
+ * The hero has no section riding up into it here, so it does not need the deep
+ * bottom padding that leaves room for one — that space is what the overlap
+ * fills on the list. The top stays where the design puts it on every page.
+ */
+.noticia-single__hero {
+	padding-bottom: 150px !important;
+}
+
+/*
+ * The article's own picture sits behind the hero, and a photograph is a busier
+ * backdrop than a gradient: the veil keeps the white type legible over whatever
+ * was uploaded, and the hero's own fade still runs over the top of it.
+ */
+.noticia-single__hero .apit-hero__media::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: linear-gradient(
+		to bottom,
+		rgba(27, 42, 51, 0.55) 0%,
+		rgba(27, 42, 51, 0.25) 45%,
+		rgba(27, 42, 51, 0.15) 100%
+	);
+}
+
+/* A headline is longer than a page title, so it may run to three lines. */
+.noticia-single .noticia-single__titulo {
+	max-width: 900px;
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 46px;
+	line-height: 1.2;
+	color: #fff;
+}
+
+.noticia-single__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 16px;
+	margin: 22px 0 0;
+	font-family: var(--apit-font);
+	font-size: 14px;
+	letter-spacing: 0.28px;
+	color: rgba(255, 255, 255, 0.85);
+}
+
+/*
+ * The category as a pill in its own colour, which is the one place on the
+ * article where that colour appears at size — the same tint the card, the
+ * filter and the "ler notícia" button carry.
+ */
+.noticia-single__categoria {
+	padding: 6px 14px 4px;
+	border-radius: 200px;
+	background: var(--apit-cat, var(--apit-magenta));
+	font-weight: 500;
+	text-transform: uppercase;
+	color: #fff;
+}
+
+.noticia-single__corpo {
+	padding-block: 80px 60px;
+}
+
+/*
+ * The body is whatever the editor built — the block editor's own markup, or an
+ * Elementor layout. Only the reading measure and the rhythm are set here; the
+ * widgets keep their own styling, which is the point of building the article in
+ * Elementor.
+ *
+ * 760px is the line length this type reads at: around 80 characters at 18px.
+ */
+.noticia-single__artigo {
+	max-width: 800px;
+	font-family: var(--apit-font);
+	font-size: 18px;
+	line-height: 1.7;
+	color: var(--apit-black);
+}
+
+.noticia-single__artigo > * {
+	max-width: 760px;
+	margin-inline: auto;
+}
+
+.noticia-single__artigo p {
+	margin: 0 0 24px;
+}
+
+.noticia-single__artigo h2,
+.noticia-single__artigo h3,
+.noticia-single__artigo h4 {
+	margin: 44px 0 16px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	line-height: 1.25;
+	color: var(--apit-black);
+}
+
+.noticia-single__artigo h2 {
+	font-size: 30px;
+}
+
+.noticia-single__artigo h3 {
+	font-size: 24px;
+}
+
+.noticia-single__artigo h4 {
+	font-size: 20px;
+}
+
+.noticia-single__artigo a {
+	color: var(--apit-cat, var(--apit-magenta));
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.noticia-single__artigo ul,
+.noticia-single__artigo ol {
+	margin: 0 0 24px;
+	padding-left: 22px;
+	list-style: revert;
+}
+
+.noticia-single__artigo li {
+	margin-bottom: 10px;
+}
+
+/*
+ * A quotation in the category's colour, which is the only ornament the article
+ * has — the design gives the news no pull-quote of its own.
+ */
+.noticia-single__artigo blockquote {
+	margin: 36px auto;
+	padding: 4px 0 4px 26px;
+	border-left: 3px solid var(--apit-cat, var(--apit-magenta));
+	font-size: 22px;
+	line-height: 1.5;
+	color: var(--apit-black);
+}
+
+.noticia-single__artigo blockquote p:last-child {
+	margin-bottom: 0;
+}
+
+/* Figures and images break out of the reading measure to the article's width. */
+.noticia-single__artigo img,
+.noticia-single__artigo figure,
+.noticia-single__artigo iframe {
+	max-width: 100%;
+	height: auto;
+}
+
+.noticia-single__artigo figure {
+	margin: 36px auto;
+}
+
+.noticia-single__artigo figcaption {
+	margin-top: 10px;
+	font-size: 14px;
+	color: rgba(27, 42, 51, 0.6);
+}
+
+.noticia-single__tags {
+	margin-top: 36px;
+	font-size: 14px;
+	color: rgba(27, 42, 51, 0.6);
+}
+
+/* ---------- Anterior, voltar, seguinte ---------- */
+
+.noticia-single__nav {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 24px;
+	max-width: 1340px;
+	margin-top: 56px;
+	padding-top: 32px;
+	border-top: 1px solid rgba(27, 42, 51, 0.12);
+}
+
+.noticia-single__salto {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	max-width: 300px;
+	font-family: var(--apit-font);
+	color: var(--apit-black);
+	transition: color 0.18s ease;
+}
+
+.noticia-single__salto:hover {
+	color: var(--apit-cat, var(--apit-magenta));
+}
+
+/* The "seguinte" side reads from the right, so the pair frames the button. */
+.noticia-single__salto--seguinte {
+	margin-left: auto;
+	text-align: right;
+}
+
+.noticia-single__salto-rotulo {
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0.36px;
+	text-transform: uppercase;
+	color: var(--apit-cat, var(--apit-magenta));
+}
+
+.noticia-single__salto-titulo {
+	font-size: 16px;
+	line-height: 1.4;
+}
+
+.noticia-single__relacionadas {
+	padding-block: 20px 90px;
+}
+
+@media (max-width: 1024px) {
+	.noticia-single .noticia-single__titulo {
+		font-size: 38px;
+	}
+
+	.noticia-single__corpo {
+		padding-block: 60px 50px;
+	}
+}
+
+@media (max-width: 640px) {
+	.noticia-single .noticia-single__titulo {
+		font-size: 30px;
+	}
+
+	.noticia-single__artigo {
+		font-size: 17px;
+	}
+
+	.noticia-single__artigo h2 {
+		font-size: 25px;
+	}
+
+	/*
+	 * Stacked, and the button last: on a phone the two jumps read as a list and
+	 * the way back belongs at the end of it.
+	 */
+	.noticia-single__nav {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.noticia-single__salto--seguinte {
+		margin-left: 0;
+		text-align: left;
+	}
+
+	.noticia-single__voltar {
+		order: 1;
+	}
+}

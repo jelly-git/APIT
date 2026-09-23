@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.30.0
+Version: 0.31.0
 */
 
 :root {
@@ -676,9 +676,34 @@ body.apit-menu-aberto {
 	border-color: var(--apit-azul);
 }
 
+/*
+ * currentColor, so the edge is never a different colour from the label it
+ * surrounds — in any state, and whatever a page sets the label to.
+ */
 .btn--outline {
 	background: transparent;
-	border-color: var(--apit-branco);
+	border-color: currentColor;
+}
+
+/*
+ * The parent theme's reset paints every link #336 on hover:
+ *
+ *   a:active, a:hover { color: #336 }
+ *
+ * A pseudo-class plus an element outweighs a single class, so every .btn that
+ * is an <a> lost its own colour the moment the pointer touched it. On the
+ * Associados band the label turned navy while the border stayed white, which is
+ * how this came to light. The buttons that are Elementor widgets were never
+ * affected: there the colour sits on `.btn .elementor-button`.
+ *
+ * Not a hover style of our own — it only says the label keeps the colour its
+ * class gives it. `:not(.btn--escuro)` leaves alone the one button that does
+ * define a hover, which fills and inverts a few rules below.
+ */
+a.btn:not(.btn--escuro):hover,
+a.btn:not(.btn--escuro):active,
+a.btn:not(.btn--escuro):focus {
+	color: var(--apit-branco);
 }
 
 /*
@@ -741,6 +766,29 @@ body.apit-menu-aberto {
 	mask-size: contain;
 	mask-repeat: no-repeat;
 	mask-position: center;
+}
+
+/*
+ * Dark outline buttons. The shared .btn--outline is white-on-colour for the
+ * home page hero; on a light hero it would be invisible.
+ *
+ * Here and not in sobre.css, where it started: Todos os Associados has a light
+ * hero too, and a page-specific sheet is the one place the other page cannot
+ * read it from.
+ */
+.btn--escuro,
+.btn.btn--escuro .elementor-button {
+	border-color: rgba(27, 42, 51, 0.45);
+	color: var(--apit-black);
+	fill: var(--apit-black);
+}
+
+.btn--escuro:hover,
+.btn.btn--escuro .elementor-button:hover {
+	border-color: var(--apit-black);
+	background-color: var(--apit-black);
+	color: var(--apit-branco);
+	fill: var(--apit-branco);
 }
 
 /* The wrapper itself must not paint a second pill behind the button. */

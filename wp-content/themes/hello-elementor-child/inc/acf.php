@@ -107,6 +107,7 @@ function apit_campos_de_link() {
 		'field_evento_acao_url',
 		'field_sobre_doc_url',
 		'field_sobre_inter_url',
+		'field_assoc_lista_url',
 	];
 }
 

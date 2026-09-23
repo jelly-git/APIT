@@ -199,25 +199,6 @@
 	mask-size: contain;
 }
 
-/*
- * Dark outline buttons. The shared .btn--outline is white-on-colour for the
- * home page hero; on this light hero it would be invisible.
- */
-.btn--escuro,
-.btn.btn--escuro .elementor-button {
-	border-color: rgba(27, 42, 51, 0.45);
-	color: var(--apit-black);
-	fill: var(--apit-black);
-}
-
-.btn--escuro:hover,
-.btn.btn--escuro .elementor-button:hover {
-	border-color: var(--apit-black);
-	background-color: var(--apit-black);
-	color: var(--apit-branco);
-	fill: var(--apit-branco);
-}
-
 /* -------------------------------------------------------------------------
  * "About Us" wordmark
  * ---------------------------------------------------------------------- */

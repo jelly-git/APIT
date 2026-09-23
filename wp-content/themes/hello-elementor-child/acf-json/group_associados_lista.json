@@ -1,0 +1,164 @@
+{
+    "key": "group_associados_lista",
+    "title": "Todos os Associados — conteúdos",
+    "fields": [
+        {
+            "key": "field_assoc_lista_label",
+            "label": "Etiqueta da secção",
+            "name": "assoc_lista_label",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "A linha em maiúsculas acima da grelha de logótipos.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Quem já faz parte",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_assoc_lista_texto",
+            "label": "Texto de introdução",
+            "name": "assoc_lista_texto",
+            "aria-label": "",
+            "type": "textarea",
+            "instructions": "O parágrafo curto entre a etiqueta e a grelha. Vazio, a grelha sobe para junto da etiqueta.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "rows": 3,
+            "new_lines": "",
+            "default_value": "",
+            "maxlength": "",
+            "placeholder": "",
+            "allow_in_bindings": 0
+        },
+        {
+            "key": "field_assoc_lista",
+            "label": "Associados",
+            "name": "assoc_lista",
+            "aria-label": "",
+            "type": "repeater",
+            "instructions": "Um associado por linha, pela ordem em que aparecem na grelha — cinco por linha em desktop. Arraste as linhas para reordenar. Um associado sem logótipo não é mostrado.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "layout": "table",
+            "pagination": 0,
+            "min": 0,
+            "max": 0,
+            "collapsed": "field_assoc_lista_nome",
+            "button_label": "Adicionar associado",
+            "rows_per_page": 20,
+            "sub_fields": [
+                {
+                    "key": "field_assoc_lista_logo",
+                    "label": "Logótipo",
+                    "name": "logo",
+                    "aria-label": "",
+                    "type": "image",
+                    "instructions": "PNG de 230x150px (460x300px para ecrãs de alta densidade), com o logótipo centrado. Fundo branco ou transparente — o branco funde-se com o tom da página.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "30",
+                        "class": "",
+                        "id": ""
+                    },
+                    "return_format": "id",
+                    "library": "all",
+                    "min_width": "",
+                    "min_height": "",
+                    "min_size": "",
+                    "max_width": "",
+                    "max_height": "",
+                    "max_size": "",
+                    "mime_types": "png,jpg,jpeg,webp,svg",
+                    "allow_in_bindings": 0,
+                    "preview_size": "thumbnail",
+                    "parent_repeater": "field_assoc_lista"
+                },
+                {
+                    "key": "field_assoc_lista_nome",
+                    "label": "Nome",
+                    "name": "nome",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "O nome da produtora. É o que um leitor de ecrã anuncia no lugar do logótipo.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "35",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_assoc_lista"
+                },
+                {
+                    "key": "field_assoc_lista_url",
+                    "label": "Site",
+                    "name": "url",
+                    "aria-label": "",
+                    "type": "text",
+                    "instructions": "Opcional. Com endereço, o logótipo passa a link e abre num novo separador.",
+                    "required": 0,
+                    "conditional_logic": 0,
+                    "wrapper": {
+                        "width": "35",
+                        "class": "",
+                        "id": ""
+                    },
+                    "default_value": "",
+                    "maxlength": "",
+                    "allow_in_bindings": 0,
+                    "placeholder": "https://",
+                    "prepend": "",
+                    "append": "",
+                    "parent_repeater": "field_assoc_lista"
+                }
+            ]
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "352"
+            }
+        ]
+    ],
+    "menu_order": 0,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "A grelha de logótipos desta página. O hero e as FAQ são widgets do Elementor, editados na própria página.",
+    "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1790170000
+}

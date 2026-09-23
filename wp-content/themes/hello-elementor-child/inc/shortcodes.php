@@ -250,6 +250,15 @@ function apit_shortcode_assoc_banda( $atts ) {
 }
 add_shortcode( 'apit_assoc_banda', 'apit_shortcode_assoc_banda' );
 
+/**
+ * Todos os Associados — the grid of member logos. The list is a repeater on
+ * that page, so the page is where members are added, removed and reordered.
+ */
+function apit_shortcode_assoc_lista() {
+	return apit_render_template_part( 'template-parts/associados/lista' );
+}
+add_shortcode( 'apit_assoc_lista', 'apit_shortcode_assoc_lista' );
+
 function apit_shortcode_inter_marca() {
 	return apit_render_template_part( 'template-parts/internacionalizacao/marca' );
 }

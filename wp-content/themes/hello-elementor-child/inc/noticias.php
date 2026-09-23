@@ -285,3 +285,56 @@ function apit_ajax_noticias() {
 }
 add_action( 'wp_ajax_apit_noticias', 'apit_ajax_noticias' );
 add_action( 'wp_ajax_nopriv_apit_noticias', 'apit_ajax_noticias' );
+
+/**
+ * The page the news live on, for a template that is not that page.
+ *
+ * The single article reads its settings from the Notícias page's own field
+ * group — one screen in the back office for everything about the news, instead
+ * of a second group somewhere else for the article view.
+ */
+function apit_noticias_pagina() {
+	$pagina = get_page_by_path( 'noticias' );
+
+	return $pagina ? $pagina->ID : 0;
+}
+
+/**
+ * The posts to show under an article.
+ *
+ * Its own category first, because that is what "more like this" means, and the
+ * most recent of anything to fill the row when the category has too few. A row
+ * of two beside a gap looks like something failed to load.
+ */
+function apit_noticias_relacionadas( $post_id, $numero ) {
+	$numero = max( 1, (int) $numero );
+	$base   = [
+		'post_type'           => 'post',
+		'post_status'         => 'publish',
+		'ignore_sticky_posts' => true,
+		'post__not_in'        => [ (int) $post_id ],
+	];
+
+	$termos = get_the_category( $post_id );
+
+	$posts = $termos
+		? get_posts( array_merge( $base, [
+			'posts_per_page' => $numero,
+			'cat'            => $termos[0]->term_id,
+		] ) )
+		: [];
+
+	if ( count( $posts ) >= $numero ) {
+		return $posts;
+	}
+
+	// Fill up, without repeating what came from the category.
+	$excluir = array_merge( $base['post__not_in'], wp_list_pluck( $posts, 'ID' ) );
+
+	$resto = get_posts( array_merge( $base, [
+		'posts_per_page' => $numero - count( $posts ),
+		'post__not_in'   => $excluir,
+	] ) );
+
+	return array_merge( $posts, $resto );
+}

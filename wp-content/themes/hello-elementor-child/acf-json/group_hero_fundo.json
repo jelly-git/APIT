@@ -150,6 +150,13 @@
                 "operator": "==",
                 "value": "9"
             }
+        ],
+        [
+            {
+                "param": "page",
+                "operator": "==",
+                "value": "352"
+            }
         ]
     ],
     "menu_order": 0,

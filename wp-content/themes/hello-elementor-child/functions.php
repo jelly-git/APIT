@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.30.0' );
+define( 'APIT_CHILD_VERSION', '0.31.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -59,12 +59,13 @@ function apit_child_enqueue_assets() {
 	}
 
 	/*
-	 * The pages built from the same set of parts share one stylesheet: their
-	 * hero is one layout with a gradient each, and the blocks that repeat
-	 * between them are the same markup. Splitting it per page would mean five
-	 * copies of everything but the gradient.
+	 * The pages built from the same set of parts share one stylesheet, and so
+	 * does the single article, which wears the same hero: one layout with a
+	 * gradient each, and the blocks that repeat between them are the same
+	 * markup. Splitting it per page would mean six copies of everything but the
+	 * gradient.
 	 */
-	if ( is_page( apit_paginas_com_folha_comum() ) ) {
+	if ( is_page( apit_paginas_com_folha_comum() ) || is_singular( 'post' ) ) {
 		wp_enqueue_style(
 			'apit-paginas-style',
 			get_stylesheet_directory_uri() . '/assets/css/paginas.css',
@@ -74,12 +75,16 @@ function apit_child_enqueue_assets() {
 	}
 
 	/*
-	 * Notícias takes the shared hero above and adds this: the filter, the grid
-	 * and the pagination, which exist nowhere else. It depends on the shared
-	 * sheet so the archive's own rules are printed after it — the card is the
-	 * Home's card with pieces added, and those additions have to win.
+	 * Notícias takes the shared hero above and adds this: the filter, the grid,
+	 * the pagination and the article view, which exist nowhere else. It depends
+	 * on the shared sheet so its own rules are printed after it — the card is
+	 * the Home's card with pieces added, and those additions have to win.
+	 *
+	 * The article carries it too: the row of other news under it is the same
+	 * card, and the body's typography lives in the same file as everything else
+	 * about the news.
 	 */
-	if ( is_page( 'noticias' ) ) {
+	if ( is_page( 'noticias' ) || is_singular( 'post' ) ) {
 		wp_enqueue_style(
 			'apit-noticias-style',
 			get_stylesheet_directory_uri() . '/assets/css/noticias.css',
@@ -103,12 +108,12 @@ function apit_child_enqueue_assets() {
 	}
 
 	/*
-	 * The Internacionalização band is shown on four pages, so its rules live in
-	 * their own file rather than in the stylesheet of any one of them — and
-	 * rather than in style.css, which every other page would then carry for
-	 * nothing.
+	 * The Internacionalização band is shown on four pages and under every
+	 * article, so its rules live in their own file rather than in the stylesheet
+	 * of any one of them — and rather than in style.css, which every other page
+	 * would then carry for nothing.
 	 */
-	if ( is_page( [ 'sobre-apit', 'calendario', 'documentos', 'noticias' ] ) ) {
+	if ( is_page( [ 'sobre-apit', 'calendario', 'documentos', 'noticias' ] ) || is_singular( 'post' ) ) {
 		wp_enqueue_style(
 			'apit-inter-style',
 			get_stylesheet_directory_uri() . '/assets/css/internacionalizacao.css',
@@ -159,6 +164,7 @@ add_action( 'wp_enqueue_scripts', 'apit_child_enqueue_assets' );
 function apit_paginas_com_folha_comum() {
 	return apply_filters( 'apit_paginas_com_folha_comum', [
 		'associados',
+		'todos-os-associados',
 		'internacionalizacao',
 		'calendario',
 		'documentos',

@@ -439,6 +439,154 @@
             "placeholder": "",
             "prepend": "",
             "append": ""
+        },
+        {
+            "key": "field_noticias_tab_single",
+            "label": "Notícia individual",
+            "name": "",
+            "aria-label": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0,
+            "selected": 0
+        },
+        {
+            "key": "field_single_voltar",
+            "label": "Texto do botão de voltar",
+            "name": "single_voltar",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "No fim do artigo, a caminho desta página. Em branco, o botão não aparece.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Voltar às notícias",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_single_nav",
+            "label": "Mostrar a notícia anterior e a seguinte",
+            "name": "single_nav",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "As duas ligações no fim do artigo.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "ui": 1,
+            "ui_on_text": "Sim",
+            "ui_off_text": "Não"
+        },
+        {
+            "key": "field_single_rel_mostrar",
+            "label": "Mostrar outras notícias",
+            "name": "single_relacionadas_mostrar",
+            "aria-label": "",
+            "type": "true_false",
+            "instructions": "A fila de cartões no fim do artigo, com as notícias da mesma categoria primeiro.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "message": "",
+            "default_value": 1,
+            "ui": 1,
+            "ui_on_text": "Sim",
+            "ui_off_text": "Não"
+        },
+        {
+            "key": "field_single_rel_numero",
+            "label": "Quantas",
+            "name": "single_relacionadas_numero",
+            "aria-label": "",
+            "type": "number",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": 3,
+            "min": 2,
+            "max": 4,
+            "step": 1,
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_single_rel_etiqueta",
+            "label": "Etiqueta dessa fila",
+            "name": "single_relacionadas_etiqueta",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "Outras notícias",
+            "maxlength": "",
+            "placeholder": "",
+            "prepend": "",
+            "append": ""
+        },
+        {
+            "key": "field_single_rodape",
+            "label": "Bloco que fecha a notícia",
+            "name": "single_rodape",
+            "aria-label": "",
+            "type": "post_object",
+            "instructions": "Um template guardado do Elementor, editável em Modelos › Modelos guardados. O que vem de origem é o \"Rodapé das notícias\": a banda da Internacionalização, o bloco duplo e a newsletter. Em branco, a notícia acaba nas outras notícias.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "post_type": [
+                "elementor_library"
+            ],
+            "post_status": [
+                "publish"
+            ],
+            "taxonomy": [],
+            "return_format": "id",
+            "multiple": 0,
+            "allow_null": 1,
+            "bidirectional": 0,
+            "ui": 1,
+            "bidirectional_target": []
         }
     ],
     "location": [
@@ -462,5 +610,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1790092419
+    "modified": 1790172468
 }
