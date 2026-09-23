@@ -38,7 +38,16 @@ if ( ! $eventos ) {
 	return;
 }
 
-if ( '' === $etiqueta ) {
+/*
+ * The carousel is a section inside a page about something else, so it needs a
+ * heading to say what it is. The grid is the Calendário page itself, and the
+ * page title above it already says "Calendário" — a second one underneath was
+ * saying it twice, which the design does not.
+ *
+ * So the default belongs to the carousel only. A grid that does want a heading
+ * still gets one by passing `etiqueta` in the shortcode.
+ */
+if ( '' === $etiqueta && 'carrossel' === $layout ) {
 	$etiqueta = __( 'Calendário', 'apit' );
 }
 
@@ -47,8 +56,19 @@ $mostrar_setas = 'carrossel' === $layout;
 ?>
 <section class="calendario calendario--<?php echo esc_attr( $layout ); ?>">
 	<div class="apit-container">
+		<?php
+		/*
+		 * The head row only exists if it has something in it. Without this, the
+		 * grid — no heading, no arrows, no button — printed an empty h2 and an
+		 * empty flex row, which left a gap above the cards and gave a screen
+		 * reader a heading with nothing in it.
+		 */
+		if ( $etiqueta || $mostrar_setas || $acao_pag ) :
+			?>
 		<div class="calendario__head">
-			<h2 class="calendario__title"><?php echo esc_html( $etiqueta ); ?></h2>
+			<?php if ( $etiqueta ) : ?>
+				<h2 class="calendario__title"><?php echo esc_html( $etiqueta ); ?></h2>
+			<?php endif; ?>
 			<div class="calendario__nav">
 				<?php if ( $mostrar_setas ) : ?>
 					<button class="calendario__arrow" data-dir="prev" aria-label="<?php esc_attr_e( 'Eventos anteriores', 'apit' ); ?>">
@@ -67,6 +87,7 @@ $mostrar_setas = 'carrossel' === $layout;
 				<?php endif; ?>
 			</div>
 		</div>
+		<?php endif; ?>
 
 		<ul class="calendario__track">
 			<?php foreach ( $eventos as $evento ) : ?>
