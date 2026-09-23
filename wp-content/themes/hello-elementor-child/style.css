@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.31.0
+Version: 0.31.1
 */
 
 :root {
@@ -685,26 +685,6 @@ body.apit-menu-aberto {
 	border-color: currentColor;
 }
 
-/*
- * The parent theme's reset paints every link #336 on hover:
- *
- *   a:active, a:hover { color: #336 }
- *
- * A pseudo-class plus an element outweighs a single class, so every .btn that
- * is an <a> lost its own colour the moment the pointer touched it. On the
- * Associados band the label turned navy while the border stayed white, which is
- * how this came to light. The buttons that are Elementor widgets were never
- * affected: there the colour sits on `.btn .elementor-button`.
- *
- * Not a hover style of our own — it only says the label keeps the colour its
- * class gives it. `:not(.btn--escuro)` leaves alone the one button that does
- * define a hover, which fills and inverts a few rules below.
- */
-a.btn:not(.btn--escuro):hover,
-a.btn:not(.btn--escuro):active,
-a.btn:not(.btn--escuro):focus {
-	color: var(--apit-branco);
-}
 
 /*
  * Elementor button widgets: the .btn classes land on the widget wrapper, so the

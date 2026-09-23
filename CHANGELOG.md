@@ -247,6 +247,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.31.1] - 2026-09-23
+
+### Alterado
+- O hover dos botões de contorno volta a mudar de cor. Na 0.30.1, além de pôr
+  o contorno em `currentColor` — que era o que bastava —, tinha-se impedido o
+  rótulo de mudar, e o resultado foi um botão que não reage a nada. O
+  `currentColor` já faz o contorno seguir o rótulo seja qual for a cor que este
+  tome.
+
 ## [0.31.0] - 2026-09-23
 
 ### Adicionado
