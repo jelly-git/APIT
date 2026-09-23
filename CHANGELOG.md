@@ -223,6 +223,119 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.29.15] - 2026-09-23
+
+### Adicionado
+- Respostas às quatro perguntas frequentes dos Associados, escritas a partir do
+  que a própria página diz — os três passos, os seis benefícios, os Estatutos e
+  a ficha de inscrição. Nenhum valor, prazo ou regra que não esteja já no site:
+  onde a resposta precisaria de um, aponta para o documento ou para quem o
+  decide.
+
+### Alterado
+- Cartão "Pronto para fazer parte?" com as medidas do painel do Figma: 410×284,
+  margem interna de 50 em cima e 37 aos lados, título Omnes Regular 28px/120%
+  sem tracking. Tinha 320×217, 10px de margem — os do Elementor, porque a regra
+  que lá estava perdia para a folha por página — e o título a 15px.
+- Botões do cartão numa variante mais pequena, também do painel: 48px de altura,
+  42px de raio, margem interna 12/30/11/30 e 16px de intervalo. Duas medidas do
+  painel fixam o corpo da letra entre si, e é 14px; com os 15px do botão comum,
+  "Descarregar ficha de inscrição" partia em duas linhas dentro do cartão.
+
+## [0.29.12] - 2026-09-23
+
+### Alterado
+- Banda dos Associados com o título do design ("Associados"), texto escrito para
+  a página em vez do que vinha do carrossel de logótipos, e o botão a apontar
+  para `#` até existir a página do directório. Com o botão no lugar a banda fica
+  com 409px, a altura do desenho.
+- FAQ com as cores dos painéis: o cartão passa a `#28c4ba` → `#4a85c8` e o item
+  aberto a magenta → `#b1b9c2`, um cinzento frio. O segundo tom era um malva
+  lido de uma exportação, que mantinha toda a passagem rosa. Mais 10px de
+  intervalo e 42px de margem interna.
+- O sinal `+` passa para a direita da linha, azul quando fechada e branco quando
+  aberta. Três coisas o impediam: o `float` do Elementor ganha ao nosso, o kit
+  pinta o `fill` do SVG directamente, e o título de cada linha é um `<a>` que
+  apanhava a cor de destaque — as linhas fechadas saíam magenta e a aberta azul
+  sobre o próprio magenta.
+
+### Corrigido
+- O contentor das FAQ leva `e-no-lazyload`: é o 5.º de topo na página, e a regra
+  do Elementor apagava o `background-image` do cartão e do item aberto.
+
+## [0.29.7] - 2026-09-23
+
+### Corrigido
+- O bloco da newsletter aparecia dentro de uma moldura de 10px em cinco das sete
+  páginas. São os 10px que o Elementor dá a qualquer contentor por omissão: na
+  Home e na Sobre a APIT tinham sido postos a zero quando essas páginas foram
+  construídas, nas cinco seguintes não. Uma faixa que pinta de ponta a ponta não
+  pode ser encolhida pelo contentor, por isso a regra é escrita contra o bloco e
+  não página a página.
+
+## [0.29.6] - 2026-09-23
+
+### Alterado
+- A etiqueta "Calendário" por cima da grelha sai. O título da página logo acima
+  já o diz, e o desenho não a tem. O valor por omissão passa a ser só do
+  carrossel; uma grelha que queira cabeçalho continua a poder passar `etiqueta`
+  no shortcode. A linha de cabeçalho só existe se tiver alguma coisa dentro.
+
+## [0.29.5] - 2026-09-23
+
+### Alterado
+- Bloco da newsletter com a arte enviada pelo cliente, em vez da aproximação em
+  CSS. O degradé em CSS fica por baixo, como cor que se vê enquanto a imagem
+  carrega. `background-size: 100% 100%` e não `cover`: num telemóvel o `cover`
+  cortava as pontas do degradé, que são a parte que se lê.
+
+## [0.29.4] - 2026-09-23
+
+### Corrigido
+- O degradé do hero não aparecia por cima do vídeo. O Chromium dá a um `<video>`
+  uma camada de composição própria, pintada acima do `::after` da secção seja
+  qual for o `z-index` dos dois — provado removendo o `<video>` da página com a
+  camada de média no lugar, e o degradé apareceu de imediato. Por cima de vídeo
+  o degradé passa a andar no `::after` da própria camada de média, que é irmão
+  do vídeo na mesma subárvore. `:has()` impede que os dois se somem: a secção só
+  o pinta onde não há camada de média, que é o caso das Notícias.
+
+## [0.29.3] - 2026-09-23
+
+### Corrigido
+- O degradé do hero passa a ter as paragens em pixels e não em percentagem. No
+  Figma é um rectângulo próprio — 1920×649, Top 108 — que começa a pegar aos
+  292px do topo da página e fica opaco aos 537. Em percentagem resolvia contra a
+  caixa do hero, pelo que se movia sempre que um hero mudava de altura: no
+  Calendário, de 610px, acabava aos 403 em vez dos 537. Abaixo dos 1024px voltam
+  as percentagens, que 292 e 537 são medidas de um desenho de 1920.
+
+## [0.29.2] - 2026-09-22
+
+### Adicionado
+- `[apit_assoc_banda]`: a banda dos Associados, com o fundo enviado pelo cliente,
+  título, texto e botão centrados. Substitui o carrossel de logótipos, que nunca
+  chegou a aparecer — a galeria estava vazia, a secção saía cedo e ficava um
+  contentor vazio na página.
+- A banda leva `id="associados"`, de modo que o botão "Ver associados" do hero,
+  que apontava para `#associados` e para nada, passe a ter destino.
+
+### Alterado
+- Título e texto dos seis benefícios voltam a ficar centrados.
+- Os campos `assoc_logos_*` passam a `assoc_banda_*`, com os valores migrados; a
+  galeria de logótipos foi removida do grupo.
+
+### Corrigido
+- O contentor da banda leva `e-no-lazyload`. A regra de lazy-load do Elementor
+  aplica `background-image: none !important` ao 4.º contentor de topo **e a todos
+  os seus descendentes** até ser visto, o que apagava o fundo da banda.
+
+## [0.28.4] - 2026-09-22
+
+### Alterado
+- Glifo do PDF à direita do rótulo, que é o lado em que os outros botões da
+  página levam a seta e o ícone de lista.
+
 ## [0.28.3] - 2026-09-22
 
 ### Adicionado

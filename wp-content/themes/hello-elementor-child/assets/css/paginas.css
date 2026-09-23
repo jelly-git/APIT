@@ -850,8 +850,14 @@
 	align-items: flex-start;
 }
 
+/*
+ * The panel gives the card 410px at Left 310, which is the content column's own
+ * left edge — so the card fills this column edge to edge and the column cannot
+ * keep Elementor's default 10px, which was leaving the card 390 wide.
+ */
 .faq__col-titulo {
-	max-width: 340px;
+	max-width: 410px;
+	padding: 0 !important;
 }
 
 .apit-faq .faq__titulo .elementor-heading-title {
@@ -867,25 +873,59 @@
  * was #2ec6b0, the brand token, which is greener than the one the design uses
  * here.
  */
+/*
+ * Panel: the card is 410x284 at Left 310, and its heading's box starts at Left
+ * 347 and Top 2938+50 — so 37px at the sides and 50px above the title.
+ *
+ * !important on the padding because Elementor writes its own 10px for every
+ * container into the per-page stylesheet, printed after this file. Without it
+ * the card had that 10px and nothing else, and the text sat against its edge.
+ */
 .faq__cartao {
-	padding: 32px 28px 34px;
+	padding: 50px 37px 37px !important;
 	background-color: #28c4ba;
 	background-image: linear-gradient(150deg, #28c4ba 0%, #4a85c8 100%);
 	color: #fff;
 }
 
+/* Panel: Omnes Regular 28px, line-height 120%, no tracking, uppercase. */
 .apit-faq .faq__cartao-titulo .elementor-heading-title {
 	font-family: var(--apit-font);
-	font-weight: 500;
-	font-size: 15px;
-	line-height: 1.4;
-	letter-spacing: 1.6px;
+	font-weight: 400;
+	font-size: 28px;
+	line-height: 1.2;
+	letter-spacing: 0;
 	text-transform: uppercase;
 	color: #fff;
 }
 
+/*
+ * 17px, which is what the card's 284px leaves once the 50/37 padding, the two
+ * lines of heading and the two 48px buttons are in.
+ */
 .faq__cartao .elementor-widget-button {
-	margin-top: 18px;
+	margin-top: 17px;
+}
+
+/*
+ * The card's buttons are a smaller variant than the hero's.
+ *
+ * Panel values: 48px tall, 42px of radius, a 2px border, padding 12/30/11/30
+ * and a 16px gap. The widths are Hug, so the type size is what has to land them
+ * on the 342px and 224px reported — and two of the panel's numbers pin it
+ * between them. 48 less 12, 11 and the two borders leaves a 21px line box; at
+ * 14px that is a line-height of 1.5, and at 14px the labels measure the widths
+ * the panel gives. 12px met the height but came out 42px too narrow.
+ *
+ * The site's own .btn is 15px and 57px tall, which is what made "Descarregar
+ * ficha de inscrição" wrap to two lines inside a 410px card.
+ */
+.faq__cartao .btn .elementor-button {
+	padding: 12px 30px 11px;
+	border-radius: 42px;
+	font-size: 14px;
+	line-height: 1.5;
+	gap: 16px;
 }
 
 /*
@@ -1860,5 +1900,14 @@
 	/* Stacked, and the hero has no room to spare: the section starts below it. */
 	.apit-sobrepoe {
 		--apit-sobe: 0px;
+	}
+
+	/*
+	 * The 50/37 the panel gives is breathing room on a 410px card. On a phone
+	 * the card is 310px and those margins take a quarter of it, leaving the
+	 * longer button nothing to sit in.
+	 */
+	.faq__cartao {
+		padding: 32px 24px !important;
 	}
 }
