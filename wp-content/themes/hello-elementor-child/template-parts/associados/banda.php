@@ -14,11 +14,25 @@
  *
  * The button needs both a label and a destination: with only one it either
  * says nothing or goes nowhere. Same rule as the calendar's event button.
+ *
+ * `pagina` lets a second page show this band without its words being typed
+ * again — Sobre a APIT reads the ones written here. `url` overrides only the
+ * destination, so the shared copy can still send the visitor somewhere that
+ * makes sense from the page they are on.
+ *
+ * @var array $args pagina, url
  */
-$titulo = trim( (string) apit_campo( 'assoc_banda_titulo' ) );
-$texto  = trim( (string) apit_campo( 'assoc_banda_texto' ) );
-$botao  = trim( (string) apit_campo( 'assoc_banda_botao' ) );
-$url    = trim( (string) apit_campo( 'assoc_banda_url' ) );
+$fonte = (int) ( $args['pagina'] ?? 0 );
+$fonte = $fonte > 0 ? $fonte : null;
+
+$titulo = trim( (string) apit_campo( 'assoc_banda_titulo', $fonte ) );
+$texto  = trim( (string) apit_campo( 'assoc_banda_texto', $fonte ) );
+$botao  = trim( (string) apit_campo( 'assoc_banda_botao', $fonte ) );
+$url    = trim( (string) ( $args['url'] ?? '' ) );
+
+if ( '' === $url ) {
+	$url = trim( (string) apit_campo( 'assoc_banda_url', $fonte ) );
+}
 
 if ( '' === $titulo && '' === $texto ) {
 	return;

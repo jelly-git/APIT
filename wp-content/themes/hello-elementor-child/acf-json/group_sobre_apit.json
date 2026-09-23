@@ -151,66 +151,6 @@
             "selected": 0
         },
         {
-            "key": "field_sobre_assoc_texto",
-            "label": "Texto",
-            "name": "sobre_assoc_texto",
-            "aria-label": "",
-            "type": "textarea",
-            "instructions": "Opcional. Sem texto, a secção fica só com o rótulo e o botão.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "rows": 3,
-            "placeholder": "",
-            "new_lines": ""
-        },
-        {
-            "key": "field_sobre_assoc_botao",
-            "label": "Texto do botão",
-            "name": "sobre_assoc_botao",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": ""
-        },
-        {
-            "key": "field_sobre_assoc_url",
-            "label": "Link do botão",
-            "name": "sobre_assoc_url",
-            "aria-label": "",
-            "type": "text",
-            "instructions": "Aceita um caminho interno (\/contactos\/), um endereço completo (https:\/\/…), uma âncora (#secao), mailto: ou tel:.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "50",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "maxlength": "",
-            "placeholder": "\/pagina\/",
-            "prepend": "",
-            "append": ""
-        },
-        {
             "key": "field_sobre_tab_inter",
             "label": "Internacionalização",
             "name": "",
@@ -472,5 +412,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1788879961
+    "modified": 1790169355
 }

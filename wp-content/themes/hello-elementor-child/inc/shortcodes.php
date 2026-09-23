@@ -12,9 +12,9 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Renders a template part into a string for shortcode output.
  */
-function apit_render_template_part( $slug ) {
+function apit_render_template_part( $slug, $args = null ) {
 	ob_start();
-	get_template_part( $slug );
+	get_template_part( $slug, null, $args );
 	return ob_get_clean();
 }
 
@@ -145,15 +145,6 @@ function apit_shortcode_equipa() {
 }
 add_shortcode( 'apit_equipa', 'apit_shortcode_equipa' );
 
-/**
- * Associados. The client dropped the logo strip, so this is the label and the
- * link through to the full list.
- */
-function apit_shortcode_associados() {
-	return apit_render_template_part( 'template-parts/sobre/associados' );
-}
-add_shortcode( 'apit_associados', 'apit_shortcode_associados' );
-
 function apit_shortcode_orgaos_sociais() {
 	return apit_render_template_part( 'template-parts/sobre/orgaos-sociais' );
 }
@@ -231,8 +222,31 @@ function apit_shortcode_assoc_passos() {
 }
 add_shortcode( 'apit_assoc_passos', 'apit_shortcode_assoc_passos' );
 
-function apit_shortcode_assoc_banda() {
-	return apit_render_template_part( 'template-parts/associados/banda' );
+/**
+ * The Associados band.
+ *
+ * `pagina` says where the words come from, by slug or id, so the band can stand
+ * on a second page without its text being typed twice — one edit on Associados
+ * changes both. Left out, it reads the page it is on.
+ *
+ * `url` overrides the button's destination for that placement alone, which is
+ * what lets the copy be shared while each page sends the visitor somewhere that
+ * makes sense from where they are.
+ */
+function apit_shortcode_assoc_banda( $atts ) {
+	$atts = shortcode_atts( [
+		'pagina' => '',
+		'url'    => '',
+	], $atts, 'apit_assoc_banda' );
+
+	$pagina = trim( (string) $atts['pagina'] );
+
+	if ( '' !== $pagina ) {
+		$post = is_numeric( $pagina ) ? get_post( (int) $pagina ) : get_page_by_path( $pagina );
+		$atts['pagina'] = $post ? $post->ID : 0;
+	}
+
+	return apit_render_template_part( 'template-parts/associados/banda', $atts );
 }
 add_shortcode( 'apit_assoc_banda', 'apit_shortcode_assoc_banda' );
 

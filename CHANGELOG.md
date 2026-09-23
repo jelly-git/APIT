@@ -223,6 +223,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.30.0] - 2026-09-23
+
+### Alterado
+- A faixa "Associados" da Sobre a APIT — rótulo e botão, o que sobrou do
+  carrossel de logótipos — dá lugar à banda construída na página Associados.
+- `[apit_assoc_banda]` aceita `pagina`, por slug ou id, para ir buscar as
+  palavras a outra página: a Sobre a APIT lê as que estão escritas na
+  Associados, e uma edição muda as duas. E aceita `url`, que substitui só o
+  destino do botão — o texto é partilhado, mas de cada página o visitante vai
+  para onde faz sentido a partir dali: `#` na Associados, `/associados/` na
+  Sobre a APIT.
+- As regras da banda passam do `paginas.css` para o `style.css`: o bloco está
+  agora em duas páginas que carregam folhas diferentes.
+
+### Removido
+- `[apit_associados]`, o seu template e o seu CSS, e os três campos
+  `sobre_assoc_*` — a banda que os substitui vai buscar tudo à página
+  Associados, e deixados ficar seriam campos no back office sem nada a lê-los.
+
 ## [0.29.19] - 2026-09-23
 
 ### Alterado

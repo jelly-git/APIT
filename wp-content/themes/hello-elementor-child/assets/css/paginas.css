@@ -770,74 +770,6 @@
 }
 
 
-/* ---------- Associados: banda do directório ---------- */
-
-/*
- * Full bleed, so the box stays the width of the screen and the content is
- * centred with padding instead — the same trick .apit-bloco-duplo uses. 670px
- * is half the 1340px column; max() keeps a 20px gutter on a narrow screen.
- *
- * The artwork is a theme asset: it belongs to this block's design, not to the
- * page's content, so it travels with the code the way the header's scrim does.
- * The magenta under it is what shows while it loads.
- *
- * The vertical padding is read off the client's full-page capture: the band is
- * 409px tall there, with the title starting 116px down and the button ending
- * 83px above the bottom edge.
- */
-/*
- * The Elementor container around it paints and pads nothing: the band is full
- * bleed and does both itself. Without this, the section's own white showed as a
- * frame around the artwork.
- *
- * !important because Elementor writes the container's padding into the per-page
- * stylesheet, printed after this file.
- */
-.apit-banda-assoc {
-	padding: 0 !important;
-	background: none;
-}
-
-.assoc-banda {
-	padding-block: 116px 84px;
-	padding-inline: max(20px, calc(50% - 670px));
-	background-color: var(--apit-magenta);
-	background-image: url("../img/fundo-bloco-associados.png");
-	background-position: center;
-	background-size: cover;
-	background-repeat: no-repeat;
-	color: #fff;
-	text-align: center;
-}
-
-.assoc-banda__col {
-	/* Two lines of copy at this size, which is how the design breaks it. */
-	max-width: 660px;
-	margin-inline: auto;
-}
-
-.assoc-banda__titulo {
-	margin: 0;
-	font-family: var(--apit-font);
-	font-weight: 400;
-	font-size: 40px;
-	line-height: 1.2;
-	letter-spacing: -0.4px;
-	color: #fff;
-}
-
-.assoc-banda__texto {
-	margin: 20px 0 0;
-	font-size: 16px;
-	line-height: 1.68;
-	color: rgba(255, 255, 255, 0.92);
-}
-
-/* The wrapper is centred by text-align; the pill itself must not stretch. */
-.assoc-banda__botao {
-	margin-top: 26px;
-}
-
 /* ---------- Associados: FAQ ---------- */
 
 .apit-faq {
@@ -1824,15 +1756,6 @@
 	.apit-banda-aderir .banda-aderir__titulo .elementor-heading-title,
 	.inter-stand__titulo {
 		font-size: 30px;
-	}
-
-	/* The design's 116/84 is desktop breathing room; on a phone it is dead space. */
-	.assoc-banda {
-		padding-block: 72px 60px;
-	}
-
-	.assoc-banda__titulo {
-		font-size: 32px;
 	}
 
 	.inter-apoios__lista {
