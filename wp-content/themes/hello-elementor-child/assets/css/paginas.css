@@ -862,10 +862,15 @@
 	color: var(--apit-black);
 }
 
+/*
+ * Panel values: teal rgba(40, 196, 186) to blue rgba(74, 133, 200). The teal
+ * was #2ec6b0, the brand token, which is greener than the one the design uses
+ * here.
+ */
 .faq__cartao {
 	padding: 32px 28px 34px;
-	background-color: #2ec6b0;
-	background-image: linear-gradient(150deg, #2ec6b0 0%, #4a85c8 100%);
+	background-color: #28c4ba;
+	background-image: linear-gradient(150deg, #28c4ba 0%, #4a85c8 100%);
 	color: #fff;
 }
 
@@ -891,14 +896,20 @@
 	border: none;
 }
 
+/* Panel: 10px of gap between the items. */
 .faq__acordeao .elementor-accordion .elementor-accordion-item {
-	margin-bottom: 12px;
+	margin-bottom: 10px;
 	border: none;
 	background: #fff;
 }
 
+/*
+ * The panel's 42px of padding is the open item's — it is the element measured,
+ * 855 wide and 238 tall. A closed row is a line of text and takes the smaller
+ * inset, or the list would be a column of tall empty boxes.
+ */
 .faq__acordeao .elementor-accordion .elementor-tab-title {
-	padding: 20px 24px;
+	padding: 20px 42px;
 	border: none;
 	font-family: var(--apit-font);
 	font-weight: 400;
@@ -907,23 +918,91 @@
 	color: var(--apit-black);
 }
 
-/* The open item takes the gradient the design gives it. */
-.faq__acordeao .elementor-accordion .elementor-tab-title.elementor-active {
-	background-image: linear-gradient(100deg, #f41892 0%, #b0559f 100%);
+/*
+ * Panel values: magenta rgba(244, 24, 146) to grey rgba(177, 185, 194).
+ *
+ * The second stop was #b0559f, a mauve — read off an export rather than from
+ * the file, and it kept the whole sweep pink. The design goes from the brand
+ * magenta to a cool grey, which is what makes the far end read as grey at all.
+ *
+ * Horizontal, and it has to be. The open item is two boxes in Elementor's
+ * markup — the title and the content — each painting its own copy of the
+ * gradient. The 100deg it had tilts the sweep, so the two copies met at
+ * different points and left a seam across the join. Left to right, both boxes
+ * are the same width and paint the identical image, so the join disappears.
+ */
+.faq__acordeao .elementor-accordion .elementor-tab-title.elementor-active,
+.faq__acordeao .elementor-accordion .elementor-tab-content {
+	background-image: linear-gradient(to right, #f41892 0%, #b1b9c2 100%);
 	color: #fff;
 }
 
 .faq__acordeao .elementor-accordion .elementor-tab-content {
-	padding: 0 24px 24px;
+	/* 42px at the sides and below, closing the box the title opened. */
+	padding: 0 42px 42px;
 	border: none;
-	background-image: linear-gradient(100deg, #f41892 0%, #b0559f 100%);
 	font-size: 14px;
 	line-height: 1.7;
 	color: rgba(255, 255, 255, 0.92);
 }
 
-.faq__acordeao .elementor-accordion .elementor-accordion-icon {
+/*
+ * The title is an <a>, and Elementor's kit paints links with the accent colour:
+ * the closed rows came out magenta and the open one blue on its own magenta
+ * background, which is why it could barely be read. The colour belongs to the
+ * row, so the link takes it.
+ */
+.faq__acordeao .elementor-accordion .elementor-tab-title a {
 	color: inherit;
+}
+
+/*
+ * The sign sits at the right end of the row, as the design has it.
+ *
+ * Elementor floats it left, and its own rule for that wins — turning the float
+ * around here had no effect. A flex row makes the float irrelevant instead, and
+ * `order` puts the sign after the text whatever the markup says. The class is
+ * still called `-left`; that is Elementor's name for it, not a description.
+ */
+.faq__acordeao .elementor-accordion .elementor-tab-title {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.faq__acordeao .elementor-accordion .elementor-accordion-icon-left {
+	order: 1;
+	float: none;
+	margin: 0;
+}
+
+/*
+ * Blue on the closed rows, and the row's own white once it opens.
+ *
+ * The sign is an inline SVG and Elementor's kit paints its `fill` directly, so
+ * setting `color` on the span moved nothing — the plus stayed the accent
+ * magenta. Handing the fill back to currentColor is what makes the line below
+ * take effect.
+ */
+.faq__acordeao .elementor-accordion .elementor-accordion-icon svg {
+	fill: currentColor;
+}
+
+.faq__acordeao .elementor-accordion .elementor-accordion-icon {
+	color: var(--apit-azul);
+}
+
+/*
+ * The open row's sign needs the fill named again, at this depth. Three classes
+ * and an element was not enough: something in Elementor's own CSS matches the
+ * active row's svg with the same weight and is printed later, and the plus
+ * stayed blue on the magenta while the span around it was already white.
+ */
+.faq__acordeao .elementor-accordion .elementor-tab-title.elementor-active .elementor-accordion-icon,
+.faq__acordeao .elementor-accordion .elementor-tab-title.elementor-active .elementor-accordion-icon svg {
+	color: inherit;
+	fill: currentColor;
 }
 
 /* ---------- Internacionalização: a marca ---------- */
