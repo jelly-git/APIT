@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.29.4
+Version: 0.29.5
 */
 
 :root {
@@ -1783,19 +1783,37 @@ body.apit-menu-aberto {
  * TODO: approximated from the mockup image — the Figma file is at its MCP
  * call limit, so the three rectangles' real fills are still unread.
  */
+/*
+ * The artwork the client sent, in place of the CSS approximation that stood in
+ * for it: magenta at the left, through purple and blue, to green at the right.
+ *
+ * A theme asset, because it belongs to this block's design rather than to any
+ * page's content — the same call the header's scrim and the Associados band
+ * make. The file is 1920x372, so it is stretched rather than cropped: the block
+ * is taller than that on a narrow screen, and `cover` would eat the ends of the
+ * gradient, which are the part that reads.
+ *
+ * The linear gradient stays underneath as the colour that shows while the image
+ * loads, and on the block's own terms it is a close reading of it.
+ */
 .newsletter {
 	position: relative;
 	overflow: hidden;
-	background-image: linear-gradient(
-		100deg,
-		#e06aae 0%,
-		#c073c0 18%,
-		#a97fc9 34%,
-		#8ba3cc 50%,
-		#6bbfb4 68%,
-		#4ac9a2 84%,
-		#34c79c 100%
-	);
+	background-image:
+		url("assets/img/fundo-bloco-newsletter.png"),
+		linear-gradient(
+			100deg,
+			#e06aae 0%,
+			#c073c0 18%,
+			#a97fc9 34%,
+			#8ba3cc 50%,
+			#6bbfb4 68%,
+			#4ac9a2 84%,
+			#34c79c 100%
+		);
+	background-position: center;
+	background-size: 100% 100%, cover;
+	background-repeat: no-repeat;
 	color: #fff;
 	padding-block: 87px;
 }
