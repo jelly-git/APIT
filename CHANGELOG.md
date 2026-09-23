@@ -223,6 +223,26 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.29.17] - 2026-09-23
+
+### Alterado
+- FAQ dos Associados com os três estilos de tipografia dos painéis do Figma,
+  que são três e não um: a pergunta fechada em "Corpo Big" (500, 20px, 120%,
+  tracking -3%), a pergunta aberta em "H5" (Omnes Regular 22px, 120%, sem
+  tracking) e a resposta em "Corpo" (Omnes Medium 16px, 168%, tracking 2%).
+  Estavam todas a 15px Regular, com a resposta a 14px — o que fazia a lista ler
+  como letra miúda debaixo de um título em vez de como as próprias perguntas.
+- Linhas fechadas mais justas, 14px acima e abaixo contra os 42px da aberta: os
+  42px do painel são a medida da linha aberta, que é a que foi medida.
+- Abaixo dos 768px as margens laterais descem para 24px e o corpo um ponto: com
+  os 42px de um desenho de 855, as perguntas corriam a quatro linhas num
+  telemóvel.
+
+### Corrigido
+- As três regras que se tinham acumulado sobre `.elementor-tab-title` passam a
+  uma só. Estavam a definir a mesma propriedade em sítios diferentes do
+  ficheiro, à espera de que a próxima alteração contradissesse a anterior.
+
 ## [0.29.15] - 2026-09-23
 
 ### Adicionado

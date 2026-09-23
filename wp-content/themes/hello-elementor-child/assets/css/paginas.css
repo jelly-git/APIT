@@ -944,17 +944,34 @@
 }
 
 /*
- * The panel's 42px of padding is the open item's — it is the element measured,
- * 855 wide and 238 tall. A closed row is a line of text and takes the smaller
- * inset, or the list would be a column of tall empty boxes.
+ * A closed row, in the design's "Corpo Big": 500 at 20px, line-height 120%,
+ * tracking -3%. It was 15px Regular, which made the list read as small print
+ * under a heading rather than as the questions themselves.
+ *
+ * The panel names the family as Early Sans Variable, which the site does not
+ * have and no other block uses. Omnes carries the metrics; if that family is
+ * really meant to be here it has to go into the Typekit kit first.
+ *
+ * The panel's 42px of padding is the open row's — that is the element measured,
+ * 855 wide and 238 tall. A closed row is one line and sits tighter, or the list
+ * would be a column of tall empty boxes.
+ *
+ * Flex, because the sign has to sit at the far end: Elementor floats it left
+ * and its own rule for that wins, so turning the float around had no effect.
+ * In a flex row the float stops counting and `order` does the work.
  */
 .faq__acordeao .elementor-accordion .elementor-tab-title {
-	padding: 20px 42px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 14px 42px;
 	border: none;
 	font-family: var(--apit-font);
-	font-weight: 400;
-	font-size: 15px;
-	line-height: 1.5;
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 1.2;
+	letter-spacing: -0.6px;
 	color: var(--apit-black);
 }
 
@@ -977,13 +994,36 @@
 	color: #fff;
 }
 
+/*
+ * The open row's question is the design's "H5": Omnes Regular 22px, line-height
+ * 120%, no tracking. It is a heading, not the same style as the closed rows —
+ * lighter and a little larger, which is what the two panels say.
+ *
+ * 42px above it and 18px under, so the answer follows close and the box below
+ * closes the 42.
+ */
+.faq__acordeao .elementor-accordion .elementor-tab-title.elementor-active {
+	padding: 42px 42px 18px;
+	font-weight: 400;
+	font-size: 22px;
+	letter-spacing: 0;
+}
+
+/*
+ * The answer is the design's "Corpo": Omnes Medium 16px, line-height 168%,
+ * tracking 2%. It was 14px Regular at 1.7 and read as a caption.
+ *
+ * Full white, not 92%: at Medium on this gradient the softened white lost the
+ * far end of the sweep, where the background is already grey.
+ */
 .faq__acordeao .elementor-accordion .elementor-tab-content {
-	/* 42px at the sides and below, closing the box the title opened. */
 	padding: 0 42px 42px;
 	border: none;
-	font-size: 14px;
-	line-height: 1.7;
-	color: rgba(255, 255, 255, 0.92);
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 1.68;
+	letter-spacing: 0.32px;
+	color: #fff;
 }
 
 /*
@@ -996,21 +1036,7 @@
 	color: inherit;
 }
 
-/*
- * The sign sits at the right end of the row, as the design has it.
- *
- * Elementor floats it left, and its own rule for that wins — turning the float
- * around here had no effect. A flex row makes the float irrelevant instead, and
- * `order` puts the sign after the text whatever the markup says. The class is
- * still called `-left`; that is Elementor's name for it, not a description.
- */
-.faq__acordeao .elementor-accordion .elementor-tab-title {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 16px;
-}
-
+/* The class is still called `-left`; that is Elementor's name, not a position. */
 .faq__acordeao .elementor-accordion .elementor-accordion-icon-left {
 	order: 1;
 	float: none;
@@ -1909,5 +1935,24 @@
 	 */
 	.faq__cartao {
 		padding: 32px 24px !important;
+	}
+
+	/*
+	 * The panel's 42px at the sides is a measurement of an 855px row. On a
+	 * 350px one it takes a quarter of the width, and the questions were running
+	 * to four lines; 24px gives them back 36px each.
+	 */
+	.faq__acordeao .elementor-accordion .elementor-tab-title {
+		padding: 14px 24px;
+		font-size: 18px;
+	}
+
+	.faq__acordeao .elementor-accordion .elementor-tab-title.elementor-active {
+		padding: 28px 24px 14px;
+		font-size: 20px;
+	}
+
+	.faq__acordeao .elementor-accordion .elementor-tab-content {
+		padding: 0 24px 28px;
 	}
 }
