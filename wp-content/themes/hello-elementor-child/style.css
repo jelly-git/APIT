@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.29.6
+Version: 0.29.7
 */
 
 :root {
@@ -1816,6 +1816,22 @@ body.apit-menu-aberto {
 	background-repeat: no-repeat;
 	color: #fff;
 	padding-block: 87px;
+}
+
+/*
+ * A band that paints edge to edge must not be inset by the container holding
+ * it. Elementor gives every container 10px of padding by default, and on the
+ * Home and Sobre a APIT that had been overridden to 0 when those pages were
+ * built — on the five built since, it had not, so the block sat inside a 10px
+ * frame of page background on Associados, Calendário, Documentos, Notícias and
+ * Internacionalização.
+ *
+ * Written against the block rather than page by page: being full bleed belongs
+ * to the newsletter, not to whichever container each page happens to put it in,
+ * and a page added tomorrow gets it for free.
+ */
+.e-con:has(> .elementor-widget-shortcode .newsletter) {
+	padding: 0 !important;
 }
 
 .newsletter__inner {
