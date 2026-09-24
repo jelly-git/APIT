@@ -12,11 +12,19 @@
  */
 add_filter( 'home_url', function () { return 'https://dev.jellycode.agency/apit/'; }, 999 );
 
-$dir  = __DIR__ . '/paginas';
+$dir      = __DIR__ . '/paginas';
+$ficheiros = glob( $dir . '/*.html' );
+
+// Uma pasta vazia dava "0 ligações, nenhuma fora da subpasta" — um visto
+// por não ter olhado para nada. Corre-se guardar-paginas.sh primeiro.
+if ( ! $ficheiros ) {
+	WP_CLI::error( 'tools/paginas/ está vazia — correr tools/guardar-paginas.sh primeiro.' );
+}
+
 $maus = array();
 $bons = array();
 
-foreach ( glob( $dir . '/*.html' ) as $f ) {
+foreach ( $ficheiros as $f ) {
 	$html = apit_prefixar_links( file_get_contents( $f ) );
 
 	preg_match_all( '~\s(?:href|src)="([^"]+)"~i', $html, $m );
@@ -37,7 +45,7 @@ foreach ( glob( $dir . '/*.html' ) as $f ) {
 	}
 }
 
-printf( "%d ligacoes internas, todas sob /apit\n", count( $bons ) );
+printf( "%d paginas lidas, %d ligacoes internas sob /apit\n", count( $ficheiros ), count( $bons ) );
 
 if ( $maus ) {
 	echo "\nFORA DA SUBPASTA — dariam 404 no servidor:\n";
