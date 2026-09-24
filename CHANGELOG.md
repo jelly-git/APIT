@@ -266,6 +266,36 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.33.4] - 2026-09-24
+
+### Alterado
+- **O formulário do Media Kit deixa de parecer um formulário de origem.**
+  Nome e Empresa passam a partilhar a linha e o email fica inteiro, como na
+  newsletter — a grelha do Gravity Forms tem doze colunas e dava `--width-full`
+  a todos os campos, o que empilhava três caixas iguais a 640px.
+  - Fora a legenda «"*" indica campos obrigatórios»: o asterisco no rótulo já
+    o diz. O asterisco passa a magenta.
+  - A caixa de visto é a da newsletter, repetida aqui: 20px, contorno fino,
+    magenta quando marcada, com o visto desenhado a dois lados rodados.
+  - Respiro de 28px entre linhas, 22px em telemóvel, onde os dois campos de
+    texto voltam a empilhar — a 375px davam 158px cada, estreito para escrever
+    o nome de uma empresa e ver o que se escreveu.
+- **A ligação à Política de Privacidade lê-se como ligação**: peso 600,
+  sublinhado afastado, e a cor do botão quando o rato lá passa.
+
+### Corrigido
+- **O anel azul à volta do campo em foco.** Vinha do reset do tema pai e do
+  Gravity Forms por cima. A marca de foco passa a ser a da newsletter: o
+  sublinhado a magenta e mais nada desenhado. A regra precisou de `.gfield` no
+  meio para empatar em especificidade com a do campo, que também escreve a cor
+  do sublinhado com `!important` — sem isso o anel saía e nada o substituía.
+- **O glifo do botão não existia.** Tinha máscara, cor e dezoito pixéis de
+  lado — tudo menos existir: o `content` computava `none`, porque o reset do
+  Gravity Forms desfaz o pseudo-elemento dos controlos que desenha. Levou
+  `!important`, e a caixa de visto precisou do mesmo pelo mesmo motivo.
+- Sai também a sombra suave por baixo dos campos, que é de um desenho
+  encaixotado e não deste, onde o campo é uma linha.
+
 ## [0.33.3] - 2026-09-24
 
 ### Corrigido

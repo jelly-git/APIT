@@ -2364,16 +2364,171 @@
 	height: 56px !important;
 	padding: 0 14px !important;
 	border-width: 0 0 2px 0 !important;
+	/*
+	 * A cor do sublinhado e a sombra escritas à mão: o `--gf-ctrl-border-color`
+	 * não chega ao contorno (o plugin calcula-o de outro sítio) e a sombra
+	 * suave que ele põe debaixo do campo é de um desenho encaixotado, não deste,
+	 * onde o campo é uma linha.
+	 */
+	border-bottom-color: rgba(27, 42, 51, 0.35) !important;
+	box-shadow: none !important;
+	transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
-.mediakit-pedido .gform_wrapper .gform-field-label {
-	font-weight: 500;
-	font-size: 15px;
-	letter-spacing: 0.2px;
+/*
+ * Nome e Empresa lado a lado, email e consentimento a toda a largura — a mesma
+ * arrumação da newsletter. Três campos empilhados a 640px era o que fazia o
+ * formulário parecer um formulário de omissão: o Gravity Forms dá a todos
+ * `gfield--width-full` e a grelha dele tem doze colunas, pelo que basta dizer
+ * que os dois de texto ocupam seis.
+ */
+.mediakit-pedido .gform_wrapper .gform_fields {
+	row-gap: 28px !important;
+	column-gap: 20px !important;
 }
+
+.mediakit-pedido .gform_wrapper .gfield--type-text {
+	grid-column: span 6 !important;
+}
+
+/*
+ * Os rótulos estão escondidos no formulário (1×1px, como manda a prática para
+ * os deixar ao leitor de ecrã) e quem se vê são os *placeholders*, como na
+ * newsletter. Isto fica escrito para o dia em que alguém os ligue no painel:
+ * pequenos e em maiúsculas, no tom das etiquetas de secção, para pesarem menos
+ * do que aquilo que o visitante escreve.
+ */
+.mediakit-pedido .gform_wrapper .gform-field-label {
+	margin-bottom: 10px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 1.2;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+	color: rgba(27, 42, 51, 0.7);
+}
+
+.mediakit-pedido .gform_wrapper .gfield_required {
+	color: var(--apit-magenta);
+}
+
+/* "«*» indica campos obrigatórios": o asterisco no rótulo já o diz. */
+.mediakit-pedido .gform_wrapper .gform_required_legend {
+	display: none;
+}
+
+/*
+ * O anel azul à volta do campo em foco não é do desenho — vem do reset do tema
+ * pai, que o desenha em três declarações, e a do Gravity Forms por cima. A
+ * marca de foco é a mesma da newsletter: o sublinhado passa a magenta e mais
+ * nada é desenhado.
+ */
+.mediakit-pedido .gform_wrapper .gfield input:focus,
+.mediakit-pedido .gform_wrapper .gfield input:focus-visible {
+	outline: none !important;
+	box-shadow: none !important;
+	/*
+	 * `.gfield` no meio para empatar com a regra do campo acima, que também
+	 * escreve a cor do sublinhado com !important. Sem ele esta perdia por
+	 * especificidade e o campo em foco ficava com o mesmo cinzento de sempre —
+	 * o anel saía, mas nada o substituía.
+	 */
+	border-color: var(--apit-magenta) !important;
+}
+
+/* ----- O consentimento ----- */
+
+/*
+ * A legenda "Consentimento" por cima da caixa não diz nada que a frase ao lado
+ * dela não diga melhor.
+ */
+.mediakit-pedido .gform_wrapper .gfield--type-consent .gfield_label_before_complex {
+	display: none;
+}
+
+.mediakit-pedido .gform_wrapper .gfield--type-consent .ginput_container {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.mediakit-pedido .gform_wrapper .gfield--type-consent .gform-field-label {
+	margin: 0;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 1.6;
+	letter-spacing: normal;
+	text-transform: none;
+	color: var(--apit-black);
+}
+
+/*
+ * A ligação à Política de Privacidade tem de se ler como ligação: mais peso e
+ * um sublinhado afastado, e a cor do botão quando o rato lá passa.
+ */
+.mediakit-pedido .gform_wrapper .gfield--type-consent a {
+	font-weight: 600;
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	transition: color 0.2s ease;
+}
+
+.mediakit-pedido .gform_wrapper .gfield--type-consent a:hover,
+.mediakit-pedido .gform_wrapper .gfield--type-consent a:focus-visible {
+	color: var(--apit-magenta);
+}
+
+/* A caixa de visto da newsletter, repetida aqui. */
+.mediakit-pedido .gform_wrapper input[type="checkbox"] {
+	appearance: none;
+	-webkit-appearance: none;
+	position: relative;
+	flex: none;
+	width: 20px;
+	height: 20px;
+	margin: 0;
+	border: 1px solid rgba(27, 42, 51, 0.45);
+	border-radius: 2px;
+	background: transparent;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.mediakit-pedido .gform_wrapper input[type="checkbox"]:checked {
+	border-color: var(--apit-magenta);
+	background: var(--apit-magenta);
+}
+
+/*
+ * O visto, dois lados de uma caixa rodados. O `content` leva !important porque
+ * o reset do Gravity Forms apaga por nome o pseudo-elemento das caixas de visto
+ * e dos botões de opção.
+ */
+.mediakit-pedido .gform_wrapper input[type="checkbox"]::after {
+	content: "" !important;
+	position: absolute;
+	top: 3px;
+	left: 6px;
+	width: 5px;
+	height: 9px;
+	border: solid var(--apit-branco);
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
+	opacity: 0;
+}
+
+.mediakit-pedido .gform_wrapper input[type="checkbox"]:checked::after {
+	opacity: 1;
+}
+
+/* ----- O botão ----- */
 
 .mediakit-pedido .gform_wrapper .gform_footer {
 	justify-content: center;
+	margin-top: 10px !important;
+	padding: 0 !important;
 }
 
 .mediakit-pedido .gform_wrapper .gform_button {
@@ -2397,12 +2552,21 @@
 
 /* ---------- Media Kit em ecrãs estreitos ---------- */
 
-
 @media (max-width: 768px) {
-
-
 	.mediakit-pedido__form {
 		margin-top: 32px !important;
+	}
+
+	/*
+	 * Nome e Empresa deixam de partilhar a linha: a 375px davam 158px cada, que
+	 * é estreito para escrever um nome de empresa e ver o que se escreveu.
+	 */
+	.mediakit-pedido .gform_wrapper .gfield--type-text {
+		grid-column: span 12 !important;
+	}
+
+	.mediakit-pedido .gform_wrapper .gform_fields {
+		row-gap: 22px !important;
 	}
 }
 
@@ -2477,7 +2641,13 @@
  */
 .ficha-ok__botao::after,
 .mediakit-pedido .gform_wrapper .gform_button::after {
-	content: "";
+	/*
+	 * !important no `content`: o reset do Gravity Forms desfaz o pseudo-elemento
+	 * dos controlos que desenha, e sem isto o glifo tinha tudo — máscara, cor,
+	 * dezoito pixéis de lado — menos existir. `content` computava `none`, que é
+	 * o que faz um pseudo-elemento não chegar a ser criado.
+	 */
+	content: "" !important;
 	flex: none;
 	width: 18px;
 	height: 18px;
