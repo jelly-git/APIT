@@ -266,6 +266,34 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.33.2] - 2026-09-24
+
+### Alterado
+- **A secção do meio da Media Kit passa a ser o bloco "Como apoiamos os
+  associados" da Internacionalização** — quatro cartões encostados, cada um com
+  o seu degradé a acabar no mesmo cinzento, e só a etiqueta por cima, sem
+  título grande. Era esse o desenho que o cliente apontou como exemplo.
+  - **Reaproveita as classes desse bloco** (`inter-apoios`, `inter-apoio`) em
+    vez de criar outras. O prefixo `inter-` fica a saber a pouco, mas um nome
+    errado é mais barato do que dois desenhos: um segundo conjunto de regras
+    era garantir que os dois se afastavam à primeira afinação.
+  - Medido contra a Internacionalização, valor a valor: etiqueta 20/22 a 500,
+    cartões de 325×300 com 40/36/40/40 de respiro, títulos a 30/39 em branco,
+    textos a 14/26,6, secção com 65 e 70 de respiro.
+- **Os títulos de secção sobem de 40px para 48px**, que é o corpo que o site
+  usa — foi medido no "Watch Portugal" e na "Área Reservada". Era esta a
+  diferença que se notava sem se saber dizer qual.
+- **Os textos passam a descrever um media kit**: logótipos, manual de marca,
+  fotografias e a APIT em factos, em vez dos passos de uma ficha de inscrição.
+
+### Corrigido
+- O glifo do botão do formulário ficava a 6px do rótulo em vez de 16. O
+  `gap` não chegava: o Gravity Forms escreve `column-gap` à parte, e é essa a
+  declaração que manda numa linha.
+- Fora as regras dos cartões antigos (`.mediakit__*`), que já não têm HTML
+  nenhum. CSS morto é pior do que nenhum — a próxima pessoa afina-o e não
+  percebe porque nada muda.
+
 ## [0.33.1] - 2026-09-24
 
 ### Alterado
