@@ -2536,15 +2536,39 @@
 	color: var(--apit-branco);
 }
 
-/* O mesmo glifo do .btn--doc. O caminho sobe uma pasta: esta folha está em assets/css/. */
-.ficha-ok__botao::after {
+/*
+ * O glifo de descarregar, à direita do rótulo, nos dois botões desta página: o
+ * que submete o formulário e o que a confirmação mostra a seguir.
+ *
+ * É o `icon-download.svg` que os cartões dos Documentos já usam, e não o glifo
+ * do PDF: o que o visitante leva é um ficheiro, não necessariamente um PDF. A
+ * máscara pintada a `currentColor` faz o desenho acompanhar a cor do rótulo em
+ * qualquer estado, que é a razão de ser máscara e não imagem.
+ *
+ * O caminho sobe uma pasta — esta folha está em assets/css/.
+ *
+ * O botão do Gravity Forms precisa do flex e do gap escritos aqui: o plugin
+ * desenha-o como um bloco, e sem isso o glifo caía para baixo do rótulo.
+ */
+.ficha-ok__botao::after,
+.mediakit-pedido .gform_wrapper .gform_button::after {
 	content: "";
 	flex: none;
-	width: 20px;
-	height: 20px;
+	width: 18px;
+	height: 18px;
 	background-color: currentColor;
-	mask-image: url("../img/icon-pdf.svg");
+	-webkit-mask-image: url("../img/icon-download.svg");
+	mask-image: url("../img/icon-download.svg");
+	-webkit-mask-size: contain;
 	mask-size: contain;
+	-webkit-mask-repeat: no-repeat;
 	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
 	mask-position: center;
+}
+
+.mediakit-pedido .gform_wrapper .gform_button {
+	display: inline-flex !important;
+	align-items: center;
+	gap: 16px;
 }

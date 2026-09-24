@@ -266,6 +266,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.33.1] - 2026-09-24
+
+### Alterado
+- **O Media Kit passa a entregar o kit e não a ficha de inscrição.** Os textos
+  da página foram reescritos em conformidade: a secção do meio deixou de contar
+  passos — um kit não se devolve preenchido — e passa a dizer o que vem dentro
+  dele. O botão do formulário é agora "Descarregar Media Kit" e a confirmação
+  fala do kit.
+  - **O ficheiro do kit ainda não existe em `uploads`.** O destino está no
+    `PDF-Teste.pdf`, como o botão dos Estatutos, para o percurso funcionar de
+    ponta a ponta. É um caminho só a trocar quando o ficheiro real subir.
+- Os **dois botões desta página levam o glifo de descarregar** à direita do
+  rótulo — o `icon-download.svg` que os cartões dos Documentos já usam, e não o
+  do PDF: o que o visitante leva é um ficheiro, não necessariamente um PDF.
+  - O botão do Gravity Forms precisou do `display: flex` escrito à mão. O
+    plugin desenha-o como bloco, e sem isso o glifo caía para baixo do rótulo.
+  - O botão da confirmação ficou medido contra um botão do site: mesma altura
+    (57px), mesmo raio, mesmo corpo, mesmo `gap` e mesmo preenchimento.
+
 ## [0.33.0] - 2026-09-24
 
 ### Adicionado
