@@ -54,7 +54,8 @@ O tema filho não funciona sozinho. Instalar antes do primeiro deploy:
 | WordPress core | 7.1 |
 | Tema `hello-elementor` (pai) | 3.5.1 |
 | Plugin `elementor` | 4.2.4 |
-| Plugin `advanced-custom-fields-pro` | 6.8.9 |
+| Plugin `advanced-custom-fields-pro` | 6.8.10 |
+| Plugin `gravityforms` | 3.1.2 |
 
 Por SSH, se houver WP-CLI no servidor:
 
@@ -65,6 +66,20 @@ wp plugin install elementor --version=4.2.4 --activate
 ```
 
 Sem WP-CLI, instalar pelo wp-admin em Aparência > Temas e Plugins > Adicionar.
+
+### O Gravity Forms também é manual
+
+Como o ACF Pro: é pago, não está no repositório do WordPress e o `.cpanel.yml`
+só publica o tema. O ZIP descarrega-se da conta do cliente em gravityforms.com
+e instala-se pelo wp-admin. **Sem ele o formulário da ficha de inscrição não
+aparece** — a página Media Kit mostra o shortcode em texto, que foi como a
+banda dos Associados esteve dois dias.
+
+A chave de licença é do cliente e põe-se em Formulários > Definições. Só serve
+para actualizações e add-ons: os formulários funcionam sem ela.
+
+O formulário em si **viaja na base de dados**, nas tabelas `wp_gf_*` — não é
+preciso recriá-lo no servidor.
 
 ### ACF Pro é manual, nas duas pontas
 
@@ -235,7 +250,7 @@ rm bd-sem-cabecalho.sql
 # confirmar antes de subir
 grep -c "apit.local" apit-bd-para-servidor.sql     # 0
 grep -c "autosave-v1" apit-bd-para-servidor.sql    # 0
-grep -c "CREATE TABLE" apit-bd-para-servidor.sql   # 13
+grep -c "CREATE TABLE" apit-bd-para-servidor.sql   # 21
 grep -c "'_elementor_css'" apit-bd-para-servidor.sql  # 0
 
 # arquivar a cópia versionada, com a versão lida do próprio tema

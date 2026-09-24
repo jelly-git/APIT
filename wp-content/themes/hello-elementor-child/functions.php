@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.32.1' );
+define( 'APIT_CHILD_VERSION', '0.33.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -169,6 +169,7 @@ function apit_paginas_com_folha_comum() {
 		'internacionalizacao',
 		'calendario',
 		'documentos',
+		'media-kit',
 		'noticias',
 	] );
 }

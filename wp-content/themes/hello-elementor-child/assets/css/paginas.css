@@ -2219,3 +2219,332 @@
 		padding: 0 24px 28px;
 	}
 }
+
+/* ==========================================================================
+   Media Kit
+   ========================================================================== */
+
+/*
+ * O degradé do hero. Roxo à esquerda para laranja à direita, que é o par de
+ * cores da paleta que nenhuma outra página usa — as sete restantes já gastam o
+ * magenta, o azul e o verde-água, e duas páginas a abrir na mesma imagem é o
+ * que a nota do hero das Notícias manda evitar.
+ */
+.hero--mediakit {
+	--apit-hero-base: #674196;
+	--apit-hero-arte:
+		radial-gradient(85% 120% at 4% 30%, #8048a6 0%, rgba(128, 72, 166, 0) 60%),
+		radial-gradient(70% 95% at 46% 14%, #b44ab0 0%, rgba(180, 74, 176, 0) 58%),
+		radial-gradient(80% 110% at 90% 50%, #ef6341 0%, rgba(239, 99, 65, 0) 62%),
+		linear-gradient(97deg, #674196 0%, #9a5cb8 34%, #d1568c 68%, #ef6341 100%);
+}
+
+/* ---------- Como funciona: os três passos ---------- */
+
+/*
+ * A largura de leitura é dada pelo recuo do próprio contentor e não por uma
+ * max-width em cada widget: assim os filhos são naturalmente da largura certa,
+ * e um bloco acrescentado amanhã no editor alinha com os outros sem regra nova.
+ *
+ * O `align-items` é preciso porque um contentor em coluna do Elementor não
+ * estica os filhos — sem ele cada widget encolhia até ao seu conteúdo, e o
+ * formulário ficava com 261px em vez dos 640 que tem de ter.
+ */
+.mediakit-como,
+.mediakit-pedido {
+	padding-inline: max(20px, calc(50% - 670px)) !important;
+	align-items: stretch !important;
+}
+
+.mediakit__titulo {
+	margin-bottom: 52px;
+}
+
+.mediakit__titulo .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 40px;
+	line-height: 1.2;
+	letter-spacing: -0.4px;
+	color: var(--apit-black) !important;
+}
+
+/*
+ * Os três lado a lado. Elementor põe os widgets em invólucros próprios, por
+ * isso o que aqui é filho não é o bloco mas o invólucro dele — a mesma
+ * armadilha do "Como aderir" no hero dos Associados, onde metade ficou com
+ * 433px em vez de 630.
+ */
+.mediakit__passos {
+	display: flex !important;
+	flex-direction: row !important;
+	gap: 32px !important;
+	align-items: stretch;
+}
+
+.mediakit__passo {
+	flex: 1 1 0;
+	padding: 36px 32px 40px !important;
+	border-radius: 2px;
+	/*
+	 * Contorno em degradé com cantos, como nas FAQ: a cor pinta a borda e o
+	 * branco o interior, porque um border-image não respeita o raio.
+	 */
+	border: 1px solid transparent !important;
+	background:
+		linear-gradient(#fff, #fff) padding-box,
+		linear-gradient(140deg,
+			rgba(103, 65, 150, 0.4) 0%,
+			rgba(180, 74, 176, 0.4) 50%,
+			rgba(239, 99, 65, 0.4) 100%) border-box;
+}
+
+.mediakit__passo-titulo {
+	margin-bottom: 14px;
+}
+
+.mediakit__passo-titulo .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 22px;
+	line-height: 1.2;
+	letter-spacing: -0.4px;
+	color: var(--apit-black) !important;
+}
+
+.mediakit__passo-texto {
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 1.68;
+	color: var(--apit-black);
+}
+
+/* ---------- O pedido da ficha ---------- */
+
+/* !important: o Elementor escreve o alinhamento do contentor na folha da página. */
+.mediakit-pedido {
+	text-align: center !important;
+}
+
+.mediakit-pedido .apit-secao__etiqueta {
+	margin-bottom: 18px;
+}
+
+.mediakit-pedido__titulo .elementor-heading-title {
+	font-family: var(--apit-font);
+	font-weight: 400;
+	font-size: 40px;
+	line-height: 1.2;
+	letter-spacing: -0.4px;
+	color: var(--apit-black) !important;
+}
+
+.mediakit-pedido__texto {
+	max-width: 62ch;
+	margin-inline: auto;
+	font-size: 17px;
+	line-height: 1.68;
+	color: var(--apit-black);
+}
+
+/*
+ * width: 100% antes das margens automáticas. Sem ela o widget é um item flex a
+ * encolher até ao conteúdo, e as margens centravam 261px de formulário em vez
+ * de 640 — o `align-items: stretch` do contentor não chega, porque uma margem
+ * automática ganha-lhe.
+ */
+.mediakit-pedido__form {
+	width: 100%;
+	max-width: 640px !important;
+	margin-inline: auto !important;
+	margin-top: 44px !important;
+	text-align: left;
+}
+
+/*
+ * O Gravity Forms traz o tema "orbital", que é feito de variáveis CSS. Vesti-lo
+ * por variáveis e não por selectores é o que sobrevive a uma actualização do
+ * plugin: o que aqui se declara é o vocabulário público dele, e não o nome de
+ * uma classe interna que muda de versão para versão.
+ */
+.mediakit-pedido .gform_wrapper {
+	--gf-ctrl-font-family: var(--apit-font);
+	--gf-ctrl-font-size: 16px;
+	--gf-ctrl-size-md: 56px;
+	--gf-ctrl-padding-x-md: 14px;
+	--gf-ctrl-radius: 0;
+	--gf-ctrl-bg-color: rgba(27, 42, 51, 0.04);
+	--gf-ctrl-bg-color-focus: rgba(27, 42, 51, 0.04);
+	--gf-ctrl-color: var(--apit-black);
+	--gf-ctrl-border-color: var(--apit-black);
+	--gf-ctrl-border-color-hover: var(--apit-black);
+	--gf-ctrl-border-color-focus: var(--apit-magenta);
+	--gf-ctrl-accent-color: var(--apit-magenta);
+	--gf-ctrl-label-font-family: var(--apit-font);
+	--gf-ctrl-label-color-primary: var(--apit-black);
+
+	--gf-ctrl-btn-font-family: var(--apit-font);
+	--gf-ctrl-btn-font-weight: 500;
+	--gf-ctrl-btn-radius: 200px;
+	/*
+	 * Os tokens de tamanho têm de ser os da variante — o tema escreve
+	 * `--gf-ctrl-btn-size: var(--gf-ctrl-btn-size-md)` no próprio botão, e essa
+	 * declaração ganha à que aqui se fizesse no invólucro. Pôr o valor no nome
+	 * sem sufixo não fazia nada: o botão continuava com os 38px de origem.
+	 */
+	--gf-ctrl-btn-size-md: 57px;
+	--gf-ctrl-btn-font-size-md: 15px;
+	--gf-ctrl-btn-padding-x-md: 30px;
+	--gf-ctrl-btn-bg-color-primary: var(--apit-magenta);
+	--gf-ctrl-btn-bg-color-hover-primary: var(--apit-black);
+	--gf-ctrl-btn-bg-color-focus-primary: var(--apit-black);
+	--gf-ctrl-btn-border-color-primary: var(--apit-magenta);
+	--gf-ctrl-btn-border-color-hover-primary: var(--apit-black);
+	--gf-ctrl-btn-color-primary: var(--apit-branco);
+}
+
+/*
+ * Campo sublinhado e não encaixotado, como o da newsletter. A variável do
+ * contorno é uma só e vale para os quatro lados, por isso a largura é escrita
+ * aqui à mão.
+ */
+.mediakit-pedido .gform_wrapper .gfield input[type="text"],
+.mediakit-pedido .gform_wrapper .gfield input[type="email"] {
+	/*
+	 * A altura vem escrita e não do token: `--gf-ctrl-size` é o mínimo da caixa
+	 * e quem manda aqui é o par preenchimento + entrelinha, pelo que mudar o
+	 * token deixava os campos nos 38px de origem, dezoito abaixo dos da
+	 * newsletter. Duas linhas explícitas dizem o que três tokens não diziam.
+	 */
+	height: 56px !important;
+	padding: 0 14px !important;
+	border-width: 0 0 2px 0 !important;
+}
+
+.mediakit-pedido .gform_wrapper .gform-field-label {
+	font-weight: 500;
+	font-size: 15px;
+	letter-spacing: 0.2px;
+}
+
+.mediakit-pedido .gform_wrapper .gform_footer {
+	justify-content: center;
+}
+
+.mediakit-pedido .gform_wrapper .gform_button {
+	font-size: 15px !important;
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+}
+
+/* A confirmação toma o lugar do formulário, e é ela que leva ao PDF. */
+.mediakit-pedido .gform_confirmation_message {
+	font-family: var(--apit-font);
+	font-size: 20px;
+	line-height: 1.5;
+	color: var(--apit-black);
+	text-align: center;
+}
+
+.mediakit-pedido .gform_confirmation_message .ficha-ok__acao {
+	margin-top: 26px;
+}
+
+/* ---------- Media Kit em ecrãs estreitos ---------- */
+
+@media (max-width: 1024px) {
+	.mediakit__passos {
+		flex-wrap: wrap !important;
+	}
+
+	.mediakit__passo {
+		flex: 1 1 260px;
+	}
+}
+
+@media (max-width: 768px) {
+	.mediakit__passos {
+		flex-direction: column !important;
+	}
+
+	/* Em coluna, um flex-grow reparte o espaco livre e deixava os cartoes com um vazio por baixo do texto. */
+	.mediakit__passo {
+		flex: 0 0 auto;
+	}
+
+	.mediakit__titulo {
+		margin-bottom: 36px;
+	}
+
+	.mediakit-pedido__form {
+		margin-top: 32px !important;
+	}
+}
+
+/*
+ * A etiqueta de secção feita com um widget de título do Elementor.
+ *
+ * O Elementor escreve, na folha por página, que todo o `.elementor-heading-title`
+ * leva a cor "Primária" do kit — que neste site é o magenta — e essa folha é
+ * impressa depois desta. Até agora nenhuma etiqueta passava por lá, porque eram
+ * todas escritas pelos templates do tema; a do Media Kit é a primeira feita no
+ * editor, e saiu magenta.
+ *
+ * `inherit` em vez de repetir os valores: quem manda continua a ser
+ * .apit-secao__etiqueta, e esta regra só impede o Elementor de lhe passar à
+ * frente. Serve qualquer etiqueta que venha a ser posta no editor.
+ */
+.apit-secao__etiqueta .elementor-heading-title {
+	font: inherit;
+	letter-spacing: inherit;
+	text-transform: inherit;
+	color: inherit !important;
+}
+
+/*
+ * O botão da confirmação do formulário.
+ *
+ * As classes .btn do site vivem todas em ".btn .elementor-button" — o widget do
+ * Elementor põe as classes no invólucro e desenha o botão lá dentro. Numa
+ * âncora simples, como a que a confirmação do Gravity Forms imprime, essas
+ * regras não pegam: saía azul em vez de magenta, quatro pixels mais alta e sem
+ * o glifo do PDF. Uma classe própria, com os valores do botão do site.
+ */
+.ficha-ok__botao {
+	display: inline-flex;
+	align-items: center;
+	gap: 16px;
+	padding: 15px 30px 13px;
+	border: 2px solid var(--apit-magenta);
+	border-radius: 200px;
+	background: var(--apit-magenta);
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 1.68;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: var(--apit-branco);
+	transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.ficha-ok__botao:hover,
+.ficha-ok__botao:focus-visible {
+	border-color: var(--apit-black);
+	background: var(--apit-black);
+	color: var(--apit-branco);
+}
+
+/* O mesmo glifo do .btn--doc. O caminho sobe uma pasta: esta folha está em assets/css/. */
+.ficha-ok__botao::after {
+	content: "";
+	flex: none;
+	width: 20px;
+	height: 20px;
+	background-color: currentColor;
+	mask-image: url("../img/icon-pdf.svg");
+	mask-size: contain;
+	mask-repeat: no-repeat;
+	mask-position: center;
+}

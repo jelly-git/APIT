@@ -10,6 +10,7 @@ A versão aqui registada corresponde ao campo `Version` de
 
 ## [Não lançado]
 
+
 ### Adicionado
 - **A notícia individual** (`single.php`), desenhada a partir do que o tema já
   tem: o hero das outras páginas com o degradé das Notícias e a imagem de
@@ -264,6 +265,45 @@ A versão aqui registada corresponde ao campo `Version` de
 - Tratamento do header em páginas sem hero colorido atrás dele: o menu é branco
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
+
+## [0.33.0] - 2026-09-24
+
+### Adicionado
+- **A página Media Kit**, que estava publicada e vazia, ligada no menu principal
+  e no rodapé desde o início. Montada com as peças das outras quatro: hero com
+  fundo do back office, wordmark, migalha e título; uma secção própria; a banda
+  da Internacionalização; o bloco duplo #167; e a newsletter a fechar.
+  - **Os textos são widgets do Elementor, não campos nem código.** O cliente
+    ainda não disse o que esta página é — se é material de imprensa, se é a
+    "Seja nosso Associado" do site antigo — por isso tudo o que lá está
+    reescreve-se no editor sem tocar em PHP.
+  - O hero leva um degradé roxo-laranja, o par da paleta que nenhuma das outras
+    sete páginas usa. A página entrou no grupo ACF **Hero — fundo**, para poder
+    escolher vídeo ou galeria como as restantes.
+- **O formulário da ficha de inscrição**, em Gravity Forms: nome, empresa, email
+  e consentimento. A confirmação toma o lugar do formulário e mostra um botão
+  que abre o PDF num separador novo.
+  - **O botão e não uma abertura automática**, porque o browser bloqueia um
+    `window.open` que não venha de um clique. Com o botão, o separador abre
+    sempre, e abre por acção de quem o pediu.
+  - O endereço do PDF fica como caminho, sem domínio. Um URL completo ficaria
+    guardado dentro do JSON das definições do formulário, que é o género de
+    sítio onde o `search-replace` da exportação já falhou uma vez.
+  - O formulário veste-se pelas **variáveis do tema "orbital"** do plugin e não
+    por selectores: é o vocabulário público dele, e sobrevive a uma
+    actualização. Os tamanhos têm de ser os tokens da variante (`-md`) — o
+    plugin escreve `--gf-ctrl-btn-size: var(--gf-ctrl-btn-size-md)` no próprio
+    botão, e isso ganha ao que se declare no invólucro.
+- Os dois botões **"Descarregar ficha de inscrição"** da página Associados
+  apontavam para `#` e não faziam nada. Passam a levar a esta página.
+
+### Corrigido
+- **Um título feito no editor saía magenta.** O Elementor escreve, na folha por
+  página, que todo o `.elementor-heading-title` leva a cor "Primária" do kit —
+  que aqui é o magenta — e essa folha é impressa depois da do tema. Nunca se
+  tinha visto porque todos os títulos até agora vinham de templates do tema. As
+  cores desta página levam `!important`, e a etiqueta de secção ganhou uma regra
+  que serve qualquer etiqueta posta no editor de futuro.
 
 ## [0.32.1] - 2026-09-23
 
