@@ -14,7 +14,7 @@ migrações únicas, feitas à mão — o repositório não as contém, por dese
 | Tema `hello-elementor-child` | Sim | é o nosso código |
 | Core do WordPress | Não | instala-se/actualiza-se no servidor |
 | `wp-config.php` | Não | contém credenciais, e são outras no servidor |
-| `wp-content/uploads` | Não | conteúdo, não código (5,5 MB) |
+| `wp-content/uploads` | Não | conteúdo, não código (31 MB) |
 | Base de dados | Não | importá-la a cada deploy apagaria o site |
 
 ---
@@ -34,8 +34,14 @@ Ambos os anfitriões servem a mesma pasta, mas o WordPress canoniza para o
 primeiro — é esse que conta para a troca de URLs.
 
 Estado a 1 de setembro de 2026: instalação limpa com o tema `twentytwentyfive`
-activo. O `hello-elementor` e o `elementor` **não estão instalados** (ambos
-devolvem 404), pelo que o tema filho ainda não pode arrancar.
+activo, sem `hello-elementor` nem `elementor`. Foram instalados entretanto — o
+site chegou a estar no ar na v0.22.7 —, pelo que a secção 1 abaixo só interessa
+se houver que reinstalar.
+
+A 24 de setembro de 2026 o servidor responde **401** a tudo, incluindo aos
+ficheiros do tema: está atrás de autenticação HTTP. Nada do lado do servidor se
+pode confirmar de fora sem essas credenciais, incluindo a versão no ar — a
+verificação da secção 5 tem de ser feita já autenticado, no browser.
 
 ---
 
@@ -282,6 +288,16 @@ wp search-replace http://apit.local https://dev.jellycode.agency/apit --all-tabl
 Copiar `wp-content/uploads/` do site local para o servidor, por FTP/SFTP ou pelo
 File Manager. São os ficheiros da biblioteca de multimédia — os logótipos vivem
 no tema e vão pelo git, mas as imagens destacadas das notícias não.
+
+**Menos a pasta `uploads/elementor/`.** É a cache de CSS por página do Elementor,
+regenera-se sozinha no servidor, e pelo menos um dos ficheiros tem `apit.local`
+escrito lá dentro — copiada, mandava o servidor buscar folhas de estilo a esta
+máquina. É a mesma cache cujo `_elementor_css` a secção 3.1 apaga da base de
+dados, e pela mesma razão.
+
+Estado a 24 de setembro de 2026: 219 ficheiros, 31 MB, correspondentes a 91
+anexos na base de dados — todos com o ficheiro no sítio, verificado. O valor de
+5,5 MB na tabela do topo é de 1 de setembro e ficou para trás.
 
 ---
 
