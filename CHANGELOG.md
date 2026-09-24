@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.33.5] - 2026-09-24
+
+### Corrigido
+- **O visto do consentimento aparecia a azul.** Estavam dois a ser desenhados:
+  o do sistema, que o Chrome pinta em azul, e o nosso por cima. A caixa passa a
+  ser desenhada só por nós — `appearance: none` forçado, o `::before` do
+  Gravity Forms apagado e o estado marcado escrito à mão, tudo com
+  `!important`, porque as regras do plugin lhe ganhavam.
+- **O botão estava colado à linha do consentimento**, a 10px, como se fizesse
+  parte dela. Passa a 36px: a decisão de submeter merece o seu próprio ar.
+
 ## [0.33.4] - 2026-09-24
 
 ### Alterado

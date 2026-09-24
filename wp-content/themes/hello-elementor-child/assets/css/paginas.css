@@ -2480,25 +2480,40 @@
 	color: var(--apit-magenta);
 }
 
-/* A caixa de visto da newsletter, repetida aqui. */
+/*
+ * A caixa de visto da newsletter, repetida aqui — e desenhada só por nós.
+ *
+ * O visto aparecia a azul porque estavam dois a ser desenhados: o do sistema,
+ * que o Chrome pinta em azul, e o nosso por cima. Daí o !important em toda a
+ * linha: o `appearance` para não haver controlo nativo nenhum, o `::before`
+ * apagado para o plugin não desenhar o seu, e o estado marcado escrito à mão
+ * porque as regras do Gravity Forms lhe ganhavam.
+ */
 .mediakit-pedido .gform_wrapper input[type="checkbox"] {
-	appearance: none;
-	-webkit-appearance: none;
+	appearance: none !important;
+	-webkit-appearance: none !important;
 	position: relative;
 	flex: none;
-	width: 20px;
-	height: 20px;
-	margin: 0;
-	border: 1px solid rgba(27, 42, 51, 0.45);
-	border-radius: 2px;
-	background: transparent;
+	width: 20px !important;
+	height: 20px !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	border: 1px solid rgba(27, 42, 51, 0.45) !important;
+	border-radius: 2px !important;
+	background: transparent !important;
+	background-image: none !important;
+	box-shadow: none !important;
 	cursor: pointer;
 	transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
+.mediakit-pedido .gform_wrapper input[type="checkbox"]::before {
+	content: none !important;
+}
+
 .mediakit-pedido .gform_wrapper input[type="checkbox"]:checked {
-	border-color: var(--apit-magenta);
-	background: var(--apit-magenta);
+	border-color: var(--apit-magenta) !important;
+	background: var(--apit-magenta) !important;
 }
 
 /*
@@ -2525,9 +2540,15 @@
 
 /* ----- O botão ----- */
 
+/*
+ * 36px acima do botão. Eram 10, e o botão ficava colado à linha do
+ * consentimento como se fizesse parte dela — a decisão de submeter merece o seu
+ * próprio ar, e 36 é o intervalo da grelha (28) mais o que o botão já não tem
+ * de margem própria.
+ */
 .mediakit-pedido .gform_wrapper .gform_footer {
 	justify-content: center;
-	margin-top: 10px !important;
+	margin-top: 36px !important;
 	padding: 0 !important;
 }
 
