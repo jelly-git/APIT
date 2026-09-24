@@ -125,6 +125,24 @@ A versão aqui registada corresponde ao campo `Version` de
   galeria do seu hero escolhem-se no back office como nas restantes.
 
 ### Corrigido
+- **As ligações internas voltam a ser guardadas como caminhos**, que é o que o
+  filtro de `inc/links.php` espera. Tinham sido construídos dois mecanismos para
+  o mesmo problema: o filtro, que prefixa os `href` e `src` com `/apit` na saída
+  da página, e uma conversão de tudo para endereços completos, que dependia do
+  `search-replace` da exportação. Os dois funcionam, mas não convivem — e o
+  segundo escrevia o domínio dentro das páginas, ao ponto de a banda dos
+  Associados na Sobre a APIT ficar com
+  `url="http://apit.local/associados/"` no shortcode, a ler ao contrário de
+  todos os outros. Ficou o filtro: 28 ligações voltaram a caminho, nenhuma parte
+  dos dados nomeia um domínio, e mudar de alojamento deixa de pedir uma
+  passagem de substituição.
+  - Duas provas passam a viver no repositório, em `tools/`, porque nada disto se
+    vê no local — o site está na raiz do domínio, o caminho é vazio e o filtro
+    sai logo. A `prova-prefixo.php` corre os catorze casos do filtro com o
+    `home_url` a fingir a subpasta, incluindo o `/apitico/`, que começa por
+    "apit" e não é a subpasta. A `prova-servidor.php` volta a passar o HTML
+    servido de cada página pelo filtro e lista o que um visitante em `/apit`
+    clicaria: 11 ligações internas, todas sob `/apit`.
 - **A banda da Internacionalização tinha uma faixa acima e abaixo**, da cor da
   secção, a cortá-la do que ficava à volta. Eram os 10px de padding que o
   Elementor dá a qualquer contentor: a `apit-sangra` só zerava os horizontais.

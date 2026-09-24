@@ -113,31 +113,44 @@ que copia o tema para `~/public_html/apit/wp-content/themes/`.
 
 No Local, botão direito no site *apit* > **Open site shell**.
 
-### 3.0 As ligações internas têm de ser absolutas
+### 3.0 As ligações internas ficam guardadas como caminhos
 
 O servidor serve o site de uma subpasta — `dev.jellycode.agency/apit` — e é isso
-que torna as ligações relativas à raiz uma armadilha. `/contactos/` funciona
-perfeitamente no local, que está na raiz, e no servidor resolve para
-`dev.jellycode.agency/contactos/`: 404, ou pior, outro projecto da mesma conta.
-A migalha `href="/"` das sete páginas apontava exactamente para aí.
+que torna `/contactos/` uma armadilha: funciona no local, que está na raiz, e no
+servidor resolve para `dev.jellycode.agency/contactos/`, fora do WordPress. A
+migalha `href="/"` de sete páginas apontava exactamente para aí.
 
-Guardar sempre o endereço completo (`http://apit.local/...`), que o
-`search-replace` da exportação depois converte. Para confirmar antes de exportar,
-o teste é o HTML servido e não a base de dados:
+Quem trata disto é o tema, em `inc/links.php`. A página acabada passa por um
+filtro que prefixa os `href` e `src` que começam por uma única barra com o
+caminho onde o WordPress vive — `/apit` no servidor, nada na raiz de um
+domínio. **Os valores guardados ficam como caminhos** e nunca nomeiam um
+domínio: mudar de alojamento não pede `search-replace`, e uma ligação escrita
+amanhã no painel do Elementor fica coberta sem ninguém saber que isto existe.
+
+O que o filtro deixa em paz: `//cdn.exemplo.com`, endereços completos,
+âncoras, `mailto:`, caminhos verdadeiramente relativos e o que já esteja sob
+`/apit` — para não levar o prefixo duas vezes.
+
+Nada disto se vê no local, onde o caminho do site é vazio e o filtro sai logo.
+A verificação é fazer de conta que o site está na subpasta, e é dupla:
 
 ```bash
-for p in "" associados/ calendario/ documentos/ noticias/ internacionalizacao/ \
-         sobre-apit/ contactos/ estatutos/ associados/todos-os-associados/; do
-  n=$(curl -s "http://apit.local/$p" | grep -oE 'href="/[^"]*"' | grep -v '^href="//' | sort -u | wc -l)
-  printf "  %-34s %s\n" "${p:-home}" "$n"
-done
+# 1. os casos do filtro, um a um
+wp eval-file prova-prefixo.php
+
+# 2. as páginas servidas, passadas de novo pelo filtro com o home_url da
+#    subpasta — sai o que um visitante em /apit clicaria
+wp eval-file prova-servidor.php
 ```
 
-Todas as linhas têm de dar `0`. A 23 de setembro eram 51 ligações em três
-formatos diferentes, e cada formato precisou da sua passagem: `link.url` nos
-botões do Elementor, atributos dentro dos shortcodes (`url=`, mas também `acao=`
-no calendário) e `href=` no HTML dos editores de texto — este último é o que
-guarda as migalhas, e foi o que sobrou depois das duas primeiras passagens.
+A segunda tem de dar **todas as ligações internas sob `/apit`**. A 24 de
+setembro eram 11 e passaram todas.
+
+> Houve duas passagens a fazer o contrário disto — converter tudo para
+> endereços completos, e deixar o `search-replace` da exportação tratar deles.
+> Funcionava, mas punha o domínio dentro das páginas e fazia um shortcode ler
+> ao contrário de todos os outros. Os dois mecanismos não convivem: ficou o
+> filtro, que é o que não escreve o domínio em lado nenhum.
 
 ### 3.1 Limpar o que não deve viajar
 
