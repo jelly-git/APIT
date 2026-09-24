@@ -266,6 +266,28 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.33.3] - 2026-09-24
+
+### Corrigido
+- **A banda da Internacionalização saía sem estilo na Media Kit** — sem fundo,
+  o botão um fantasma e o logótipo Watch Portugal quase invisível. A folha
+  `internacionalizacao.css` era carregada por uma lista de quatro slugs escrita
+  no `functions.php`, e a página nova não estava lá.
+  - **Passa a ser decidida pela própria página**, com
+    `apit_pagina_usa_shortcode()`: quem tem `[apit_internacionalizacao]` leva a
+    folha, quem não tem não paga por ela. Pôr o shortcode passa a bastar, que
+    era o que se esperava dele — senão a próxima página paga o mesmo preço.
+  - O ajudante olha para o `post_content` **e** para o `_elementor_data`. Numa
+    página do Elementor a cópia em texto do `post_content` só é reescrita
+    quando alguém grava no editor, e por isso envelhece; o shortcode que a
+    página de facto desenha está no segundo.
+  - Corre em `wp_enqueue_scripts`, que dispara dentro do `wp_head` com a
+    consulta principal já resolvida — cedo para a folha ser impressa no
+    cabeçalho e não depois de a banda já ter sido pintada sem ela.
+  - O artigo mantém a sua própria condição: aí a banda vem do template guardado
+    que fecha a peça, não de nada gravado no artigo.
+  - Verificado nas cinco páginas que a mostram e nos dois artigos.
+
 ## [0.33.2] - 2026-09-24
 
 ### Alterado

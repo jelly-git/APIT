@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.33.2' );
+define( 'APIT_CHILD_VERSION', '0.33.3' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -109,12 +109,21 @@ function apit_child_enqueue_assets() {
 	}
 
 	/*
-	 * The Internacionalização band is shown on four pages and under every
+	 * The Internacionalização band is shown on several pages and under every
 	 * article, so its rules live in their own file rather than in the stylesheet
 	 * of any one of them — and rather than in style.css, which every other page
 	 * would then carry for nothing.
+	 *
+	 * Which pages get it is read from the page itself and not from a list kept
+	 * here. The list was four slugs, and the Media Kit — which drops the same
+	 * shortcode in — came out with the band unstyled: no background, the button
+	 * a ghost, the Watch Portugal lockup barely there. Dropping the shortcode in
+	 * has to be enough, or the next page pays the same price.
+	 *
+	 * The article keeps its own clause: there the band comes from the saved
+	 * template that closes the piece, not from anything stored on the post.
 	 */
-	if ( is_page( [ 'sobre-apit', 'calendario', 'documentos', 'noticias' ] ) || is_singular( 'post' ) ) {
+	if ( apit_pagina_usa_shortcode( 'apit_internacionalizacao' ) || is_singular( 'post' ) ) {
 		wp_enqueue_style(
 			'apit-inter-style',
 			get_stylesheet_directory_uri() . '/assets/css/internacionalizacao.css',
@@ -155,6 +164,40 @@ function apit_child_enqueue_assets() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'apit_child_enqueue_assets' );
+
+/**
+ * Whether the page being served uses a shortcode, so its stylesheet can be
+ * decided by the page instead of by a list kept in this file.
+ *
+ * Two places to look. `post_content` is where WordPress keeps a shortcode
+ * written in the editor — and, on an Elementor page, a plain-text copy that is
+ * only rewritten when someone saves in the editor, so it goes stale. The
+ * shortcode a page really renders is the one in `_elementor_data`, which is why
+ * that is checked too and why a plain `strpos` is enough there: the field is
+ * JSON, and `has_shortcode()` would have to parse the whole tree to find what a
+ * substring finds straight away.
+ *
+ * Runs on wp_enqueue_scripts, which fires inside wp_head with the main query
+ * already resolved — early enough for the stylesheet to be printed in the head
+ * rather than after the band has been painted without it.
+ */
+function apit_pagina_usa_shortcode( $etiqueta ) {
+	$id = get_queried_object_id();
+
+	if ( ! $id ) {
+		return false;
+	}
+
+	$post = get_post( $id );
+
+	if ( $post && has_shortcode( (string) $post->post_content, $etiqueta ) ) {
+		return true;
+	}
+
+	$dados = get_post_meta( $id, '_elementor_data', true );
+
+	return is_string( $dados ) && false !== strpos( $dados, '[' . $etiqueta );
+}
 
 /**
  * The pages that share assets/css/paginas.css.
