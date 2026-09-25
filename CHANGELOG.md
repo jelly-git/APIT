@@ -266,6 +266,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.36.4] - 2026-09-25
+
+### Corrigido
+- **O espaço por baixo do campo era o triplo do de cima** — 26px em cima, 86 em
+  baixo. A faixa tem de cobrir os 156px do cabeçalho e o conteúdo é mais baixo
+  do que isso; sem centrar, a folga caía toda para um lado.
+  - Centrada, ficam 55 e 57. Com resultados a faixa cresce por si e o respiro
+    volta a ser 26 e 28.
+  - Centrar pede flex, que foi o que encolheu o campo na 0.36.1. Desta vez os
+    filhos levam `width: 100%`: com largura explícita, as margens automáticas
+    voltam a centrar em vez de comerem o espaço livre. O campo fica nos 1340.
+
 ## [0.36.3] - 2026-09-25
 
 ### Alterado
