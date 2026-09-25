@@ -266,6 +266,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.36.2] - 2026-09-25
+
+### Corrigido
+- **O campo da pesquisa tinha encolhido para 362px**, centrado e desalinhado
+  dos resultados por baixo. Ao pôr a faixa a cobrir o cabeçalho (0.36.1)
+  passei-a a contentor flex em coluna, e aí a margem automática do formulário
+  come o espaço livre em vez de o preencher.
+  - É a mesma armadilha do formulário do Media Kit, e a saída é a mesma: não
+    pôr em flex o que não precisa. Com `display: block` o campo volta aos
+    1340px, a começar no mesmo x dos resultados.
+  - A posição fica como está — a faixa continua a cobrir o cabeçalho.
+
 ## [0.36.1] - 2026-09-25
 
 ### Alterado

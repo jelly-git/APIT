@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.36.1
+Version: 0.36.2
 */
 
 :root {
@@ -2584,15 +2584,17 @@ a.btn--escuro:focus-visible {
  * elemento com `hidden` e um display declarado fica visível à mesma.
  */
 /*
- * A faixa cobre o cabecalho em vez de se abrir por baixo dele.
+ * A faixa cobre o cabeçalho em vez de se abrir por baixo dele.
  *
- * Aberta por baixo, ficavam dois planos a disputar a atencao: o menu inteiro em
- * cima e os resultados em baixo. A pesquisa e um modo — enquanto se procura, e
- * so isso que interessa —, por isso toma o lugar do cabecalho e o menu
- * desaparece ate se fechar.
+ * Aberta por baixo ficavam dois planos a disputar a atenção: o menu inteiro em
+ * cima e os resultados em baixo. A pesquisa é um modo — enquanto se procura, é
+ * só isso que interessa — por isso toma o lugar do cabeçalho até se fechar.
  *
- * `top: 0` e `min-height: 100%` para cobrir os 156px do cabecalho mesmo quando
- * ainda nao ha resultados; com resultados cresce por si.
+ * `display: block` e não flex, apesar de a caixa ser alta: num contentor flex
+ * em coluna a margem automática do formulário come o espaço livre em vez de o
+ * preencher, e o campo encolhia de 1340 para 362px, desalinhado dos resultados
+ * por baixo. É a mesma armadilha do formulário do Media Kit, e a saída é a
+ * mesma — não pôr em flex o que não precisa.
  */
 .apit-pesquisa {
 	position: absolute;
@@ -2600,14 +2602,13 @@ a.btn--escuro:focus-visible {
 	right: 0;
 	top: 0;
 	z-index: 95;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
+	display: block;
 	min-height: 100%;
-	padding: 26px 42px 30px;
+	padding: 42px 42px 30px;
 	background: rgba(27, 42, 51, 0.97);
 	backdrop-filter: blur(6px);
 }
+
 
 .apit-pesquisa[hidden] {
 	display: none;
