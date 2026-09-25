@@ -156,6 +156,15 @@ function apit_shortcode_internacionalizacao() {
 add_shortcode( 'apit_internacionalizacao', 'apit_shortcode_internacionalizacao' );
 
 /**
+ * A mesma banda em versão baixa, para o fim de páginas já longas. Mesmos
+ * campos, sem o parágrafo — ver o template.
+ */
+function apit_shortcode_internacionalizacao_compacta() {
+	return apit_render_template_part( 'template-parts/sobre/internacionalizacao-compacta' );
+}
+add_shortcode( 'apit_internacionalizacao_compacta', 'apit_shortcode_internacionalizacao_compacta' );
+
+/**
  * Contactos, with the address block beside a live Google Maps embed. The embed
  * URL is built from the address itself and needs no API key, which keeps the
  * map working on any domain the site moves to.

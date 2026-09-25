@@ -111,3 +111,72 @@
 		display: none;
 	}
 }
+
+/* -------------------------------------------------------------------------
+ * A banda em versão baixa
+ *
+ * Só o que difere da grande: o degradé, as cores e o logótipo vêm de
+ * `.sobre-inter`, pelo que as duas nunca se separam de aspecto — muda a altura,
+ * não o desenho.
+ *
+ * O parágrafo não é escondido aqui, não é impresso pelo template: uma banda
+ * "compacta" que trouxesse o texto e o tapasse com CSS continuaria a custar o
+ * seu peso a quem lê com leitor de ecrã.
+ * ---------------------------------------------------------------------- */
+
+.sobre-inter--compacta {
+	padding: 48px 0;
+}
+
+/*
+ * Numa só linha, e o texto encolhe ao que precisa em vez dos 46% da grande —
+ * sem o parágrafo, metade da largura ficaria vazia.
+ */
+.sobre-inter--compacta .sobre-inter__interior {
+	gap: 48px;
+	justify-content: space-between;
+}
+
+.sobre-inter--compacta .sobre-inter__texto {
+	display: flex;
+	flex: 0 1 auto;
+	align-items: center;
+	gap: 36px;
+	max-width: none;
+}
+
+.sobre-inter--compacta .sobre-inter__titulo {
+	font-size: 28px;
+	line-height: 1.25;
+}
+
+.sobre-inter--compacta .sobre-inter__marca {
+	flex: 0 1 auto;
+}
+
+.sobre-inter--compacta .sobre-inter__marca img {
+	max-width: 300px;
+}
+
+@media (max-width: 1024px) {
+	.sobre-inter--compacta {
+		padding: 40px 0;
+	}
+
+	.sobre-inter--compacta .sobre-inter__interior {
+		gap: 32px;
+	}
+
+	/* Título e botão deixam de partilhar a linha antes de ficarem apertados. */
+	.sobre-inter--compacta .sobre-inter__texto {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 22px;
+	}
+}
+
+@media (max-width: 768px) {
+	.sobre-inter--compacta .sobre-inter__marca img {
+		max-width: 240px;
+	}
+}

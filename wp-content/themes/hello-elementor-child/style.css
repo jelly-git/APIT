@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.34.5
+Version: 0.35.0
 */
 
 :root {
@@ -2507,5 +2507,70 @@ a.btn--escuro:focus-visible {
 
 	.apit-footer__sep {
 		display: none;
+	}
+}
+
+/* ---------- Voltar ao início ---------- */
+
+/*
+ * Canto inferior direito, sobre o conteúdo. Fica abaixo do painel do menu
+ * móvel (z-index 100) para não lhe aparecer por cima quando ele está aberto.
+ *
+ * `hidden` esconde-o até a página descer; o `display: flex` teria de o mostrar
+ * outra vez, por isso o estado escondido leva o seu próprio `display: none` —
+ * um elemento com `hidden` e `display: flex` fica visível, que é o erro
+ * clássico deste par.
+ */
+.apit-topo {
+	position: fixed;
+	right: 28px;
+	bottom: 28px;
+	z-index: 90;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	padding: 0;
+	border: 2px solid var(--apit-magenta);
+	border-radius: 50%;
+	background: var(--apit-magenta);
+	font-size: 17px;
+	line-height: 1;
+	color: var(--apit-branco);
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba(27, 42, 51, 0.22);
+	transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.apit-topo[hidden] {
+	display: none;
+}
+
+.apit-topo:hover,
+.apit-topo:focus-visible {
+	border-color: var(--apit-black);
+	background: var(--apit-black);
+	transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.apit-topo {
+		transition: none;
+	}
+
+	.apit-topo:hover,
+	.apit-topo:focus-visible {
+		transform: none;
+	}
+}
+
+@media (max-width: 768px) {
+	.apit-topo {
+		right: 18px;
+		bottom: 18px;
+		width: 46px;
+		height: 46px;
+		font-size: 15px;
 	}
 }

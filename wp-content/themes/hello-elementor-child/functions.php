@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.34.5' );
+define( 'APIT_CHILD_VERSION', '0.35.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -17,6 +17,7 @@ require_once get_stylesheet_directory() . '/inc/hero.php';
 require_once get_stylesheet_directory() . '/inc/links.php';
 require_once get_stylesheet_directory() . '/inc/noticias.php';
 require_once get_stylesheet_directory() . '/inc/shortcodes.php';
+require_once get_stylesheet_directory() . '/inc/voltar-ao-topo.php';
 
 function apit_child_enqueue_assets() {
 	wp_enqueue_style(
@@ -132,6 +133,14 @@ function apit_child_enqueue_assets() {
 			APIT_CHILD_VERSION
 		);
 	}
+
+	wp_enqueue_script(
+		'apit-voltar-ao-topo',
+		get_stylesheet_directory_uri() . '/assets/js/voltar-ao-topo.js',
+		[],
+		APIT_CHILD_VERSION,
+		true
+	);
 
 	wp_enqueue_script(
 		'apit-menu-mobile',

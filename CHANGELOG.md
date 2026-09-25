@@ -266,6 +266,37 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.35.0] - 2026-09-25
+
+### Adicionado
+- **Botão de voltar ao início da página**, no canto inferior direito. As
+  páginas deste site são longas — a das Notícias passa dos cinco ecrãs — e quem
+  chega ao fim não tinha como voltar ao menu sem arrastar tudo para trás.
+  - Aparece depois de a página descer um ecrã e meio, e sai no rodapé em todas
+    as páginas: é comportamento do site, não conteúdo de nenhuma, pelo que não
+    há nada a colocar página a página.
+  - É um `<button>` e não uma âncora para `#`: não leva a lado nenhum, faz uma
+    coisa — e não deixa `#` na barra de endereço nem um item no histórico.
+  - Respeita `prefers-reduced-motion` (salta em vez de deslizar) e leva o foco
+    ao cabeçalho, senão quem navega por teclado subia a página e ficava com o
+    foco no fim dela.
+- **`[apit_internacionalizacao_compacta]`** — a mesma banda em versão baixa,
+  para o fim de páginas já longas. Aplicada nas **Notícias** e no
+  **Calendário**; as restantes mantêm a banda grande.
+  - **508px passam a 235px.** Quase toda a altura poupada vem de deixar o
+    parágrafo de fora: quem chega ao fim dessas páginas já leu bastante, e o
+    que falta ali é o convite e a porta, não a explicação.
+  - O parágrafo não é escondido por CSS, não é impresso — uma banda "compacta"
+    que o trouxesse e o tapasse continuaria a custar o seu peso a quem lê com
+    leitor de ecrã.
+  - Os campos são os mesmos, lidos da Sobre a APIT: as duas versões nunca
+    dizem coisas diferentes.
+
+### Alterado
+- Na página **APIT**, o botão da banda dos Associados passa a levar
+  directamente à lista completa (`/associados/todos-os-associados/`). Apontava
+  para a página de entrada, e o rótulo diz "Ver todos os associados".
+
 ## [0.34.5] - 2026-09-25
 
 ### Corrigido
