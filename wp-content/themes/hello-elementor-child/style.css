@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.34.4
+Version: 0.34.5
 */
 
 :root {
@@ -465,7 +465,54 @@ ul {
 	color: var(--apit-magenta);
 }
 
-@media (max-width: 1024px) {
+/*
+ * O cabeçalho entre os 1240 e os 1439.
+ *
+ * Em cima está desenhado para 1440 e daí para cima: o logótipo, sete itens de
+ * menu com 32px de intervalo, a lupa e o botão da Área Reservada somam 1418px,
+ * e a 1436 sobravam 18. Abaixo disso nada encolhia e o botão saía pela direita
+ * — a 1096 ficava 322px fora da janela, cortado ao meio. O menu móvel só
+ * entrava aos 1024, pelo que toda a faixa dos portáteis comuns (1280, 1366)
+ * mostrava um cabeçalho partido.
+ *
+ * Aqui aperta-se o que dá para apertar, sem tirar nada de vista: intervalos,
+ * corpo de letra, respiro do botão e tamanho do logótipo. São ~290px, que
+ * chegam para o cabeçalho caber inteiro até aos 1240.
+ */
+@media (min-width: 1240px) and (max-width: 1439px) {
+	.apit-header__main {
+		padding-inline: 24px;
+	}
+
+	.apit-header__logo img {
+		width: 160px;
+		height: 64px;
+	}
+
+	.apit-header__main-right {
+		gap: 24px;
+	}
+
+	.apit-header__nav,
+	.apit-header__menu {
+		gap: 18px;
+	}
+
+	.apit-header__menu a {
+		padding-inline: 6px;
+		font-size: 15px;
+	}
+
+	.apit-header__cta {
+		padding: 12px 22px 11px;
+	}
+}
+
+/*
+ * Abaixo dos 1240 o menu passa ao painel móvel. Era aos 1024, e entre um valor
+ * e o outro ficava a faixa em que o cabeçalho não cabia nem tinha hambúrguer.
+ */
+@media (max-width: 1239px) {
 	/* The menu and the CTA move into the mobile panel. */
 	.apit-header__topbar,
 	.apit-header__nav,

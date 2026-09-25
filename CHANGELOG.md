@@ -266,6 +266,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.34.5] - 2026-09-25
+
+### Corrigido
+- **O botão da Área Reservada saía pela direita entre os 1025 e os 1439.** O
+  cabeçalho está desenhado para 1440 e daí para cima — logótipo, sete itens de
+  menu com 32px de intervalo, lupa e botão somam 1418px, e a 1436 sobravam 18.
+  Abaixo disso nada encolhia, e o menu móvel só entrava aos 1024: **toda a
+  faixa dos portáteis comuns — 1280, 1366 — via um cabeçalho partido**. A 1096
+  o botão ficava 322px fora da janela.
+  - Dos 1240 aos 1439 o cabeçalho aperta-se: intervalos, corpo de letra,
+    respiro do botão e tamanho do logótipo. São cerca de 290px, que chegam
+    para caber inteiro sem tirar nada de vista.
+  - Abaixo dos 1240 passa ao menu móvel, que antes só entrava aos 1024.
+  - Medido em doze larguras, de 1920 a 896, incluindo as duas fronteiras: em
+    todas ou o botão cabe, ou há hambúrguer. Nenhuma fica sem um nem outro.
+
 ## [0.34.4] - 2026-09-25
 
 ### Corrigido
