@@ -115,47 +115,59 @@
 /* -------------------------------------------------------------------------
  * A banda em versão baixa
  *
- * Só o que difere da grande: o degradé, as cores e o logótipo vêm de
- * `.sobre-inter`, pelo que as duas nunca se separam de aspecto — muda a altura,
- * não o desenho.
+ * O conteúdo é o mesmo da grande — título, texto, botão e logótipo. O que muda
+ * é a altura, e vem de dois sítios: o respiro passa de 120px para 44px, e o
+ * logótipo deixa de ser a peça mais alta da banda.
  *
- * O parágrafo não é escondido aqui, não é impresso pelo template: uma banda
- * "compacta" que trouxesse o texto e o tapasse com CSS continuaria a custar o
- * seu peso a quem lê com leitor de ecrã.
+ * Na versão grande o logótipo tem 589px de largura e 262 de altura, e é ele que
+ * define a altura da banda — a coluna de texto é mais baixa do que ele. Aqui
+ * desce para 200px de largura, cerca de 89 de altura, que é o que vai do título
+ * ao botão: passa a caber dentro do texto em vez de o ultrapassar, e a altura da
+ * banda passa a ser a do que se lê.
+ *
+ * Só o que difere está aqui. O degradé, as cores e a tipografia vêm de
+ * `.sobre-inter`, pelo que as duas nunca se separam de aspecto.
  * ---------------------------------------------------------------------- */
 
 .sobre-inter--compacta {
-	padding: 48px 0;
+	padding: 44px 0;
+}
+
+.sobre-inter--compacta .sobre-inter__interior {
+	gap: 56px;
 }
 
 /*
- * Numa só linha, e o texto encolhe ao que precisa em vez dos 46% da grande —
- * sem o parágrafo, metade da largura ficaria vazia.
+ * A coluna de texto cresce: sem um logótipo de 589px ao lado, os 46% da versão
+ * grande deixavam o parágrafo a quebrar em mais linhas do que precisa — e cada
+ * linha a mais é altura que se estava a tentar poupar.
  */
-.sobre-inter--compacta .sobre-inter__interior {
-	gap: 48px;
-	justify-content: space-between;
-}
-
 .sobre-inter--compacta .sobre-inter__texto {
-	display: flex;
-	flex: 0 1 auto;
-	align-items: center;
-	gap: 36px;
-	max-width: none;
+	flex: 1 1 auto;
+	max-width: 62%;
 }
 
 .sobre-inter--compacta .sobre-inter__titulo {
-	font-size: 28px;
+	font-size: 30px;
 	line-height: 1.25;
 }
 
+.sobre-inter--compacta .sobre-inter__descricao {
+	margin-top: 14px;
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+.sobre-inter--compacta .sobre-inter__texto .btn {
+	margin-top: 22px;
+}
+
 .sobre-inter--compacta .sobre-inter__marca {
-	flex: 0 1 auto;
+	flex: 0 0 auto;
 }
 
 .sobre-inter--compacta .sobre-inter__marca img {
-	max-width: 300px;
+	max-width: 200px;
 }
 
 @media (max-width: 1024px) {
@@ -167,16 +179,13 @@
 		gap: 32px;
 	}
 
-	/* Título e botão deixam de partilhar a linha antes de ficarem apertados. */
 	.sobre-inter--compacta .sobre-inter__texto {
-		flex-direction: column;
-		align-items: flex-start;
-		gap: 22px;
+		max-width: 100%;
 	}
 }
 
 @media (max-width: 768px) {
 	.sobre-inter--compacta .sobre-inter__marca img {
-		max-width: 240px;
+		max-width: 180px;
 	}
 }

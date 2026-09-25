@@ -3,12 +3,13 @@
  * Internacionalização — a mesma banda, em versão baixa.
  *
  * A banda inteira ocupa meio ecrã no fim de páginas que já são longas. Esta diz
- * o mesmo em menos: o título, o botão e o logótipo, lado a lado numa só linha.
+ * exactamente o mesmo — título, texto, botão e logótipo — em pouco mais de
+ * metade da altura.
  *
- * **O parágrafo fica de fora**, e é daí que vem quase toda a altura poupada.
- * Quem chega ao fim das Notícias ou do Calendário já leu bastante; o que falta
- * ali é o convite e a porta, não a explicação — que continua inteira na banda
- * grande, nas páginas onde ela faz sentido.
+ * O conteúdo é o mesmo de propósito: a poupança vem do respiro, que passa de
+ * 120px para 44px em cima e em baixo, e do logótipo, que deixa de ser a peça
+ * mais alta da banda e passa a medir o que vai do título ao botão. Assim é o
+ * texto que manda na altura, e não a imagem.
  *
  * Os campos são os mesmos, lidos da Sobre a APIT como na versão grande: uma só
  * fonte, um só sítio para editar, e as duas versões nunca dizem coisas
@@ -18,6 +19,7 @@ $origem = get_page_by_path( 'sobre-apit' );
 $origem = $origem ? $origem->ID : null;
 
 $titulo = trim( (string) apit_campo( 'sobre_inter_titulo', $origem ) );
+$texto  = trim( (string) apit_campo( 'sobre_inter_texto', $origem ) );
 $botao  = trim( (string) apit_campo( 'sobre_inter_botao', $origem ) );
 $url    = trim( (string) apit_campo( 'sobre_inter_url', $origem ) );
 
@@ -36,6 +38,10 @@ if ( ! $titulo && ! $botao ) {
 		<div class="sobre-inter__texto">
 			<?php if ( $titulo ) : ?>
 				<h2 class="sobre-inter__titulo"><?php echo esc_html( $titulo ); ?></h2>
+			<?php endif; ?>
+
+			<?php if ( $texto ) : ?>
+				<p class="sobre-inter__descricao"><?php echo esc_html( $texto ); ?></p>
 			<?php endif; ?>
 
 			<?php if ( $botao ) : ?>

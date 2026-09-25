@@ -266,6 +266,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.35.1] - 2026-09-25
+
+### Alterado
+- **A banda compacta passa a ter o conteúdo todo** — título, texto, botão e
+  logótipo. Na 0.35.0 tinha deixado o parágrafo de fora; o cliente quer o mesmo
+  conteúdo, com a banda mais baixa.
+  - A altura passa a vir de dois sítios em vez do corte: o respiro desce de
+    120px para 44px em cima e em baixo, e **o logótipo deixa de ser a peça mais
+    alta**. Na versão grande tem 589×262 e é ele que define a altura da banda —
+    a coluna de texto é mais baixa do que ele. Aqui desce para 200×89, o que
+    vai do título ao botão, e passa a ser o texto a mandar na altura.
+  - A coluna de texto cresce de 46% para 62%: sem um logótipo de 589px ao lado,
+    a largura antiga deixava o parágrafo a quebrar em três linhas em vez de
+    duas, e cada linha a mais é altura que se estava a tentar poupar.
+  - **508px passam a 309px** com tudo lá dentro. Sem o parágrafo eram 235.
+  - Abaixo dos 768 o logótipo continua escondido, como na banda grande: é a
+    mesma marca que o rodapé traz poucos ecrãs abaixo.
+
 ## [0.35.0] - 2026-09-25
 
 ### Adicionado
