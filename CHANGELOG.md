@@ -266,6 +266,23 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.34.4] - 2026-09-25
+
+### Corrigido
+- **O hero da Sobre a APIT encostava o texto à margem** assim que a janela
+  descia abaixo dos 1340, enquanto as outras páginas mantinham a folga. A linha
+  do hero não tinha goteira nenhuma; o resto da página põe 20px dentro da
+  largura de 1340, como faz a `.sobre-pilares` logo a seguir.
+  - Também estava desalinhado **em ecrã largo**: a 1436px o texto do hero
+    começava a 41 e os pilares por baixo a 61. Agora os dois a 61.
+  - A regra leva três classes porque o Elementor escreve
+    `.e-con>.e-con-inner{padding-inline:0}`, que empata com duas e é impresso
+    depois desta folha. O filho directo desempata sem `!important`.
+  - E só acima dos 768: abaixo disso o próprio Elementor já dá 20px, e as duas
+    somavam-se — o hero ficava a 40 com o resto da página a 20.
+  - Medido em oito larguras, incluindo os dois lados da fronteira (764 e 765):
+    o hero e a secção seguinte começam no mesmo x em todas.
+
 ## [0.34.3] - 2026-09-25
 
 ### Corrigido

@@ -86,6 +86,34 @@
 }
 
 /*
+ * A goteira lateral do hero.
+ *
+ * A linha do hero e o resto da página partilham a largura de 1340, mas a
+ * página põe 20px de recuo dentro dela — é o que `.sobre-pilares` faz logo a
+ * seguir — e a linha do hero não punha nenhum. Daí duas coisas: o texto
+ * encostava à margem assim que a janela descia abaixo dos 1340, enquanto as
+ * outras páginas mantinham a folga; e, mesmo em ecrã largo, o hero começava
+ * 20px à esquerda de tudo o que vem por baixo.
+ *
+ * Há uma só `.e-con-inner` dentro deste hero — a linha das duas colunas —,
+ * pelo que o selector não apanha mais nada.
+ *
+ * Três classes e não duas: o Elementor escreve
+ * `.e-con>.e-con-inner{padding-inline-start:0;padding-inline-end:0}`, que empata
+ * em especificidade com duas e é impresso depois desta folha. O filho directo
+ * desempata sem precisar de !important.
+ *
+ * Só acima dos 768: abaixo disso o próprio Elementor já dá 20px ao contentor, e
+ * as duas somavam-se — o texto do hero ficava a 40 enquanto o resto da página
+ * estava a 20.
+ */
+@media (min-width: 769px) {
+	.apit-sobre-hero .e-con > .e-con-inner {
+		padding-inline: 20px;
+	}
+}
+
+/*
  * The two hero columns. 640 + 166 gutter puts the right column at the x the
  * design has it, without needing a magic top offset.
  */
