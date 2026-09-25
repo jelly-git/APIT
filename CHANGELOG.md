@@ -266,6 +266,20 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.34.3] - 2026-09-25
+
+### Corrigido
+- **A migalha da Sobre a APIT não tinha a tipografia do painel.** Estava a
+  12px, com 1,5px de espaçamento e sem entrelinha; o painel dá Omnes Medium
+  14px, entrelinha 140% e espaçamento 10% — 1,4px. Ficou de quando as migalhas
+  eram escritas à mão e cada hero respondia por si.
+  - A cor é que continua a ser desta página: branco mais forte, porque aqui a
+    migalha assenta em vídeo. O painel fala de tipografia, não de cor.
+  - Confirmado nas nove páginas com migalha, medindo o que o browser calcula:
+    todas em `omnes-pro 500 14px/19.6px`, 1,4px, maiúsculas. São só duas as
+    folhas que a definem — `paginas.css` e `sobre.css` — e nenhuma outra regra
+    do tema lhe toca.
+
 ## [0.34.2] - 2026-09-25
 
 ### Adicionado

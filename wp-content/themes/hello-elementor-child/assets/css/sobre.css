@@ -105,13 +105,21 @@
 	justify-content: flex-end;
 }
 
+/*
+ * A tipografia é a do painel, igual à das outras páginas: Omnes Medium 14px,
+ * entrelinha 140%, espaçamento 10% — 1,4px. Esta migalha tinha ficado com
+ * 12px e 1,5px e sem entrelinha, de quando era escrita à mão e cada hero
+ * respondia por si. A cor é que continua a ser desta página: branco mais
+ * forte, porque aqui assenta em vídeo.
+ */
 .apit-sobre-hero .sobre-hero__crumb,
 .apit-sobre-hero .sobre-hero__crumb p {
 	margin: 0;
 	font-family: var(--apit-font);
-	font-size: 12px;
+	font-size: 14px;
 	font-weight: 500;
-	letter-spacing: 1.5px;
+	line-height: 1.4;
+	letter-spacing: 1.4px;
 	text-transform: uppercase;
 	/* White, over the unwashed part of the video — see the gradient above. */
 	color: rgba(255, 255, 255, 0.9);
