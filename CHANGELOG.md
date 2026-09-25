@@ -266,6 +266,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.34.2] - 2026-09-25
+
+### Adicionado
+- **`tools/prova-migalhas.php`**: confirma que cada página com hero traz a sua
+  migalha. As migalhas não estão escritas em página nenhuma — o tema
+  injecta-as — e por isso uma página construída de raiz, sem a classe da coluna
+  do hero, ficaria sem migalha e **sem nada se queixar**. É esse silêncio que a
+  prova quebra.
+  - A regra vale nos dois sentidos: quem tem âncora tem migalha, quem não tem
+    âncora não tem migalha. A segunda metade apanha uma migalha a aparecer onde
+    não devia.
+  - Lê as âncoras de `apit_breadcrumbs_ancoras()` em vez de as repetir, para
+    que um hero novo passe a ser coberto sem a prova ser tocada.
+  - **Verificado que falha quando deve**: com a migalha apagada de uma página,
+    dá erro e nomeia-a. Uma prova que só sabe passar não é uma prova — foi o
+    que aconteceu à `prova-servidor.php`, que chegou a dar tudo bem sobre uma
+    pasta vazia.
+  - 11 migalhas em 11 páginas com hero, de 17 lidas.
+
 ## [0.34.1] - 2026-09-25
 
 ### Corrigido

@@ -161,6 +161,27 @@ wp eval-file prova-servidor.php
 A segunda tem de dar **todas as ligações internas sob `/apit`**. A 24 de
 setembro eram 11 e passaram todas.
 
+### 3.0.1 E cada página com hero traz a sua migalha?
+
+As migalhas não estão escritas em página nenhuma: o tema calcula-as e injecta-as
+no primeiro lugar dentro da coluna do hero. Uma página nova traz a migalha por
+existir — mas uma página construída de raiz, sem a classe dessa coluna, fica sem
+âncora e sem migalha, e **nada se queixa**. É esse silêncio que esta prova
+quebra:
+
+```bash
+bash tools/guardar-paginas.sh
+wp eval-file tools/prova-migalhas.php
+```
+
+Tem de dar tantas migalhas quantas as páginas com hero, e a prova nomeia as que
+falharem. A 25 de setembro eram 11 de 11, de 17 páginas lidas. Verifiquei que
+falha quando deve: com a migalha apagada de uma página, dá erro e diz qual.
+
+A regra vale nos dois sentidos — quem tem âncora tem migalha, quem não tem
+âncora não tem migalha —, o que também apanha uma migalha a aparecer onde não
+devia.
+
 > Houve duas passagens a fazer o contrário disto — converter tudo para
 > endereços completos, e deixar o `search-replace` da exportação tratar deles.
 > Funcionava, mas punha o domínio dentro das páginas e fazia um shortcode ler
