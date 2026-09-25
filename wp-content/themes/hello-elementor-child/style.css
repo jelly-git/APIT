@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.36.0
+Version: 0.36.1
 */
 
 :root {
@@ -2583,16 +2583,29 @@ a.btn--escuro:focus-visible {
  * aberta, o estado escondido leva o seu próprio `display: none` — sem isso um
  * elemento com `hidden` e um display declarado fica visível à mesma.
  */
+/*
+ * A faixa cobre o cabecalho em vez de se abrir por baixo dele.
+ *
+ * Aberta por baixo, ficavam dois planos a disputar a atencao: o menu inteiro em
+ * cima e os resultados em baixo. A pesquisa e um modo — enquanto se procura, e
+ * so isso que interessa —, por isso toma o lugar do cabecalho e o menu
+ * desaparece ate se fechar.
+ *
+ * `top: 0` e `min-height: 100%` para cobrir os 156px do cabecalho mesmo quando
+ * ainda nao ha resultados; com resultados cresce por si.
+ */
 .apit-pesquisa {
 	position: absolute;
 	left: 0;
 	right: 0;
-	top: 100%;
+	top: 0;
 	z-index: 95;
-	display: block;
-	padding: 22px 42px 26px;
-	border-top: 1px solid rgba(255, 255, 255, 0.25);
-	background: rgba(27, 42, 51, 0.96);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-height: 100%;
+	padding: 26px 42px 30px;
+	background: rgba(27, 42, 51, 0.97);
 	backdrop-filter: blur(6px);
 }
 
@@ -2623,6 +2636,39 @@ a.btn--escuro:focus-visible {
 
 .apit-pesquisa__campo::placeholder {
 	color: rgba(244, 249, 255, 0.45);
+}
+
+/* O X azul do sistema sai; o botao de limpar ao lado faz o trabalho. */
+.apit-pesquisa__campo::-webkit-search-cancel-button,
+.apit-pesquisa__campo::-webkit-search-decoration {
+	-webkit-appearance: none;
+	appearance: none;
+	display: none;
+}
+
+.apit-pesquisa__limpar {
+	flex: none;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: transparent;
+	font-size: 19px;
+	line-height: 1;
+	color: rgba(244, 249, 255, 0.65);
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.apit-pesquisa__limpar[hidden] {
+	display: none;
+}
+
+.apit-pesquisa__limpar:hover,
+.apit-pesquisa__limpar:focus-visible {
+	background: rgba(244, 249, 255, 0.12);
+	color: #fff;
 }
 
 /* A marca de foco é a mesma dos outros campos do site: o sublinhado a magenta. */

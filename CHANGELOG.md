@@ -266,6 +266,30 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.36.1] - 2026-09-25
+
+### Alterado
+- **A faixa da pesquisa cobre o cabeçalho** em vez de se abrir por baixo dele.
+  Aberta por baixo ficavam dois planos a disputar a atenção: o menu inteiro em
+  cima e os resultados em baixo. A pesquisa é um modo — enquanto se procura, é
+  só isso que interessa — e agora toma o lugar do cabeçalho até se fechar.
+- **O X azul do sistema deu lugar a um botão nosso.** O
+  `::-webkit-search-cancel-button` aceita pouco mais do que ser escondido, e
+  saía um azul de sistema no meio de um cabeçalho que não tem azul nenhum. O
+  botão só aparece quando há o que limpar.
+
+### Corrigido
+- **O resumo das páginas saía com shortcodes**: a Internacionalização começava
+  por `[apit_hero_media][apit_wordmark texto="WORLD"]`. Numa página do
+  Elementor o `post_content` é a cópia em texto que o plugin guarda, e traz os
+  shortcodes tal e qual.
+  - Saem também a migalha, que não diz nada a quem lê resultados, e o título
+    repetido — a cópia é escrita de cima a baixo e começa pelo hero, pelo que o
+    resumo gastava metade do espaço a dizer o que já está na linha de cima.
+- As entidades HTML passam a ser descodificadas uma vez, na origem: lia-se
+  "Mercados &amp;amp; Feiras", porque é assim que o WordPress guarda o & no nome
+  da categoria. O que sai é texto, e quem imprime escapa-o.
+
 ## [0.36.0] - 2026-09-25
 
 ### Adicionado

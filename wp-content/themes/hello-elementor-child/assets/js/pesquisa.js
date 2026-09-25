@@ -24,6 +24,7 @@
 	var campo     = faixa.querySelector( '.apit-pesquisa__campo' );
 	var caixa     = faixa.querySelector( '.apit-pesquisa__resultados' );
 	var fechar    = faixa.querySelector( '.apit-pesquisa__fechar' );
+	var limpar    = faixa.querySelector( '.apit-pesquisa__limpar' );
 	var rota      = ( window.apitPesquisa && window.apitPesquisa.rota ) || '/wp-json/apit/v1/pesquisa';
 	var temporizador = null;
 	var pedido    = null;
@@ -40,6 +41,7 @@
 		botao.setAttribute( 'aria-expanded', 'false' );
 		caixa.innerHTML = '';
 		ultimo = '';
+		limpar.hidden = true;
 	}
 
 	function escapar( texto ) {
@@ -125,7 +127,18 @@
 
 	fechar.addEventListener( 'click', esconder );
 
+	limpar.addEventListener( 'click', function () {
+		campo.value = '';
+		campo.focus();
+		caixa.innerHTML = '';
+		ultimo = '';
+		limpar.hidden = true;
+	} );
+
 	campo.addEventListener( 'input', function () {
+		// O botao de limpar so existe quando ha o que limpar.
+		limpar.hidden = '' === campo.value;
+
 		window.clearTimeout( temporizador );
 		temporizador = window.setTimeout( procurar, 220 );
 	} );

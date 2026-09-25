@@ -120,7 +120,34 @@ function apit_pesquisa_contexto( $post ) {
 		) ) );
 	}
 
-	$resumo = has_excerpt( $post ) ? get_the_excerpt( $post ) : wp_strip_all_tags( $post->post_content );
+	/*
+	 * Numa página do Elementor o `post_content` é a cópia em texto que o plugin
+	 * guarda, e essa cópia traz os shortcodes tal e qual — o resumo da
+	 * Internacionalização começava por `[apit_hero_media][apit_wordmark
+	 * texto="WORLD"]`. `strip_shortcodes()` tira-os; sem isso o visitante lia
+	 * código onde devia ler a página.
+	 *
+	 * E a cópia é escrita de cima a baixo, pelo que começa pelo hero: migalha,
+	 * título, primeira frase. A migalha não diz nada a quem está a ler
+	 * resultados, por isso sai também — é o que o padrão apanha.
+	 */
+	if ( has_excerpt( $post ) ) {
+		return wp_trim_words( get_the_excerpt( $post ), 18, '…' );
+	}
+
+	$resumo = wp_strip_all_tags( strip_shortcodes( $post->post_content ) );
+	$resumo = preg_replace( '~^\s*Home\s*/[^\n]{0,80}?(\n|\s{2,})~u', '', $resumo );
+
+	/*
+	 * A seguir à migalha vem o título, que já está na linha de cima do
+	 * resultado. Repeti-lo gastava metade do espaço a dizer o mesmo duas vezes.
+	 */
+	$titulo = get_the_title( $post );
+	$limpo  = ltrim( $resumo );
+
+	if ( $titulo && 0 === mb_stripos( $limpo, $titulo ) ) {
+		$resumo = mb_substr( $limpo, mb_strlen( $titulo ) );
+	}
 
 	return wp_trim_words( $resumo, 18, '…' );
 }
@@ -132,12 +159,22 @@ function apit_pesquisa_contexto( $post ) {
 function apit_pesquisa_resultado( $post ) {
 	$tipos = apit_pesquisa_tipos();
 
+	/*
+	 * Descodificado uma vez, aqui. O que sai daqui é texto, não HTML: o
+	 * template passa-o por esc_html e o JavaScript escapa-o por sua conta. Sem
+	 * isto lia-se "Mercados &amp; Feiras", porque é assim que o WordPress
+	 * guarda o & no nome da categoria.
+	 */
+	$texto = static function ( $valor ) {
+		return wp_specialchars_decode( (string) $valor, ENT_QUOTES );
+	};
+
 	return array(
 		'tipo'     => $post->post_type,
 		'etiqueta' => $tipos[ $post->post_type ] ?? '',
-		'titulo'   => get_the_title( $post ),
+		'titulo'   => $texto( get_the_title( $post ) ),
 		'url'      => apit_pesquisa_url( $post ),
-		'contexto' => apit_pesquisa_contexto( $post ),
+		'contexto' => $texto( apit_pesquisa_contexto( $post ) ),
 		'externo'  => 'apit_documento' === $post->post_type,
 	);
 }

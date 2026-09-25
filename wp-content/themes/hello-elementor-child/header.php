@@ -107,6 +107,19 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 				autocomplete="off"
 				placeholder="<?php esc_attr_e( 'anuário, conecta, estatutos…', 'apit' ); ?>"
 			>
+
+			<?php
+			/*
+			 * O nosso botão de limpar, porque o do browser não se deixa vestir:
+			 * o `::-webkit-search-cancel-button` aceita pouco mais do que ser
+			 * escondido, e saía um X azul do sistema no meio de um cabeçalho que
+			 * não tem azul nenhum. Escondido lá em baixo, este fica no lugar dele.
+			 */
+			?>
+			<button type="button" class="apit-pesquisa__limpar" aria-label="<?php esc_attr_e( 'Limpar o que escrevi', 'apit' ); ?>" hidden>
+				<i class="fa-solid fa-delete-left" aria-hidden="true"></i>
+			</button>
+
 			<button type="button" class="apit-pesquisa__fechar" aria-label="<?php esc_attr_e( 'Fechar pesquisa', 'apit' ); ?>">
 				<i class="fa-solid fa-xmark" aria-hidden="true"></i>
 			</button>
