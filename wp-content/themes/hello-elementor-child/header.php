@@ -62,7 +62,12 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 				] );
 				?>
 				<?php // The glass comes from assets/img/icon-lupa.svg, drawn by CSS. ?>
-				<button class="apit-header__search-toggle" aria-label="<?php esc_attr_e( 'Pesquisar', 'apit' ); ?>"></button>
+				<button
+					class="apit-header__search-toggle"
+					aria-label="<?php esc_attr_e( 'Pesquisar', 'apit' ); ?>"
+					aria-expanded="false"
+					aria-controls="apit-pesquisa"
+				></button>
 			</nav>
 
 			<a href="#" class="apit-header__cta">
@@ -80,6 +85,35 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 				<i class="fa-solid fa-bars" aria-hidden="true"></i>
 			</button>
 		</div>
+	</div>
+
+	<?php
+	/*
+	 * A faixa da pesquisa, dentro do cabeçalho e por baixo dele. Nasce com
+	 * `hidden`, que a tira também da árvore de acessibilidade; o JavaScript
+	 * abre-a. Sem JavaScript não aparece — e não faz falta, porque o formulário
+	 * dela levaria à mesma página de resultados a que a lupa leva de qualquer
+	 * maneira.
+	 */
+	?>
+	<div class="apit-pesquisa" id="apit-pesquisa" hidden>
+		<form class="apit-pesquisa__form" role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+			<label class="screen-reader-text" for="apit-pesquisa-campo"><?php esc_attr_e( 'Pesquisar no site', 'apit' ); ?></label>
+			<input
+				type="search"
+				id="apit-pesquisa-campo"
+				class="apit-pesquisa__campo"
+				name="s"
+				autocomplete="off"
+				placeholder="<?php esc_attr_e( 'anuário, conecta, estatutos…', 'apit' ); ?>"
+			>
+			<button type="button" class="apit-pesquisa__fechar" aria-label="<?php esc_attr_e( 'Fechar pesquisa', 'apit' ); ?>">
+				<i class="fa-solid fa-xmark" aria-hidden="true"></i>
+			</button>
+		</form>
+
+		<?php // O JavaScript escreve aqui. `aria-live` faz o leitor de ecrã anunciar a contagem. ?>
+		<div class="apit-pesquisa__resultados" aria-live="polite"></div>
 	</div>
 </header>
 

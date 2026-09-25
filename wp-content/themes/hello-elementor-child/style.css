@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.35.3
+Version: 0.36.0
 */
 
 :root {
@@ -2572,5 +2572,179 @@ a.btn--escuro:focus-visible {
 		width: 46px;
 		height: 46px;
 		font-size: 15px;
+	}
+}
+
+/* ---------- Pesquisa: a faixa do cabeçalho ---------- */
+
+/*
+ * A faixa abre dentro do cabeçalho, logo abaixo dele. `hidden` esconde-a e
+ * tira-a da árvore de acessibilidade; como a faixa é `display: block` quando
+ * aberta, o estado escondido leva o seu próprio `display: none` — sem isso um
+ * elemento com `hidden` e um display declarado fica visível à mesma.
+ */
+.apit-pesquisa {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 100%;
+	z-index: 95;
+	display: block;
+	padding: 22px 42px 26px;
+	border-top: 1px solid rgba(255, 255, 255, 0.25);
+	background: rgba(27, 42, 51, 0.96);
+	backdrop-filter: blur(6px);
+}
+
+.apit-pesquisa[hidden] {
+	display: none;
+}
+
+.apit-pesquisa__form {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	max-width: 1340px;
+	margin-inline: auto;
+}
+
+.apit-pesquisa__campo {
+	flex: 1 1 auto;
+	height: 52px;
+	padding: 0 4px;
+	border: none;
+	border-bottom: 2px solid rgba(244, 249, 255, 0.5);
+	border-radius: 0;
+	background: transparent;
+	font-family: var(--apit-font);
+	font-size: 22px;
+	color: #fff;
+}
+
+.apit-pesquisa__campo::placeholder {
+	color: rgba(244, 249, 255, 0.45);
+}
+
+/* A marca de foco é a mesma dos outros campos do site: o sublinhado a magenta. */
+.apit-pesquisa__campo:focus,
+.apit-pesquisa__campo:focus-visible {
+	outline: none;
+	box-shadow: none;
+	border-bottom-color: var(--apit-magenta);
+}
+
+.apit-pesquisa__fechar {
+	flex: none;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: transparent;
+	font-size: 18px;
+	color: rgba(244, 249, 255, 0.8);
+	cursor: pointer;
+	transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.apit-pesquisa__fechar:hover,
+.apit-pesquisa__fechar:focus-visible {
+	background: rgba(244, 249, 255, 0.12);
+	color: #fff;
+}
+
+.apit-pesquisa__resultados {
+	max-width: 1340px;
+	margin: 0 auto;
+}
+
+.apit-pesquisa__resultados:not(:empty) {
+	margin-top: 22px;
+}
+
+/* Os grupos lado a lado: com quatro tipos, uma coluna cada lê-se de uma vez. */
+.apit-pesquisa__resultados:not(:empty) {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+	gap: 26px 32px;
+}
+
+.apit-pesquisa__etiqueta {
+	margin: 0 0 12px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 1.2;
+	letter-spacing: 1.3px;
+	text-transform: uppercase;
+	color: rgba(244, 249, 255, 0.55);
+}
+
+.apit-pesquisa__lista {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.apit-pesquisa__item {
+	display: block;
+	padding: 7px 0;
+	text-decoration: none;
+	color: #fff;
+}
+
+.apit-pesquisa__item:hover .apit-pesquisa__item-titulo,
+.apit-pesquisa__item:focus-visible .apit-pesquisa__item-titulo {
+	color: var(--apit-magenta);
+}
+
+.apit-pesquisa__item-titulo {
+	display: block;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 1.35;
+	color: #fff;
+	transition: color 0.2s ease;
+}
+
+.apit-pesquisa__item-contexto {
+	display: block;
+	margin-top: 2px;
+	font-size: 13px;
+	line-height: 1.4;
+	color: rgba(244, 249, 255, 0.55);
+}
+
+.apit-pesquisa__todos,
+.apit-pesquisa__vazio {
+	grid-column: 1 / -1;
+	margin: 0;
+	font-family: var(--apit-font);
+	font-size: 14px;
+	color: rgba(244, 249, 255, 0.7);
+}
+
+.apit-pesquisa__todos {
+	padding-top: 14px;
+	border-top: 1px solid rgba(244, 249, 255, 0.18);
+	text-decoration: none;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+}
+
+.apit-pesquisa__todos:hover,
+.apit-pesquisa__todos:focus-visible {
+	color: var(--apit-magenta);
+}
+
+@media (max-width: 1239px) {
+	.apit-pesquisa {
+		padding: 18px 20px 22px;
+	}
+
+	.apit-pesquisa__campo {
+		height: 46px;
+		font-size: 18px;
 	}
 }

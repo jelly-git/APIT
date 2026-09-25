@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.35.3' );
+define( 'APIT_CHILD_VERSION', '0.36.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -16,6 +16,7 @@ require_once get_stylesheet_directory() . '/inc/elementor.php';
 require_once get_stylesheet_directory() . '/inc/hero.php';
 require_once get_stylesheet_directory() . '/inc/links.php';
 require_once get_stylesheet_directory() . '/inc/noticias.php';
+require_once get_stylesheet_directory() . '/inc/pesquisa.php';
 require_once get_stylesheet_directory() . '/inc/shortcodes.php';
 require_once get_stylesheet_directory() . '/inc/voltar-ao-topo.php';
 
@@ -68,7 +69,7 @@ function apit_child_enqueue_assets() {
 	 * markup. Splitting it per page would mean six copies of everything but the
 	 * gradient.
 	 */
-	if ( is_page( apit_paginas_com_folha_comum() ) || is_singular( 'post' ) ) {
+	if ( is_page( apit_paginas_com_folha_comum() ) || is_singular( 'post' ) || is_search() ) {
 		wp_enqueue_style(
 			'apit-paginas-style',
 			get_stylesheet_directory_uri() . '/assets/css/paginas.css',
@@ -133,6 +134,18 @@ function apit_child_enqueue_assets() {
 			APIT_CHILD_VERSION
 		);
 	}
+
+	wp_enqueue_script(
+		'apit-pesquisa',
+		get_stylesheet_directory_uri() . '/assets/js/pesquisa.js',
+		[],
+		APIT_CHILD_VERSION,
+		true
+	);
+
+	wp_localize_script( 'apit-pesquisa', 'apitPesquisa', [
+		'rota' => esc_url_raw( rest_url( 'apit/v1/pesquisa' ) ),
+	] );
 
 	wp_enqueue_script(
 		'apit-voltar-ao-topo',

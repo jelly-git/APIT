@@ -2690,3 +2690,224 @@
 	gap: 16px;
 	column-gap: 16px !important;
 }
+
+/* ==========================================================================
+   Pesquisa — a página de resultados
+   ========================================================================== */
+
+/*
+ * O hero é o das outras páginas, com um degradé próprio: cinza-azulado e sóbrio,
+ * porque uma página de resultados não é uma secção do site — é uma ferramenta, e
+ * não deve competir com o que mostra.
+ */
+.hero--pesquisa {
+	--apit-hero-base: #4a6076;
+	--apit-hero-arte:
+		radial-gradient(80% 120% at 6% 26%, #5f7b93 0%, rgba(95, 123, 147, 0) 62%),
+		radial-gradient(70% 100% at 62% 10%, #6741961a 0%, rgba(103, 65, 150, 0) 58%),
+		linear-gradient(98deg, #47607a 0%, #5b7590 46%, #7c93a8 100%);
+}
+
+.pesquisa-hero {
+	padding: 200px 0 88px !important;
+}
+
+.pesquisa-hero__conta {
+	margin-top: 14px !important;
+	max-width: none !important;
+}
+
+.pesquisa-hero__form {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	max-width: 620px;
+	margin-top: 30px;
+}
+
+/*
+ * Campo branco com texto escuro, e nao branco sobre o degrade.
+ *
+ * O degrade do hero acaba claro, e em telemovel — onde o hero e mais baixo — o
+ * formulario cai justamente nessa parte: o campo branco sobre fundo branco
+ * desaparecia por completo. Assim le-se em cima do escuro e em cima do claro,
+ * que e o unico contorno que nao depende da altura do hero.
+ */
+.pesquisa-hero__form input[type="search"] {
+	flex: 1 1 auto;
+	height: 56px;
+	padding: 0 16px;
+	border: none;
+	border-bottom: 2px solid rgba(27, 42, 51, 0.35);
+	border-radius: 0;
+	background: rgba(255, 255, 255, 0.92);
+	font-family: var(--apit-font);
+	font-size: 17px;
+	color: var(--apit-black);
+}
+
+.pesquisa-hero__form input[type="search"]::placeholder {
+	color: rgba(27, 42, 51, 0.5);
+}
+
+.pesquisa-hero__form input[type="search"]:focus,
+.pesquisa-hero__form input[type="search"]:focus-visible {
+	outline: none;
+	box-shadow: none;
+	border-bottom-color: var(--apit-magenta);
+}
+
+.pesquisa-hero__submit {
+	flex: none;
+	height: 56px;
+	padding: 0 28px;
+	border: 2px solid var(--apit-black);
+	border-radius: 200px;
+	background: var(--apit-black);
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 14px;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: #fff;
+	cursor: pointer;
+	transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.pesquisa-hero__submit:hover,
+.pesquisa-hero__submit:focus-visible {
+	border-color: var(--apit-magenta);
+	background: var(--apit-magenta);
+	color: var(--apit-branco);
+}
+
+/* ---------- Os resultados ---------- */
+
+.pesquisa-resultados {
+	padding: 70px 0 96px !important;
+}
+
+.pesquisa-grupo + .pesquisa-grupo {
+	margin-top: 54px;
+}
+
+.pesquisa-grupo__titulo {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 20px !important;
+}
+
+/*
+ * A contagem ao lado da etiqueta, e não por baixo: quem procura quer saber
+ * quantos há antes de decidir se percorre o grupo.
+ */
+.pesquisa-grupo__conta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 26px;
+	height: 22px;
+	padding: 0 8px;
+	border-radius: 20px;
+	background: rgba(27, 42, 51, 0.08);
+	font-size: 13px;
+	letter-spacing: 0;
+	color: var(--apit-black);
+}
+
+.pesquisa-lista {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	border-top: 1px solid rgba(27, 42, 51, 0.12);
+}
+
+.pesquisa-item {
+	border-bottom: 1px solid rgba(27, 42, 51, 0.12);
+}
+
+/*
+ * A linha inteira é a ligação, e não só o título: um alvo de 60px de altura
+ * acerta-se com o polegar, um título de 22px não.
+ */
+.pesquisa-item__ligacao {
+	display: block;
+	padding: 18px 4px;
+	text-decoration: none;
+	color: var(--apit-black);
+	transition: background-color 0.2s ease;
+}
+
+.pesquisa-item__ligacao:hover,
+.pesquisa-item__ligacao:focus-visible {
+	background: rgba(27, 42, 51, 0.03);
+}
+
+.pesquisa-item__titulo {
+	display: block;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 20px;
+	line-height: 1.3;
+	letter-spacing: -0.2px;
+	color: var(--apit-black);
+	transition: color 0.2s ease;
+}
+
+.pesquisa-item__ligacao:hover .pesquisa-item__titulo,
+.pesquisa-item__ligacao:focus-visible .pesquisa-item__titulo {
+	color: var(--apit-magenta);
+}
+
+.pesquisa-item__contexto {
+	display: block;
+	margin-top: 5px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: rgba(27, 42, 51, 0.62);
+}
+
+/* O documento abre o PDF noutro separador — a seta diz isso antes do clique. */
+.pesquisa-item--documento .pesquisa-item__titulo::after {
+	content: "\2197";
+	margin-left: 8px;
+	font-size: 15px;
+	color: rgba(27, 42, 51, 0.45);
+}
+
+/* ---------- Sem resultados ---------- */
+
+.pesquisa-vazio__texto {
+	margin: 0 0 22px;
+	font-size: 17px;
+	color: rgba(27, 42, 51, 0.7);
+}
+
+.pesquisa-vazio__saidas {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 14px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+@media (max-width: 768px) {
+	.pesquisa-hero {
+		padding: 150px 0 60px !important;
+	}
+
+	.pesquisa-hero__form {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.pesquisa-resultados {
+		padding: 50px 0 70px !important;
+	}
+
+	.pesquisa-item__titulo {
+		font-size: 18px;
+	}
+}

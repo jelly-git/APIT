@@ -101,7 +101,8 @@ $mostrar_setas = 'carrossel' === $layout;
 				// Name and both gradient stops come from the category term.
 				$cores      = apit_cores_evento( $evento->ID );
 				?>
-				<li class="calendario__item" style="<?php echo esc_attr( apit_estilo_evento( $cores ) ); ?>">
+				<?php // O id é o destino dos resultados de pesquisa: /calendario/#evento-123. ?>
+				<li class="calendario__item" id="evento-<?php echo (int) $evento->ID; ?>" style="<?php echo esc_attr( apit_estilo_evento( $cores ) ); ?>">
 					<article class="evento-card">
 						<?php if ( $cores['nome'] ) : ?>
 							<span class="evento-card__categoria"><?php echo esc_html( $cores['nome'] ); ?></span>

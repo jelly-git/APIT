@@ -266,6 +266,38 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.36.0] - 2026-09-25
+
+### Adicionado
+- **A pesquisa do site**, que até aqui era uma lupa sem nada por trás: sem
+  formulário, sem JavaScript, sem destino. E se lá se chegasse não estava
+  melhor — o tema não tinha `search.php` e os resultados saíam pelo `index.php`
+  do tema pai, sem hero e sem cartões.
+  - **Quatro tipos**: documentos, notícias, eventos e páginas. Dos 107
+    conteúdos do site só 17 eram alcançáveis antes.
+  - **Documentos e eventos continuam conteúdos privados.** `exclude_from_search`
+    só vale quando a consulta não nomeia os tipos; ao nomeá-los entram. Dar-lhes
+    página própria seria inventar 28 fichas magras que ninguém pediu — o
+    resultado leva onde a coisa vive: o documento abre o PDF, o evento vai ao
+    calendário, na sua vez (`#evento-123`, âncora nova no cartão).
+  - **Faixa no cabeçalho com resultados enquanto se escreve**, agrupados por
+    tipo, quatro por grupo. Com 107 conteúdos a resposta é imediata e a maioria
+    das buscas nunca chega à página de resultados.
+    - 220ms depois da última tecla antes de perguntar ao servidor: "anuário"
+      são sete teclas e seriam sete pedidos, dos quais só o último interessa.
+    - Cada pedido cancela o anterior, senão uma resposta lenta podia chegar
+      depois de uma rápida e escrever por cima dela.
+    - Se a rota falhar, o Enter continua a levar à página de resultados.
+  - **Página de resultados** (`search.php`) com o hero do site, o termo no
+    título, a contagem e uma linha por resultado. Agrupada por tipo e não
+    misturada por relevância: com quatro tipos tão diferentes, saber *que
+    género de coisa* se encontrou vale mais do que a ordem.
+  - Reaproveitar os cartões das Notícias, Documentos e Calendário era o plano;
+    cada um traz a sua folha e a sua forma, e três formas empilhadas numa lista
+    leem-se pior do que uma repetida.
+  - Sem resultados, ficam as quatro portas do site à vista em vez de um beco.
+  - A página de exemplo e a política de privacidade ficam fora dos resultados.
+
 ## [0.35.3] - 2026-09-25
 
 ### Alterado
