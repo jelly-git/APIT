@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.36.5] - 2026-09-25
+
+### Alterado
+- A faixa da pesquisa passa a `min-height: 60%`, como o cliente pediu. Deixa de
+  ser forçada aos 156px do cabeçalho e assenta nos 98 do seu próprio conteúdo,
+  com 26 de respiro em cima e 28 em baixo.
+  - **O cabeçalho volta a ver-se por baixo dela, cortado a meio**: 38px dos 75
+    do logótipo, 18 dos 34 do menu e 37 dos 72 do botão da Área Reservada. Foi
+    dito ao cliente; a decisão é dele.
+
 ## [0.36.4] - 2026-09-25
 
 ### Corrigido
