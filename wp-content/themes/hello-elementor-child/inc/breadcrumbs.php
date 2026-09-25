@@ -188,8 +188,14 @@ function apit_breadcrumbs_no_hero( $html ) {
 		 * ou uma barra invertida — seria lido como referência e comia o
 		 * resultado.
 		 */
+		/*
+		 * Qualquer etiqueta, não só `<div`: o contentor do Elementor tem a
+		 * etiqueta HTML como definição no painel, e quem a mudasse para
+		 * `<section>` ficava sem migalha — em silêncio, que é o pior modo de
+		 * falhar.
+		 */
 		$feito = preg_replace_callback(
-			'#<div[^>]*\sclass="[^"]*\b' . preg_quote( $contentor, '#' ) . '\b[^"]*"[^>]*>#',
+			'#<[a-z][a-z0-9]*[^>]*\sclass="[^"]*\b' . preg_quote( $contentor, '#' ) . '\b[^"]*"[^>]*>#i',
 			function ( $m ) use ( $migalha ) {
 				return $m[0] . $migalha;
 			},

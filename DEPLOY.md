@@ -209,6 +209,37 @@ wp eval '\Elementor\Plugin::$instance->files_manager->clear_cache(); global $wpd
 wp eval 'global $wpdb; echo $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE \"_site_transient_%\"" ) . " transients de site\n";'
 ```
 
+**Esta limpeza tem de ser o comando imediatamente antes da exportação.** Os
+caches voltam sozinhos: cada arranque do WordPress — e o `search-replace` é um —
+pode regenerá-los. A 25 de setembro o ficheiro saiu com 1,73 MB porque a
+limpeza tinha sido feita alguns comandos antes; **455 KB eram só o
+`_site_transient_t15s-registry-gforms`**, o registo de traduções do Gravity
+Forms, que voltou pelo meio. Se o ficheiro sair muito acima de 1,2 MB, é aqui
+que se procura:
+
+```bash
+wp eval 'global $wpdb; foreach ( $wpdb->get_results( "SELECT option_name, ROUND(LENGTH(option_value)/1024,1) kb FROM {$wpdb->options} ORDER BY LENGTH(option_value) DESC LIMIT 8" ) as $r ) printf( "  %-52s %s KB\n", $r->option_name, $r->kb );'
+```
+
+Os três que mais pesam e que regeneram sozinhos:
+
+| Opção | Peso | O que é |
+|---|---|---|
+| `_site_transient_t15s-registry-gforms` | 455 KB | Traduções do Gravity Forms, do WordPress.org |
+| `gform_version_info` | 61 KB | Versões e add-ons, lido do site do Gravity Forms |
+| `_transient_GFCache_*` | 61 KB | Cache interna do Gravity Forms |
+
+Num só comando, a correr logo antes do `search-replace`:
+
+```bash
+wp eval 'global $wpdb;
+  \Elementor\Plugin::$instance->files_manager->clear_cache();
+  $wpdb->query( "DELETE FROM {$wpdb->postmeta} WHERE meta_key IN (\"_elementor_css\",\"_elementor_element_cache\",\"_elementor_page_assets\")" );
+  $n = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE \"_site_transient_%\" OR option_name LIKE \"_transient_%\" OR option_name = \"gform_version_info\" OR option_name LIKE \"elementor_atomic_cache%\" OR option_name = \"_elementor_assets_data\"" );
+  foreach ( $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_name LIKE \"%autosave%\"" ) as $id ) { wp_delete_post( $id, true ); }
+  echo "$n opcoes de cache apagadas\n";'
+```
+
 ### 3.2 Exportar
 
 ```bash

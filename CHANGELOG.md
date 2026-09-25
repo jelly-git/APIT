@@ -266,6 +266,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.34.1] - 2026-09-25
+
+### Corrigido
+- **A âncora da migalha aceita qualquer etiqueta HTML**, não só `<div>`. O
+  contentor do Elementor tem a etiqueta como definição no painel: quem a
+  mudasse para `<section>` ficava sem migalha, e sem aviso nenhum — que é o
+  pior modo de falhar.
+
+### Notas
+- **O `DEPLOY.md` leva a lista de caches completa**, e a nota de que a limpeza
+  tem de ser o comando imediatamente antes da exportação: os caches voltam
+  sozinhos e cada arranque do WordPress pode regenerá-los. A 25 de setembro o
+  ficheiro saiu com 1,73 MB por causa disso, e 455 KB eram só o
+  `_site_transient_t15s-registry-gforms`.
+
 ## [0.34.0] - 2026-09-25
 
 ### Alterado
