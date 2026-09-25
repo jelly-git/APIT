@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.36.2
+Version: 0.36.3
 */
 
 :root {
@@ -2604,7 +2604,7 @@ a.btn--escuro:focus-visible {
 	z-index: 95;
 	display: block;
 	min-height: 100%;
-	padding: 42px 42px 30px;
+	padding: 26px 42px 28px;
 	background: rgba(27, 42, 51, 0.97);
 	backdrop-filter: blur(6px);
 }
@@ -2622,16 +2622,17 @@ a.btn--escuro:focus-visible {
 	margin-inline: auto;
 }
 
+/* 44px: o campo e uma linha, nao uma caixa — a altura de antes dava-lhe peso a mais. */
 .apit-pesquisa__campo {
 	flex: 1 1 auto;
-	height: 52px;
+	height: 44px;
 	padding: 0 4px;
 	border: none;
 	border-bottom: 2px solid rgba(244, 249, 255, 0.5);
 	border-radius: 0;
 	background: transparent;
 	font-family: var(--apit-font);
-	font-size: 22px;
+	font-size: 19px;
 	color: #fff;
 }
 
@@ -2706,7 +2707,7 @@ a.btn--escuro:focus-visible {
 }
 
 .apit-pesquisa__resultados:not(:empty) {
-	margin-top: 22px;
+	margin-top: 18px;
 }
 
 /* Os grupos lado a lado: com quatro tipos, uma coluna cada lê-se de uma vez. */

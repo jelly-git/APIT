@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.36.3] - 2026-09-25
+
+### Alterado
+- **A caixa da pesquisa ficou mais baixa.** O campo desce de 52px para 44 e o
+  corpo de 22px para 19 — é uma linha, não uma caixa, e a altura de antes
+  dava-lhe peso a mais. O respiro em cima passa de 42px para 26.
+  - Do topo até aos resultados eram 116px, são 88.
+  - **Sem resultados a faixa fica nos 156px** e não pode descer mais: é a
+    altura do cabeçalho, e abaixo disso o menu voltaria a aparecer por baixo
+    dela.
+
 ## [0.36.2] - 2026-09-25
 
 ### Corrigido
