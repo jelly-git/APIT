@@ -266,6 +266,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.35.2] - 2026-09-25
+
+### Alterado
+- **Proporções da banda compacta, como o cliente as pediu**: coluna de texto a
+  45% e logótipo a 350px.
+- **O logótipo encosta à direita**, com `justify-content: space-between` e
+  alinhamento à direita na sua caixa. Acaba agora em x=1361, que é exactamente
+  a margem de conteúdo do `.apit-container` — a mesma que as secções acima e
+  abaixo usam, pelo que a marca bate certo com elas em vez de ficar a meio de
+  um espaço vazio.
+- A banda passa de 309px para **333px**: a 45% o parágrafo volta às três
+  linhas. Continua a 175px abaixo dos 508 da versão grande.
+- Medido a 1440, 1280, 1100, 1024, 820, 600 e 390: sem transbordo e sem
+  sobreposição em nenhuma. A partir dos 1024 a banda empilha, e aí o logótipo
+  fica 32px abaixo do texto.
+
 ## [0.35.1] - 2026-09-25
 
 ### Alterado

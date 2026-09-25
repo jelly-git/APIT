@@ -133,18 +133,26 @@
 	padding: 44px 0;
 }
 
+/*
+ * `space-between` encosta o logótipo à direita do contentor, e é aí que ele
+ * fica alinhado com o resto da página: a margem direita do `.apit-container` é
+ * a mesma que as secções acima e abaixo usam, pelo que a marca passa a bater
+ * certo com elas em vez de ficar a meio de um espaço vazio.
+ */
 .sobre-inter--compacta .sobre-inter__interior {
 	gap: 56px;
+	justify-content: space-between;
 }
 
 /*
- * A coluna de texto cresce: sem um logótipo de 589px ao lado, os 46% da versão
- * grande deixavam o parágrafo a quebrar em mais linhas do que precisa — e cada
- * linha a mais é altura que se estava a tentar poupar.
+ * 45%, praticamente a largura da versão grande: o parágrafo volta às três
+ * linhas, e a altura que isso custa é paga pelo respiro mais curto e pelo
+ * logótipo mais baixo. O equilíbrio é do cliente, e a banda continua muito
+ * abaixo dos 508px da grande.
  */
 .sobre-inter--compacta .sobre-inter__texto {
 	flex: 1 1 auto;
-	max-width: 62%;
+	max-width: 45%;
 }
 
 .sobre-inter--compacta .sobre-inter__titulo {
@@ -164,10 +172,12 @@
 
 .sobre-inter--compacta .sobre-inter__marca {
 	flex: 0 0 auto;
+	/* A direita da sua caixa, para o logotipo acabar na margem do contentor. */
+	text-align: right;
 }
 
 .sobre-inter--compacta .sobre-inter__marca img {
-	max-width: 200px;
+	max-width: 350px;
 }
 
 @media (max-width: 1024px) {
