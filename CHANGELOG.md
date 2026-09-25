@@ -266,6 +266,38 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.34.0] - 2026-09-25
+
+### Alterado
+- **As migalhas passam a ser calculadas, e a entrar sozinhas.** Eram HTML
+  escrito à mão em cada página — oito cópias da mesma linha, e cada uma delas
+  uma promessa de que ninguém ia renomear uma página. Renomeie-se uma e o
+  trilho começa a mentir, em silêncio, numa página que ninguém abre há semanas.
+  - O trilho sai da posição da página: `post_parent` para as páginas, e a
+    página das Notícias mais a categoria para um artigo. Todos os Associados
+    diz que está dentro de Associados sem ninguém o escrever, e a última
+    migalha não é ligação porque é onde o visitante já está.
+  - **Nem widget nem shortcode.** Qualquer um dos dois obrigava a pôr alguma
+    coisa em cada página, e a que se esquecesse ficava sem trilho — o mesmo
+    problema de o escrever à mão, só que mais discreto. O tema injecta-a no
+    `elementor/frontend/the_content`, no primeiro lugar dentro da coluna do
+    hero. Uma página nova feita com este hero traz a migalha por existir.
+  - As âncoras são duas porque há dois heros, cada um com a sua folha de
+    estilo: `pagina-hero__col` leva `.pagina-hero__crumb` e a Sobre a APIT leva
+    `.sobre-hero__crumb`. Um hero novo acrescenta ali uma linha.
+  - O `single.php` não passa pelo filtro — o hero dele é do tema — e chama
+    `apit_breadcrumbs()` directamente, com a mesma função.
+  - Os oito widgets saíram das páginas. Na Home não aparece nenhuma: um item
+    não é um caminho.
+
+### Notas
+- **A Documentos perdeu o nível "APIT".** Dizia `Home / APIT / Documentos`,
+  mas a página não é filha da Sobre a APIT — vive na raiz, e o trilho agora diz
+  a verdade: `Home / Documentos`. Para o recuperar há três caminhos: deixar
+  assim, dar-lhe a Sobre a APIT como página-mãe (o endereço passaria a
+  `/sobre-apit/documentos/`), ou acrescentar o nível pelo filtro
+  `apit_breadcrumbs_itens`, que existe para isso.
+
 ## [0.33.5] - 2026-09-24
 
 ### Corrigido

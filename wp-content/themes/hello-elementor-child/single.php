@@ -63,13 +63,11 @@ while ( have_posts() ) :
 			<?php echo do_shortcode( '[apit_wordmark texto="NOTÍ CIAS"]' ); ?>
 
 			<div class="pagina-hero__col">
-				<p class="pagina-hero__crumb">
-					<a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'apit' ); ?></a> /
-					<a href="<?php echo esc_url( $url_noticias ); ?>"><?php esc_html_e( 'Notícias', 'apit' ); ?></a>
-					<?php if ( $categoria ) : ?>
-						/ <a href="<?php echo esc_url( apit_noticias_url_categoria( $categoria->slug ) ); ?>"><?php echo esc_html( $categoria->name ); ?></a>
-					<?php endif; ?>
-				</p>
+				<?php
+				// O mesmo trilho das páginas, de inc/breadcrumbs.php: aqui é
+				// Home / Notícias / a categoria do artigo.
+				echo apit_breadcrumbs(); // phpcs:ignore WordPress.Security.EscapeOutput -- escapado na origem.
+				?>
 
 				<h1 class="pagina-hero__titulo noticia-single__titulo"><?php the_title(); ?></h1>
 
