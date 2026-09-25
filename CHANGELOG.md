@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.35.3] - 2026-09-25
+
+### Alterado
+- Fora a margem que a banda compacta punha por cima do botão: **333px passam a
+  311px**. O espaço entre o parágrafo e o botão continua a ser 38px, porque é o
+  que o parágrafo já traz por baixo de si — eram duas margens a somar-se, e
+  agora é uma.
+
 ## [0.35.2] - 2026-09-25
 
 ### Alterado
