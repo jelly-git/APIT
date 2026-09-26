@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.44.1] - 2026-09-27
+
+Plugin `jelly-area-reservada` 0.8.1. O tema e a base de dados não mudam.
+
+### Corrigido
+- Com uma linha em edição (as mesas, e as outras tabelas que se editam na
+  própria linha), os números e o ícone de apagar ficavam ao meio da linha
+  toda — campos e botões por baixo deles. Passam a ficar à altura dos campos.
+
 ## [0.44.0] - 2026-09-27
 
 Plugin `jelly-area-reservada` 0.8.0. O tema e a base de dados não mudam.

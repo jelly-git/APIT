@@ -1867,6 +1867,23 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	background: rgba(244, 24, 146, 0.04);
 }
 
+/*
+ * Em edição, a linha cresce com os botões por baixo dos campos. O resto da
+ * linha — os números, as ações — fica à altura dos campos (40px), e não ao
+ * meio da linha toda.
+ */
+.jar-tabela tr.is-a-editar > td {
+	vertical-align: top;
+}
+
+.jar-tabela tr.is-a-editar > td.jar-tabela__num {
+	line-height: 40px;
+}
+
+.jar-tabela tr.is-a-editar > td .jar-acoes {
+	min-height: 40px;
+}
+
 .jar .jar-acao:disabled {
 	opacity: 0.35;
 	cursor: not-allowed;
