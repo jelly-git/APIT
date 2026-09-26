@@ -57,6 +57,13 @@ O tema filho não funciona sozinho. Instalar antes do primeiro deploy:
 | Plugin `elementor` | 4.2.4 |
 | Plugin `advanced-custom-fields-pro` | 6.8.10 |
 | Plugin `gravityforms` | 3.1.2 |
+| Plugin `wp-mail-smtp` | 4.9.0 |
+
+O **WP Mail SMTP** é gratuito (`wp plugin install wp-mail-smtp --version=4.9.0
+--activate`). A configuração do envio viaja na base de dados, na opção
+`wp_mail_smtp` — incluindo a palavra-passe, cifrada com a chave da opção
+`wp_mail_smtp_mail_key`. Os e-mails da Área Reservada saem por ele; sem SMTP
+autenticado, o back-office da AR mostra um aviso.
 
 Por SSH, se houver WP-CLI no servidor:
 
@@ -175,6 +182,10 @@ bash tools/guardar-paginas.sh
 wp eval-file tools/prova-migalhas.php
 ```
 
+O `guardar-paginas.sh` chama `wp`. Fora do "Open site shell" do Local, onde o
+`wp` não existe, aceita outro na variável `WP`: `WP=/caminho/para/wp bash
+tools/guardar-paginas.sh`.
+
 Tem de dar tantas migalhas quantas as páginas com hero, e a prova nomeia as que
 falharem. A 25 de setembro eram 11 de 11, de 17 páginas lidas. Verifiquei que
 falha quando deve: com a migalha apagada de uma página, dá erro e diz qual.
@@ -212,6 +223,12 @@ wp option delete acf_site_health
 # Registo de erros de JavaScript do editor do Elementor. É diagnóstico da
 # máquina local e guarda caminhos com apit.local dentro de dados serializados.
 wp option delete elementor_log
+
+# O diagnóstico do último envio falhado do WP Mail SMTP: a conversa com o
+# servidor de correio, com o IP e o nome (apit.local) desta máquina. Não
+# viaja, mas é o que o WP Mail SMTP mostra para se perceber o erro — por isso,
+# em vez de o apagar aqui, tira-se só do ficheiro exportado (secção 3.2).
+wp option get wp_mail_smtp_email_sending_debug >/dev/null 2>&1 && echo "há diagnóstico do SMTP: tirar do ficheiro"
 
 # Cache do HTML já renderizado de cada página. Regenera-se, e duplica o
 # conteúdo — incluindo os URLs escapados que a secção seguinte tem de tratar.
@@ -300,10 +317,17 @@ php -r '$f="bd-sem-cabecalho.sql"; $b=chr(92).chr(92)."/";
 
 rm bd-sem-cabecalho.sql
 
+# Se a limpeza avisou de um diagnóstico do SMTP, é ele o "apit.local" que resta
+# (a conversa com o servidor diz "EHLO apit.local"). Sai só do ficheiro: a linha
+# da wp_options, com a vírgula que a separa da seguinte. A 26 de setembro era a
+# option_id 6227; confirmar o id no ficheiro antes de tirar.
+grep -o "('[0-9]*', 'wp_mail_smtp_email_sending_debug'" apit-bd-para-servidor.sql
+
 # confirmar antes de subir
 grep -c "apit.local" apit-bd-para-servidor.sql     # 0
 grep -c "autosave-v1" apit-bd-para-servidor.sql    # 0
-grep -c "CREATE TABLE" apit-bd-para-servidor.sql   # 31 (21 do WordPress e plugins, 10 da Área Reservada)
+grep -c "email_sending_debug" apit-bd-para-servidor.sql  # 0
+grep -c "CREATE TABLE" apit-bd-para-servidor.sql   # 38: 21 do WordPress e plugins, 11 da Área Reservada, 6 do WP Mail SMTP
 grep -c "'_elementor_css'" apit-bd-para-servidor.sql  # 0
 
 # arquivar a cópia versionada, com a versão lida do próprio tema
