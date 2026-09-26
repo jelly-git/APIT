@@ -268,3 +268,35 @@ function jelly_ar_utilizador_estado() {
 	$voltar( [ 'aviso' => $aviso ] );
 }
 add_action( 'admin_post_jelly_ar_utilizador_estado', 'jelly_ar_utilizador_estado' );
+
+/**
+ * O botão "Enviar e-mail de nova palavra-passe" do perfil: só para um associado
+ * real com o acesso ativo — um suspenso não entraria, e um pedido por aprovar
+ * recebe a ligação ao ser aprovado.
+ */
+function jelly_ar_utilizador_senha() {
+	$id = isset( $_POST['utilizador'] ) ? absint( $_POST['utilizador'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+	if ( ! jelly_ar_e_administrador() ) {
+		wp_die( esc_html__( 'Esta área é só para administradores.', 'jelly-area-reservada' ), '', [ 'response' => 403 ] );
+	}
+
+	check_admin_referer( 'jelly_ar_utilizador_senha_' . $id );
+
+	$perfil = jelly_ar_associado( $id );
+	$user   = get_userdata( $id );
+
+	if ( ! $perfil || ! $user ) {
+		wp_die( esc_html__( 'Esse utilizador não existe.', 'jelly-area-reservada' ), '', [ 'response' => 404 ] );
+	}
+
+	if ( 'ativo' !== $perfil->estado ) {
+		$aviso = [ 'erro' => 'senha-estado' ];
+	} else {
+		$aviso = jelly_ar_email_nova_senha( $user, $perfil ) ? [ 'aviso' => 'senha' ] : [ 'erro' => 'senha-sem-email' ];
+	}
+
+	wp_safe_redirect( jelly_ar_admin_url( 'utilizadores', $aviso + [ 'utilizador' => $id ] ) );
+	exit;
+}
+add_action( 'admin_post_jelly_ar_utilizador_senha', 'jelly_ar_utilizador_senha' );

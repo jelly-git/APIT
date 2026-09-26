@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.39.1] - 2026-09-26
+
+### Corrigido
+- **"Enviar e-mail de nova palavra-passe" não fazia nada.** O botão do perfil
+  do associado era só desenho. Envia agora o e-mail, com o desenho do site e a
+  ligação da recuperação do WordPress (válida 24 horas); a palavra-passe atual
+  continua a funcionar até ser trocada. Aparece só com o acesso ativo: um
+  suspenso não entraria com ela, e um pedido por aprovar recebe a ligação ao
+  ser aprovado. Plugin 0.3.1.
+
 ## [0.39.0] - 2026-09-26
 
 Tudo no plugin `jelly-area-reservada`, que passa à versão 0.3.0. O tema e a

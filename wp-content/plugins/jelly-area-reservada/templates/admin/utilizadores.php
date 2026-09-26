@@ -40,10 +40,13 @@ $avisos  = [
 	'suspenso'  => __( 'Acesso suspenso: o login da área reservada recusa este e-mail até ser reativado.', 'jelly-area-reservada' ),
 	'reativado' => __( 'Acesso reativado. A palavra-passe continua a mesma.', 'jelly-area-reservada' ),
 	'apagado'   => __( 'Pedido apagado, com a conta e os dados do registo.', 'jelly-area-reservada' ),
+	'senha'     => __( 'Foi enviado o e-mail para definir uma palavra-passe nova. A atual continua a funcionar até ser trocada.', 'jelly-area-reservada' ),
 ];
 $erros   = [
 	'aprovado-sem-email' => __( 'Registo aprovado, mas o e-mail para definir a palavra-passe não saiu. Confirme o envio no WP Mail SMTP; a pessoa pode pedir outra ligação em "Esqueceu-se da palavra-passe?".', 'jelly-area-reservada' ),
 	'decisao'            => __( 'Essa mudança não é possível a partir do estado atual.', 'jelly-area-reservada' ),
+	'senha-sem-email'    => __( 'O e-mail da palavra-passe nova não saiu. Confirme o envio no WP Mail SMTP.', 'jelly-area-reservada' ),
+	'senha-estado'       => __( 'A palavra-passe nova só se envia a um acesso ativo.', 'jelly-area-reservada' ),
 ];
 $mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros ) {
 	if ( isset( $avisos[ $aviso ] ) ) {
@@ -257,11 +260,27 @@ if ( $u ) :
 				<dd><?php echo (int) $u['acessos']; ?></dd>
 			</dl>
 
-			<?php if ( in_array( $u['estado'], [ 'ativo', 'suspenso' ], true ) ) : ?>
-				<button type="button" class="jar-btn jar-btn--contorno jar-btn--largo">
+			<?php
+			/*
+			 * Só com o acesso ativo: um suspenso não entraria com ela, e um pedido
+			 * por aprovar recebe a ligação ao ser aprovado. Num real, envia o
+			 * e-mail (jelly_ar_utilizador_senha(), inc/utilizadores.php).
+			 */
+			?>
+			<?php if ( 'ativo' === $u['estado'] ) : ?>
+				<?php if ( $real ) : ?>
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+						<input type="hidden" name="action" value="jelly_ar_utilizador_senha">
+						<input type="hidden" name="utilizador" value="<?php echo (int) $u['id']; ?>">
+						<?php wp_nonce_field( 'jelly_ar_utilizador_senha_' . $u['id'] ); ?>
+				<?php endif; ?>
+				<button type="<?php echo $real ? 'submit' : 'button'; ?>" class="jar-btn jar-btn--contorno jar-btn--largo">
 					<i class="fa-solid fa-key" aria-hidden="true"></i>
 					<?php esc_html_e( 'Enviar e-mail de nova palavra-passe', 'jelly-area-reservada' ); ?>
 				</button>
+				<?php if ( $real ) : ?>
+					</form>
+				<?php endif; ?>
 			<?php endif; ?>
 		</section>
 

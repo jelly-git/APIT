@@ -107,6 +107,58 @@ function jelly_ar_enviar_email( $para, $assunto, $args ) {
 /* ---------- A decisão sobre um pedido ---------- */
 
 /**
+ * A ligação para definir a palavra-passe: a da recuperação do WordPress
+ * (wp-login.php?action=rp), com uma chave nova, válida durante um dia. A
+ * palavra-passe atual continua a funcionar até ser trocada. '' se a chave não
+ * se puder criar.
+ */
+function jelly_ar_ligacao_senha( $user ) {
+	$chave = get_password_reset_key( $user );
+
+	if ( is_wp_error( $chave ) ) {
+		return '';
+	}
+
+	return network_site_url( 'wp-login.php?action=rp&key=' . $chave . '&login=' . rawurlencode( $user->user_login ), 'login' );
+}
+
+/**
+ * Uma palavra-passe nova, a pedido da equipa (o botão do perfil do associado).
+ *
+ * @return bool Se o e-mail saiu.
+ */
+function jelly_ar_email_nova_senha( $user, $perfil ) {
+	$ligacao = jelly_ar_ligacao_senha( $user );
+
+	if ( ! $ligacao ) {
+		return false;
+	}
+
+	return jelly_ar_enviar_email(
+		$user->user_email,
+		__( 'Nova palavra-passe da Área Reservada', 'jelly-area-reservada' ),
+		[
+			/* translators: %s: nome próprio */
+			'titulo'     => sprintf( __( 'Olá %s,', 'jelly-area-reservada' ), $perfil->nome ),
+			'previa'     => __( 'A ligação para definir uma palavra-passe nova da Área Reservada da APIT.', 'jelly-area-reservada' ),
+			'paragrafos' => [
+				esc_html__( 'A APIT enviou a ligação para definir uma palavra-passe nova da Área Reservada.', 'jelly-area-reservada' ),
+				sprintf(
+					/* translators: %s: e-mail */
+					esc_html__( 'O botão abaixo abre a página para a escolher. A entrada continua a fazer-se com o endereço %s.', 'jelly-area-reservada' ),
+					'<strong>' . esc_html( $user->user_email ) . '</strong>'
+				),
+			],
+			'botao'      => [
+				'texto' => __( 'Definir palavra-passe', 'jelly-area-reservada' ),
+				'url'   => $ligacao,
+			],
+			'nota'       => __( 'A ligação é válida durante 24 horas. Até a palavra-passe ser trocada, a atual continua a funcionar; quem não esperava este e-mail pode ignorá-lo.', 'jelly-area-reservada' ),
+		]
+	);
+}
+
+/**
  * O pedido foi aprovado: o e-mail com a ligação para definir a palavra-passe.
  * A ligação é a da recuperação do WordPress (wp-login.php?action=rp), válida
  * durante um dia; depois disso pede-se outra em "Esqueceu-se da palavra-passe?".
@@ -114,13 +166,11 @@ function jelly_ar_enviar_email( $para, $assunto, $args ) {
  * @return bool Se o e-mail saiu. Sem ele, a pessoa não tem como entrar.
  */
 function jelly_ar_email_aprovado( $user, $perfil ) {
-	$chave = get_password_reset_key( $user );
+	$ligacao = jelly_ar_ligacao_senha( $user );
 
-	if ( is_wp_error( $chave ) ) {
+	if ( ! $ligacao ) {
 		return false;
 	}
-
-	$ligacao = network_site_url( 'wp-login.php?action=rp&key=' . $chave . '&login=' . rawurlencode( $user->user_login ), 'login' );
 
 	return jelly_ar_enviar_email(
 		$user->user_email,
