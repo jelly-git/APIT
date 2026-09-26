@@ -266,6 +266,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.43.0] - 2026-09-26
+
+Plugin `jelly-area-reservada` 0.7.0. O tema e a base de dados não mudam.
+
+### Alterado
+- **Os Horários, depois de gravados, mostram-se para ler**, com o botão
+  Editar, como os outros cartões do back-office: cada dia do evento com as
+  horas e os blocos, ou "Sem horário". Na primeira vez o formulário aparece
+  logo; um erro ao gravar reabre-o, para se corrigir.
+- **Por agora, só marcações de 30 minutos.** O intervalo deixa de se escolher
+  e aparece em texto; o servidor só aceita 30. Voltar a dar a escolha é pôr os
+  outros em `JELLY_AR_INTERVALOS` (15, 45 e 60 já funcionam).
+
+### Adicionado
+- Gravar os horários sem nenhum dia escolhido não avança: aparece um alerta,
+  e o servidor recusa o mesmo. Com dias por escolher, pergunta-se antes,
+  dizendo quais ("Qui, 8 Out e Sex, 9 Out não têm horário…").
+
 ## [0.42.4] - 2026-09-26
 
 ### Alterado

@@ -2415,3 +2415,15 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	font-weight: 500;
 	color: var(--jar-preto);
 }
+
+/* Os horários: o intervalo em texto, e os dias sem horário, na leitura. */
+.jar-horarios__resumo {
+	margin: 0 0 16px;
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+.jar-horarios__sem {
+	color: var(--jar-suave);
+	font-style: italic;
+}

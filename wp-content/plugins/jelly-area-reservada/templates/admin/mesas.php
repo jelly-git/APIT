@@ -45,6 +45,7 @@ $erros  = [
 	'horario-horas'     => sprintf( __( 'Em %s, a hora de fim tem de ser depois da de início, com espaço para pelo menos um bloco.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
 	/* translators: %s: dia */
 	'horario-passo'     => sprintf( __( 'Em %s, as horas de início e de fim têm de acompanhar o intervalo escolhido: com 30 minutos, por exemplo, 10:00 ou 10:30.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
+	'horario-nenhum'    => __( 'Nenhum dia estava escolhido, por isso nada foi gravado. Para os associados poderem marcar, é necessário escolher pelo menos um dia do evento.', 'jelly-area-reservada' ),
 	/* translators: %s: dia */
 	'horario-marcacoes' => sprintf( __( 'Em %s há marcações que ficariam fora dos blocos novos. Nada foi gravado: o horário desse dia tem de continuar a incluí-las.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
 ];
@@ -379,30 +380,84 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 
 <?php elseif ( 'horarios' === $separador ) : ?>
 	<?php /* ---------------------------------------------------------- Horários */ ?>
-	<section class="jar-cartao">
-		<header class="jar-cartao__cabeca">
+	<?php
+	/*
+	 * Depois de gravados, os horários mostram-se para ler, com o botão Editar,
+	 * como os outros cartões do back-office. Na primeira vez (ainda sem
+	 * horários) o formulário aparece logo; e um erro ao gravar reabre-o, para
+	 * se corrigir.
+	 */
+	$ha_horarios = (bool) $horarios;
+	?>
+	<section class="jar-cartao"<?php echo $ha_horarios ? ' data-jar-editavel' : ''; ?><?php echo $ha_horarios && isset( $erros[ $erro ] ) ? ' data-jar-abrir' : ''; ?>>
+		<header class="jar-cartao__cabeca jar-cartao__cabeca--acao">
 			<div>
 				<h2><?php esc_html_e( 'Horários de marcação', 'jelly-area-reservada' ); ?></h2>
 				<span class="jar-cartao__meta"><?php esc_html_e( 'Os dias do evento em que os associados podem marcar, e entre que horas', 'jelly-area-reservada' ); ?></span>
 			</div>
+			<?php if ( $ha_horarios ) : ?>
+				<button type="button" class="jar-btn jar-btn--pequeno jar-btn--contorno" data-jar-editar>
+					<i class="fa-solid fa-pen" aria-hidden="true"></i> <?php esc_html_e( 'Editar', 'jelly-area-reservada' ); ?>
+				</button>
+			<?php endif; ?>
 		</header>
 
+		<?php if ( $ha_horarios ) : ?>
+			<?php // A leitura: os dias do evento, com as horas dos que têm horário. ?>
+			<div data-jar-leitura>
+				<?php /* translators: %d: minutos */ ?>
+				<p class="jar-horarios__resumo"><?php echo esc_html( sprintf( __( 'Marcações de %d minutos.', 'jelly-area-reservada' ), $intervalo ) ); ?></p>
+				<table class="jar-tabela jar-horarios__tabela">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Dia', 'jelly-area-reservada' ); ?></th>
+							<th><?php esc_html_e( 'Início', 'jelly-area-reservada' ); ?></th>
+							<th><?php esc_html_e( 'Fim', 'jelly-area-reservada' ); ?></th>
+							<th class="jar-tabela__num"><?php esc_html_e( 'Blocos', 'jelly-area-reservada' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $dias as $dia ) : ?>
+							<?php $h = $horarios[ $dia ] ?? null; ?>
+							<tr>
+								<td><strong><?php echo esc_html( $dia_curto( $dia ) ); ?></strong></td>
+								<?php if ( $h ) : ?>
+									<td><?php echo esc_html( $h['inicio'] ); ?></td>
+									<td><?php echo esc_html( $h['fim'] ); ?></td>
+									<td class="jar-tabela__num"><?php echo (int) count( jelly_ar_blocos( $h ) ); ?></td>
+								<?php else : ?>
+									<td colspan="3" class="jar-horarios__sem"><?php esc_html_e( 'Sem horário: não se marca neste dia', 'jelly-area-reservada' ); ?></td>
+								<?php endif; ?>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
+		<?php endif; ?>
+
 		<?php // Vai para jelly_ar_horarios_guardar(), em inc/mesas.php. ?>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="jar-horarios">
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="jar-horarios" id="jar-horarios" data-jar-horarios<?php echo $ha_horarios ? ' data-jar-edicao data-jar-gravar hidden' : ''; ?>>
 			<input type="hidden" name="action" value="jelly_ar_horarios_guardar">
 			<input type="hidden" name="evento" value="<?php echo (int) $evento['id']; ?>">
 			<?php wp_nonce_field( 'jelly_ar_horarios_guardar_' . $evento['id'] ); ?>
 
-			<label class="jar-campo jar-horarios__intervalo">
-				<span><?php esc_html_e( 'Intervalo entre marcações', 'jelly-area-reservada' ); ?></span>
-				<select name="intervalo" data-jar-intervalo>
-					<?php foreach ( JELLY_AR_INTERVALOS as $i ) : ?>
-						<?php /* translators: %d: minutos */ ?>
-						<option value="<?php echo (int) $i; ?>" <?php selected( $i, $intervalo ); ?>><?php echo esc_html( sprintf( __( '%d minutos', 'jelly-area-reservada' ), $i ) ); ?></option>
-					<?php endforeach; ?>
-				</select>
-				<small class="jar-campo__ajuda"><?php esc_html_e( 'A duração de cada marcação. É a mesma para todos os dias do evento.', 'jelly-area-reservada' ); ?></small>
-			</label>
+			<?php if ( 1 === count( JELLY_AR_INTERVALOS ) ) : ?>
+				<?php // Com um só intervalo (inc/mesas-dados.php), mostra-se em vez de se escolher. ?>
+				<input type="hidden" name="intervalo" value="<?php echo (int) JELLY_AR_INTERVALOS[0]; ?>">
+				<?php /* translators: %d: minutos */ ?>
+				<p class="jar-horarios__resumo"><?php echo esc_html( sprintf( __( 'Marcações de %d minutos.', 'jelly-area-reservada' ), JELLY_AR_INTERVALOS[0] ) ); ?></p>
+			<?php else : ?>
+				<label class="jar-campo jar-horarios__intervalo">
+					<span><?php esc_html_e( 'Intervalo entre marcações', 'jelly-area-reservada' ); ?></span>
+					<select name="intervalo" data-jar-intervalo>
+						<?php foreach ( JELLY_AR_INTERVALOS as $i ) : ?>
+							<?php /* translators: %d: minutos */ ?>
+							<option value="<?php echo (int) $i; ?>" <?php selected( $i, $intervalo ); ?>><?php echo esc_html( sprintf( __( '%d minutos', 'jelly-area-reservada' ), $i ) ); ?></option>
+						<?php endforeach; ?>
+					</select>
+					<small class="jar-campo__ajuda"><?php esc_html_e( 'A duração de cada marcação. É a mesma para todos os dias do evento.', 'jelly-area-reservada' ); ?></small>
+				</label>
+			<?php endif; ?>
 
 			<table class="jar-tabela jar-horarios__tabela">
 				<thead>
@@ -425,7 +480,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 						<tr class="<?php echo $dia === $dia_erro ? 'is-erro' : ''; ?>">
 							<td>
 								<label class="jar-caixa">
-									<input type="checkbox" name="dia[<?php echo esc_attr( $dia ); ?>]" value="1" <?php checked( null !== $h ); ?>>
+									<input type="checkbox" name="dia[<?php echo esc_attr( $dia ); ?>]" value="1" <?php checked( null !== $h ); ?> data-jar-dia="<?php echo esc_attr( $dia_curto( $dia ) ); ?>">
 									<span>
 										<?php echo esc_html( $dia_curto( $dia ) ); ?>
 										<?php if ( $marcas ) : ?>
@@ -444,7 +499,33 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 				</tbody>
 			</table>
 
+			<?php
+			/*
+			 * Antes de gravar (assets/js/admin.js, data-jar-horarios): sem nenhum
+			 * dia, o alerta de baixo e nada se envia; com dias por escolher, a
+			 * confirmação do back-office, pelo botão escondido, com os dias em falta.
+			 */
+			?>
+			<div class="jar-aviso jar-aviso--suspenso" role="alert" data-jar-horarios-nenhum hidden>
+				<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+				<p><?php esc_html_e( 'Nenhum dia está escolhido. Para os associados poderem marcar, é necessário escolher pelo menos um dia do evento.', 'jelly-area-reservada' ); ?></p>
+			</div>
+			<button
+				type="button"
+				hidden
+				data-jar-horarios-confirmar
+				data-jar-confirmar
+				data-jar-form="jar-horarios"
+				data-titulo="<?php esc_attr_e( 'Gravar sem todos os dias?', 'jelly-area-reservada' ); ?>"
+				data-texto=""
+				data-sim="<?php esc_attr_e( 'Gravar horários', 'jelly-area-reservada' ); ?>"
+				data-resultado=""
+			></button>
+
 			<footer class="jar-cartao__pe">
+				<?php if ( $ha_horarios ) : ?>
+					<button type="button" class="jar-btn jar-btn--contorno" data-jar-cancelar><?php esc_html_e( 'Cancelar', 'jelly-area-reservada' ); ?></button>
+				<?php endif; ?>
 				<button type="submit" class="jar-btn"><?php esc_html_e( 'Guardar horários', 'jelly-area-reservada' ); ?></button>
 			</footer>
 		</form>

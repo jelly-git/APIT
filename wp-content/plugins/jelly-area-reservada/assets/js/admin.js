@@ -275,6 +275,53 @@
 	 * anterior que cabe. O mesmo passo que o servidor verifica
 	 * (jelly_ar_passo_horas(), inc/mesas-dados.php): 45 minutos vai de 15 em 15.
 	 */
+	/*
+	 * Gravar os horários sem dias escolhidos não avança: aparece o alerta. Com
+	 * dias por escolher, pergunta-se antes, dizendo quais — pode ser de
+	 * propósito (um dia de montagem), mas não deve passar sem se ver. A
+	 * confirmação envia o formulário pelo submit(), que não volta a passar por
+	 * aqui.
+	 */
+	var horarios = raiz.querySelector( '[data-jar-horarios]' );
+
+	if ( horarios ) {
+		var nenhum = horarios.querySelector( '[data-jar-horarios-nenhum]' );
+		var perguntar = horarios.querySelector( '[data-jar-horarios-confirmar]' );
+		var caixasDias = horarios.querySelectorAll( '[data-jar-dia]' );
+
+		// Escolher um dia tira o alerta.
+		Array.prototype.forEach.call( caixasDias, function ( c ) {
+			c.addEventListener( 'change', function () {
+				nenhum.hidden = true;
+			} );
+		} );
+
+		horarios.addEventListener( 'submit', function ( e ) {
+			var faltam = Array.prototype.filter.call( caixasDias, function ( c ) {
+				return ! c.checked;
+			} ).map( function ( c ) {
+				return c.getAttribute( 'data-jar-dia' );
+			} );
+
+			if ( faltam.length === caixasDias.length ) {
+				e.preventDefault();
+				nenhum.hidden = false;
+				nenhum.scrollIntoView( { block: 'nearest' } );
+				return;
+			}
+
+			if ( faltam.length ) {
+				e.preventDefault();
+				perguntar.setAttribute(
+					'data-texto',
+					( 1 === faltam.length ? faltam[ 0 ] + ' não tem horário' : faltam.slice( 0, -1 ).join( ', ' ) + ' e ' + faltam[ faltam.length - 1 ] + ' não têm horário' ) +
+						': os associados não podem marcar nesses dias. Os outros dias ficam gravados.'
+				);
+				perguntar.click();
+			}
+		} );
+	}
+
 	var intervaloHoras = raiz.querySelector( '[data-jar-intervalo]' );
 
 	if ( intervaloHoras ) {

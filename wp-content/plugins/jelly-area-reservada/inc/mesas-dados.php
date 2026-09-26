@@ -22,8 +22,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-// Os intervalos que se podem escolher, em minutos; 30 é o das reuniões nos mercados.
-const JELLY_AR_INTERVALOS        = [ 15, 30, 45, 60 ];
+/*
+ * Os intervalos que se podem escolher, em minutos. Por agora só 30, o das
+ * reuniões nos mercados: com um só, o ecrã mostra-o em vez de o pôr a escolher.
+ * Para voltar a dar a escolha, basta pôr aqui os outros (15, 45, 60 já funcionam).
+ */
+const JELLY_AR_INTERVALOS        = [ 30 ];
 const JELLY_AR_INTERVALO_OMISSAO = 30;
 
 /**

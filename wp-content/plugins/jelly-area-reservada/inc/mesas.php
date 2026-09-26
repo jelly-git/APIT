@@ -177,6 +177,11 @@ function jelly_ar_horarios_guardar() {
 		$novos[ $dia ] = [ 'inicio' => $inicio, 'fim' => $fim, 'intervalo' => $intervalo ];
 	}
 
+	// Sem nenhum dia não há onde marcar: o ecrã já avisa, e aqui recusa-se o mesmo.
+	if ( ! $novos ) {
+		$voltar( [ 'erro' => 'horario-nenhum' ] );
+	}
+
 	// Nenhuma marcação pode ficar fora dos blocos novos.
 	foreach ( jelly_ar_marcacoes_grelha( $evento['id'] ) as $por_dia ) {
 		foreach ( $por_dia as $dia => $por_hora ) {
