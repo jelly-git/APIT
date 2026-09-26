@@ -266,6 +266,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.45.1] - 2026-09-27
+
+Plugin `jelly-area-reservada` 0.9.1. O tema e a base de dados não mudam.
+
+### Alterado
+- A janela de um bloco da grelha foi redesenhada:
+  - a cabeça com o dia e a hora (início e fim), a mesa e a localização;
+  - uma faixa com a ocupação ("2/4 lugares ocupados · 2 livres") e um traço
+    por lugar, na cor do estado;
+  - as marcações e os associados em linhas com as iniciais, destacadas quando
+    escolhidas, e o estado de cada marcação;
+  - o contador "1 escolhido de 2 lugares livres" ao lado de Marcar, e uma
+    linha a dizer o que acontece (o e-mail ao associado);
+  - estados vazios desenhados: "Bloco completo" e "Ainda não há associados
+    ativos", este com o botão para Utilizadores.
+- Quem já está no bloco sai da lista dos associados para marcar: aparece só
+  nas marcações, em cima.
+
 ## [0.45.0] - 2026-09-27
 
 Plugin `jelly-area-reservada` 0.9.0, com o esquema da base de dados 9. O tema

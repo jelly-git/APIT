@@ -534,16 +534,20 @@
 	if ( janela && dadosGrelha ) {
 		var grelha = JSON.parse( dadosGrelha.textContent );
 		var caixaJanela = janela.querySelector( '.jar-janela__caixa' );
-		var partes = {
-			marcacoes: janela.querySelector( '[data-jar-bloco-marcacoes]' ),
-			marcar: janela.querySelector( '[data-jar-bloco-marcar]' )
+		var em = function ( seletor ) {
+			return janela.querySelector( seletor );
 		};
-		var lista = janela.querySelector( '[data-jar-bloco-lista]' );
-		var destino = janela.querySelector( '[data-jar-bloco-destino]' );
-		var mover = janela.querySelector( '[data-jar-bloco-mover]' );
-		var remover = janela.querySelector( '[data-jar-bloco-remover]' );
-		var confirmar = janela.querySelector( '[data-jar-bloco-confirmar]' );
-		var procura = janela.querySelector( '#jar-associados-procura' );
+		var partes = {
+			marcacoes: em( '[data-jar-bloco-marcacoes]' ),
+			marcar: em( '[data-jar-bloco-marcar]' )
+		};
+		var lista = em( '[data-jar-bloco-lista]' );
+		var destino = em( '[data-jar-bloco-destino]' );
+		var mover = em( '[data-jar-bloco-mover]' );
+		var remover = em( '[data-jar-bloco-remover]' );
+		var confirmar = em( '[data-jar-bloco-confirmar]' );
+		var escolhidos = em( '[data-jar-bloco-escolhidos]' );
+		var procura = em( '#jar-associados-procura' );
 		var associados = janela.querySelectorAll( '[data-jar-associado]' );
 		var origem = null;
 		var livres = 0;
@@ -564,17 +568,46 @@
 			return n + ' ' + ( 1 === n ? um : varios );
 		};
 
-		var escolhidas = function () {
-			return lista.querySelectorAll( 'input:checked' ).length;
+		// "10:00" + 30 → "10:30".
+		var somar = function ( hora, minutos ) {
+			var p = hora.split( ':' );
+			var t = parseInt( p[ 0 ], 10 ) * 60 + parseInt( p[ 1 ], 10 ) + minutos;
+
+			return ( '0' + Math.floor( t / 60 ) ).slice( -2 ) + ':' + ( '0' + ( t % 60 ) ).slice( -2 );
+		};
+
+		// "Ana Silva" → "AS", como o jelly_ar_iniciais() do PHP.
+		var iniciais = function ( nome ) {
+			return ( nome || '?' ).trim().split( /\s+/ ).filter( Boolean ).slice( 0, 2 ).map( function ( p ) {
+				return p.charAt( 0 ).toUpperCase();
+			} ).join( '' );
+		};
+
+		var elemento = function ( tag, classe, texto ) {
+			var el = document.createElement( tag );
+
+			if ( classe ) {
+				el.className = classe;
+			}
+			if ( undefined !== texto ) {
+				el.textContent = texto;
+			}
+
+			return el;
 		};
 
 		// Mudar só com marcações escolhidas e um destino com lugar para todas; remover, com alguma escolhida.
 		var acertarMarcacoes = function () {
-			var n = escolhidas();
+			var n = lista.querySelectorAll( 'input:checked' ).length;
 			var opcao = destino.options[ destino.selectedIndex ];
 
 			remover.disabled = 0 === n;
+			destino.disabled = 0 === n;
 			mover.disabled = 0 === n || ! opcao || ! opcao.value || parseInt( opcao.getAttribute( 'data-livres' ), 10 ) < n;
+
+			Array.prototype.forEach.call( lista.querySelectorAll( 'li' ), function ( li ) {
+				li.classList.toggle( 'is-escolhido', li.querySelector( 'input' ).checked );
+			} );
 		};
 
 		// Marcar até aos lugares livres: chegado ao limite, as outras caixas fecham.
@@ -591,10 +624,13 @@
 				if ( ! a.hasAttribute( 'data-jar-ocupado' ) ) {
 					caixa.disabled = ! caixa.checked && n >= livres;
 				}
+				a.classList.toggle( 'is-escolhido', caixa.checked );
+				a.classList.toggle( 'is-fechado', caixa.disabled );
 			} );
 
 			if ( confirmar ) {
 				confirmar.disabled = 0 === n;
+				escolhidos.textContent = plural( n, 'escolhido', 'escolhidos' ) + ' de ' + plural( livres, 'lugar livre', 'lugares livres' );
 			}
 		};
 
@@ -603,48 +639,57 @@
 			var dia = botao.getAttribute( 'data-dia' );
 			var hora = botao.getAttribute( 'data-hora' );
 			var aqui = marcacoesDe( mesa.id, dia, hora );
+			var lugares = em( '[data-jar-bloco-lugares]' );
+			var local = em( '[data-jar-bloco-local]' );
 
 			origem = botao;
 			livres = Math.max( 0, mesa.lugares - aqui.length );
 
-			janela.querySelector( '#jar-bloco-titulo' ).textContent = mesa.nome + ' · ' + grelha.dias[ dia ].rotulo + ' · ' + hora;
-			janela.querySelector( '[data-jar-bloco-meta]' ).textContent = aqui.length + ' de ' + mesa.lugares + ( 1 === mesa.lugares ? ' lugar ocupado' : ' lugares ocupados' );
+			/* A cabeça. */
+			em( '#jar-bloco-titulo' ).textContent = mesa.nome;
+			em( '[data-jar-bloco-quando]' ).textContent = grelha.dias[ dia ].rotulo + ' · ' + hora + ' – ' + somar( hora, grelha.dias[ dia ].intervalo );
+			local.hidden = ! mesa.localizacao;
+			local.querySelector( 'span' ).textContent = mesa.localizacao || '';
+			em( '[data-jar-bloco-icone]' ).className = 'jar-icone jar-icone--' + ( livres ? 'turquesa' : 'magenta' );
+
+			/* A ocupação: o número e um traço por lugar. */
+			em( '[data-jar-bloco-ocupados]' ).textContent = aqui.length + '/' + mesa.lugares;
+			em( '[data-jar-bloco-ocupados-texto]' ).textContent = livres
+				? ( 1 === mesa.lugares ? 'lugar ocupado' : 'lugares ocupados' ) + ' · ' + plural( livres, 'livre', 'livres' )
+				: 'lugares ocupados · bloco completo';
+			lugares.textContent = '';
+			for ( var i = 0; i < mesa.lugares; i++ ) {
+				lugares.appendChild( elemento( 'span', 'jar-lugar jar-lugar--' + ( aqui[ i ] ? aqui[ i ].estado : 'livre' ) ) );
+			}
 
 			/* As marcações do bloco. */
 			partes.marcacoes.hidden = 0 === aqui.length;
+			em( '[data-jar-bloco-conta]' ).textContent = aqui.length;
 			lista.textContent = '';
 
 			aqui.forEach( function ( m ) {
-				var li = document.createElement( 'li' );
-				var rotulo = document.createElement( 'label' );
-				var caixa = document.createElement( 'input' );
-				var texto = document.createElement( 'span' );
-				var nome = document.createElement( 'span' );
-				var meta = document.createElement( 'small' );
-				var estado = document.createElement( 'span' );
+				var li = elemento( 'li' );
+				var rotulo = elemento( 'label', 'jar-janela__pessoa' );
+				var caixa = elemento( 'input' );
+				var texto = elemento( 'span', 'jar-janela__pessoa-texto' );
 
-				rotulo.className = 'jar-caixa';
 				caixa.type = 'checkbox';
 				caixa.name = 'marcacao[]';
 				caixa.value = m.id;
-				nome.textContent = m.quem || '—';
-				meta.className = 'jar-evento-docs__meta';
-				meta.textContent = m.empresa;
-				estado.className = 'jar-estado jar-estado--' + m.estado;
-				estado.textContent = grelha.estados[ m.estado ] || m.estado;
+				texto.appendChild( elemento( 'strong', '', m.quem || '—' ) );
+				texto.appendChild( elemento( 'small', '', m.empresa || '' ) );
 
-				texto.appendChild( nome );
-				texto.appendChild( meta );
 				rotulo.appendChild( caixa );
+				rotulo.appendChild( elemento( 'span', 'jar-avatar', iniciais( m.quem ) ) );
 				rotulo.appendChild( texto );
+				rotulo.appendChild( elemento( 'span', 'jar-estado jar-estado--' + m.estado, grelha.estados[ m.estado ] || m.estado ) );
 				li.appendChild( rotulo );
-				li.appendChild( estado );
 				lista.appendChild( li );
 			} );
 
 			// Os blocos para onde se pode mudar: os outros, com lugares livres, dia a dia.
 			destino.textContent = '';
-			destino.appendChild( new Option( 'Escolher o bloco', '' ) );
+			destino.appendChild( new Option( 'Mudar para outro bloco…', '' ) );
 
 			Object.keys( grelha.dias ).forEach( function ( d ) {
 				var grupo = document.createElement( 'optgroup' );
@@ -660,7 +705,7 @@
 							return;
 						}
 
-						opcao = new Option( h + ' · ' + outra.nome + ' — ' + plural( vagos, 'lugar livre', 'lugares livres' ), outra.id + '|' + d + '|' + h );
+						opcao = new Option( h + ' · ' + outra.nome + ' (' + plural( vagos, 'livre', 'livres' ) + ')', outra.id + '|' + d + '|' + h );
 						opcao.setAttribute( 'data-livres', vagos );
 						grupo.appendChild( opcao );
 					} );
@@ -677,9 +722,10 @@
 			partes.marcar.querySelector( '[name="mesa"]' ).value = mesa.id;
 			partes.marcar.querySelector( '[name="dia"]' ).value = dia;
 			partes.marcar.querySelector( '[name="hora"]' ).value = hora;
-			partes.marcar.querySelector( '[data-jar-bloco-livres]' ).textContent = livres
-				? plural( livres, 'lugar livre neste bloco.', 'lugares livres neste bloco.' )
-				: 'Os lugares deste bloco estão todos ocupados. Para marcar outro associado, é necessário remover ou mudar uma das marcações.';
+			em( '[data-jar-bloco-livres]' ).textContent = livres ? plural( livres, 'lugar livre', 'lugares livres' ) : '';
+			em( '[data-jar-bloco-livres]' ).hidden = ! livres;
+			em( '[data-jar-bloco-cheio]' ).hidden = livres > 0;
+			em( '[data-jar-bloco-escolha]' ).hidden = ! livres;
 
 			// Quem já está marcado a esta hora, nesta mesa ou noutra.
 			var nesta = aqui.map( function ( m ) {
@@ -702,22 +748,22 @@
 				caixa.checked = false;
 				caixa.disabled = ocupado;
 				a.toggleAttribute( 'data-jar-ocupado', ocupado );
-				nota.textContent = -1 !== nesta.indexOf( id ) ? '· Já marcado neste bloco' : ( ocupado ? '· Marcado noutra mesa a esta hora' : '' );
+				// Quem já está neste bloco está na lista de cima: aqui, sai.
+				a.classList.toggle( 'is-neste', -1 !== nesta.indexOf( id ) );
+				nota.hidden = ! ocupado;
+				nota.textContent = 'Noutra mesa a esta hora';
 			} );
 
 			// A lista inteira outra vez: a procura da vez anterior sai.
 			if ( procura ) {
 				procura.value = '';
 				procura.dispatchEvent( new Event( 'input' ) );
-				procura.closest( '.jar-filtro' ).hidden = ! livres;
-				janela.querySelector( '#jar-associados-lista' ).hidden = ! livres;
-				confirmar.parentNode.hidden = ! livres;
 			}
 
 			acertarMarcar();
 
 			janela.hidden = false;
-			janela.querySelector( '#jar-bloco-titulo' ).focus();
+			em( '#jar-bloco-titulo' ).focus();
 		};
 
 		var fecharBloco = function () {
@@ -758,7 +804,7 @@
 			// O Tab fica dentro da janela.
 			if ( 'Tab' === e.key ) {
 				var focaveis = Array.prototype.filter.call(
-					caixaJanela.querySelectorAll( 'button, input, select, [tabindex]' ),
+					caixaJanela.querySelectorAll( 'a, button, input, select, [tabindex]' ),
 					function ( el ) {
 						return ! el.disabled && el.tabIndex >= 0 && 'hidden' !== el.type && null !== el.offsetParent;
 					}

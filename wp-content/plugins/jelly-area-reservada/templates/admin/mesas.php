@@ -588,11 +588,11 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 			],
 		];
 		foreach ( $mesas as $m ) {
-			$dados_grelha['mesas'][] = [ 'id' => $m['id'], 'nome' => $m['nome'], 'lugares' => $m['lugares'] ];
+			$dados_grelha['mesas'][] = [ 'id' => $m['id'], 'nome' => $m['nome'], 'localizacao' => $m['localizacao'], 'lugares' => $m['lugares'] ];
 		}
 		foreach ( $dias as $dia ) {
 			if ( isset( $horarios[ $dia ] ) ) {
-				$dados_grelha['dias'][ $dia ] = [ 'rotulo' => $dia_curto( $dia ), 'blocos' => jelly_ar_blocos( $horarios[ $dia ] ) ];
+				$dados_grelha['dias'][ $dia ] = [ 'rotulo' => $dia_curto( $dia ), 'intervalo' => $horarios[ $dia ]['intervalo'], 'blocos' => jelly_ar_blocos( $horarios[ $dia ] ) ];
 			}
 		}
 		?>
@@ -686,64 +686,104 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 		<div class="jar-confirmar jar-janela" data-jar-bloco-janela hidden>
 			<div class="jar-confirmar__fundo" data-jar-bloco-fechar></div>
 			<div class="jar-confirmar__caixa jar-janela__caixa" role="dialog" aria-modal="true" aria-labelledby="jar-bloco-titulo">
-				<button type="button" class="jar-janela__fechar" data-jar-bloco-fechar aria-label="<?php esc_attr_e( 'Fechar', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
-				<h2 id="jar-bloco-titulo" tabindex="-1"></h2>
-				<p class="jar-janela__meta" data-jar-bloco-meta></p>
-
-				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="jar-janela__parte" data-jar-bloco-marcacoes>
-					<input type="hidden" name="action" value="jelly_ar_marcacoes_alterar">
-					<input type="hidden" name="evento" value="<?php echo (int) $evento['id']; ?>">
-					<?php wp_nonce_field( 'jelly_ar_marcacoes_' . $evento['id'] ); ?>
-					<h3><?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></h3>
-					<ul class="jar-janela__lista" data-jar-bloco-lista></ul>
-					<div class="jar-janela__acoes">
-						<label class="jar-campo jar-janela__destino">
-							<span><?php esc_html_e( 'Mudar as escolhidas para', 'jelly-area-reservada' ); ?></span>
-							<select name="destino" data-jar-bloco-destino></select>
-						</label>
-						<button type="submit" name="operacao" value="mover" class="jar-btn jar-btn--pequeno jar-btn--contorno" data-jar-bloco-mover><?php esc_html_e( 'Mudar', 'jelly-area-reservada' ); ?></button>
-						<button type="submit" name="operacao" value="remover" class="jar-btn jar-btn--pequeno jar-btn--perigo" data-jar-bloco-remover><?php esc_html_e( 'Remover', 'jelly-area-reservada' ); ?></button>
+				<?php // A cabeça: a mesa, o dia e a hora do bloco, e a ocupação em lugares. ?>
+				<header class="jar-janela__cabeca">
+					<span class="jar-icone jar-icone--turquesa" data-jar-bloco-icone><i class="fa-regular fa-clock" aria-hidden="true"></i></span>
+					<div class="jar-janela__titulos">
+						<span class="jar-janela__quando" data-jar-bloco-quando></span>
+						<h2 id="jar-bloco-titulo" tabindex="-1"></h2>
+						<span class="jar-janela__local" data-jar-bloco-local><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span></span></span>
 					</div>
-				</form>
+					<button type="button" class="jar-janela__fechar" data-jar-bloco-fechar aria-label="<?php esc_attr_e( 'Fechar', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+				</header>
 
-				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="jar-janela__parte" data-jar-bloco-marcar>
-					<input type="hidden" name="action" value="jelly_ar_marcacao_criar">
-					<input type="hidden" name="evento" value="<?php echo (int) $evento['id']; ?>">
-					<input type="hidden" name="mesa" value="">
-					<input type="hidden" name="dia" value="">
-					<input type="hidden" name="hora" value="">
-					<?php wp_nonce_field( 'jelly_ar_marcacoes_' . $evento['id'] ); ?>
-					<h3><?php esc_html_e( 'Marcar associados', 'jelly-area-reservada' ); ?></h3>
-					<p class="jar-janela__nota" data-jar-bloco-livres></p>
+				<div class="jar-janela__ocupacao">
+					<p><strong data-jar-bloco-ocupados></strong> <span data-jar-bloco-ocupados-texto></span></p>
+					<?php // Um traço por lugar da mesa: confirmado, pendente ou livre. ?>
+					<span class="jar-lugares" data-jar-bloco-lugares aria-hidden="true"></span>
+				</div>
 
-					<?php if ( $associados ) : ?>
-						<div class="jar-filtro jar-evento-docs__procura" role="search">
-							<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
-							<label class="screen-reader-text" for="jar-associados-procura"><?php esc_html_e( 'Procurar associados', 'jelly-area-reservada' ); ?></label>
-							<input type="search" id="jar-associados-procura" placeholder="<?php esc_attr_e( 'Procurar por nome, e-mail ou empresa', 'jelly-area-reservada' ); ?>" data-jar-filtrar="jar-associados-lista" autocomplete="off">
+				<div class="jar-janela__corpo">
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="jar-janela__parte" data-jar-bloco-marcacoes>
+						<input type="hidden" name="action" value="jelly_ar_marcacoes_alterar">
+						<input type="hidden" name="evento" value="<?php echo (int) $evento['id']; ?>">
+						<?php wp_nonce_field( 'jelly_ar_marcacoes_' . $evento['id'] ); ?>
+						<h3 class="jar-janela__titulo-parte"><?php esc_html_e( 'Marcações neste bloco', 'jelly-area-reservada' ); ?> <b data-jar-bloco-conta></b></h3>
+						<ul class="jar-janela__pessoas" data-jar-bloco-lista></ul>
+
+						<div class="jar-janela__barra">
+							<label class="jar-janela__destino">
+								<span class="screen-reader-text"><?php esc_html_e( 'Mudar as marcações escolhidas para', 'jelly-area-reservada' ); ?></span>
+								<i class="fa-solid fa-arrow-right-arrow-left" aria-hidden="true"></i>
+								<select name="destino" data-jar-bloco-destino></select>
+							</label>
+							<button type="submit" name="operacao" value="mover" class="jar-btn jar-btn--pequeno jar-btn--contorno" data-jar-bloco-mover><?php esc_html_e( 'Mudar', 'jelly-area-reservada' ); ?></button>
+							<button type="submit" name="operacao" value="remover" class="jar-btn jar-btn--pequeno jar-btn--perigo" data-jar-bloco-remover><i class="fa-regular fa-trash-can" aria-hidden="true"></i> <?php esc_html_e( 'Remover', 'jelly-area-reservada' ); ?></button>
+						</div>
+						<p class="jar-janela__ajuda" data-jar-bloco-ajuda-marcacoes><?php esc_html_e( 'Escolha uma ou mais marcações para as mudar de bloco ou remover. Cada associado recebe um e-mail com a alteração.', 'jelly-area-reservada' ); ?></p>
+					</form>
+
+					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="jar-janela__parte" data-jar-bloco-marcar>
+						<input type="hidden" name="action" value="jelly_ar_marcacao_criar">
+						<input type="hidden" name="evento" value="<?php echo (int) $evento['id']; ?>">
+						<input type="hidden" name="mesa" value="">
+						<input type="hidden" name="dia" value="">
+						<input type="hidden" name="hora" value="">
+						<?php wp_nonce_field( 'jelly_ar_marcacoes_' . $evento['id'] ); ?>
+						<h3 class="jar-janela__titulo-parte"><?php esc_html_e( 'Marcar associados', 'jelly-area-reservada' ); ?> <b data-jar-bloco-livres></b></h3>
+
+						<?php // O bloco cheio: não há onde marcar. ?>
+						<div class="jar-janela__vazio" data-jar-bloco-cheio hidden>
+							<span class="jar-icone jar-icone--magenta"><i class="fa-solid fa-lock" aria-hidden="true"></i></span>
+							<div>
+								<strong><?php esc_html_e( 'Bloco completo', 'jelly-area-reservada' ); ?></strong>
+								<p><?php esc_html_e( 'Todos os lugares desta mesa estão ocupados a esta hora. Para marcar outro associado, é necessário remover ou mudar uma das marcações acima.', 'jelly-area-reservada' ); ?></p>
+							</div>
 						</div>
 
-						<fieldset class="jar-opcoes jar-janela__associados" id="jar-associados-lista">
-							<legend class="screen-reader-text"><?php esc_html_e( 'Associados', 'jelly-area-reservada' ); ?></legend>
-							<?php foreach ( $associados as $a ) : ?>
-								<label class="jar-caixa" data-jar-filtrar-texto="<?php echo esc_attr( $a['nome'] . ' ' . $a['email'] . ' ' . $a['empresa'] ); ?>" data-jar-associado="<?php echo (int) $a['id']; ?>">
-									<input type="checkbox" name="user[]" value="<?php echo (int) $a['id']; ?>">
-									<span>
-										<?php echo esc_html( $a['nome'] ); ?>
-										<small class="jar-evento-docs__meta"><?php echo esc_html( implode( ' · ', array_filter( [ $a['empresa'], $a['email'] ] ) ) ); ?> <b data-jar-associado-nota></b></small>
-									</span>
-								</label>
-							<?php endforeach; ?>
-							<p class="jar-evento-docs__nada" data-jar-filtrar-nada hidden><?php esc_html_e( 'Nenhum associado corresponde à procura.', 'jelly-area-reservada' ); ?></p>
-						</fieldset>
+						<?php if ( $associados ) : ?>
+							<div data-jar-bloco-escolha>
+								<div class="jar-filtro jar-janela__procura" role="search">
+									<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+									<label class="screen-reader-text" for="jar-associados-procura"><?php esc_html_e( 'Procurar associados', 'jelly-area-reservada' ); ?></label>
+									<input type="search" id="jar-associados-procura" placeholder="<?php esc_attr_e( 'Procurar por nome, e-mail ou empresa', 'jelly-area-reservada' ); ?>" data-jar-filtrar="jar-associados-lista" autocomplete="off">
+								</div>
 
-						<div class="jar-janela__acoes">
-							<button type="submit" class="jar-btn jar-btn--pequeno" data-jar-bloco-confirmar disabled><?php esc_html_e( 'Marcar', 'jelly-area-reservada' ); ?></button>
-						</div>
-					<?php else : ?>
-						<p class="jar-janela__nota"><?php esc_html_e( 'Ainda não há associados ativos para marcar.', 'jelly-area-reservada' ); ?></p>
-					<?php endif; ?>
-				</form>
+								<fieldset class="jar-janela__pessoas jar-janela__associados" id="jar-associados-lista">
+									<legend class="screen-reader-text"><?php esc_html_e( 'Associados', 'jelly-area-reservada' ); ?></legend>
+									<?php foreach ( $associados as $a ) : ?>
+										<label class="jar-janela__pessoa" data-jar-filtrar-texto="<?php echo esc_attr( $a['nome'] . ' ' . $a['email'] . ' ' . $a['empresa'] ); ?>" data-jar-associado="<?php echo (int) $a['id']; ?>">
+											<input type="checkbox" name="user[]" value="<?php echo (int) $a['id']; ?>">
+											<span class="jar-avatar" aria-hidden="true"><?php echo esc_html( jelly_ar_iniciais( $a['nome'] ) ); ?></span>
+											<span class="jar-janela__pessoa-texto">
+												<strong><?php echo esc_html( $a['nome'] ); ?></strong>
+												<small><?php echo esc_html( implode( ' · ', array_filter( [ $a['empresa'], $a['email'] ] ) ) ); ?></small>
+											</span>
+											<span class="jar-janela__marca" data-jar-associado-nota hidden></span>
+										</label>
+									<?php endforeach; ?>
+									<p class="jar-janela__nada" data-jar-filtrar-nada hidden><?php esc_html_e( 'Nenhum associado corresponde à procura.', 'jelly-area-reservada' ); ?></p>
+								</fieldset>
+
+								<div class="jar-janela__barra">
+									<span class="jar-janela__escolhidos" data-jar-bloco-escolhidos aria-live="polite"></span>
+									<button type="submit" class="jar-btn jar-btn--pequeno" data-jar-bloco-confirmar disabled><i class="fa-solid fa-check" aria-hidden="true"></i> <?php esc_html_e( 'Marcar', 'jelly-area-reservada' ); ?></button>
+								</div>
+								<p class="jar-janela__ajuda"><?php esc_html_e( 'A marcação fica confirmada e o associado recebe um e-mail com os dados.', 'jelly-area-reservada' ); ?></p>
+							</div>
+						<?php else : ?>
+							<?php // Sem associados ativos, o caminho para os ter: aprovar os pedidos em Utilizadores. ?>
+							<div class="jar-janela__vazio" data-jar-bloco-escolha>
+								<span class="jar-icone jar-icone--roxo"><i class="fa-solid fa-user-plus" aria-hidden="true"></i></span>
+								<div>
+									<strong><?php esc_html_e( 'Ainda não há associados ativos', 'jelly-area-reservada' ); ?></strong>
+									<p><?php esc_html_e( 'Os associados aparecem aqui depois de o pedido de registo ser aprovado e de a conta ser ativada.', 'jelly-area-reservada' ); ?></p>
+									<a class="jar-btn jar-btn--pequeno jar-btn--contorno" href="<?php echo esc_url( jelly_ar_admin_url( 'utilizadores' ) ); ?>"><?php esc_html_e( 'Ver utilizadores', 'jelly-area-reservada' ); ?></a>
+								</div>
+							</div>
+						<?php endif; ?>
+					</form>
+				</div>
 			</div>
 		</div>
 	<?php endif; ?>

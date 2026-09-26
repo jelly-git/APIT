@@ -2435,22 +2435,73 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 }
 
 /*
- * A janela de um bloco: a caixa da confirmação, mais larga, com as marcações
- * e a lista dos associados. Cresce até à altura do ecrã e, daí para cima,
- * desliza por dentro.
+ * A janela de um bloco: a caixa da confirmação, mais larga, em três partes —
+ * a cabeça (a mesa, o dia e a hora), a faixa da ocupação e o corpo, que
+ * desliza por dentro quando a lista dos associados é comprida.
  */
-.jar-janela__caixa {
-	max-width: 600px;
+.jar .jar-janela__caixa {
+	display: flex;
+	flex-direction: column;
+	max-width: 620px;
 	max-height: calc(100vh - 40px);
-	overflow-y: auto;
+	padding: 0;
+	overflow: hidden;
+}
+
+.jar-janela__cabeca {
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+	padding: 24px 24px 20px 28px;
+}
+
+.jar-janela__cabeca .jar-icone {
+	flex: none;
+}
+
+.jar-janela__titulos {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.jar-janela__quando {
+	display: block;
+	margin-bottom: 2px;
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+	color: var(--jar-magenta);
+}
+
+.jar .jar-janela__caixa h2 {
+	margin: 0;
+	font-weight: 500;
+	font-size: 22px;
+	line-height: 1.25;
+}
+
+.jar .jar-janela__caixa h2:focus {
+	outline: none;
+}
+
+.jar-janela__local {
+	display: block;
+	margin-top: 4px;
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+.jar-janela__local i {
+	margin-right: 4px;
+	font-size: 12px;
 }
 
 .jar .jar-janela__fechar {
-	position: absolute;
-	top: 16px;
-	right: 16px;
+	flex: none;
 	width: 36px;
 	height: 36px;
+	margin: -4px -4px 0 0;
 	padding: 0;
 	border: 0;
 	border-radius: 50%;
@@ -2465,99 +2516,295 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	color: var(--jar-preto);
 }
 
-.jar .jar-janela__caixa h2 {
-	margin: 0 40px 4px 0;
-	font-weight: 500;
-	font-size: 20px;
-}
-
-.jar .jar-janela__caixa h2:focus {
-	outline: none;
-}
-
-.jar-janela__meta {
-	margin: 0;
-	color: var(--jar-suave);
-}
-
-.jar-janela__parte {
-	margin-top: 24px;
-	padding-top: 20px;
+/* A ocupação: "2/4 lugares ocupados · 2 livres" e um traço por lugar. */
+.jar-janela__ocupacao {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px 20px;
+	padding: 14px 28px;
 	border-top: 1px solid var(--jar-linha);
+	border-bottom: 1px solid var(--jar-linha);
+	background: rgba(27, 42, 51, 0.025);
 }
 
-.jar .jar-janela__parte h3 {
-	margin: 0 0 4px;
-	font-weight: 500;
-	font-size: 15px;
-	text-transform: uppercase;
-	letter-spacing: 0.6px;
-	color: var(--jar-suave);
-}
-
-.jar-janela__nota {
+.jar .jar-janela__ocupacao p {
 	margin: 0;
 	font-size: 14px;
 	color: var(--jar-suave);
 }
 
-.jar-janela__lista {
-	margin: 8px 0 0;
+.jar-janela__ocupacao strong {
+	margin-right: 4px;
+	font-weight: 500;
+	font-size: 18px;
+	color: var(--jar-preto);
+	font-variant-numeric: tabular-nums;
+}
+
+.jar-lugares {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.jar-lugar {
+	width: 22px;
+	height: 8px;
+	border-radius: 4px;
+	background: rgba(46, 198, 176, 0.18);
+	box-shadow: inset 0 0 0 1px rgba(46, 198, 176, 0.4);
+}
+
+.jar-lugar--pendente {
+	background: rgba(128, 72, 166, 0.35);
+	box-shadow: none;
+}
+
+.jar-lugar--aprovada {
+	background: var(--jar-magenta);
+	box-shadow: none;
+}
+
+.jar-janela__corpo {
+	flex: 1 1 auto;
+	min-height: 0;
+	padding: 0 28px 24px;
+	overflow-y: auto;
+}
+
+.jar-janela__parte {
+	padding-top: 22px;
+}
+
+.jar-janela__parte + .jar-janela__parte {
+	margin-top: 22px;
+	border-top: 1px solid var(--jar-linha);
+}
+
+.jar .jar-janela__titulo-parte {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 12px;
+	font-weight: 500;
+	font-size: 13px;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+	color: var(--jar-suave);
+}
+
+/* O número ao lado do título: as marcações, ou os lugares livres. */
+.jar-janela__titulo-parte b {
+	padding: 2px 8px;
+	border-radius: 200px;
+	background: rgba(27, 42, 51, 0.06);
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--jar-preto);
+}
+
+/* As pessoas — as marcações do bloco e os associados: uma linha cada. */
+.jar-janela__pessoas {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin: 0;
 	padding: 0;
+	border: 0;
 	list-style: none;
 }
 
-.jar-janela__lista li {
+.jar-janela__pessoa {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	gap: 12px;
-	padding: 10px 0;
-	border-bottom: 1px solid var(--jar-linha);
+	margin: 0;
+	padding: 10px 12px;
+	border: 1px solid var(--jar-linha);
+	border-radius: 3px;
+	cursor: pointer;
+	transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.jar-janela__lista .jar-caixa {
-	margin-top: 0;
+.jar-janela__pessoa:hover {
+	border-color: rgba(244, 24, 146, 0.4);
+}
+
+.jar-janela__pessoa.is-escolhido,
+.jar-janela__pessoas li.is-escolhido .jar-janela__pessoa {
+	border-color: var(--jar-magenta);
+	background: rgba(244, 24, 146, 0.04);
+}
+
+.jar .jar-janela__pessoa.is-neste {
+	display: none;
+}
+
+.jar-janela__pessoa.is-fechado {
+	cursor: default;
+	background: rgba(27, 42, 51, 0.02);
+}
+
+.jar-janela__pessoa.is-fechado:hover {
+	border-color: var(--jar-linha);
+}
+
+.jar-janela__pessoa.is-fechado .jar-avatar,
+.jar-janela__pessoa.is-fechado .jar-janela__pessoa-texto {
+	opacity: 0.5;
+}
+
+.jar-janela__pessoa .jar-avatar {
+	width: 34px;
+	height: 34px;
+	font-size: 12px;
+}
+
+.jar-janela__pessoa-texto {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.jar-janela__pessoa-texto strong,
+.jar-janela__pessoa-texto small {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.jar-janela__pessoa-texto strong {
+	font-weight: 500;
+}
+
+.jar-janela__pessoa-texto small {
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-janela__marca {
+	flex: none;
+	padding: 3px 8px;
+	border-radius: 200px;
+	background: rgba(27, 42, 51, 0.06);
+	font-size: 12px;
+	color: var(--jar-suave);
+	white-space: nowrap;
+}
+
+.jar-janela__procura {
+	max-width: none;
+	margin-bottom: 10px;
 }
 
 /* Os associados: a lista desliza por dentro, para a janela não crescer com eles. */
 .jar-janela__associados {
-	max-height: 260px;
-	margin-top: 12px;
+	max-height: 264px;
 	overflow-y: auto;
 }
 
-.jar-janela__associados .jar-caixa[hidden] {
-	display: none;
+.jar-janela__nada {
+	margin: 8px 0 0;
+	font-size: 14px;
+	color: var(--jar-suave);
 }
 
-.jar-janela__associados .jar-caixa:has(input:disabled) {
-	cursor: default;
-	opacity: 0.55;
-}
-
-.jar-janela__associados b {
-	font-weight: 500;
-	color: var(--jar-magenta);
-}
-
-.jar-janela__acoes {
+/* A barra das ações de cada parte: à direita, e o seletor do destino a ocupar o resto. */
+.jar-janela__barra {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: flex-end;
+	align-items: center;
 	justify-content: flex-end;
 	gap: 10px;
-	margin-top: 16px;
+	margin-top: 14px;
 }
 
 .jar-janela__destino {
+	position: relative;
 	flex: 1 1 240px;
 	margin: 0;
+}
+
+.jar-janela__destino i {
+	position: absolute;
+	top: 50%;
+	left: 14px;
+	transform: translateY(-50%);
+	font-size: 13px;
+	color: var(--jar-suave);
+	pointer-events: none;
 }
 
 .jar .jar-janela__destino select {
 	width: 100%;
 	height: 40px;
+	padding-left: 38px;
+}
+
+.jar-janela__escolhidos {
+	flex: 1 1 auto;
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+.jar .jar-janela__ajuda {
+	margin: 10px 0 0;
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+/* Sem onde marcar: o bloco cheio, ou ainda sem associados ativos. */
+.jar-janela__vazio {
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+	padding: 20px;
+	border: 1px dashed rgba(27, 42, 51, 0.2);
+	border-radius: 3px;
+}
+
+.jar-janela__vazio .jar-icone {
+	flex: none;
+	width: 44px;
+	height: 44px;
+	font-size: 17px;
+}
+
+.jar-janela__vazio strong {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: 500;
+	font-size: 16px;
+}
+
+.jar .jar-janela__vazio p {
+	margin: 0;
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+.jar-janela__vazio .jar-btn {
+	margin-top: 14px;
+}
+
+@media (max-width: 480px) {
+	.jar-janela__cabeca {
+		padding: 20px 16px 16px 20px;
+	}
+
+	.jar-janela__cabeca .jar-icone {
+		display: none;
+	}
+
+	.jar-janela__ocupacao,
+	.jar-janela__corpo {
+		padding-right: 20px;
+		padding-left: 20px;
+	}
 }
 
 /*
