@@ -178,3 +178,18 @@ function jelly_ar_mesas_resumo( $evento_id ) {
 		'pendentes'   => (int) ( $contagem->pendentes ?? 0 ),
 	];
 }
+
+/**
+ * Os ids dos eventos com mesas e horários — a grelha pronta para marcar: pelo
+ * menos uma mesa e um dia com horário. Numa consulta só, para a lista de
+ * eventos.
+ */
+function jelly_ar_eventos_com_grelha() {
+	global $wpdb;
+
+	$m = jelly_ar_tabela( 'mesas' );
+	$h = jelly_ar_tabela( 'evento_horarios' );
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+	return array_map( 'intval', $wpdb->get_col( "SELECT DISTINCT m.evento_id FROM {$m} m WHERE EXISTS (SELECT 1 FROM {$h} h WHERE h.evento_id = m.evento_id)" ) );
+}

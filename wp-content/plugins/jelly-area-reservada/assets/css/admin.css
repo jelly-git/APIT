@@ -2000,11 +2000,16 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 }
 
 /*
- * A lista de eventos: saem as marcações, os documentos, o estado, o local e,
- * no telemóvel, as datas. Medido a 26 de setembro, com a coluna Documentos.
+ * A lista de eventos: saem o "aceita marcações", as mesas e horários, os
+ * documentos, o estado, o local e, no telemóvel, as datas. Medido a 26 de
+ * setembro, com as colunas Mesas e horários e Documentos.
  */
-@container (max-width: 958px) {
+@container (max-width: 1042px) {
 	.jar-col--marcacoes { display: none; }
+}
+
+@container (max-width: 944px) {
+	.jar-col--grelha { display: none; }
 }
 
 @container (max-width: 860px) {
@@ -2257,6 +2262,15 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	text-align: center;
 }
 
+/*
+ * O título destas colunas pode ir para duas linhas ("Aceita / marcações"): a
+ * coluna só leva um visto, e não precisa de ser tão larga como o título.
+ */
+.jar-tabela th.jar-tabela__centro {
+	min-width: 84px;
+	white-space: normal;
+}
+
 .jar-tabela__centro .jar-marca {
 	justify-content: center;
 	font-size: 15px;
@@ -2307,6 +2321,14 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 .jar .jar-horarios__tabela .jar-hora {
 	height: 40px;
 	min-width: 120px;
+}
+
+/*
+ * A caixa do dia na tabela dos horários: sem a margem de cima que tem nos
+ * formulários, fica ao meio da linha, à altura das horas.
+ */
+.jar-horarios__tabela .jar-caixa {
+	margin-top: 0;
 }
 
 .jar-horarios__tabela tr.is-erro td {

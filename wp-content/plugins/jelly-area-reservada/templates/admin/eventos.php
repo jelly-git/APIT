@@ -542,7 +542,8 @@ if ( $evento ) :
 						<?php endif; ?>
 					</div>
 					<?php if ( $evento['marcacoes'] ) : ?>
-						<a class="jar-btn jar-btn--pequeno jar-btn--contorno" href="<?php echo esc_url( jelly_ar_admin_url( 'mesas', [ 'evento' => $evento['id'] ] ) ); ?>">
+						<?php // Cheio (cor-de-rosa) enquanto faltam mesas ou horários, para chamar a atenção; em contorno com a grelha pronta. ?>
+						<a class="jar-btn jar-btn--pequeno<?php echo $mesas_resumo['mesas'] && $mesas_resumo['dias'] ? ' jar-btn--contorno' : ''; ?>" href="<?php echo esc_url( jelly_ar_admin_url( 'mesas', [ 'evento' => $evento['id'] ] ) ); ?>">
 							<i class="fa-solid fa-table-cells-large" aria-hidden="true"></i> <?php esc_html_e( 'Gerir mesas e horários', 'jelly-area-reservada' ); ?>
 						</a>
 					<?php endif; ?>
@@ -590,7 +591,8 @@ if ( $evento ) :
 						<span class="jar-cartao__meta"><?php esc_html_e( 'Os associados veem os publicados na página deste evento', 'jelly-area-reservada' ); ?></span>
 					</div>
 					<?php if ( $docs_todos ) : ?>
-						<button type="button" class="jar-btn jar-btn--pequeno jar-btn--contorno" data-jar-editar>
+						<?php // Cheio (cor-de-rosa) enquanto o evento não tem documentos, para chamar a atenção; em contorno depois. ?>
+						<button type="button" class="jar-btn jar-btn--pequeno<?php echo $docs_evento ? ' jar-btn--contorno' : ''; ?>" data-jar-editar>
 							<i class="fa-solid fa-pen" aria-hidden="true"></i> <?php esc_html_e( 'Escolher documentos', 'jelly-area-reservada' ); ?>
 						</button>
 					<?php endif; ?>
@@ -710,6 +712,9 @@ $so_reservada = array_filter( $eventos, function ( $e ) {
 // Os eventos com documentos, para a coluna Documentos: uma consulta para a lista toda.
 $com_documentos = jelly_ar_eventos_com_documentos();
 
+// Os eventos com a grelha pronta (mesas e horários), para a coluna Mesas e horários.
+$com_grelha = jelly_ar_eventos_com_grelha();
+
 $com_marcacoes = array_filter( $proximos, function ( $e ) {
 	return $e['marcacoes'];
 } );
@@ -765,7 +770,8 @@ $resumo = [
 				<?php $tabela->campos_escondidos( [ 'onde' ] ); ?>
 				<label class="screen-reader-text" for="jar-onde"><?php esc_html_e( 'Onde aparece', 'jelly-area-reservada' ); ?></label>
 				<select id="jar-onde" name="onde">
-					<option value=""><?php esc_html_e( 'Em todo o lado', 'jelly-area-reservada' ); ?></option>
+					<?php // Sem filtro. Leva o nome do filtro, para não se ler como a opção "No site e na área reservada". ?>
+					<option value=""><?php esc_html_e( 'Onde aparece: todos', 'jelly-area-reservada' ); ?></option>
 					<?php foreach ( $onde_nomes as $valor => $nome ) : ?>
 						<option value="<?php echo esc_attr( $valor ); ?>" <?php selected( $valor, $tabela->get( 'onde' ) ); ?>><?php echo esc_html( $nome ); ?></option>
 					<?php endforeach; ?>
@@ -801,7 +807,8 @@ $resumo = [
 				$tabela->coluna( 'local', __( 'Local', 'jelly-area-reservada' ), 'jar-col--local' );
 				?>
 				<th><?php esc_html_e( 'Onde aparece', 'jelly-area-reservada' ); ?></th>
-				<th class="jar-col--marcacoes jar-tabela__centro"><?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></th>
+				<th class="jar-col--marcacoes jar-tabela__centro"><?php esc_html_e( 'Aceita marcações', 'jelly-area-reservada' ); ?></th>
+				<th class="jar-col--grelha jar-tabela__centro"><?php esc_html_e( 'Mesas e horários', 'jelly-area-reservada' ); ?></th>
 				<th class="jar-col--documentos jar-tabela__centro"><?php esc_html_e( 'Documentos', 'jelly-area-reservada' ); ?></th>
 				<th class="jar-col--estado"><?php esc_html_e( 'Estado', 'jelly-area-reservada' ); ?></th>
 				<th class="jar-tabela__fim"><span class="screen-reader-text"><?php esc_html_e( 'Ações', 'jelly-area-reservada' ); ?></span></th>
@@ -810,7 +817,7 @@ $resumo = [
 		<tbody>
 			<?php if ( ! $lista ) : ?>
 				<tr>
-					<td colspan="8" class="jar-vazio">
+					<td colspan="9" class="jar-vazio">
 						<?php
 						if ( '' !== $pesquisa ) {
 							/* translators: %s: o que se pesquisou */
@@ -838,6 +845,12 @@ $resumo = [
 					<td class="jar-col--local"><?php echo esc_html( $e['local'] ? $e['local'] : '—' ); ?></td>
 					<td><?php $onde( $e['onde'] ); ?></td>
 					<td class="jar-col--marcacoes jar-tabela__centro"><?php jelly_ar_marca( $e['marcacoes'], __( 'Aceita marcações', 'jelly-area-reservada' ), __( 'Não aceita marcações', 'jelly-area-reservada' ) ); ?></td>
+					<?php
+					// O visto: mesas e horários prontos. O traço diz o que falta, ao passar.
+					$grelha = in_array( $e['id'], $com_grelha, true );
+					$falta  = $e['marcacoes'] ? __( 'Sem mesas ou sem horários: os associados não têm onde marcar', 'jelly-area-reservada' ) : __( 'Não aceita marcações', 'jelly-area-reservada' );
+					?>
+					<td class="jar-col--grelha jar-tabela__centro"><?php jelly_ar_marca( $grelha, __( 'Com mesas e horários', 'jelly-area-reservada' ), $falta ); ?></td>
 					<td class="jar-col--documentos jar-tabela__centro"><?php jelly_ar_marca( in_array( $e['id'], $com_documentos, true ), __( 'Tem documentos', 'jelly-area-reservada' ), __( 'Sem documentos', 'jelly-area-reservada' ) ); ?></td>
 					<td class="jar-col--estado"><?php jelly_ar_estado( $e['estado'] ); ?></td>
 					<td class="jar-tabela__fim">

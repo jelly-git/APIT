@@ -268,8 +268,8 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 				<thead>
 					<tr>
 						<th><?php esc_html_e( 'Mesa', 'jelly-area-reservada' ); ?></th>
-						<th class="jar-tabela__num"><?php esc_html_e( 'Lugares', 'jelly-area-reservada' ); ?></th>
-						<th class="jar-tabela__num"><?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></th>
+						<th class="jar-tabela__num jar-tabela__centro"><?php esc_html_e( 'Lugares', 'jelly-area-reservada' ); ?></th>
+						<th class="jar-tabela__num jar-tabela__centro"><?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></th>
 						<th class="jar-tabela__fim"><span class="screen-reader-text"><?php esc_html_e( 'Ações', 'jelly-area-reservada' ); ?></span></th>
 					</tr>
 				</thead>
@@ -311,8 +311,8 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 									</span>
 								</form>
 							</td>
-							<td class="jar-tabela__num"><?php echo (int) $m['lugares']; ?></td>
-							<td class="jar-tabela__num"><?php echo (int) $m['marcacoes']; ?></td>
+							<td class="jar-tabela__num jar-tabela__centro"><?php echo (int) $m['lugares']; ?></td>
+							<td class="jar-tabela__num jar-tabela__centro"><?php echo (int) $m['marcacoes']; ?></td>
 							<td class="jar-tabela__fim">
 								<span class="jar-acoes">
 									<?php /* translators: %s: mesa */ ?>
@@ -413,7 +413,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 							<th><?php esc_html_e( 'Dia', 'jelly-area-reservada' ); ?></th>
 							<th><?php esc_html_e( 'Início', 'jelly-area-reservada' ); ?></th>
 							<th><?php esc_html_e( 'Fim', 'jelly-area-reservada' ); ?></th>
-							<th class="jar-tabela__num"><?php esc_html_e( 'Blocos', 'jelly-area-reservada' ); ?></th>
+							<th class="jar-tabela__num jar-tabela__centro"><?php esc_html_e( 'Blocos', 'jelly-area-reservada' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -424,7 +424,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 								<?php if ( $h ) : ?>
 									<td><?php echo esc_html( $h['inicio'] ); ?></td>
 									<td><?php echo esc_html( $h['fim'] ); ?></td>
-									<td class="jar-tabela__num"><?php echo (int) count( jelly_ar_blocos( $h ) ); ?></td>
+									<td class="jar-tabela__num jar-tabela__centro"><?php echo (int) count( jelly_ar_blocos( $h ) ); ?></td>
 								<?php else : ?>
 									<td colspan="3" class="jar-horarios__sem"><?php esc_html_e( 'Sem horário: não se marca neste dia', 'jelly-area-reservada' ); ?></td>
 								<?php endif; ?>
@@ -465,7 +465,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 						<th><?php esc_html_e( 'Dia', 'jelly-area-reservada' ); ?></th>
 						<th><?php esc_html_e( 'Início', 'jelly-area-reservada' ); ?></th>
 						<th><?php esc_html_e( 'Fim', 'jelly-area-reservada' ); ?></th>
-						<th class="jar-tabela__num"><?php esc_html_e( 'Blocos', 'jelly-area-reservada' ); ?></th>
+						<th class="jar-tabela__num jar-tabela__centro"><?php esc_html_e( 'Blocos', 'jelly-area-reservada' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -493,7 +493,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 							<?php // Início e fim, sempre em 24 horas ($select_hora, acima). ?>
 							<td><?php $select_hora( 'inicio[' . $dia . ']', $h['inicio'] ?? '10:00', __( 'Início', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ), jelly_ar_passo_horas( $intervalo ) ); ?></td>
 							<td><?php $select_hora( 'fim[' . $dia . ']', $h['fim'] ?? '18:00', __( 'Fim', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ), jelly_ar_passo_horas( $intervalo ) ); ?></td>
-							<td class="jar-tabela__num"><?php echo $h ? (int) count( jelly_ar_blocos( $h ) ) : '—'; ?></td>
+							<td class="jar-tabela__num jar-tabela__centro"><?php echo $h ? (int) count( jelly_ar_blocos( $h ) ) : '—'; ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>

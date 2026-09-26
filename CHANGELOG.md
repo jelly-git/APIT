@@ -266,6 +266,33 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.44.0] - 2026-09-27
+
+Plugin `jelly-area-reservada` 0.8.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- Na tabela dos eventos, a coluna **Mesas e horários**, com o visto quando o
+  evento tem pelo menos uma mesa e um dia com horário — a grelha pronta para
+  marcar — e o traço quando falta; ao passar, o traço diz o que falta.
+
+### Alterado
+- A coluna "Marcações" passa a **"Aceita marcações"**: diz se o evento está
+  aberto a marcações, e não se já tem marcações feitas.
+- Na página do evento, os botões **"Gerir mesas e horários"** e **"Escolher
+  documentos"** ficam cor-de-rosa (cheios) enquanto não há nada associado, para
+  chamar a atenção; com mesas e horários, ou com documentos, voltam ao
+  contorno.
+- No filtro "Onde aparece" da lista de eventos, a opção sem filtro passa de
+  "Em todo o lado" a **"Onde aparece: todos"**: lia-se como "No site e na área
+  reservada", que é outra opção.
+- Os títulos das colunas de visto podem ir para duas linhas, e as larguras em
+  que as colunas saem foram medidas de novo, para a tabela não ganhar scroll
+  com a coluna nova.
+- Nas mesas, as colunas Lugares e Marcações, e nos horários a coluna Blocos,
+  passam a centradas debaixo do título; e a caixa do dia, na tabela dos
+  horários, deixa de ficar abaixo das horas (levava a margem de cima dos
+  formulários).
+
 ## [0.43.0] - 2026-09-26
 
 Plugin `jelly-area-reservada` 0.7.0. O tema e a base de dados não mudam.
