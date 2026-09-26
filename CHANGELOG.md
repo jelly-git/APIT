@@ -266,6 +266,39 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.45.0] - 2026-09-27
+
+Plugin `jelly-area-reservada` 0.9.0, com o esquema da base de dados 9. O tema
+não muda. O esquema atualiza-se sozinho na primeira visita ao wp-admin depois
+do deploy: não é preciso importar a base de dados.
+
+### Adicionado
+- **Marcações pela equipa, na grelha.** Um clique num bloco (uma mesa, a uma
+  hora) abre a janela desse bloco:
+  - com lugares livres, a lista dos associados ativos, com procura por nome,
+    e-mail ou empresa, para marcar um ou mais — até aos lugares livres. As
+    marcações feitas pela equipa entram já confirmadas;
+  - com marcações, a lista delas, para remover uma ou mais, ou mudá-las para
+    outro bloco do evento (outra hora, outra mesa ou outro dia) com lugares
+    para todas. Mudadas, mantêm o estado que tinham.
+  - Quem já está marcado a essa hora, nessa mesa ou noutra, aparece na lista
+    mas não se escolhe: ninguém fica em duas mesas ao mesmo tempo.
+- Cada associado marcado, removido ou mudado recebe um e-mail com o desenho
+  dos outros: "Marcação confirmada", "Marcação cancelada" ou "Marcação
+  alterada", com o evento, a data e a hora, a mesa e, na alterada, o bloco
+  anterior. Se um e-mail não sair, o ecrã avisa.
+
+### Alterado
+- Um bloco leva agora vários associados, até aos lugares da mesa (antes, um
+  só). Na grelha, cada bloco com gente mostra os lugares ocupados e os da mesa
+  ("2/4"); a cor é pendente se alguma marcação ainda espera aprovação.
+- Os resumos contam lugares: "Lugares para marcar" e "Lugares ocupados" nos
+  cartões, e a ocupação da lista dos eventos em lugares.
+- Os lugares de uma mesa não podem descer abaixo dos ocupados no bloco mais
+  cheio dela.
+- Esquema 9: a chave única das marcações passa de (mesa, dia, hora) para
+  (mesa, dia, hora, associado). As removidas ficam canceladas, no histórico.
+
 ## [0.44.1] - 2026-09-27
 
 Plugin `jelly-area-reservada` 0.8.1. O tema e a base de dados não mudam.

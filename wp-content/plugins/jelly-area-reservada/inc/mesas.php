@@ -35,7 +35,14 @@ function jelly_ar_mesas_pedido( $nonce, $separador ) {
 	}
 
 	$voltar = function ( $args ) use ( $id, $separador ) {
-		wp_safe_redirect( jelly_ar_mesas_url( $id, $args + [ 'separador' => $separador ] ) );
+		$url = jelly_ar_mesas_url( $id, $args + [ 'separador' => $separador ] );
+
+		// Na grelha, de volta ao dia do bloco (id="jar-dia-<dia>").
+		if ( 'grelha' === $separador && ! empty( $args['dia'] ) ) {
+			$url .= '#jar-dia-' . $args['dia'];
+		}
+
+		wp_safe_redirect( $url );
 		exit;
 	};
 
@@ -100,8 +107,17 @@ function jelly_ar_mesa_editar() {
 
 	list( $evento, $voltar ) = jelly_ar_mesas_pedido( 'jelly_ar_mesa_editar', 'mesas' );
 
-	$mesa = jelly_ar_mesa_do_pedido( $evento, $voltar );
-	$wpdb->update( jelly_ar_tabela( 'mesas' ), jelly_ar_mesa_campos( $voltar ), [ 'id' => $mesa['id'] ] ); // phpcs:ignore WordPress.DB
+	$mesa   = jelly_ar_mesa_do_pedido( $evento, $voltar );
+	$campos = jelly_ar_mesa_campos( $voltar );
+
+	// Os lugares não descem abaixo dos ocupados no bloco mais cheio da mesa.
+	$cheio = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) AS n FROM ' . jelly_ar_tabela( 'marcacoes' ) . ' WHERE mesa_id = %d AND ocupa = 1 GROUP BY dia, hora ORDER BY n DESC LIMIT 1', $mesa['id'] ) ); // phpcs:ignore WordPress.DB
+
+	if ( $campos['lugares'] < $cheio ) {
+		$voltar( [ 'erro' => 'mesa-lugares', 'n' => $cheio ] );
+	}
+
+	$wpdb->update( jelly_ar_tabela( 'mesas' ), $campos, [ 'id' => $mesa['id'] ] ); // phpcs:ignore WordPress.DB
 
 	$voltar( [ 'aviso' => 'mesa-atualizada' ] );
 }
@@ -214,3 +230,108 @@ function jelly_ar_horarios_guardar() {
 	$voltar( [ 'aviso' => 'horarios' ] );
 }
 add_action( 'admin_post_jelly_ar_horarios_guardar', 'jelly_ar_horarios_guardar' );
+
+/* ---------- As marcações de um bloco da grelha ---------- */
+
+/*
+ * Um clique num bloco da grelha abre a janela desse bloco
+ * (templates/admin/mesas.php): com lugares livres, a equipa marca associados;
+ * com marcações, remove-as ou muda-as para outro bloco. Cada associado afetado
+ * recebe um e-mail (jelly_ar_email_marcacao()). As regras — os lugares da
+ * mesa, ninguém em duas mesas à mesma hora — estão em inc/mesas-dados.php.
+ */
+
+/**
+ * O dia (Y-m-d) e a hora (H:i) de um pedido, ou '' se não tiverem a forma certa.
+ */
+function jelly_ar_bloco_pedido( $dia, $hora ) {
+	return [
+		preg_match( '/^\d{4}-\d{2}-\d{2}$/', $dia ) ? $dia : '',
+		preg_match( '/^([01]\d|2[0-3]):[0-5]\d$/', $hora ) ? $hora : '',
+	];
+}
+
+function jelly_ar_marcacao_criar() {
+	list( $evento, $voltar ) = jelly_ar_mesas_pedido( 'jelly_ar_marcacoes', 'grelha' );
+
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verificado em jelly_ar_mesas_pedido()
+	$mesa_id = isset( $_POST['mesa'] ) ? absint( $_POST['mesa'] ) : 0;
+	$users   = isset( $_POST['user'] ) ? array_map( 'absint', (array) wp_unslash( $_POST['user'] ) ) : [];
+	list( $dia, $hora ) = jelly_ar_bloco_pedido(
+		isset( $_POST['dia'] ) ? sanitize_text_field( wp_unslash( $_POST['dia'] ) ) : '',
+		isset( $_POST['hora'] ) ? sanitize_text_field( wp_unslash( $_POST['hora'] ) ) : ''
+	);
+	// phpcs:enable
+
+	$marcados = jelly_ar_marcar( $evento['id'], $mesa_id, $dia, $hora, $users );
+
+	if ( is_wp_error( $marcados ) ) {
+		$voltar( [ 'erro' => $marcados->get_error_code(), 'dia' => $dia ] );
+	}
+
+	$mesa   = jelly_ar_bloco_valido( $evento['id'], $mesa_id, $dia, $hora );
+	$falhou = 0;
+
+	foreach ( $marcados as $u ) {
+		$falhou += jelly_ar_email_marcacao( $u, 'marcada', $evento, $mesa, $dia, $hora ) ? 0 : 1;
+	}
+
+	$voltar( [ 'aviso' => 'marcacao-criada', 'n' => count( $marcados ), 'sem-email' => $falhou, 'dia' => $dia ] );
+}
+add_action( 'admin_post_jelly_ar_marcacao_criar', 'jelly_ar_marcacao_criar' );
+
+/**
+ * Remover ou mudar as marcações escolhidas de um bloco: operacao=remover, ou
+ * operacao=mover com destino="<mesa>|<Y-m-d>|<H:i>".
+ */
+function jelly_ar_marcacoes_alterar() {
+	list( $evento, $voltar ) = jelly_ar_mesas_pedido( 'jelly_ar_marcacoes', 'grelha' );
+
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verificado em jelly_ar_mesas_pedido()
+	$operacao = isset( $_POST['operacao'] ) ? sanitize_key( wp_unslash( $_POST['operacao'] ) ) : '';
+	$ids      = isset( $_POST['marcacao'] ) ? array_map( 'absint', (array) wp_unslash( $_POST['marcacao'] ) ) : [];
+	$destino  = isset( $_POST['destino'] ) ? explode( '|', sanitize_text_field( wp_unslash( $_POST['destino'] ) ) ) : [];
+	// phpcs:enable
+
+	$mesas = [];
+	foreach ( jelly_ar_mesas( $evento['id'] ) as $m ) {
+		$mesas[ $m['id'] ] = $m;
+	}
+
+	$falhou = 0;
+
+	if ( 'remover' === $operacao ) {
+		$removidas = jelly_ar_marcacoes_remover( $evento['id'], $ids );
+
+		if ( ! $removidas ) {
+			$voltar( [ 'erro' => 'marcacao-ninguem' ] );
+		}
+
+		foreach ( $removidas as $r ) {
+			$falhou += jelly_ar_email_marcacao( $r['user_id'], 'cancelada', $evento, $mesas[ $r['mesa_id'] ], $r['dia'], $r['hora'] ) ? 0 : 1;
+		}
+
+		$voltar( [ 'aviso' => 'marcacao-removida', 'n' => count( $removidas ), 'sem-email' => $falhou, 'dia' => $removidas[0]['dia'] ] );
+	}
+
+	if ( 'mover' !== $operacao || 3 !== count( $destino ) ) {
+		$voltar( [ 'erro' => 'marcacao-bloco' ] );
+	}
+
+	list( $dia, $hora ) = jelly_ar_bloco_pedido( $destino[1], $destino[2] );
+	$mesa_id            = absint( $destino[0] );
+
+	$mudadas = jelly_ar_marcacoes_mover( $evento['id'], $ids, $mesa_id, $dia, $hora );
+
+	if ( is_wp_error( $mudadas ) ) {
+		$voltar( [ 'erro' => $mudadas->get_error_code(), 'dia' => $dia ] );
+	}
+
+	foreach ( $mudadas as $m ) {
+		$antes   = [ 'mesa' => $mesas[ $m['mesa_id'] ], 'dia' => $m['dia'], 'hora' => $m['hora'] ];
+		$falhou += jelly_ar_email_marcacao( $m['user_id'], 'mudada', $evento, $mesas[ $mesa_id ], $dia, $hora, $antes ) ? 0 : 1;
+	}
+
+	$voltar( [ 'aviso' => 'marcacao-mudada', 'n' => count( $mudadas ), 'sem-email' => $falhou, 'dia' => $dia ] );
+}
+add_action( 'admin_post_jelly_ar_marcacoes_alterar', 'jelly_ar_marcacoes_alterar' );

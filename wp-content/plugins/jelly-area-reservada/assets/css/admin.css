@@ -2399,6 +2399,168 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 }
 
 /*
+ * Na grelha, cada bloco é um botão, que abre a janela do bloco; leva os
+ * lugares ocupados e os da mesa ("2/4") quando tem alguém.
+ */
+.jar .jar-grelha-horas .jar-bloco {
+	margin: 0;
+	padding: 0 4px;
+	border: 0;
+	font: inherit;
+	font-weight: 500;
+	font-size: 11px;
+	line-height: 30px;
+	color: #6a3790;
+	font-variant-numeric: tabular-nums;
+	cursor: pointer;
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.jar .jar-grelha-horas .jar-bloco--aprovada {
+	color: #fff;
+}
+
+.jar .jar-grelha-horas .jar-bloco:hover {
+	transform: translateY(-1px);
+	box-shadow: inset 0 0 0 1px currentColor, 0 4px 10px rgba(27, 42, 51, 0.12);
+}
+
+.jar .jar-grelha-horas .jar-bloco:focus-visible {
+	outline: 2px solid var(--jar-magenta);
+	outline-offset: 2px;
+}
+
+.jar-legenda__nota {
+	color: var(--jar-suave);
+}
+
+/*
+ * A janela de um bloco: a caixa da confirmação, mais larga, com as marcações
+ * e a lista dos associados. Cresce até à altura do ecrã e, daí para cima,
+ * desliza por dentro.
+ */
+.jar-janela__caixa {
+	max-width: 600px;
+	max-height: calc(100vh - 40px);
+	overflow-y: auto;
+}
+
+.jar .jar-janela__fechar {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	font-size: 18px;
+	color: var(--jar-suave);
+	cursor: pointer;
+}
+
+.jar .jar-janela__fechar:hover {
+	background: rgba(27, 42, 51, 0.06);
+	color: var(--jar-preto);
+}
+
+.jar .jar-janela__caixa h2 {
+	margin: 0 40px 4px 0;
+	font-weight: 500;
+	font-size: 20px;
+}
+
+.jar .jar-janela__caixa h2:focus {
+	outline: none;
+}
+
+.jar-janela__meta {
+	margin: 0;
+	color: var(--jar-suave);
+}
+
+.jar-janela__parte {
+	margin-top: 24px;
+	padding-top: 20px;
+	border-top: 1px solid var(--jar-linha);
+}
+
+.jar .jar-janela__parte h3 {
+	margin: 0 0 4px;
+	font-weight: 500;
+	font-size: 15px;
+	text-transform: uppercase;
+	letter-spacing: 0.6px;
+	color: var(--jar-suave);
+}
+
+.jar-janela__nota {
+	margin: 0;
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+.jar-janela__lista {
+	margin: 8px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.jar-janela__lista li {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 10px 0;
+	border-bottom: 1px solid var(--jar-linha);
+}
+
+.jar-janela__lista .jar-caixa {
+	margin-top: 0;
+}
+
+/* Os associados: a lista desliza por dentro, para a janela não crescer com eles. */
+.jar-janela__associados {
+	max-height: 260px;
+	margin-top: 12px;
+	overflow-y: auto;
+}
+
+.jar-janela__associados .jar-caixa[hidden] {
+	display: none;
+}
+
+.jar-janela__associados .jar-caixa:has(input:disabled) {
+	cursor: default;
+	opacity: 0.55;
+}
+
+.jar-janela__associados b {
+	font-weight: 500;
+	color: var(--jar-magenta);
+}
+
+.jar-janela__acoes {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 16px;
+}
+
+.jar-janela__destino {
+	flex: 1 1 240px;
+	margin: 0;
+}
+
+.jar .jar-janela__destino select {
+	width: 100%;
+	height: 40px;
+}
+
+/*
  * A grelha: a primeira coluna (as mesas) fica parada e as horas deslizam, para
  * um dia comprido caber sem esticar o ecrã.
  */

@@ -42,7 +42,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Sobe quando o que jelly_ar_instalar() cria mudar, para ela voltar a correr.
-define( 'JELLY_AR_DB_VERSION', '8' );
+define( 'JELLY_AR_DB_VERSION', '9' );
 
 /**
  * O nome completo de uma tabela da AR: jelly_ar_tabela( 'eventos' ).
@@ -228,12 +228,14 @@ function jelly_ar_esquema() {
 		) {$c};",
 
 		/*
-		 * `ocupa` é 1 enquanto a marcação prende o bloco (pendente ou aprovada)
-		 * e NULL quando o solta (rejeitada ou cancelada). Como dois NULL nunca
-		 * colidem numa chave única, a chave (mesa, dia, hora, ocupa) impede duas
-		 * marcações vivas no mesmo bloco — a própria base de dados recusa a
-		 * segunda, mesmo que dois associados reservem ao mesmo tempo — e deixa
-		 * as rejeitadas ficar no histórico.
+		 * Um bloco (uma mesa, num dia, a uma hora) leva vários associados, até
+		 * aos lugares da mesa; esse limite é verificado no PHP
+		 * (inc/mesas-dados.php). `ocupa` é 1 enquanto a marcação prende um
+		 * lugar (pendente ou aprovada) e NULL quando o solta (rejeitada ou
+		 * cancelada). Como dois NULL nunca colidem numa chave única, a chave
+		 * (mesa, dia, hora, associado, ocupa) impede o mesmo associado duas
+		 * vezes no mesmo bloco e deixa as rejeitadas e as canceladas ficar no
+		 * histórico.
 		 */
 		"CREATE TABLE {$t( 'marcacoes' )} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -249,7 +251,7 @@ function jelly_ar_esquema() {
 			decidido_por bigint(20) unsigned DEFAULT NULL,
 			notas text NOT NULL,
 			PRIMARY KEY  (id),
-			UNIQUE KEY bloco (mesa_id,dia,hora,ocupa),
+			UNIQUE KEY lugar (mesa_id,dia,hora,user_id,ocupa),
 			KEY evento_id (evento_id),
 			KEY user_id (user_id),
 			KEY estado (estado)
@@ -306,6 +308,18 @@ function jelly_ar_limpar_migracao() {
 	if ( $wpdb->get_var( "SHOW COLUMNS FROM {$documentos} LIKE 'evento_id'" ) ) { // phpcs:ignore WordPress.DB
 		$wpdb->query( $wpdb->prepare( 'INSERT IGNORE INTO ' . jelly_ar_tabela( 'evento_documentos' ) . " (evento_id, documento_id, criado_em) SELECT evento_id, id, %s FROM {$documentos} WHERE evento_id IS NOT NULL", current_time( 'mysql', true ) ) ); // phpcs:ignore WordPress.DB
 		$wpdb->query( "ALTER TABLE {$documentos} DROP INDEX evento_id, DROP COLUMN evento_id" ); // phpcs:ignore WordPress.DB
+	}
+
+	/*
+	 * Esquema 8 → 9: um bloco tinha um só associado, pela chave única `bloco`
+	 * (mesa, dia, hora, ocupa). Passou a levar vários, até aos lugares da
+	 * mesa: o dbDelta já criou a chave `lugar`, que tem também o associado, e
+	 * a antiga sai aqui — o dbDelta nunca tira chaves.
+	 */
+	$marcacoes = jelly_ar_tabela( 'marcacoes' );
+
+	if ( $wpdb->get_var( "SHOW INDEX FROM {$marcacoes} WHERE Key_name = 'bloco'" ) ) { // phpcs:ignore WordPress.DB
+		$wpdb->query( "ALTER TABLE {$marcacoes} DROP INDEX bloco" ); // phpcs:ignore WordPress.DB
 	}
 }
 

@@ -6,7 +6,9 @@
  * - Mesas     as mesas do evento: nome, localização e lugares
  * - Horários  os dias do evento, cada um com a hora de início e a de fim, e o
  *             intervalo entre marcações (30 minutos por omissão)
- * - Grelha    as mesas por hora, dia a dia, com o estado de cada bloco
+ * - Grelha    as mesas por hora, dia a dia, com o estado de cada bloco; um
+ *             clique num bloco abre as marcações dele, para marcar, remover
+ *             ou mudar associados
  *
  * Por onde a área se liga às outras:
  * - os eventos são os de Eventos; só entram os que têm o visto "Os associados
@@ -31,16 +33,33 @@ $dia_curto = function ( $ymd ) {
 	return $d ? wp_date( 'D, j M', $d->getTimestamp() ) : $ymd;
 };
 
+// Quantas marcações fez o pedido, e quantos e-mails não saíram.
+$n         = isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$sem_email = isset( $_GET['sem-email'] ) ? absint( $_GET['sem-email'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+
 $avisos = [
-	'mesa-criada'     => __( 'Mesa criada.', 'jelly-area-reservada' ),
-	'mesa-atualizada' => __( 'Mesa guardada.', 'jelly-area-reservada' ),
-	'mesa-apagada'    => __( 'Mesa apagada.', 'jelly-area-reservada' ),
-	'horarios'        => __( 'Horários guardados. A grelha já usa os blocos novos.', 'jelly-area-reservada' ),
+	'mesa-criada'       => __( 'Mesa criada.', 'jelly-area-reservada' ),
+	'mesa-atualizada'   => __( 'Mesa guardada.', 'jelly-area-reservada' ),
+	'mesa-apagada'      => __( 'Mesa apagada.', 'jelly-area-reservada' ),
+	'horarios'          => __( 'Horários guardados. A grelha já usa os blocos novos.', 'jelly-area-reservada' ),
+	/* translators: %d: número de associados */
+	'marcacao-criada'   => sprintf( _n( '%d associado marcado, já confirmado. Foi enviado um e-mail com os dados da marcação.', '%d associados marcados, já confirmados. Foi enviado a cada um um e-mail com os dados da marcação.', $n, 'jelly-area-reservada' ), $n ),
+	/* translators: %d: número de marcações */
+	'marcacao-removida' => sprintf( _n( '%d marcação removida. O associado foi avisado por e-mail.', '%d marcações removidas. Cada associado foi avisado por e-mail.', $n, 'jelly-area-reservada' ), $n ),
+	/* translators: %d: número de marcações */
+	'marcacao-mudada'   => sprintf( _n( '%d marcação mudada de bloco. O associado foi avisado por e-mail.', '%d marcações mudadas de bloco. Cada associado foi avisado por e-mail.', $n, 'jelly-area-reservada' ), $n ),
 ];
 $erros  = [
 	'mesa-nome'         => __( 'A mesa precisa de um nome.', 'jelly-area-reservada' ),
 	'mesa-falhou'       => __( 'A mesa não foi encontrada neste evento.', 'jelly-area-reservada' ),
 	'mesa-em-uso'       => __( 'Essa mesa tem marcações e não se pode apagar.', 'jelly-area-reservada' ),
+	/* translators: %d: lugares ocupados */
+	'mesa-lugares'      => sprintf( __( 'A mesa tem um bloco com %d lugares ocupados: os lugares não podem ficar abaixo disso. Nada foi gravado.', 'jelly-area-reservada' ), $n ),
+	'marcacao-bloco'    => __( 'Esse bloco já não existe na grelha: a mesa ou o horário mudaram. Nada foi gravado.', 'jelly-area-reservada' ),
+	'marcacao-ninguem'  => __( 'Nenhum associado estava escolhido, por isso nada foi gravado.', 'jelly-area-reservada' ),
+	'marcacao-mesmo'    => __( 'O bloco escolhido é aquele onde as marcações já estão. Nada foi mudado.', 'jelly-area-reservada' ),
+	'marcacao-cheia'    => __( 'O bloco não tem lugares livres para todos os associados escolhidos. Nada foi gravado.', 'jelly-area-reservada' ),
+	'marcacao-hora'     => __( 'Um dos associados escolhidos já tem uma marcação a essa hora, noutra mesa. Nada foi gravado.', 'jelly-area-reservada' ),
 	/* translators: %s: dia */
 	'horario-horas'     => sprintf( __( 'Em %s, a hora de fim tem de ser depois da de início, com espaço para pelo menos um bloco.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
 	/* translators: %s: dia */
@@ -50,9 +69,13 @@ $erros  = [
 	'horario-marcacoes' => sprintf( __( 'Em %s há marcações que ficariam fora dos blocos novos. Nada foi gravado: o horário desse dia tem de continuar a incluí-las.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
 ];
 
-$mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros ) {
+$mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros, $sem_email ) {
 	if ( isset( $avisos[ $aviso ] ) ) {
 		printf( '<div class="jar-aviso jar-aviso--sucesso" role="status"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><p>%s</p></div>', esc_html( $avisos[ $aviso ] ) );
+	}
+	if ( isset( $avisos[ $aviso ] ) && $sem_email ) {
+		/* translators: %d: número de e-mails */
+		printf( '<div class="jar-aviso jar-aviso--pendente" role="alert"><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i><p>%s</p></div>', esc_html( sprintf( _n( '%d e-mail não foi enviado: a alteração está gravada, mas o associado não foi avisado. Convém confirmar a configuração do SMTP.', '%d e-mails não foram enviados: as alterações estão gravadas, mas esses associados não foram avisados. Convém confirmar a configuração do SMTP.', $sem_email, 'jelly-area-reservada' ), $sem_email ) ) );
 	}
 	if ( isset( $erros[ $erro ] ) ) {
 		printf( '<div class="jar-aviso jar-aviso--suspenso" role="alert"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><p>%s</p></div>', esc_html( $erros[ $erro ] ) );
@@ -158,9 +181,9 @@ if ( ! $evento ) :
 						<td class="jar-tabela__num jar-col--local"><?php echo (int) $r['dias']; ?></td>
 						<td class="jar-tabela__num">
 							<?php
-							if ( $r['blocos'] ) {
-								/* translators: 1: blocos ocupados, 2: blocos no total */
-								printf( esc_html__( '%1$d de %2$d', 'jelly-area-reservada' ), (int) $usado, (int) $r['blocos'] );
+							if ( $r['lugares'] ) {
+								/* translators: 1: lugares ocupados, 2: lugares no total */
+								printf( esc_html__( '%1$d de %2$d', 'jelly-area-reservada' ), (int) $usado, (int) $r['lugares'] );
 							} else {
 								echo '—';
 							}
@@ -228,8 +251,8 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 		[
 			[ __( 'Mesas', 'jelly-area-reservada' ), $resumo['mesas'], 'fa-table-cells-large', 'azul' ],
 			[ __( 'Dias com horário', 'jelly-area-reservada' ), $resumo['dias'], 'fa-calendar-days', 'roxo' ],
-			[ __( 'Blocos para marcar', 'jelly-area-reservada' ), $resumo['blocos'], 'fa-clock', 'turquesa' ],
-			[ __( 'Ocupados', 'jelly-area-reservada' ), $resumo['confirmadas'] + $resumo['pendentes'], 'fa-user-check', 'magenta' ],
+			[ __( 'Lugares para marcar', 'jelly-area-reservada' ), $resumo['lugares'], 'fa-clock', 'turquesa' ],
+			[ __( 'Lugares ocupados', 'jelly-area-reservada' ), $resumo['confirmadas'] + $resumo['pendentes'], 'fa-user-check', 'magenta' ],
 		] as $n
 	) :
 		?>
@@ -546,10 +569,38 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 			</p>
 		</section>
 	<?php else : ?>
+		<?php
+		$associados = jelly_ar_associados_ativos();
+
+		/*
+		 * O que a janela de um bloco precisa (assets/js/admin.js,
+		 * data-jar-bloco): as mesas, os blocos de cada dia e as marcações de
+		 * cada bloco. Os associados que se podem marcar vão já escritos na
+		 * janela, com a procura.
+		 */
+		$dados_grelha = [
+			'mesas'   => [],
+			'dias'    => [],
+			'blocos'  => $ocupados,
+			'estados' => [
+				'pendente' => __( 'Pendente', 'jelly-area-reservada' ),
+				'aprovada' => __( 'Confirmada', 'jelly-area-reservada' ),
+			],
+		];
+		foreach ( $mesas as $m ) {
+			$dados_grelha['mesas'][] = [ 'id' => $m['id'], 'nome' => $m['nome'], 'lugares' => $m['lugares'] ];
+		}
+		foreach ( $dias as $dia ) {
+			if ( isset( $horarios[ $dia ] ) ) {
+				$dados_grelha['dias'][ $dia ] = [ 'rotulo' => $dia_curto( $dia ), 'blocos' => jelly_ar_blocos( $horarios[ $dia ] ) ];
+			}
+		}
+		?>
 		<ul class="jar-legenda" aria-label="<?php esc_attr_e( 'Legenda', 'jelly-area-reservada' ); ?>">
 			<li><span class="jar-bloco jar-bloco--livre" aria-hidden="true"></span> <?php esc_html_e( 'Disponível', 'jelly-area-reservada' ); ?></li>
 			<li><span class="jar-bloco jar-bloco--pendente" aria-hidden="true"></span> <?php esc_html_e( 'Pendente', 'jelly-area-reservada' ); ?></li>
 			<li><span class="jar-bloco jar-bloco--aprovada" aria-hidden="true"></span> <?php esc_html_e( 'Confirmado', 'jelly-area-reservada' ); ?></li>
+			<li class="jar-legenda__nota"><?php esc_html_e( 'Em cada bloco, os lugares ocupados e os da mesa. Um clique no bloco abre as marcações.', 'jelly-area-reservada' ); ?></li>
 		</ul>
 
 		<?php foreach ( $dias as $dia ) : ?>
@@ -559,7 +610,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 			}
 			$blocos = jelly_ar_blocos( $horarios[ $dia ] );
 			?>
-			<section class="jar-cartao jar-cartao--tabela">
+			<section class="jar-cartao jar-cartao--tabela" id="jar-dia-<?php echo esc_attr( $dia ); ?>">
 				<header class="jar-cartao__cabeca">
 					<div>
 						<h2><?php echo esc_html( $dia_curto( $dia ) ); ?></h2>
@@ -583,16 +634,31 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 									<th scope="row"><?php echo esc_html( $m['nome'] ); ?></th>
 									<?php foreach ( $blocos as $b ) : ?>
 										<?php
-										$o      = $ocupados[ $m['id'] ][ $dia ][ $b ] ?? null;
-										$estado = $o ? ( 'aprovada' === $o['estado'] ? 'aprovada' : 'pendente' ) : 'livre';
-										$titulo = $o
-											? trim( $o['quem'] . ( $o['empresa'] ? ' · ' . $o['empresa'] : '' ) ) . ' — ' . ( 'aprovada' === $estado ? __( 'Confirmado', 'jelly-area-reservada' ) : __( 'Pendente', 'jelly-area-reservada' ) )
-											: __( 'Disponível', 'jelly-area-reservada' );
+										/*
+										 * A cor do bloco: disponível sem ninguém; pendente se
+										 * alguma marcação ainda espera aprovação; confirmado
+										 * se estão todas aprovadas.
+										 */
+										$lista   = $ocupados[ $m['id'] ][ $dia ][ $b ] ?? [];
+										$estados = wp_list_pluck( $lista, 'estado' );
+										$estado  = ! $lista ? 'livre' : ( in_array( 'pendente', $estados, true ) ? 'pendente' : 'aprovada' );
+										$nomes   = array_map( function ( $o ) {
+											return $o['quem'] . ( $o['empresa'] ? ' (' . $o['empresa'] . ')' : '' );
+										}, $lista );
+										/* translators: 1: mesa, 2: hora, 3: lugares ocupados, 4: lugares da mesa */
+										$titulo = sprintf( __( '%1$s, %2$s: %3$d de %4$d lugares', 'jelly-area-reservada' ), $m['nome'], $b, count( $lista ), $m['lugares'] ) . ( $nomes ? ' — ' . implode( ', ', $nomes ) : '' );
 										?>
 										<td>
-											<span class="jar-bloco jar-bloco--<?php echo esc_attr( $estado ); ?>" title="<?php echo esc_attr( $m['nome'] . ', ' . $b . ': ' . $titulo ); ?>">
-												<span class="screen-reader-text"><?php echo esc_html( $titulo ); ?></span>
-											</span>
+											<button
+												type="button"
+												class="jar-bloco jar-bloco--<?php echo esc_attr( $estado ); ?><?php echo count( $lista ) >= $m['lugares'] ? ' is-cheio' : ''; ?>"
+												title="<?php echo esc_attr( $titulo ); ?>"
+												aria-label="<?php echo esc_attr( $titulo ); ?>"
+												data-jar-bloco
+												data-mesa="<?php echo (int) $m['id']; ?>"
+												data-dia="<?php echo esc_attr( $dia ); ?>"
+												data-hora="<?php echo esc_attr( $b ); ?>"
+											><?php echo $lista ? (int) count( $lista ) . '/' . (int) $m['lugares'] : ''; ?></button>
 										</td>
 									<?php endforeach; ?>
 								</tr>
@@ -602,5 +668,83 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 				</div>
 			</section>
 		<?php endforeach; ?>
+
+		<script type="application/json" id="jar-grelha-dados"><?php echo wp_json_encode( $dados_grelha, JSON_HEX_TAG | JSON_HEX_AMP ); ?></script>
+
+		<?php
+		/*
+		 * A janela de um bloco. Abre com o clique no bloco e o assets/js/admin.js
+		 * enche-a com o que é desse bloco:
+		 * - as marcações que tem, para as remover ou mudar para outro bloco
+		 *   (jelly_ar_marcacoes_alterar());
+		 * - com lugares livres, os associados ativos, com procura por nome,
+		 *   e-mail ou empresa, para os marcar (jelly_ar_marcacao_criar()).
+		 * Um associado já marcado a essa hora, nesta ou noutra mesa, aparece
+		 * na lista mas não se escolhe.
+		 */
+		?>
+		<div class="jar-confirmar jar-janela" data-jar-bloco-janela hidden>
+			<div class="jar-confirmar__fundo" data-jar-bloco-fechar></div>
+			<div class="jar-confirmar__caixa jar-janela__caixa" role="dialog" aria-modal="true" aria-labelledby="jar-bloco-titulo">
+				<button type="button" class="jar-janela__fechar" data-jar-bloco-fechar aria-label="<?php esc_attr_e( 'Fechar', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+				<h2 id="jar-bloco-titulo" tabindex="-1"></h2>
+				<p class="jar-janela__meta" data-jar-bloco-meta></p>
+
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="jar-janela__parte" data-jar-bloco-marcacoes>
+					<input type="hidden" name="action" value="jelly_ar_marcacoes_alterar">
+					<input type="hidden" name="evento" value="<?php echo (int) $evento['id']; ?>">
+					<?php wp_nonce_field( 'jelly_ar_marcacoes_' . $evento['id'] ); ?>
+					<h3><?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></h3>
+					<ul class="jar-janela__lista" data-jar-bloco-lista></ul>
+					<div class="jar-janela__acoes">
+						<label class="jar-campo jar-janela__destino">
+							<span><?php esc_html_e( 'Mudar as escolhidas para', 'jelly-area-reservada' ); ?></span>
+							<select name="destino" data-jar-bloco-destino></select>
+						</label>
+						<button type="submit" name="operacao" value="mover" class="jar-btn jar-btn--pequeno jar-btn--contorno" data-jar-bloco-mover><?php esc_html_e( 'Mudar', 'jelly-area-reservada' ); ?></button>
+						<button type="submit" name="operacao" value="remover" class="jar-btn jar-btn--pequeno jar-btn--perigo" data-jar-bloco-remover><?php esc_html_e( 'Remover', 'jelly-area-reservada' ); ?></button>
+					</div>
+				</form>
+
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="jar-janela__parte" data-jar-bloco-marcar>
+					<input type="hidden" name="action" value="jelly_ar_marcacao_criar">
+					<input type="hidden" name="evento" value="<?php echo (int) $evento['id']; ?>">
+					<input type="hidden" name="mesa" value="">
+					<input type="hidden" name="dia" value="">
+					<input type="hidden" name="hora" value="">
+					<?php wp_nonce_field( 'jelly_ar_marcacoes_' . $evento['id'] ); ?>
+					<h3><?php esc_html_e( 'Marcar associados', 'jelly-area-reservada' ); ?></h3>
+					<p class="jar-janela__nota" data-jar-bloco-livres></p>
+
+					<?php if ( $associados ) : ?>
+						<div class="jar-filtro jar-evento-docs__procura" role="search">
+							<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+							<label class="screen-reader-text" for="jar-associados-procura"><?php esc_html_e( 'Procurar associados', 'jelly-area-reservada' ); ?></label>
+							<input type="search" id="jar-associados-procura" placeholder="<?php esc_attr_e( 'Procurar por nome, e-mail ou empresa', 'jelly-area-reservada' ); ?>" data-jar-filtrar="jar-associados-lista" autocomplete="off">
+						</div>
+
+						<fieldset class="jar-opcoes jar-janela__associados" id="jar-associados-lista">
+							<legend class="screen-reader-text"><?php esc_html_e( 'Associados', 'jelly-area-reservada' ); ?></legend>
+							<?php foreach ( $associados as $a ) : ?>
+								<label class="jar-caixa" data-jar-filtrar-texto="<?php echo esc_attr( $a['nome'] . ' ' . $a['email'] . ' ' . $a['empresa'] ); ?>" data-jar-associado="<?php echo (int) $a['id']; ?>">
+									<input type="checkbox" name="user[]" value="<?php echo (int) $a['id']; ?>">
+									<span>
+										<?php echo esc_html( $a['nome'] ); ?>
+										<small class="jar-evento-docs__meta"><?php echo esc_html( implode( ' · ', array_filter( [ $a['empresa'], $a['email'] ] ) ) ); ?> <b data-jar-associado-nota></b></small>
+									</span>
+								</label>
+							<?php endforeach; ?>
+							<p class="jar-evento-docs__nada" data-jar-filtrar-nada hidden><?php esc_html_e( 'Nenhum associado corresponde à procura.', 'jelly-area-reservada' ); ?></p>
+						</fieldset>
+
+						<div class="jar-janela__acoes">
+							<button type="submit" class="jar-btn jar-btn--pequeno" data-jar-bloco-confirmar disabled><?php esc_html_e( 'Marcar', 'jelly-area-reservada' ); ?></button>
+						</div>
+					<?php else : ?>
+						<p class="jar-janela__nota"><?php esc_html_e( 'Ainda não há associados ativos para marcar.', 'jelly-area-reservada' ); ?></p>
+					<?php endif; ?>
+				</form>
+			</div>
+		</div>
 	<?php endif; ?>
 <?php endif; ?>

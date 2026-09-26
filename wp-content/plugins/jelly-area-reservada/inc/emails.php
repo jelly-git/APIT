@@ -312,3 +312,110 @@ function jelly_ar_email_senha_definida( $user, $perfil ) {
 		]
 	);
 }
+
+/* ---------- As marcações de mesa ---------- */
+
+/**
+ * Um dia e uma hora de marcação por extenso, para os e-mails: "7 de outubro de
+ * 2026, das 10:00 às 10:30".
+ */
+function jelly_ar_email_quando( $dia, $hora, $intervalo ) {
+	$d   = DateTime::createFromFormat( '!Y-m-d', $dia );
+	$fim = jelly_ar_minutos( $hora ) + $intervalo;
+
+	return sprintf(
+		/* translators: 1: dia, 2: hora de início, 3: hora de fim */
+		__( '%1$s, das %2$s às %3$s', 'jelly-area-reservada' ),
+		$d ? wp_date( 'j \d\e F \d\e Y', $d->getTimestamp() ) : $dia,
+		$hora,
+		sprintf( '%02d:%02d', intdiv( $fim, 60 ), $fim % 60 )
+	);
+}
+
+// "Mesa 1 · Stand APIT, junto à entrada".
+function jelly_ar_email_mesa( $mesa ) {
+	return $mesa['nome'] . ( $mesa['localizacao'] ? ' · ' . $mesa['localizacao'] : '' );
+}
+
+/**
+ * Uma marcação de mesa feita, cancelada ou mudada pela equipa.
+ *
+ * @param int    $user_id O associado.
+ * @param string $tipo    marcada, cancelada ou mudada.
+ * @param array  $evento  O evento (jelly_ar_evento()).
+ * @param array  $mesa    A mesa (jelly_ar_mesas()); na mudada, a nova.
+ * @param string $dia     Y-m-d; na mudada, o novo.
+ * @param string $hora    H:i; na mudada, a nova.
+ * @param array  $antes   Só na mudada: [ 'mesa' => …, 'dia' => …, 'hora' => … ].
+ * @return bool Se o e-mail saiu.
+ */
+function jelly_ar_email_marcacao( $user_id, $tipo, $evento, $mesa, $dia, $hora, $antes = [] ) {
+	$user   = get_userdata( $user_id );
+	$perfil = jelly_ar_associado( $user_id );
+
+	if ( ! $user || ! $perfil ) {
+		return false;
+	}
+
+	$horarios  = jelly_ar_horarios( $evento['id'] );
+	$intervalo = $horarios[ $dia ]['intervalo'] ?? JELLY_AR_INTERVALO_OMISSAO;
+	$titulo    = '<strong>' . esc_html( $evento['titulo'] ) . '</strong>';
+	$dados = [
+		__( 'Evento', 'jelly-area-reservada' ) => $evento['titulo'] . ( $evento['local'] ? ' · ' . $evento['local'] : '' ),
+		__( 'Data', 'jelly-area-reservada' )   => jelly_ar_email_quando( $dia, $hora, $intervalo ),
+		__( 'Mesa', 'jelly-area-reservada' )   => jelly_ar_email_mesa( $mesa ),
+	];
+
+	$textos = [
+		'marcada'   => [
+			'assunto'  => __( 'Marcação de mesa confirmada — APIT', 'jelly-area-reservada' ),
+			'titulo'   => __( 'Marcação confirmada', 'jelly-area-reservada' ),
+			'previa'   => __( 'Foi efetuada uma marcação de mesa, já confirmada pela APIT.', 'jelly-area-reservada' ),
+			/* translators: %s: evento */
+			'texto'    => __( 'A APIT efetuou uma marcação de mesa no evento %s. A marcação encontra-se confirmada, com os dados abaixo.', 'jelly-area-reservada' ),
+		],
+		'cancelada' => [
+			'assunto'  => __( 'Marcação de mesa cancelada — APIT', 'jelly-area-reservada' ),
+			'titulo'   => __( 'Marcação cancelada', 'jelly-area-reservada' ),
+			'previa'   => __( 'Uma marcação de mesa foi cancelada pela APIT.', 'jelly-area-reservada' ),
+			/* translators: %s: evento */
+			'texto'    => __( 'A marcação de mesa no evento %s, com os dados abaixo, foi cancelada pela APIT.', 'jelly-area-reservada' ),
+		],
+		'mudada'    => [
+			'assunto'  => __( 'Marcação de mesa alterada — APIT', 'jelly-area-reservada' ),
+			'titulo'   => __( 'Marcação alterada', 'jelly-area-reservada' ),
+			'previa'   => __( 'Uma marcação de mesa foi alterada pela APIT.', 'jelly-area-reservada' ),
+			/* translators: %s: evento */
+			'texto'    => __( 'A marcação de mesa no evento %s foi alterada pela APIT. Os novos dados são os seguintes.', 'jelly-area-reservada' ),
+		],
+	];
+
+	if ( ! isset( $textos[ $tipo ] ) ) {
+		return false;
+	}
+
+	if ( 'mudada' === $tipo && $antes ) {
+		$dados[ __( 'Anteriormente', 'jelly-area-reservada' ) ] = jelly_ar_email_quando( $antes['dia'], $antes['hora'], $intervalo ) . ' · ' . jelly_ar_email_mesa( $antes['mesa'] );
+	}
+
+	$t = $textos[ $tipo ];
+
+	return jelly_ar_enviar_email(
+		$user->user_email,
+		$t['assunto'],
+		[
+			'titulo'     => $t['titulo'],
+			'previa'     => $t['previa'],
+			'paragrafos' => [
+				jelly_ar_email_saudacao( $perfil->nome . ' ' . $perfil->apelido ),
+				sprintf( esc_html( $t['texto'] ), $titulo ),
+			],
+			'dados'      => $dados,
+			'botao'      => [
+				'texto' => __( 'Entrar na Área Reservada', 'jelly-area-reservada' ),
+				'url'   => home_url( '/#area-reservada' ),
+			],
+			'nota'       => __( 'Para qualquer esclarecimento, a APIT encontra-se disponível através do endereço geral@apitv.com.', 'jelly-area-reservada' ),
+		]
+	);
+}

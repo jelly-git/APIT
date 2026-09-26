@@ -519,6 +519,264 @@
 		}
 	} );
 
+	/* ---------- A janela de um bloco da grelha ---------- */
+
+	/*
+	 * Um clique num bloco (data-jar-bloco) abre a janela com as marcações dele
+	 * e os associados que se podem marcar (templates/admin/mesas.php). Os
+	 * dados vêm do #jar-grelha-dados. Aqui só se ajuda a escolher — os lugares
+	 * livres, quem já está marcado a essa hora; as regras voltam a ser
+	 * verificadas no servidor (inc/mesas-dados.php).
+	 */
+	var janela = raiz.querySelector( '[data-jar-bloco-janela]' );
+	var dadosGrelha = document.getElementById( 'jar-grelha-dados' );
+
+	if ( janela && dadosGrelha ) {
+		var grelha = JSON.parse( dadosGrelha.textContent );
+		var caixaJanela = janela.querySelector( '.jar-janela__caixa' );
+		var partes = {
+			marcacoes: janela.querySelector( '[data-jar-bloco-marcacoes]' ),
+			marcar: janela.querySelector( '[data-jar-bloco-marcar]' )
+		};
+		var lista = janela.querySelector( '[data-jar-bloco-lista]' );
+		var destino = janela.querySelector( '[data-jar-bloco-destino]' );
+		var mover = janela.querySelector( '[data-jar-bloco-mover]' );
+		var remover = janela.querySelector( '[data-jar-bloco-remover]' );
+		var confirmar = janela.querySelector( '[data-jar-bloco-confirmar]' );
+		var procura = janela.querySelector( '#jar-associados-procura' );
+		var associados = janela.querySelectorAll( '[data-jar-associado]' );
+		var origem = null;
+		var livres = 0;
+
+		var marcacoesDe = function ( mesa, dia, hora ) {
+			var porDia = ( grelha.blocos[ mesa ] || {} )[ dia ] || {};
+
+			return porDia[ hora ] || [];
+		};
+
+		var mesaDe = function ( id ) {
+			return grelha.mesas.filter( function ( m ) {
+				return m.id === id;
+			} )[ 0 ];
+		};
+
+		var plural = function ( n, um, varios ) {
+			return n + ' ' + ( 1 === n ? um : varios );
+		};
+
+		var escolhidas = function () {
+			return lista.querySelectorAll( 'input:checked' ).length;
+		};
+
+		// Mudar só com marcações escolhidas e um destino com lugar para todas; remover, com alguma escolhida.
+		var acertarMarcacoes = function () {
+			var n = escolhidas();
+			var opcao = destino.options[ destino.selectedIndex ];
+
+			remover.disabled = 0 === n;
+			mover.disabled = 0 === n || ! opcao || ! opcao.value || parseInt( opcao.getAttribute( 'data-livres' ), 10 ) < n;
+		};
+
+		// Marcar até aos lugares livres: chegado ao limite, as outras caixas fecham.
+		var acertarMarcar = function () {
+			var n = 0;
+
+			Array.prototype.forEach.call( associados, function ( a ) {
+				n += a.querySelector( 'input' ).checked ? 1 : 0;
+			} );
+
+			Array.prototype.forEach.call( associados, function ( a ) {
+				var caixa = a.querySelector( 'input' );
+
+				if ( ! a.hasAttribute( 'data-jar-ocupado' ) ) {
+					caixa.disabled = ! caixa.checked && n >= livres;
+				}
+			} );
+
+			if ( confirmar ) {
+				confirmar.disabled = 0 === n;
+			}
+		};
+
+		var abrirBloco = function ( botao ) {
+			var mesa = mesaDe( parseInt( botao.getAttribute( 'data-mesa' ), 10 ) );
+			var dia = botao.getAttribute( 'data-dia' );
+			var hora = botao.getAttribute( 'data-hora' );
+			var aqui = marcacoesDe( mesa.id, dia, hora );
+
+			origem = botao;
+			livres = Math.max( 0, mesa.lugares - aqui.length );
+
+			janela.querySelector( '#jar-bloco-titulo' ).textContent = mesa.nome + ' · ' + grelha.dias[ dia ].rotulo + ' · ' + hora;
+			janela.querySelector( '[data-jar-bloco-meta]' ).textContent = aqui.length + ' de ' + mesa.lugares + ( 1 === mesa.lugares ? ' lugar ocupado' : ' lugares ocupados' );
+
+			/* As marcações do bloco. */
+			partes.marcacoes.hidden = 0 === aqui.length;
+			lista.textContent = '';
+
+			aqui.forEach( function ( m ) {
+				var li = document.createElement( 'li' );
+				var rotulo = document.createElement( 'label' );
+				var caixa = document.createElement( 'input' );
+				var texto = document.createElement( 'span' );
+				var nome = document.createElement( 'span' );
+				var meta = document.createElement( 'small' );
+				var estado = document.createElement( 'span' );
+
+				rotulo.className = 'jar-caixa';
+				caixa.type = 'checkbox';
+				caixa.name = 'marcacao[]';
+				caixa.value = m.id;
+				nome.textContent = m.quem || '—';
+				meta.className = 'jar-evento-docs__meta';
+				meta.textContent = m.empresa;
+				estado.className = 'jar-estado jar-estado--' + m.estado;
+				estado.textContent = grelha.estados[ m.estado ] || m.estado;
+
+				texto.appendChild( nome );
+				texto.appendChild( meta );
+				rotulo.appendChild( caixa );
+				rotulo.appendChild( texto );
+				li.appendChild( rotulo );
+				li.appendChild( estado );
+				lista.appendChild( li );
+			} );
+
+			// Os blocos para onde se pode mudar: os outros, com lugares livres, dia a dia.
+			destino.textContent = '';
+			destino.appendChild( new Option( 'Escolher o bloco', '' ) );
+
+			Object.keys( grelha.dias ).forEach( function ( d ) {
+				var grupo = document.createElement( 'optgroup' );
+
+				grupo.label = grelha.dias[ d ].rotulo;
+
+				grelha.dias[ d ].blocos.forEach( function ( h ) {
+					grelha.mesas.forEach( function ( outra ) {
+						var vagos = outra.lugares - marcacoesDe( outra.id, d, h ).length;
+						var opcao;
+
+						if ( ( outra.id === mesa.id && d === dia && h === hora ) || vagos < 1 ) {
+							return;
+						}
+
+						opcao = new Option( h + ' · ' + outra.nome + ' — ' + plural( vagos, 'lugar livre', 'lugares livres' ), outra.id + '|' + d + '|' + h );
+						opcao.setAttribute( 'data-livres', vagos );
+						grupo.appendChild( opcao );
+					} );
+				} );
+
+				if ( grupo.children.length ) {
+					destino.appendChild( grupo );
+				}
+			} );
+
+			acertarMarcacoes();
+
+			/* Marcar associados. */
+			partes.marcar.querySelector( '[name="mesa"]' ).value = mesa.id;
+			partes.marcar.querySelector( '[name="dia"]' ).value = dia;
+			partes.marcar.querySelector( '[name="hora"]' ).value = hora;
+			partes.marcar.querySelector( '[data-jar-bloco-livres]' ).textContent = livres
+				? plural( livres, 'lugar livre neste bloco.', 'lugares livres neste bloco.' )
+				: 'Os lugares deste bloco estão todos ocupados. Para marcar outro associado, é necessário remover ou mudar uma das marcações.';
+
+			// Quem já está marcado a esta hora, nesta mesa ou noutra.
+			var nesta = aqui.map( function ( m ) {
+				return m.user_id;
+			} );
+			var aEstaHora = [];
+
+			grelha.mesas.forEach( function ( outra ) {
+				marcacoesDe( outra.id, dia, hora ).forEach( function ( m ) {
+					aEstaHora.push( m.user_id );
+				} );
+			} );
+
+			Array.prototype.forEach.call( associados, function ( a ) {
+				var id = parseInt( a.getAttribute( 'data-jar-associado' ), 10 );
+				var caixa = a.querySelector( 'input' );
+				var nota = a.querySelector( '[data-jar-associado-nota]' );
+				var ocupado = -1 !== aEstaHora.indexOf( id );
+
+				caixa.checked = false;
+				caixa.disabled = ocupado;
+				a.toggleAttribute( 'data-jar-ocupado', ocupado );
+				nota.textContent = -1 !== nesta.indexOf( id ) ? '· Já marcado neste bloco' : ( ocupado ? '· Marcado noutra mesa a esta hora' : '' );
+			} );
+
+			// A lista inteira outra vez: a procura da vez anterior sai.
+			if ( procura ) {
+				procura.value = '';
+				procura.dispatchEvent( new Event( 'input' ) );
+				procura.closest( '.jar-filtro' ).hidden = ! livres;
+				janela.querySelector( '#jar-associados-lista' ).hidden = ! livres;
+				confirmar.parentNode.hidden = ! livres;
+			}
+
+			acertarMarcar();
+
+			janela.hidden = false;
+			janela.querySelector( '#jar-bloco-titulo' ).focus();
+		};
+
+		var fecharBloco = function () {
+			janela.hidden = true;
+
+			if ( origem ) {
+				origem.focus();
+			}
+			origem = null;
+		};
+
+		raiz.addEventListener( 'click', function ( e ) {
+			var botao = e.target.closest( '[data-jar-bloco]' );
+
+			if ( botao ) {
+				abrirBloco( botao );
+			}
+		} );
+
+		Array.prototype.forEach.call( janela.querySelectorAll( '[data-jar-bloco-fechar]' ), function ( el ) {
+			el.addEventListener( 'click', fecharBloco );
+		} );
+
+		lista.addEventListener( 'change', acertarMarcacoes );
+		destino.addEventListener( 'change', acertarMarcacoes );
+		partes.marcar.addEventListener( 'change', acertarMarcar );
+
+		document.addEventListener( 'keydown', function ( e ) {
+			if ( janela.hidden ) {
+				return;
+			}
+
+			if ( 'Escape' === e.key ) {
+				fecharBloco();
+				return;
+			}
+
+			// O Tab fica dentro da janela.
+			if ( 'Tab' === e.key ) {
+				var focaveis = Array.prototype.filter.call(
+					caixaJanela.querySelectorAll( 'button, input, select, [tabindex]' ),
+					function ( el ) {
+						return ! el.disabled && el.tabIndex >= 0 && 'hidden' !== el.type && null !== el.offsetParent;
+					}
+				);
+				var primeiro = focaveis[ 0 ];
+				var ultimo = focaveis[ focaveis.length - 1 ];
+
+				if ( e.shiftKey && document.activeElement === primeiro ) {
+					e.preventDefault();
+					ultimo.focus();
+				} else if ( ! e.shiftKey && document.activeElement === ultimo ) {
+					e.preventDefault();
+					primeiro.focus();
+				}
+			}
+		} );
+	}
+
 	/* ---------- Menu lateral no telemóvel ---------- */
 
 	var abrir = raiz.querySelector( '[data-jar-menu]' );
