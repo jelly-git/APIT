@@ -27,6 +27,35 @@ if ( $id ) {
 	} ) );
 }
 
+/*
+ * O que volta de uma decisão (jelly_ar_utilizador_estado()): um aviso de
+ * sucesso, ou o erro. Aprovar sem o e-mail sair é um erro: sem ele, a pessoa
+ * não tem como definir a palavra-passe.
+ */
+$aviso   = isset( $_GET['aviso'] ) ? sanitize_key( wp_unslash( $_GET['aviso'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$erro    = isset( $_GET['erro'] ) ? sanitize_key( wp_unslash( $_GET['erro'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$avisos  = [
+	'aprovado'  => __( 'Registo aprovado. Foi enviado o e-mail para definir a palavra-passe.', 'jelly-area-reservada' ),
+	'rejeitado' => __( 'Pedido rejeitado. Foi enviado um e-mail a avisar.', 'jelly-area-reservada' ),
+	'suspenso'  => __( 'Acesso suspenso: o login da área reservada recusa este e-mail até ser reativado.', 'jelly-area-reservada' ),
+	'reativado' => __( 'Acesso reativado. A palavra-passe continua a mesma.', 'jelly-area-reservada' ),
+	'apagado'   => __( 'Pedido apagado, com a conta e os dados do registo.', 'jelly-area-reservada' ),
+];
+$erros   = [
+	'aprovado-sem-email' => __( 'Registo aprovado, mas o e-mail para definir a palavra-passe não saiu. Confirme o envio no WP Mail SMTP; a pessoa pode pedir outra ligação em "Esqueceu-se da palavra-passe?".', 'jelly-area-reservada' ),
+	'decisao'            => __( 'Essa mudança não é possível a partir do estado atual.', 'jelly-area-reservada' ),
+];
+$mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros ) {
+	if ( isset( $avisos[ $aviso ] ) ) {
+		printf( '<div class="jar-aviso jar-aviso--sucesso" role="status"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><p>%s</p></div>', esc_html( $avisos[ $aviso ] ) );
+	}
+
+	$e = $erros[ $erro ] ?? ( $erros[ $aviso ] ?? '' );
+	if ( $e ) {
+		printf( '<div class="jar-aviso jar-aviso--suspenso" role="alert"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><p>%s</p></div>', esc_html( $e ) );
+	}
+};
+
 // Os cinco campos do registo, iguais aos do formulário do site.
 $campos = [
 	'nome'     => [ __( 'Nome', 'jelly-area-reservada' ), 'text', true, '' ],
@@ -95,15 +124,34 @@ if ( $u ) :
 	 * confirmação e ficam discretos: são o contrário do que se faz todos os
 	 * dias, e não devem estar ao alcance de um clique distraído.
 	 */
-	$confirmar = function ( $rotulo, $titulo, $texto, $sim, $resultado, $classe = 'jar-btn--discreto' ) {
+	/*
+	 * Num utilizador real, cada botão envia o seu formulário escondido
+	 * (jelly_ar_form_decidir(), inc/utilizadores.php) — os de confirmação, depois
+	 * de confirmados. Nos de exemplo, mudam só o ecrã.
+	 */
+	$real      = ! empty( $u['real'] );
+	$form      = function ( $para ) use ( $real, $u ) {
+		return $real ? jelly_ar_form_decidir( $u['id'], $para ) : '';
+	};
+	$confirmar = function ( $rotulo, $titulo, $texto, $sim, $resultado, $classe = 'jar-btn--discreto', $para = '' ) use ( $form ) {
+		$id = $para ? $form( $para ) : '';
 		printf(
-			'<button type="button" class="jar-btn %1$s" data-jar-confirmar data-titulo="%2$s" data-texto="%3$s" data-sim="%4$s" data-resultado="%5$s">%6$s</button>',
+			'<button type="button" class="jar-btn %1$s" data-jar-confirmar data-titulo="%2$s" data-texto="%3$s" data-sim="%4$s" data-resultado="%5$s"%6$s>%7$s</button>',
 			esc_attr( $classe ),
 			esc_attr( $titulo ),
 			esc_attr( $texto ),
 			esc_attr( $sim ),
 			esc_attr( $resultado ),
+			$id ? ' data-jar-form="' . esc_attr( $id ) . '"' : '',
 			wp_kses( $rotulo, [ 'i' => [ 'class' => true, 'aria-hidden' => true ] ] )
+		);
+	};
+	$botao     = function ( $rotulo, $para ) use ( $form ) {
+		$id = $form( $para );
+		printf(
+			'<button %1$s class="jar-btn">%2$s</button>',
+			$id ? 'type="submit" form="' . esc_attr( $id ) . '"' : 'type="button" data-jar-decidir="' . esc_attr( $para ) . '"',
+			esc_html( $rotulo )
 		);
 	};
 	?>
@@ -124,9 +172,10 @@ if ( $u ) :
 						sprintf( __( '%s não vai ter acesso à área reservada.', 'jelly-area-reservada' ), $completo ),
 						__( 'Rejeitar pedido', 'jelly-area-reservada' ),
 						'rejeitado',
-						'jar-btn--contorno'
+						'jar-btn--contorno',
+						'rejeitado'
 					);
-					echo '<button type="button" class="jar-btn">' . esc_html__( 'Aprovar registo', 'jelly-area-reservada' ) . '</button>';
+					$botao( __( 'Aprovar registo', 'jelly-area-reservada' ), 'ativo' );
 					break;
 
 				case 'ativo':
@@ -136,12 +185,14 @@ if ( $u ) :
 						/* translators: %s: nome */
 						sprintf( __( '%s deixa de conseguir entrar na área reservada até o acesso ser reativado. Os dados e o histórico ficam guardados.', 'jelly-area-reservada' ), $completo ),
 						__( 'Suspender acesso', 'jelly-area-reservada' ),
+						'suspenso',
+						'jar-btn--discreto',
 						'suspenso'
 					);
 					break;
 
 				case 'suspenso':
-					echo '<button type="button" class="jar-btn">' . esc_html__( 'Reativar acesso', 'jelly-area-reservada' ) . '</button>';
+					$botao( __( 'Reativar acesso', 'jelly-area-reservada' ), 'ativo' );
 					break;
 
 				case 'rejeitado':
@@ -150,14 +201,18 @@ if ( $u ) :
 						__( 'Apagar este pedido?', 'jelly-area-reservada' ),
 						__( 'O pedido e os dados do registo são apagados de vez.', 'jelly-area-reservada' ),
 						__( 'Apagar', 'jelly-area-reservada' ),
-						''
+						'',
+						'jar-btn--discreto',
+						'apagar'
 					);
-					echo '<button type="button" class="jar-btn">' . esc_html__( 'Aprovar registo', 'jelly-area-reservada' ) . '</button>';
+					$botao( __( 'Aprovar registo', 'jelly-area-reservada' ), 'ativo' );
 					break;
 			}
 			?>
 		</div>
 	</div>
+
+	<?php $mostrar_aviso(); ?>
 
 	<?php if ( 'pendente' === $u['estado'] ) : ?>
 		<div class="jar-aviso jar-aviso--pendente">
@@ -357,6 +412,8 @@ $resumo      = [
 	<?php endforeach; ?>
 </div>
 
+<?php $mostrar_aviso(); ?>
+
 <?php if ( $por_aprovar && 'pendente' !== $filtro ) : ?>
 	<a class="jar-aviso jar-aviso--pendente jar-aviso--link" href="<?php echo esc_url( jelly_ar_admin_url( 'utilizadores', [ 'estado' => 'pendente' ] ) ); ?>">
 		<i class="fa-solid fa-hourglass-half" aria-hidden="true"></i>
@@ -441,10 +498,26 @@ $resumo      = [
 					<td class="jar-tabela__fim">
 						<span class="jar-acoes">
 							<?php if ( 'pendente' === $x['estado'] ) : ?>
-								<button type="button" class="jar-acao jar-acao--sim" data-jar-decidir="ativo" aria-label="<?php echo esc_attr( sprintf( __( 'Aprovar %s', 'jelly-area-reservada' ), $completo ) ); ?>" title="<?php esc_attr_e( 'Aprovar', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-check" aria-hidden="true"></i></button>
+								<?php
+								/*
+								 * Num utilizador real, aprovar e rejeitar gravam (jelly_ar_utilizador_estado(),
+								 * em inc/utilizadores.php): o visto envia o formulário, e o X envia-o depois da
+								 * confirmação. Nos de exemplo mudam só o ecrã.
+								 */
+								$real     = ! empty( $x['real'] );
+								$aprovar  = $real ? jelly_ar_form_decidir( $x['id'], 'ativo' ) : '';
+								$rejeitar = $real ? jelly_ar_form_decidir( $x['id'], 'rejeitado' ) : '';
+								?>
+								<button
+									<?php echo $real ? 'type="submit" form="' . esc_attr( $aprovar ) . '"' : 'type="button" data-jar-decidir="ativo"'; ?>
+									class="jar-acao jar-acao--sim"
+									aria-label="<?php echo esc_attr( sprintf( __( 'Aprovar %s', 'jelly-area-reservada' ), $completo ) ); ?>"
+									title="<?php esc_attr_e( 'Aprovar', 'jelly-area-reservada' ); ?>"
+								><i class="fa-solid fa-check" aria-hidden="true"></i></button>
 								<button
 									type="button"
 									class="jar-acao jar-acao--nao"
+									<?php echo $real ? 'data-jar-form="' . esc_attr( $rejeitar ) . '"' : ''; ?>
 									data-jar-confirmar
 									data-titulo="<?php esc_attr_e( 'Rejeitar este pedido?', 'jelly-area-reservada' ); ?>"
 									data-texto="<?php echo esc_attr( sprintf( __( '%s não vai ter acesso à área reservada.', 'jelly-area-reservada' ), $completo ) ); ?>"

@@ -217,9 +217,10 @@ add_action( 'wp_ajax_jelly_ar_registo', 'jelly_ar_registar' );
 /* ---------- Os e-mails ---------- */
 
 /*
- * Em texto simples, pelo wp_mail(), e sem remetente próprio: saem pelo plugin
- * de SMTP ativo, com a conta e o remetente que ele tiver configurados (o WP
- * Mail SMTP força o remetente). A AR não envia correio por outro caminho.
+ * Pelo wp_mail(), com o desenho do site e sem endereço de remetente próprio:
+ * saem pelo plugin de SMTP ativo, com a conta e o remetente que ele tiver
+ * configurados (o WP Mail SMTP força o remetente). A AR não envia correio por
+ * outro caminho. O desenho e o envio estão em inc/emails.php.
  */
 
 /**
@@ -251,52 +252,65 @@ function jelly_ar_envio_autenticado() {
 	return apply_filters( 'jelly_ar_envio_autenticado', $resposta );
 }
 
+/*
+ * Os três e-mails do registo, com o desenho do site (inc/emails.php e
+ * templates/email.php).
+ */
+
 function jelly_ar_registo_avisar_equipa( $user_id, $campos ) {
 	$nome = $campos['first_name'] . ' ' . $campos['last_name'];
+	// O slug da página vem de inc/admin.php, que o admin-ajax carrega; fora dele, o de sempre.
 	$link = add_query_arg(
-		[ 'page' => jelly_ar_admin_slug( 'utilizadores' ), 'utilizador' => $user_id ],
+		[ 'page' => function_exists( 'jelly_ar_admin_slug' ) ? jelly_ar_admin_slug( 'utilizadores' ) : 'jelly-ar', 'utilizador' => $user_id ],
 		admin_url( 'admin.php' )
 	);
 
-	$linhas = [
-		__( 'Chegou um pedido de registo na Área Reservada:', 'jelly-area-reservada' ),
-		'',
-		/* translators: %s: nome */
-		sprintf( __( 'Nome: %s', 'jelly-area-reservada' ), $nome ),
-		/* translators: %s: e-mail */
-		sprintf( __( 'E-mail: %s', 'jelly-area-reservada' ), $campos['email'] ),
-		/* translators: %s: telefone */
-		sprintf( __( 'Telefone: %s', 'jelly-area-reservada' ), '' !== $campos['telefone'] ? jelly_ar_telefone( $campos['telefone'] ) : '—' ),
-		/* translators: %s: empresa */
-		sprintf( __( 'Empresa: %s', 'jelly-area-reservada' ), '' !== $campos['empresa'] ? $campos['empresa'] : '—' ),
-		'',
-		__( 'Para aprovar ou rejeitar o pedido:', 'jelly-area-reservada' ),
-		$link,
-	];
-
-	wp_mail(
+	jelly_ar_enviar_email(
 		jelly_ar_emails_equipa(),
 		/* translators: %s: nome */
 		sprintf( __( 'Novo pedido de registo: %s', 'jelly-area-reservada' ), $nome ),
-		implode( "\n", $linhas )
+		[
+			'titulo'     => __( 'Novo pedido de registo', 'jelly-area-reservada' ),
+			/* translators: %s: nome */
+			'previa'     => sprintf( __( '%s pediu acesso à Área Reservada.', 'jelly-area-reservada' ), $nome ),
+			'paragrafos' => [
+				/* translators: %s: nome */
+				sprintf( esc_html__( '%s pediu acesso à Área Reservada. O pedido está à espera de aprovação no back-office.', 'jelly-area-reservada' ), '<strong>' . esc_html( $nome ) . '</strong>' ),
+			],
+			'dados'      => [
+				__( 'Nome', 'jelly-area-reservada' )     => $nome,
+				__( 'E-mail', 'jelly-area-reservada' )   => $campos['email'],
+				__( 'Telefone', 'jelly-area-reservada' ) => '' !== $campos['telefone'] ? jelly_ar_telefone( $campos['telefone'] ) : '',
+				__( 'Empresa', 'jelly-area-reservada' )  => $campos['empresa'],
+			],
+			'botao'      => [
+				'texto' => __( 'Ver o pedido', 'jelly-area-reservada' ),
+				'url'   => $link,
+			],
+		]
 	);
 }
 
 function jelly_ar_registo_confirmar( $campos ) {
-	$linhas = [
-		/* translators: %s: nome próprio */
-		sprintf( __( 'Olá %s,', 'jelly-area-reservada' ), $campos['first_name'] ),
-		'',
-		__( 'A APIT recebeu o seu pedido de acesso à Área Reservada.', 'jelly-area-reservada' ),
-		__( 'Quando a APIT o aprovar, é enviado outro e-mail para definir a palavra-passe. A partir daí, a entrada na área reservada faz-se com este endereço de e-mail.', 'jelly-area-reservada' ),
-		'',
-		__( 'Se não foi você a fazer este pedido, pode ignorar esta mensagem.', 'jelly-area-reservada' ),
-		'',
-		'APIT',
-		home_url( '/' ),
-	];
-
-	wp_mail( $campos['email'], __( 'Pedido de registo recebido', 'jelly-area-reservada' ), implode( "\n", $linhas ) );
+	jelly_ar_enviar_email(
+		$campos['email'],
+		__( 'Pedido de registo recebido', 'jelly-area-reservada' ),
+		[
+			/* translators: %s: nome próprio */
+			'titulo'     => sprintf( __( 'Olá %s,', 'jelly-area-reservada' ), $campos['first_name'] ),
+			'previa'     => __( 'O pedido de acesso à Área Reservada da APIT está à espera de aprovação.', 'jelly-area-reservada' ),
+			'paragrafos' => [
+				esc_html__( 'A APIT recebeu o pedido de acesso à Área Reservada, que está agora à espera de aprovação.', 'jelly-area-reservada' ),
+				sprintf(
+					/* translators: %s: e-mail */
+					esc_html__( 'Depois de aprovado, é enviado para %s outro e-mail para definir a palavra-passe. A partir daí, a entrada na área reservada faz-se com este endereço de e-mail.', 'jelly-area-reservada' ),
+					'<strong>' . esc_html( $campos['email'] ) . '</strong>'
+				),
+			],
+			'passos'     => 2,
+			'nota'       => __( 'Quem não fez este pedido pode ignorar esta mensagem: sem aprovação, a conta não tem acesso.', 'jelly-area-reservada' ),
+		]
+	);
 }
 
 /**
@@ -304,26 +318,26 @@ function jelly_ar_registo_confirmar( $campos ) {
  * enviado" como a toda a gente; o dono do e-mail fica a saber o que se passa.
  */
 function jelly_ar_registo_avisar_existente( $user ) {
-	$estado = jelly_ar_so_associado( $user ) ? jelly_ar_associado_estado( $user->ID ) : '';
-
-	if ( 'pendente' === $estado ) {
-		$texto = __( 'O pedido de acesso já estava registado e continua à espera de aprovação. Não é preciso enviá-lo outra vez: é enviado um e-mail quando a APIT o aprovar.', 'jelly-area-reservada' );
-	} else {
-		/* translators: %s: endereço para recuperar a palavra-passe */
-		$texto = sprintf( __( 'Já existe uma conta com este endereço de e-mail. Se não se lembra da palavra-passe, pode definir uma nova aqui: %s', 'jelly-area-reservada' ), wp_lostpassword_url() );
-	}
-
-	$linhas = [
-		__( 'Olá,', 'jelly-area-reservada' ),
-		'',
-		__( 'A APIT recebeu um pedido de registo na Área Reservada com este endereço de e-mail.', 'jelly-area-reservada' ),
-		$texto,
-		'',
-		__( 'Se não foi você a fazer este pedido, pode ignorar esta mensagem.', 'jelly-area-reservada' ),
-		'',
-		'APIT',
-		home_url( '/' ),
+	$pendente = jelly_ar_so_associado( $user ) && 'pendente' === jelly_ar_associado_estado( $user->ID );
+	$args     = [
+		'titulo'     => __( 'Pedido de registo', 'jelly-area-reservada' ),
+		'previa'     => __( 'Foi feito um pedido de registo na Área Reservada com este endereço de e-mail.', 'jelly-area-reservada' ),
+		'paragrafos' => [
+			esc_html__( 'A APIT recebeu um pedido de registo na Área Reservada com este endereço de e-mail.', 'jelly-area-reservada' ),
+		],
+		'nota'       => __( 'Quem não fez este pedido pode ignorar esta mensagem: nada mudou na conta.', 'jelly-area-reservada' ),
 	];
 
-	wp_mail( $user->user_email, __( 'Pedido de registo na Área Reservada', 'jelly-area-reservada' ), implode( "\n", $linhas ) );
+	if ( $pendente ) {
+		$args['paragrafos'][] = esc_html__( 'O pedido de acesso já estava registado e continua à espera de aprovação. Não é preciso enviá-lo outra vez: é enviado um e-mail quando a APIT o aprovar.', 'jelly-area-reservada' );
+		$args['passos']       = 2;
+	} else {
+		$args['paragrafos'][] = esc_html__( 'Já existe uma conta com este endereço de e-mail. Para definir uma palavra-passe nova, basta seguir o botão abaixo.', 'jelly-area-reservada' );
+		$args['botao']        = [
+			'texto' => __( 'Definir palavra-passe', 'jelly-area-reservada' ),
+			'url'   => wp_lostpassword_url(),
+		];
+	}
+
+	jelly_ar_enviar_email( $user->user_email, __( 'Pedido de registo na Área Reservada', 'jelly-area-reservada' ), $args );
 }

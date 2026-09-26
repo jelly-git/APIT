@@ -266,6 +266,34 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.39.0] - 2026-09-26
+
+Tudo no plugin `jelly-area-reservada`, que passa à versão 0.3.0. O tema e a
+base de dados não mudam.
+
+### Adicionado
+- **A aprovação dos associados funciona.** No perfil e na lista de
+  Utilizadores, aprovar, rejeitar, suspender, reativar e apagar um pedido
+  rejeitado gravam. De cada estado só se passa para o que faz sentido
+  (pendente → aprovado ou rejeitado; rejeitado → aprovado ou apagado;
+  aprovado → suspenso; suspenso → reativado).
+  - Aprovar guarda quando e quem aprovou, e envia o e-mail com a ligação para
+    definir a palavra-passe (a da recuperação do WordPress, válida 24 horas).
+    Se o e-mail não sair, o back-office avisa.
+  - Rejeitar envia um aviso curto, com o contacto da APIT. Suspender e
+    reativar não enviam nada; reativar não mexe na data da aprovação.
+  - Apagar tira a conta, o perfil e os acessos.
+  - Os utilizadores de exemplo continuam a mudar só no ecrã.
+- **E-mails com o desenho do site** (`templates/email.php`): o logótipo, a
+  faixa no degradé da marca, o texto, os três passos do pedido e o rodapé da
+  APIT, com uma versão em texto simples ao lado. Saem com o nome "APIT". Usam-no
+  os cinco e-mails da AR: o pedido recebido, o aviso à equipa, o e-mail já
+  registado, a aprovação e a recusa.
+
+### Alterado
+- Mais duas frases dos e-mails na 3.ª pessoa ("Quem não fez este pedido pode
+  ignorar esta mensagem").
+
 ## [0.38.0] - 2026-09-26
 
 Tudo no plugin `jelly-area-reservada`, que passa à versão 0.2.0. O tema não

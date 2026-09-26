@@ -3,8 +3,9 @@
  * utilizadores, edição dos dados do registo, a confirmação das ações de peso e
  * o menu lateral no telemóvel.
  *
- * Nesta fase nada é gravado: aprovar, rejeitar, suspender e guardar mudam só
- * o ecrã, para se ver como fica.
+ * Nos utilizadores reais, aprovar, rejeitar, suspender e reativar enviam um
+ * formulário ao servidor (inc/utilizadores.php); nos de exemplo, e ao guardar
+ * os dados do registo, mudam ainda só o ecrã.
  */
 ( function () {
 	'use strict';

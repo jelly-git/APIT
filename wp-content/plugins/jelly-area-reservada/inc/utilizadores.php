@@ -152,3 +152,119 @@ function jelly_ar_acessos_de( $u, $limite = 0 ) {
 
 	return $limite ? array_slice( $linhas, 0, $limite ) : $linhas;
 }
+
+/* ---------- Aprovar, rejeitar, suspender ---------- */
+
+/*
+ * As decisões sobre um associado, no perfil e na lista. Só para os reais: os
+ * de exemplo continuam a mudar só no ecrã (assets/js/admin.js).
+ *
+ * De cada estado, só se sai para os que fazem sentido:
+ *   pendente  → ativo (aprovar) ou rejeitado
+ *   rejeitado → ativo (aprovar) ou apagado (a conta e o perfil saem de vez)
+ *   ativo     → suspenso
+ *   suspenso  → ativo (reativar)
+ *
+ * Aprovar envia o e-mail para definir a palavra-passe; rejeitar avisa a pessoa.
+ * Suspender e reativar não enviam nada.
+ */
+const JELLY_AR_DECISOES = [
+	'pendente'  => [ 'ativo', 'rejeitado' ],
+	'rejeitado' => [ 'ativo', 'apagar' ],
+	'ativo'     => [ 'suspenso' ],
+	'suspenso'  => [ 'ativo' ],
+];
+
+function jelly_ar_url_decidir( $user_id, $para ) {
+	return [
+		'action'     => 'jelly_ar_utilizador_estado',
+		'utilizador' => (int) $user_id,
+		'para'       => $para,
+		'nonce'      => 'jelly_ar_utilizador_estado_' . (int) $user_id . '_' . $para,
+	];
+}
+
+/**
+ * Um formulário escondido que muda o estado, para um botão o enviar pelo
+ * atributo form (o id que devolve). Assim os botões ficam onde estão no ecrã.
+ */
+function jelly_ar_form_decidir( $user_id, $para ) {
+	$f  = jelly_ar_url_decidir( $user_id, $para );
+	$id = 'jar-decidir-' . (int) $user_id . '-' . $para;
+	?>
+	<form id="<?php echo esc_attr( $id ); ?>" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" hidden>
+		<input type="hidden" name="action" value="<?php echo esc_attr( $f['action'] ); ?>">
+		<input type="hidden" name="utilizador" value="<?php echo (int) $user_id; ?>">
+		<input type="hidden" name="para" value="<?php echo esc_attr( $para ); ?>">
+		<?php wp_nonce_field( $f['nonce'] ); ?>
+	</form>
+	<?php
+	return $id;
+}
+
+function jelly_ar_utilizador_estado() {
+	global $wpdb;
+
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verificado a seguir, com o id e a decisão
+	$id   = isset( $_POST['utilizador'] ) ? absint( $_POST['utilizador'] ) : 0;
+	$para = isset( $_POST['para'] ) ? sanitize_key( wp_unslash( $_POST['para'] ) ) : '';
+	// phpcs:enable
+
+	if ( ! jelly_ar_e_administrador() ) {
+		wp_die( esc_html__( 'Esta área é só para administradores.', 'jelly-area-reservada' ), '', [ 'response' => 403 ] );
+	}
+
+	check_admin_referer( 'jelly_ar_utilizador_estado_' . $id . '_' . $para );
+
+	$perfil = jelly_ar_associado( $id );
+	$user   = get_userdata( $id );
+
+	if ( ! $perfil || ! $user ) {
+		wp_die( esc_html__( 'Esse utilizador não existe.', 'jelly-area-reservada' ), '', [ 'response' => 404 ] );
+	}
+
+	$voltar = function ( $args ) use ( $id ) {
+		wp_safe_redirect( jelly_ar_admin_url( 'utilizadores', $args + [ 'utilizador' => $id ] ) );
+		exit;
+	};
+
+	if ( ! in_array( $para, JELLY_AR_DECISOES[ $perfil->estado ] ?? [], true ) ) {
+		$voltar( [ 'erro' => 'decisao' ] );
+	}
+
+	$tabela = jelly_ar_tabela( 'associados' );
+
+	// Apagar: só um pedido rejeitado, e sai tudo — a conta, o perfil e os acessos.
+	if ( 'apagar' === $para ) {
+		require_once ABSPATH . 'wp-admin/includes/user.php';
+
+		$wpdb->delete( jelly_ar_tabela( 'acessos' ), [ 'user_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+		$wpdb->delete( $tabela, [ 'user_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+		wp_delete_user( $id );
+
+		wp_safe_redirect( jelly_ar_admin_url( 'utilizadores', [ 'aviso' => 'apagado' ] ) );
+		exit;
+	}
+
+	$agora  = current_time( 'mysql', true );
+	$campos = [ 'estado' => $para, 'atualizado_em' => $agora ];
+
+	// Aprovar um pedido guarda quando e quem; reativar um suspenso não mexe na aprovação.
+	if ( 'ativo' === $para && in_array( $perfil->estado, [ 'pendente', 'rejeitado' ], true ) ) {
+		$campos['aprovado_em']  = $agora;
+		$campos['aprovado_por'] = get_current_user_id();
+	}
+
+	$wpdb->update( $tabela, $campos, [ 'user_id' => $id ] ); // phpcs:ignore WordPress.DB
+
+	$aviso = [ 'ativo' => 'suspenso' === $perfil->estado ? 'reativado' : 'aprovado', 'rejeitado' => 'rejeitado', 'suspenso' => 'suspenso' ][ $para ];
+
+	if ( 'aprovado' === $aviso ) {
+		$aviso = jelly_ar_email_aprovado( $user, $perfil ) ? 'aprovado' : 'aprovado-sem-email';
+	} elseif ( 'rejeitado' === $aviso ) {
+		jelly_ar_email_rejeitado( $user, $perfil );
+	}
+
+	$voltar( [ 'aviso' => $aviso ] );
+}
+add_action( 'admin_post_jelly_ar_utilizador_estado', 'jelly_ar_utilizador_estado' );
