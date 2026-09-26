@@ -266,6 +266,13 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.42.1] - 2026-09-26
+
+### Alterado
+- No pop-up, a confirmação de "Recuperar palavra-passe" diz que a ligação
+  "será enviada" em vez de "foi enviada": a mensagem aparece antes de se
+  saber se há conta, e não confirma que o e-mail saiu. Plugin 0.6.1.
+
 ## [0.42.0] - 2026-09-26
 
 Plugin `jelly-area-reservada` 0.6.0. O tema e a base de dados não mudam: as

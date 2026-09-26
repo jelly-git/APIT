@@ -41,7 +41,7 @@ defined( 'ABSPATH' ) || exit;
 		<?php
 		printf(
 			/* translators: %s: e-mail */
-			esc_html__( 'Se existir uma conta ativa associada a %s, foi enviada uma ligação para definir uma nova palavra-passe. A ligação é válida durante 24 horas.', 'jelly-area-reservada' ),
+			esc_html__( 'Se existir uma conta ativa associada a %s, será enviada uma ligação para definir uma nova palavra-passe. A ligação é válida durante 24 horas.', 'jelly-area-reservada' ),
 			'<strong data-ar-sucesso-email></strong>'
 		);
 		?>
