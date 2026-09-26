@@ -266,6 +266,13 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.42.2] - 2026-09-26
+
+### Corrigido
+- Os cartões dos números nas Mesas e horários (Mesas, Dias com horário,
+  Blocos para marcar, Ocupados) não tinham o fundo, o contorno e a sombra dos
+  outros ecrãs: faltava-lhes a classe do cartão. Plugin 0.6.2.
+
 ## [0.42.1] - 2026-09-26
 
 ### Alterado

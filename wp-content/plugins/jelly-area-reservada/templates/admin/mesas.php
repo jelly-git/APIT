@@ -204,7 +204,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 		] as $n
 	) :
 		?>
-		<div class="jar-numero">
+		<div class="jar-cartao jar-numero">
 			<span class="jar-icone jar-icone--<?php echo esc_attr( $n[3] ); ?>"><i class="fa-solid <?php echo esc_attr( $n[2] ); ?>" aria-hidden="true"></i></span>
 			<span class="jar-numero__rotulo"><?php echo esc_html( $n[0] ); ?></span>
 			<strong class="jar-numero__valor"><?php echo (int) $n[1]; ?></strong>
