@@ -12,6 +12,7 @@ migrações únicas, feitas à mão — o repositório não as contém, por dese
 | O que | Vem do git? | Porquê |
 |---|---|---|
 | Tema `hello-elementor-child` | Sim | é o nosso código |
+| Plugin `jelly-area-reservada` | Sim | é o nosso código (Jelly): a Área Reservada, e a fonte dos eventos do calendário |
 | Core do WordPress | Não | instala-se/actualiza-se no servidor |
 | `wp-config.php` | Não | contém credenciais, e são outras no servidor |
 | `wp-content/uploads` | Não | conteúdo, não código (31 MB) |
@@ -302,7 +303,7 @@ rm bd-sem-cabecalho.sql
 # confirmar antes de subir
 grep -c "apit.local" apit-bd-para-servidor.sql     # 0
 grep -c "autosave-v1" apit-bd-para-servidor.sql    # 0
-grep -c "CREATE TABLE" apit-bd-para-servidor.sql   # 21
+grep -c "CREATE TABLE" apit-bd-para-servidor.sql   # 31 (21 do WordPress e plugins, 10 da Área Reservada)
 grep -c "'_elementor_css'" apit-bd-para-servidor.sql  # 0
 
 # arquivar a cópia versionada, com a versão lida do próprio tema
@@ -378,6 +379,25 @@ dados, e pela mesma razão.
 Estado a 24 de setembro de 2026: 219 ficheiros, 31 MB, correspondentes a 91
 anexos na base de dados — todos com o ficheiro no sítio, verificado. O valor de
 5,5 MB na tabela do topo é de 1 de setembro e ficou para trás.
+
+### A pasta da Área Reservada
+
+`uploads/jelly-area-reservada/` guarda os documentos que os administradores
+carregam no back-office. **Ao contrário do resto dos uploads, não é para copiar
+por cima da do servidor** depois de lá haver documentos: os que forem carregados
+em produção só existem lá, e a tabela `wp_jelly_ar_documentos` aponta para eles.
+Na primeira subida não há nada a copiar (a 26 de setembro só tem os dois
+ficheiros de proteção): o plugin cria a pasta sozinho, já fechada, no primeiro
+carregamento.
+
+A pasta está fechada ao público por um `.htaccess`, que o Apache do cPanel lê.
+A prova, depois da subida, é pedir um ficheiro dela diretamente no browser: tem
+de dar **403**. Num servidor nginx o `.htaccess` não conta e é precisa uma regra
+na configuração, como a que está no Local (`conf/nginx/includes/restrictions.conf.hbs`):
+
+```nginx
+location ^~ /wp-content/uploads/jelly-area-reservada/ { deny all; }
+```
 
 ---
 

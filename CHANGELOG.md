@@ -266,6 +266,57 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.37.0] - 2026-09-26
+
+### Adicionado
+- **Área Reservada**, no plugin próprio `jelly-area-reservada` (Jelly, versão
+  0.1.0), que passa a ir no git e no deploy ao lado do tema. O tema só lhe dá o
+  aspeto e o sítio dos botões.
+  - **Pop-up de login e registo**, aberto pelos botões "Área Reservada" do
+    cabeçalho e do menu móvel e por qualquer link para `#area-reservada` ou
+    `#area-reservada-registo`. Por agora é só desenho e validação no browser:
+    nada é enviado. O acesso fica ativo depois de aprovado pela APIT.
+  - **Back-office dentro do wp-admin**, só para administradores. Os associados
+    não entram no wp-admin, não veem a barra de topo e não aparecem na lista de
+    Utilizadores do WordPress: entram com a conta do WordPress, mas o perfil
+    está numa tabela da AR.
+  - **Utilizadores**: lista com pesquisa (também pelo telefone), ordenação,
+    paginação de 10/20/50/100, perfil, suspensão com confirmação, registo de
+    acessos e exportação. Ainda com dados de exemplo.
+  - **Documentos**: carregar, editar, substituir o ficheiro, apagar e
+    descarregar, com categorias próprias. Os ficheiros ficam em
+    `uploads/jelly-area-reservada/documentos/`, com nome aleatório e a pasta
+    fechada ao público; só saem pelo plugin, que confirma quem pede. Os
+    documentos de exemplo continuam na lista, para apresentação.
+  - **Eventos**: a fonte única dos eventos do site. Cada um diz onde aparece
+    (só no site, só na área reservada, ou nos dois), tem início e fim, e pode
+    aceitar marcações — só esses levam o botão "Fazer inscrição" no
+    calendário. As categorias, com as duas cores do cartão, geram-se aqui.
+  - Tudo em tabelas próprias (`wp_jelly_ar_*`, dez), incluindo as das mesas,
+    horários e marcações, que esperam pela área das marcações.
+- **Paginação no Calendário**: 12 eventos por página, com a mesma paginação do
+  arquivo das notícias. O 13.º evento ficava simplesmente de fora.
+- Cada cartão do calendário mostra as datas do evento por baixo do título
+  ("6–9 out 2026") e o resumo, quando há.
+
+### Alterado
+- **O calendário e a pesquisa leem os eventos do plugin.** O tema deixou de ter
+  eventos: saíram o tipo de conteúdo "Evento", a taxonomia das categorias, os
+  seus campos e os dois grupos do ACF. Sem o plugin ativo, o calendário não
+  aparece — os dois sobem juntos.
+- Na pesquisa, os eventos aparecem do próximo para o mais distante, e os que
+  já passaram no fim, a levar ao Calendário. Um evento que ainda lá está leva à
+  página e ao cartão dele.
+- Os botões "Aceder à Área Reservada" apontam para `apit_area_reservada_url()`
+  (`inc/links.php`), que o plugin poderá mudar para o painel do associado sem
+  tocar no tema. O campo ACF do botão da Sobre, vazio, abre o pop-up.
+- A paginação das notícias passou de `noticias.css` para `style.css`, para o
+  Calendário a usar também.
+
+### Deploy
+- O `.cpanel.yml` copia agora também o plugin, reconstruído de raiz como o
+  tema. A base de dados leva as dez tabelas novas: são 31 no total.
+
 ## [0.36.5] - 2026-09-25
 
 ### Alterado

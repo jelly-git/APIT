@@ -27,6 +27,8 @@ wp-config.php
 !/wp-content/plugins/index.php
 !/wp-content/themes/index.php
 !/wp-content/themes/hello-elementor-child/
+# The Área Reservada plugin is our code too (Jelly), and deploys with the theme.
+!/wp-content/plugins/jelly-area-reservada/
 
 # Local by Flywheel
 .ddev/

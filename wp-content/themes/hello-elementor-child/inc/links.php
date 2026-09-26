@@ -72,3 +72,16 @@ function apit_iniciar_prefixo_de_links() {
 	ob_start( 'apit_prefixar_links' );
 }
 add_action( 'template_redirect', 'apit_iniciar_prefixo_de_links', 0 );
+
+/**
+ * Where the "Área Reservada" buttons point.
+ *
+ * The anchor is the whole contract with the jelly-area-reservada plugin: it
+ * opens the login pop-up on any link ending in #area-reservada. When there is
+ * a member dashboard to go to, the plugin filters this to its URL and every
+ * button follows, without the theme changing. With the plugin off the anchor
+ * leads nowhere, which is what the buttons did before.
+ */
+function apit_area_reservada_url() {
+	return apply_filters( 'apit_area_reservada_url', '#area-reservada' );
+}

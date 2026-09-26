@@ -259,7 +259,7 @@
             "name": "sobre_inter_url",
             "aria-label": "",
             "type": "text",
-            "instructions": "A Área Reservada ainda não existe; deixe vazio até existir. Aceita um caminho interno (\/contactos\/), um endereço completo (https:\/\/…), uma âncora (#secao), mailto: ou tel:.",
+            "instructions": "Vazio, o botão abre o pop-up de login da Área Reservada. Aceita um caminho interno (\/contactos\/), um endereço completo (https:\/\/…), uma âncora (#secao), mailto: ou tel:.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -412,5 +412,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1790169355
+    "modified": 1790353912
 }

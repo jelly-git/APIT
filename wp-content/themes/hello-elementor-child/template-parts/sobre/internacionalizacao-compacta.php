@@ -45,7 +45,7 @@ if ( ! $titulo && ! $botao ) {
 			<?php endif; ?>
 
 			<?php if ( $botao ) : ?>
-				<a class="btn btn--outline" href="<?php echo esc_url( $url ? $url : '#' ); ?>">
+				<a class="btn btn--outline" href="<?php echo esc_url( $url ? $url : apit_area_reservada_url() ); ?>">
 					<?php echo esc_html( $botao ); ?>
 					<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
 				</a>

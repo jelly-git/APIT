@@ -70,7 +70,7 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 				></button>
 			</nav>
 
-			<a href="#" class="apit-header__cta">
+			<a href="<?php echo esc_url( apit_area_reservada_url() ); ?>" class="apit-header__cta">
 				<?php esc_html_e( 'Área Reservada', 'apit' ); ?>
 				<i class="fa-solid fa-user" aria-hidden="true"></i>
 			</a>
@@ -156,7 +156,7 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 		?>
 	</nav>
 
-	<a href="#" class="apit-menu-mobile__cta">
+	<a href="<?php echo esc_url( apit_area_reservada_url() ); ?>" class="apit-menu-mobile__cta">
 		<?php esc_html_e( 'Área Reservada', 'apit' ); ?>
 		<i class="fa-solid fa-user" aria-hidden="true"></i>
 	</a>

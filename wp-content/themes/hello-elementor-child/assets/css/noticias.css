@@ -301,60 +301,11 @@
 	color: rgba(27, 42, 51, 0.72);
 }
 
-/* ---------- Pagination ---------- */
-
-.noticias-paginacao {
-	display: flex;
-	flex-wrap: wrap;
-	justify-content: center;
-	align-items: center;
-	gap: 8px;
-	margin-top: 64px;
-}
-
 /*
- * paginate_links prints a flat run of links and spans, all carrying
- * .page-numbers — so the nav is the flex row and every child is sized here.
+ * The pagination moved to style.css, shared with the calendar's: the two
+ * archives page through their lists the same way, and the calendar page does
+ * not load this file.
  */
-.noticias-paginacao .page-numbers {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	min-width: 44px;
-	height: 44px;
-	padding: 2px 14px 0;
-	border: 2px solid transparent;
-	border-radius: 200px;
-	font-family: var(--apit-font);
-	font-weight: 500;
-	font-size: 16px;
-	color: var(--apit-black);
-	transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
-}
-
-.noticias-paginacao a.page-numbers:hover,
-.noticias-paginacao a.page-numbers:focus-visible {
-	border-color: var(--apit-magenta);
-	color: var(--apit-magenta);
-}
-
-.noticias-paginacao .page-numbers.current {
-	background: var(--apit-magenta);
-	color: #fff;
-}
-
-.noticias-paginacao .page-numbers.dots {
-	min-width: 0;
-	padding-inline: 4px;
-	color: rgba(27, 42, 51, 0.45);
-}
-
-.noticias-paginacao .prev,
-.noticias-paginacao .next {
-	font-size: 14px;
-	letter-spacing: 1.4px;
-	text-transform: uppercase;
-}
 
 /* ---------- Narrower screens ---------- */
 
@@ -397,8 +348,7 @@
 
 @media (prefers-reduced-motion: reduce) {
 	.noticias-filtros__item,
-	.noticia__ler,
-	.noticias-paginacao .page-numbers {
+	.noticia__ler {
 		transition: none;
 	}
 }

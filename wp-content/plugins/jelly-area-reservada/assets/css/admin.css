@@ -1,0 +1,2174 @@
+/*
+ * Back-office da Área Reservada.
+ *
+ * Só se carrega nas páginas do plugin. O wp-admin não tem os tokens do tema,
+ * por isso as cores da marca são declaradas aqui, com os mesmos valores do
+ * style.css do tema. O desenho é o do site — Omnes, cantos retos, botões em
+ * pílula, magenta para a ação —, com a estrutura dos esboços: navegação
+ * lateral, barra de topo e cartões.
+ *
+ * Os campos e botões do wp-admin têm estilos próprios em forms.css e
+ * buttons.css; as regras abaixo vão sempre dentro de .jar para lhes ganhar.
+ */
+
+.jar {
+	--jar-preto: #1b2a33;
+	--jar-magenta: #f41892;
+	--jar-azul: #4a85c8;
+	--jar-roxo: #8048a6;
+	--jar-turquesa: #2ec6b0;
+	--jar-branco: #f4f9ff;
+	--jar-erro: #c4213b;
+	--jar-linha: rgba(27, 42, 51, 0.1);
+	--jar-suave: rgba(27, 42, 51, 0.6);
+	--jar-fonte: "omnes-pro", -apple-system, "Segoe UI", sans-serif;
+	--jar-sombra: 0 1px 2px rgba(27, 42, 51, 0.06), 0 6px 20px rgba(27, 42, 51, 0.05);
+}
+
+/* ---------- O wp-admin sai do caminho ---------- */
+
+html:has(body.jelly-ar-admin) {
+	padding-top: 0 !important;
+	background: #f4f9ff;
+}
+
+body.jelly-ar-admin {
+	background: #f4f9ff;
+}
+
+body.jelly-ar-admin #wpadminbar,
+body.jelly-ar-admin #adminmenumain,
+body.jelly-ar-admin #wpfooter,
+body.jelly-ar-admin #screen-meta,
+body.jelly-ar-admin #screen-meta-links {
+	display: none;
+}
+
+body.jelly-ar-admin #wpcontent,
+body.jelly-ar-admin #wpbody-content {
+	margin: 0;
+	padding: 0;
+}
+
+body.jelly-ar-admin #wpbody-content > :not(.jar) {
+	display: none;
+}
+
+/* ---------- Moldura ---------- */
+
+.jar {
+	display: grid;
+	grid-template-columns: 260px minmax(0, 1fr);
+	min-height: 100vh;
+	font-family: var(--jar-fonte);
+	font-size: 15px;
+	line-height: 1.45;
+	color: var(--jar-preto);
+	-webkit-font-smoothing: antialiased;
+}
+
+.jar *,
+.jar *::before,
+.jar *::after {
+	box-sizing: border-box;
+}
+
+.jar a {
+	color: inherit;
+	text-decoration: none;
+}
+
+/* `hidden` tem de ganhar aos display das classes — botões, formulários. */
+.jar [hidden] {
+	display: none !important;
+}
+
+/*
+ * O common.css do wp-admin tem `a:focus { border-radius: 2px }`. Ganha a
+ * qualquer classe de um seletor só, e um link com fundo ficava quadrado ao
+ * ser clicado — o clique dá-lhe o foco —, voltando a arredondar-se quando o
+ * foco saía. Aqui cada forma é reposta no foco.
+ */
+.jar a.jar-btn:focus,
+.jar a.jar-separador:focus,
+.jar a.jar-pagina:focus {
+	border-radius: 200px;
+}
+
+.jar a.jar-acao:focus {
+	border-radius: 50%;
+}
+
+.jar a.jar-cartao:focus,
+.jar a.jar__nav-item:focus {
+	border-radius: 3px;
+}
+
+.jar a.jar-aviso:focus {
+	border-radius: 0 3px 3px 0;
+}
+
+/*
+ * Sem anéis de foco em nada — pedido do desenho. O wp-admin põe um anel azul
+ * (box-shadow e outline) em links, botões e campos; aqui sai de todos. Os
+ * campos de texto continuam a mostrar o foco pela borda a magenta, que é do
+ * desenho e não um anel.
+ */
+.jar a:focus,
+.jar a:focus-visible,
+.jar button:focus,
+.jar button:focus-visible,
+.jar input:focus,
+.jar input:focus-visible,
+.jar select:focus,
+.jar select:focus-visible,
+.jar textarea:focus,
+.jar textarea:focus-visible,
+.jar label:focus-within {
+	outline: none;
+	box-shadow: none;
+}
+
+/* Um cartão que é link não perde a sombra por ser clicado. */
+.jar a.jar-cartao:focus {
+	box-shadow: var(--jar-sombra);
+}
+
+.jar h1,
+.jar h2 {
+	margin: 0;
+	padding: 0;
+	font-family: var(--jar-fonte);
+	color: var(--jar-preto);
+}
+
+.jar p {
+	margin: 0;
+	font-size: inherit;
+}
+
+/* ---------- Navegação lateral ---------- */
+
+.jar__lado {
+	position: sticky;
+	top: 0;
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	padding: 28px 16px 20px;
+	overflow-y: auto;
+	background-color: var(--jar-preto);
+	/* O gradiente da marca, só a subir do fundo, para não roubar o texto. */
+	background-image:
+		radial-gradient(120% 40% at 0% 100%, rgba(244, 24, 146, 0.35) 0%, rgba(244, 24, 146, 0) 70%),
+		radial-gradient(90% 30% at 100% 100%, rgba(46, 198, 176, 0.25) 0%, rgba(46, 198, 176, 0) 70%);
+	color: #fff;
+}
+
+.jar__marca {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin: 0 12px 36px;
+}
+
+.jar__marca img {
+	display: block;
+	width: 118px;
+	height: auto;
+}
+
+.jar__marca span {
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 1.2px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.6);
+}
+
+.jar__nav {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.jar__nav-item {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 11px 12px;
+	border-radius: 3px;
+	font-weight: 500;
+	font-size: 15px;
+	color: rgba(255, 255, 255, 0.82);
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.jar .jar__nav-item {
+	color: rgba(255, 255, 255, 0.82);
+}
+
+.jar__nav-item i {
+	width: 18px;
+	text-align: center;
+	font-size: 15px;
+}
+
+.jar a.jar__nav-item:hover {
+	background: rgba(255, 255, 255, 0.08);
+	color: #fff;
+}
+
+.jar .jar__nav-item.is-atual {
+	background: rgba(255, 255, 255, 0.12);
+	color: #fff;
+}
+
+.jar__nav-item.is-atual::before {
+	content: "";
+	position: absolute;
+	top: 8px;
+	bottom: 8px;
+	left: -16px;
+	width: 3px;
+	background: var(--jar-magenta);
+}
+
+.jar .jar__nav-item.is-em-breve {
+	color: rgba(255, 255, 255, 0.38);
+	cursor: default;
+}
+
+.jar__nav-item em {
+	margin-left: auto;
+	font-style: normal;
+	font-size: 10px;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.35);
+}
+
+.jar__contador {
+	margin-left: auto;
+	min-width: 22px;
+	padding: 1px 7px;
+	border-radius: 200px;
+	background: var(--jar-magenta);
+	font-size: 12px;
+	font-weight: 700;
+	text-align: center;
+	color: #fff;
+}
+
+.jar__lado-fim {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	margin-top: auto;
+	padding-top: 20px;
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- Barra de topo ---------- */
+
+.jar__principal {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+}
+
+.jar__topo {
+	position: sticky;
+	top: 0;
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	min-height: 72px;
+	padding: 12px 40px;
+	border-bottom: 1px solid var(--jar-linha);
+	background: rgba(255, 255, 255, 0.92);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+}
+
+.jar__menu {
+	display: none;
+}
+
+.jar__exemplo {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 12px;
+	border-radius: 200px;
+	background: rgba(74, 133, 200, 0.1);
+	font-size: 13px;
+	color: #2f639e;
+}
+
+.jar__eu {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-left: auto;
+	text-align: right;
+}
+
+.jar__eu div {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.25;
+}
+
+.jar__eu strong {
+	font-weight: 500;
+}
+
+.jar__eu span {
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar__eu img {
+	order: 2;
+	border-radius: 50%;
+}
+
+.jar__conteudo {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	width: 100%;
+	max-width: 1320px;
+	padding: 36px 40px 64px;
+}
+
+/* ---------- Cabeçalho da área ---------- */
+
+.jar-cabeca {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 16px 24px;
+}
+
+.jar-cabeca__titulo {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px 14px;
+	font-weight: 500;
+	font-size: 32px;
+	line-height: 1.15;
+}
+
+.jar .jar-cabeca__titulo {
+	font-size: 32px;
+	font-weight: 500;
+}
+
+.jar-cabeca__intro {
+	margin-top: 6px !important;
+	color: var(--jar-suave);
+}
+
+.jar-cabeca__acoes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.jar-voltar {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 10px;
+	font-weight: 500;
+	font-size: 14px;
+	color: var(--jar-suave) !important;
+}
+
+.jar-voltar:hover {
+	color: var(--jar-magenta) !important;
+}
+
+/* ---------- Botões ---------- */
+
+.jar .jar-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	min-height: 46px;
+	margin: 0;
+	padding: 12px 24px 11px;
+	border: 2px solid var(--jar-magenta);
+	border-radius: 200px;
+	background: var(--jar-magenta);
+	box-shadow: none;
+	font-family: var(--jar-fonte);
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 1.2;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: var(--jar-branco);
+	cursor: pointer;
+	transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.jar .jar-btn:hover,
+.jar .jar-btn:focus-visible {
+	border-color: var(--jar-preto);
+	background: var(--jar-preto);
+	color: var(--jar-branco);
+}
+
+.jar .jar-btn--contorno {
+	border-color: var(--jar-preto);
+	background: transparent;
+	color: var(--jar-preto);
+}
+
+.jar .jar-btn--largo {
+	width: 100%;
+	margin-top: 16px;
+}
+
+.jar .jar-btn--pequeno {
+	min-height: 36px;
+	padding: 8px 16px 7px;
+	font-size: 12px;
+}
+
+/*
+ * Para as ações que não se querem à mão: sem borda nem fundo, só texto, que
+ * ganha o vermelho ao passar por cima.
+ */
+.jar .jar-btn--discreto {
+	border-color: transparent;
+	background: transparent;
+	color: var(--jar-suave);
+	text-transform: none;
+	letter-spacing: 0;
+	font-size: 14px;
+}
+
+.jar .jar-btn--discreto:hover,
+.jar .jar-btn--discreto:focus-visible {
+	border-color: rgba(196, 33, 59, 0.3);
+	background: rgba(196, 33, 59, 0.06);
+	color: var(--jar-erro);
+}
+
+.jar .jar-btn--perigo {
+	border-color: var(--jar-erro);
+	background: var(--jar-erro);
+	color: #fff;
+}
+
+.jar .jar-btn--perigo:hover,
+.jar .jar-btn--perigo:focus-visible {
+	border-color: var(--jar-preto);
+	background: var(--jar-preto);
+}
+
+/* `.jar a` para ganhar ao `.jar a { color: inherit }` quando o link é um <a>. */
+.jar-link,
+.jar a.jar-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-weight: 500;
+	font-size: 14px;
+	color: var(--jar-magenta);
+}
+
+.jar a.jar-link:hover {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+
+.jar-link.is-em-breve {
+	color: var(--jar-suave);
+	cursor: default;
+}
+
+.jar-link em {
+	padding: 1px 7px;
+	border-radius: 200px;
+	background: rgba(27, 42, 51, 0.07);
+	font-style: normal;
+	font-size: 11px;
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+}
+
+/* ---------- Cartões e grelhas ---------- */
+
+.jar-cartao {
+	position: relative;
+	display: block;
+	padding: 24px;
+	border: 1px solid var(--jar-linha);
+	border-radius: 3px;
+	background: #fff;
+	box-shadow: var(--jar-sombra);
+}
+
+/* Uma tabela mais larga do que o cartão rola dentro dele, nunca a página. */
+.jar-cartao--tabela {
+	padding: 0;
+	overflow-x: auto;
+}
+
+.jar-cartao--tabela > .jar-cartao__cabeca {
+	margin: 0;
+	padding: 20px 24px;
+	border-bottom: 1px solid var(--jar-linha);
+}
+
+.jar-cartao--estreito {
+	max-width: 760px;
+}
+
+.jar-cartao__cabeca {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px 16px;
+	margin-bottom: 20px;
+}
+
+.jar .jar-cartao__cabeca h2 {
+	font-weight: 500;
+	font-size: 18px;
+}
+
+.jar-cartao__meta {
+	display: block;
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-cartao__pe {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 24px;
+	padding-top: 20px;
+	border-top: 1px solid var(--jar-linha);
+}
+
+/* A editar, o cartão marca-se, para não se confundir com os que só se leem. */
+.jar-cartao.is-a-editar {
+	border-color: rgba(244, 24, 146, 0.45);
+	box-shadow: 0 0 0 3px rgba(244, 24, 146, 0.08), var(--jar-sombra);
+}
+
+/* Os dados do registo em leitura: rótulo por cima, valor por baixo. */
+.jar-leitura {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20px;
+	margin: 0;
+}
+
+.jar-leitura .jar-campo--largo {
+	grid-column: 1 / -1;
+}
+
+.jar-leitura dt {
+	margin-bottom: 4px;
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0.7px;
+	text-transform: uppercase;
+	color: var(--jar-suave);
+}
+
+.jar-leitura dd {
+	margin: 0;
+	font-size: 16px;
+	word-break: break-word;
+}
+
+.jar a.jar-email:hover {
+	color: var(--jar-magenta);
+}
+
+/* ---------- Confirmação ---------- */
+
+.jar-confirmar {
+	position: fixed;
+	inset: 0;
+	z-index: 100000;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.jar-confirmar__fundo {
+	position: absolute;
+	inset: 0;
+	background: rgba(27, 42, 51, 0.6);
+	-webkit-backdrop-filter: blur(3px);
+	backdrop-filter: blur(3px);
+}
+
+.jar-confirmar__caixa {
+	position: relative;
+	width: 100%;
+	max-width: 440px;
+	padding: 32px;
+	border-radius: 3px;
+	background: #fff;
+	box-shadow: 0 18px 40px rgba(27, 42, 51, 0.25);
+}
+
+.jar-confirmar__icone {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	margin-bottom: 16px;
+	border-radius: 50%;
+	background: rgba(196, 33, 59, 0.1);
+	font-size: 20px;
+	color: var(--jar-erro);
+}
+
+.jar .jar-confirmar__caixa h2 {
+	margin-bottom: 8px;
+	font-weight: 500;
+	font-size: 20px;
+}
+
+.jar-confirmar__caixa p {
+	color: var(--jar-suave);
+}
+
+.jar-confirmar__acoes {
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+	margin-top: 28px;
+}
+
+.jar-grelha--1-2 {
+	display: grid;
+	grid-template-columns: minmax(260px, 1fr) minmax(0, 2fr);
+	gap: 24px;
+	align-items: start;
+}
+
+.jar-pilha {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	min-width: 0;
+}
+
+/* ---------- Números do resumo ---------- */
+
+.jar-numeros {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 20px;
+}
+
+.jar-numero {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-rows: auto auto;
+	column-gap: 16px;
+	align-items: center;
+	padding: 20px;
+	transition: border-color 0.2s, transform 0.2s;
+}
+
+.jar a.jar-numero:hover {
+	border-color: rgba(244, 24, 146, 0.45);
+}
+
+.jar-numero .jar-icone {
+	grid-row: 1 / 3;
+}
+
+.jar-numero__rotulo {
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0.8px;
+	text-transform: uppercase;
+	color: var(--jar-suave);
+}
+
+.jar-numero__valor {
+	font-weight: 500;
+	font-size: 28px;
+	line-height: 1.1;
+}
+
+.jar-icone {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	border-radius: 3px;
+	font-size: 19px;
+}
+
+.jar-icone--azul { background: rgba(74, 133, 200, 0.12); color: var(--jar-azul); }
+.jar-icone--turquesa { background: rgba(46, 198, 176, 0.14); color: #17917f; }
+.jar-icone--magenta { background: rgba(244, 24, 146, 0.1); color: var(--jar-magenta); }
+.jar-icone--roxo { background: rgba(128, 72, 166, 0.12); color: var(--jar-roxo); }
+
+/* ---------- Avisos ---------- */
+
+.jar-aviso {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 16px 20px;
+	border-left: 3px solid;
+	border-radius: 0 3px 3px 0;
+}
+
+.jar-aviso i {
+	font-size: 18px;
+}
+
+.jar-aviso p {
+	flex: 1;
+}
+
+.jar-aviso--pendente {
+	border-color: var(--jar-roxo);
+	background: rgba(128, 72, 166, 0.08);
+}
+
+.jar-aviso--pendente > i {
+	color: var(--jar-roxo);
+}
+
+.jar-aviso--suspenso {
+	border-color: var(--jar-erro);
+	background: rgba(196, 33, 59, 0.06);
+}
+
+.jar-aviso--suspenso > i {
+	color: var(--jar-erro);
+}
+
+.jar a.jar-aviso--link:hover {
+	background: rgba(128, 72, 166, 0.13);
+}
+
+/* ---------- Barra por cima da tabela: separadores e pesquisa ---------- */
+
+.jar-barra {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 20px;
+	padding: 16px 24px;
+	border-bottom: 1px solid var(--jar-linha);
+}
+
+.jar-separadores {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 4px;
+}
+
+.jar-separador {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 14px;
+	border-radius: 200px;
+	font-weight: 500;
+	font-size: 14px;
+	color: var(--jar-suave);
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.jar a.jar-separador:hover {
+	background: rgba(27, 42, 51, 0.05);
+	color: var(--jar-preto);
+}
+
+.jar .jar-separador.is-atual {
+	background: var(--jar-preto);
+	color: #fff;
+}
+
+.jar-separador b {
+	min-width: 20px;
+	padding: 0 6px;
+	border-radius: 200px;
+	background: rgba(27, 42, 51, 0.08);
+	font-size: 12px;
+	text-align: center;
+}
+
+.jar-separador.is-atual b {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.jar-filtro {
+	position: relative;
+	flex: 0 1 320px;
+}
+
+.jar-filtro i {
+	position: absolute;
+	top: 50%;
+	left: 16px;
+	transform: translateY(-50%);
+	color: var(--jar-suave);
+	pointer-events: none;
+}
+
+.jar .jar-filtro input {
+	width: 100%;
+	height: 42px;
+	margin: 0;
+	padding: 0 16px 0 42px;
+	border: 1px solid var(--jar-linha);
+	border-radius: 200px;
+	background: var(--jar-branco);
+	box-shadow: none;
+	font-family: var(--jar-fonte);
+	font-size: 14px;
+	color: var(--jar-preto);
+}
+
+.jar .jar-filtro input:focus {
+	border-color: var(--jar-magenta);
+	box-shadow: none;
+	outline: none;
+}
+
+/* ---------- Tabelas ---------- */
+
+.jar-tabela {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.jar-tabela th {
+	padding: 12px;
+	border-bottom: 1px solid var(--jar-linha);
+	background: rgba(27, 42, 51, 0.025);
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0.7px;
+	text-align: left;
+	text-transform: uppercase;
+	color: var(--jar-suave);
+	white-space: nowrap;
+}
+
+/* Cabeçalho ordenável: o ícone esbatido diz que se pode; forte, que está. */
+.jar .jar-ordenar {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	color: inherit;
+}
+
+.jar-ordenar i {
+	font-size: 11px;
+	opacity: 0.35;
+	transition: opacity 0.2s;
+}
+
+.jar a.jar-ordenar:hover,
+.jar .jar-ordenar.is-atual {
+	color: var(--jar-preto);
+}
+
+.jar-ordenar:hover i,
+.jar-ordenar.is-atual i {
+	opacity: 1;
+}
+
+.jar-ordenar.is-atual i {
+	color: var(--jar-magenta);
+}
+
+.jar-tabela td {
+	padding: 14px 12px;
+	border-bottom: 1px solid var(--jar-linha);
+	vertical-align: middle;
+}
+
+.jar-tabela th:first-child,
+.jar-tabela td:first-child {
+	padding-left: 24px;
+}
+
+.jar-tabela th:last-child,
+.jar-tabela td:last-child {
+	padding-right: 24px;
+}
+
+.jar-tabela tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.jar-tabela tbody tr[data-jar-linha]:hover {
+	background: rgba(244, 249, 255, 0.9);
+}
+
+.jar-tabela__num {
+	white-space: nowrap;
+	font-variant-numeric: tabular-nums;
+}
+
+.jar-data {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.3;
+}
+
+.jar-data small {
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+/*
+ * O nome e o e-mail não se partem: partidos a meio liam-se mal. Quem cede
+ * espaço são as colunas, que saem pelos limites de largura mais abaixo.
+ */
+.jar a.jar-email,
+.jar-pessoa strong {
+	white-space: nowrap;
+}
+
+/* Um e-mail muito longo acaba em reticências; o completo está no title. */
+.jar a.jar-email {
+	display: inline-block;
+	max-width: 220px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	vertical-align: bottom;
+}
+
+.jar-tabela__fim {
+	width: 1%;
+	text-align: right;
+	white-space: nowrap;
+}
+
+/* ---------- Paginação ---------- */
+
+.jar-paginacao {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px 24px;
+	padding: 14px 24px;
+	border-top: 1px solid var(--jar-linha);
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+.jar-paginacao__contagem {
+	font-variant-numeric: tabular-nums;
+}
+
+.jar-paginacao__tamanho {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.jar .jar-paginacao__tamanho select {
+	min-height: 36px;
+	margin: 0;
+	padding: 0 32px 0 14px;
+	border: 1px solid var(--jar-linha);
+	border-radius: 200px;
+	background-color: #fff;
+	box-shadow: none;
+	font-family: var(--jar-fonte);
+	font-size: 14px;
+	color: var(--jar-preto);
+	cursor: pointer;
+}
+
+.jar .jar-paginacao__tamanho select:focus {
+	border-color: var(--jar-magenta);
+	box-shadow: none;
+}
+
+.jar-paginas {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-left: auto;
+}
+
+.jar-pagina {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 36px;
+	height: 36px;
+	padding: 0 8px;
+	border-radius: 200px;
+	font-weight: 500;
+	font-size: 14px;
+	font-variant-numeric: tabular-nums;
+	color: var(--jar-preto);
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.jar a.jar-pagina:hover {
+	background: rgba(27, 42, 51, 0.07);
+}
+
+.jar-pagina.is-atual {
+	background: var(--jar-preto);
+	color: #fff;
+}
+
+.jar-pagina.is-inativa {
+	color: rgba(27, 42, 51, 0.25);
+}
+
+.jar-pagina.is-reticencias {
+	min-width: 20px;
+	padding: 0;
+	color: var(--jar-suave);
+}
+
+.jar-pagina i {
+	font-size: 12px;
+}
+
+.jar-vazio {
+	padding: 24px;
+	text-align: center;
+	color: var(--jar-suave);
+}
+
+.jar-pessoa {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.jar-pessoa > span:last-child {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.3;
+}
+
+.jar-pessoa strong {
+	font-weight: 500;
+}
+
+.jar a.jar-pessoa:hover strong {
+	color: var(--jar-magenta);
+}
+
+.jar-pessoa small {
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-avatar {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border-radius: 50%;
+	background: linear-gradient(135deg, var(--jar-magenta), var(--jar-roxo));
+	font-weight: 500;
+	font-size: 13px;
+	letter-spacing: 0.5px;
+	color: #fff;
+}
+
+.jar-avatar--grande {
+	width: 88px;
+	height: 88px;
+	font-size: 28px;
+}
+
+/* ---------- Ações nas linhas ---------- */
+
+.jar-acoes {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.jar .jar-acao {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	margin: 0;
+	padding: 0;
+	border: 1px solid var(--jar-linha);
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: none;
+	font-size: 13px;
+	color: var(--jar-preto);
+	cursor: pointer;
+	transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.jar .jar-acao:hover {
+	border-color: var(--jar-preto);
+	background: var(--jar-preto);
+	color: #fff;
+}
+
+.jar .jar-acao--sim {
+	border-color: rgba(46, 198, 176, 0.5);
+	color: #17917f;
+}
+
+.jar .jar-acao--sim:hover {
+	border-color: var(--jar-turquesa);
+	background: var(--jar-turquesa);
+	color: #fff;
+}
+
+.jar .jar-acao--nao {
+	border-color: rgba(196, 33, 59, 0.35);
+	color: var(--jar-erro);
+}
+
+.jar .jar-acao--nao:hover {
+	border-color: var(--jar-erro);
+	background: var(--jar-erro);
+	color: #fff;
+}
+
+/* ---------- Etiquetas de estado ---------- */
+
+.jar-estado {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 10px 3px;
+	border-radius: 200px;
+	font-weight: 500;
+	font-size: 12px;
+	line-height: 1.3;
+	white-space: nowrap;
+}
+
+.jar-estado::before {
+	content: "";
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: currentColor;
+}
+
+.jar-estado--ativo,
+.jar-estado--aprovada {
+	background: rgba(46, 198, 176, 0.14);
+	color: #13806f;
+}
+
+.jar-estado--pendente {
+	background: rgba(128, 72, 166, 0.12);
+	color: #6a3790;
+}
+
+.jar-estado--suspenso {
+	background: rgba(27, 42, 51, 0.08);
+	color: rgba(27, 42, 51, 0.7);
+}
+
+.jar-estado--rejeitado,
+.jar-estado--rejeitada {
+	background: rgba(196, 33, 59, 0.1);
+	color: var(--jar-erro);
+}
+
+/*
+ * O invólucro da etiqueta no título tem de ser flex: inline, ficava na linha
+ * de base do nome, com a altura de linha do título, e a etiqueta descaía.
+ */
+.jar-cabeca__titulo [data-jar-estado-perfil] {
+	display: inline-flex;
+	align-items: center;
+}
+
+.jar-cabeca__titulo .jar-estado {
+	font-size: 13px;
+}
+
+/* ---------- Perfil ---------- */
+
+.jar-perfil {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+.jar .jar-perfil h2 {
+	margin-top: 16px;
+	font-weight: 500;
+	font-size: 20px;
+}
+
+.jar-perfil > p {
+	margin-top: 2px;
+	color: var(--jar-suave);
+	word-break: break-word;
+}
+
+.jar-dados {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 10px 16px;
+	width: 100%;
+	margin: 24px 0 8px;
+	padding-top: 20px;
+	border-top: 1px solid var(--jar-linha);
+	text-align: left;
+}
+
+.jar-dados dt {
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-dados dd {
+	margin: 0;
+	font-weight: 500;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Formulário ---------- */
+
+.jar-form {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 18px 20px;
+}
+
+.jar-campo {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.jar-campo--largo {
+	grid-column: 1 / -1;
+}
+
+.jar-campo > span {
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0.7px;
+	text-transform: uppercase;
+	color: var(--jar-preto);
+}
+
+.jar-campo > span i {
+	font-style: normal;
+	color: var(--jar-magenta);
+}
+
+/* Os campos do site: retos, fundo leve, borda escura, foco magenta. */
+.jar .jar-campo input {
+	width: 100%;
+	height: 50px;
+	margin: 0;
+	padding: 0 14px;
+	border: 1px solid rgba(27, 42, 51, 0.35);
+	border-radius: 0;
+	background: rgba(27, 42, 51, 0.03);
+	box-shadow: none;
+	font-family: var(--jar-fonte);
+	font-size: 15px;
+	color: var(--jar-preto);
+}
+
+.jar .jar-campo input:focus {
+	border-color: var(--jar-magenta);
+	box-shadow: none;
+	outline: none;
+}
+
+.jar-caixa {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 20px;
+	cursor: pointer;
+}
+
+/*
+ * Caixas e radios desenhados de raiz. O forms.css do wp-admin já os desenha à
+ * sua maneira — appearance: none, visto numa imagem azul, anel azul no foco —
+ * e por isso o accent-color não lhes chega. Aqui: cinzento vazio, magenta
+ * escolhido; o visto a branco sobre o magenta, e o ponto do radio a magenta.
+ */
+.jar input[type="checkbox"],
+.jar input[type="radio"] {
+	-webkit-appearance: none;
+	appearance: none;
+	display: inline-grid;
+	flex: none;
+	place-content: center;
+	width: 20px;
+	min-width: 20px;
+	height: 20px;
+	margin: 0;
+	padding: 0;
+	border: 2px solid rgba(27, 42, 51, 0.4);
+	border-radius: 3px;
+	background: #fff;
+	box-shadow: none;
+	cursor: pointer;
+	transition: background-color 0.15s, border-color 0.15s;
+}
+
+.jar input[type="radio"] {
+	border-radius: 50%;
+}
+
+.jar input[type="checkbox"]:hover,
+.jar input[type="radio"]:hover {
+	border-color: var(--jar-magenta);
+}
+
+.jar input[type="checkbox"]:checked {
+	border-color: var(--jar-magenta);
+	background: var(--jar-magenta);
+}
+
+.jar input[type="radio"]:checked {
+	border-color: var(--jar-magenta);
+}
+
+/* O visto: um canto de duas bordas brancas, rodado. Tira a imagem do WordPress. */
+.jar input[type="checkbox"]::before {
+	content: "";
+	float: none;
+	width: 5px;
+	height: 10px;
+	margin: -2px 0 0;
+	border: solid #fff;
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg) scale(0);
+	transition: transform 0.15s;
+}
+
+.jar input[type="checkbox"]:checked::before {
+	content: "";
+	transform: rotate(45deg) scale(1);
+}
+
+/* O ponto do radio, a magenta, no lugar do ponto azul do WordPress. */
+.jar input[type="radio"]::before {
+	content: "";
+	float: none;
+	width: 10px;
+	height: 10px;
+	margin: 0;
+	border-radius: 50%;
+	background: var(--jar-magenta);
+	transform: scale(0);
+	transition: transform 0.15s;
+}
+
+.jar input[type="radio"]:checked::before {
+	content: "";
+	width: 10px;
+	height: 10px;
+	margin: 0;
+	background: var(--jar-magenta);
+	transform: scale(1);
+}
+
+.jar input[type="checkbox"]:disabled,
+.jar input[type="radio"]:disabled {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+/* ---------- Documentos ---------- */
+
+.jar-estado--publicado {
+	background: rgba(46, 198, 176, 0.14);
+	color: #13806f;
+}
+
+.jar-estado--rascunho {
+	background: rgba(27, 42, 51, 0.08);
+	color: rgba(27, 42, 51, 0.7);
+}
+
+/* Um documento na lista: o ícone do tipo, o título, e o tipo e tamanho por baixo. */
+.jar-ficheiro {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.jar-ficheiro > span:last-child {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.3;
+}
+
+.jar-ficheiro strong {
+	font-weight: 500;
+}
+
+.jar a.jar-ficheiro:hover strong {
+	color: var(--jar-magenta);
+}
+
+.jar-ficheiro small {
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-ficheiro__icone,
+.jar-ficheiro-cartao__icone {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 44px;
+	border-radius: 3px;
+	font-size: 18px;
+}
+
+.jar-ficheiro-cartao__icone {
+	width: 88px;
+	height: 100px;
+	font-size: 40px;
+}
+
+/* A cor de cada tipo, nas cores da marca, e o vermelho de sempre para o PDF. */
+.jar-tipo--pdf { background: rgba(196, 33, 59, 0.1); color: var(--jar-erro); }
+.jar-tipo--docx { background: rgba(74, 133, 200, 0.12); color: var(--jar-azul); }
+.jar-tipo--xlsx { background: rgba(46, 198, 176, 0.14); color: #13806f; }
+.jar-tipo--pptx { background: rgba(244, 24, 146, 0.1); color: var(--jar-magenta); }
+.jar-tipo--zip { background: rgba(128, 72, 166, 0.12); color: var(--jar-roxo); }
+
+.jar-ficheiro-cartao h2 {
+	word-break: break-word;
+}
+
+.jar-botoes {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 16px;
+	width: 100%;
+}
+
+.jar-botoes .jar-btn--largo {
+	margin-top: 0;
+}
+
+.jar label.jar-btn {
+	cursor: pointer;
+}
+
+/* As listas de escolha e as caixas de texto, com o aspeto dos campos. */
+.jar .jar-campo select,
+.jar .jar-campo textarea {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	border: 1px solid rgba(27, 42, 51, 0.35);
+	border-radius: 0;
+	background-color: rgba(27, 42, 51, 0.03);
+	box-shadow: none;
+	font-family: var(--jar-fonte);
+	font-size: 15px;
+	color: var(--jar-preto);
+}
+
+.jar .jar-campo select {
+	min-height: 50px;
+	padding: 0 36px 0 14px;
+}
+
+.jar .jar-campo textarea {
+	padding: 12px 14px;
+	line-height: 1.5;
+	resize: vertical;
+}
+
+.jar .jar-campo select:focus,
+.jar .jar-campo textarea:focus {
+	border-color: var(--jar-magenta);
+	box-shadow: none;
+	outline: none;
+}
+
+/*
+ * O filtro da categoria ao lado da pesquisa, com a forma dela. Os dois ficam
+ * na mesma linha: o grupo ocupa o espaço que sobrar dos separadores, e é a
+ * pesquisa que encolhe — a categoria fica sempre com a largura do texto.
+ */
+.jar-barra__filtros {
+	display: flex;
+	flex: 1 1 420px;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 10px;
+	min-width: 0;
+}
+
+.jar-barra__filtros .jar-escolha {
+	flex: none;
+}
+
+.jar-barra__filtros .jar-filtro {
+	flex: 0 1 320px;
+	min-width: 160px;
+}
+
+.jar .jar-escolha select {
+	min-height: 42px;
+	margin: 0;
+	padding: 0 36px 0 16px;
+	border: 1px solid var(--jar-linha);
+	border-radius: 200px;
+	background-color: var(--jar-branco);
+	box-shadow: none;
+	font-family: var(--jar-fonte);
+	font-size: 14px;
+	color: var(--jar-preto);
+	cursor: pointer;
+}
+
+.jar .jar-escolha select:focus {
+	border-color: var(--jar-magenta);
+	box-shadow: none;
+}
+
+/* A zona de largar o ficheiro, no novo documento. */
+.jar-largar {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 24px;
+	padding: 36px 24px;
+	border: 2px dashed rgba(27, 42, 51, 0.22);
+	background: rgba(27, 42, 51, 0.02);
+	text-align: center;
+	cursor: pointer;
+	transition: border-color 0.2s, background-color 0.2s;
+}
+
+.jar-largar input[type="file"] {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	opacity: 0;
+}
+
+.jar-largar:hover,
+.jar-largar:focus-within,
+.jar-largar.is-por-cima {
+	border-color: var(--jar-magenta);
+	background: rgba(244, 24, 146, 0.04);
+}
+
+.jar-largar.is-escolhido {
+	border-style: solid;
+	border-color: var(--jar-turquesa);
+	background: rgba(46, 198, 176, 0.06);
+}
+
+/* O rótulo com um link à direita — "Categoria · Gerir categorias". */
+.jar-campo__rotulo {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 12px;
+}
+
+.jar-campo__rotulo .jar-link {
+	font-size: 13px;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+/* Substituir o ficheiro, dentro da edição: a mesma zona, mais baixa e em linha. */
+.jar-campo--substituir {
+	margin-top: 18px;
+}
+
+.jar-largar--pequeno {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	column-gap: 14px;
+	align-items: center;
+	margin-bottom: 0;
+	padding: 16px 18px;
+	text-align: left;
+}
+
+.jar-largar--pequeno .jar-largar__icone {
+	grid-row: 1 / 3;
+	margin: 0;
+	font-size: 22px;
+}
+
+/* ---------- Eventos ---------- */
+
+/*
+ * A capa: o gradiente da categoria, com as cores que o cartão do calendário
+ * do site usa, e as iniciais do evento por cima.
+ */
+.jar-evento-capa {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 3px;
+	background: linear-gradient(100deg, var(--jar-cat-inicio, #f41892), var(--jar-cat-fim, #e9edf0));
+	font-weight: 700;
+	font-size: 14px;
+	color: #fff;
+	text-shadow: 0 1px 2px rgba(27, 42, 51, 0.25);
+}
+
+.jar-evento-capa--grande {
+	width: 100px;
+	height: 100px;
+	font-size: 30px;
+}
+
+.jar-perfil .jar-evento-capa--grande {
+	grid-row: 1 / 3;
+}
+
+/* Onde aparece: site, área reservada, ou os dois. */
+.jar-onde {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 10px 3px;
+	border-radius: 200px;
+	font-weight: 500;
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.jar-onde i + i {
+	margin-left: -2px;
+}
+
+.jar-onde--site {
+	background: rgba(74, 133, 200, 0.12);
+	color: #2f639e;
+}
+
+.jar-onde--reservada {
+	background: rgba(128, 72, 166, 0.12);
+	color: #6a3790;
+}
+
+.jar-onde--ambos {
+	background: rgba(46, 198, 176, 0.14);
+	color: #13806f;
+}
+
+.jar-marca {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-weight: 500;
+	font-size: 14px;
+	color: #13806f;
+}
+
+/*
+ * Uma chamada de atenção que não é um erro: o roxo dos pedidos por aprovar,
+ * com o ícone de exclamação — vê-se, sem alarmar como o vermelho.
+ */
+.jar-atencao {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 500;
+	color: #6a3790;
+}
+
+.jar-atencao i {
+	font-size: 15px;
+}
+
+/* O mesmo, para o que está bem: o verde-turquesa dos estados ativos. */
+.jar-atencao--ok {
+	color: #13806f;
+}
+
+.jar-marca--nao {
+	color: var(--jar-suave);
+}
+
+.jar-vazio--esquerda {
+	padding: 0;
+	text-align: left;
+}
+
+.jar-opcoes legend i {
+	font-style: normal;
+	color: var(--jar-magenta);
+}
+
+/* As categorias dos eventos: a amostra do gradiente e as duas cores. */
+.jar-gradiente {
+	display: inline-block;
+	flex: none;
+	width: 40px;
+	height: 26px;
+	border-radius: 3px;
+	background: linear-gradient(100deg, var(--jar-cat-inicio, #f41892), var(--jar-cat-fim, #e9edf0));
+	box-shadow: inset 0 0 0 1px rgba(27, 42, 51, 0.08);
+}
+
+.jar-categoria-nome {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.jar-cores {
+	display: inline-flex;
+	align-items: flex-end;
+	gap: 10px;
+}
+
+.jar-cores .jar-gradiente {
+	width: 64px;
+	height: 40px;
+}
+
+.jar-cor {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 11px;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: var(--jar-suave);
+	cursor: pointer;
+}
+
+.jar .jar-cor input[type="color"] {
+	width: 44px;
+	height: 40px;
+	margin: 0;
+	padding: 3px;
+	border: 1px solid rgba(27, 42, 51, 0.35);
+	border-radius: 0;
+	background: #fff;
+	cursor: pointer;
+}
+
+.jar .jar-cor input[type="color"]:focus {
+	border-color: var(--jar-magenta);
+	box-shadow: none;
+}
+
+/* O texto do botão, por baixo da opção das marcações, que é o que o faz aparecer. */
+.jar-campo--botao {
+	max-width: 420px;
+	margin: 14px 0 0 30px;
+}
+
+.jar-campo--botao small,
+.jar-campo__ajuda {
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-campo--cores {
+	margin-top: 18px;
+}
+
+.jar-linha-edicao__botoes {
+	display: inline-flex;
+	gap: 8px;
+}
+
+/* ---------- Categorias ---------- */
+
+.jar-grelha--2-1 {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+	gap: 24px;
+	align-items: start;
+}
+
+/* Mudar o nome na própria linha: o campo e os dois botões lado a lado. */
+.jar-linha-edicao {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+.jar-linha-edicao .jar-campo {
+	flex: 1 1 200px;
+}
+
+.jar .jar-linha-edicao .jar-campo input {
+	height: 40px;
+}
+
+.jar-tabela tr.is-a-editar {
+	background: rgba(244, 24, 146, 0.04);
+}
+
+.jar .jar-acao:disabled {
+	opacity: 0.35;
+	cursor: not-allowed;
+}
+
+.jar .jar-acao:disabled:hover {
+	border-color: var(--jar-linha);
+	background: #fff;
+	color: var(--jar-preto);
+}
+
+.jar-nota {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin-top: 20px !important;
+	padding: 14px 16px;
+	background: rgba(74, 133, 200, 0.08);
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+.jar-nota i {
+	margin-top: 3px;
+	color: var(--jar-azul);
+}
+
+.jar-largar.is-erro {
+	border-style: solid;
+	border-color: var(--jar-erro);
+	background: rgba(196, 33, 59, 0.05);
+}
+
+.jar-largar.is-erro strong {
+	color: var(--jar-erro);
+}
+
+.jar-aviso--sucesso {
+	border-color: var(--jar-turquesa);
+	background: rgba(46, 198, 176, 0.1);
+}
+
+.jar-aviso--sucesso > i {
+	color: #13806f;
+}
+
+.jar .jar-btn:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.jar .jar-btn:disabled:hover {
+	border-color: var(--jar-magenta);
+	background: var(--jar-magenta);
+}
+
+.jar-largar__icone {
+	margin-bottom: 6px;
+	font-size: 32px;
+	color: var(--jar-magenta);
+}
+
+.jar-largar strong {
+	font-weight: 500;
+	word-break: break-word;
+}
+
+.jar-largar span {
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-opcoes {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin: 24px 0 0;
+	padding: 0;
+	border: 0;
+}
+
+.jar-opcoes legend {
+	margin-bottom: 4px;
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0.7px;
+	text-transform: uppercase;
+}
+
+.jar-opcoes .jar-caixa {
+	margin-top: 8px;
+}
+
+
+/* ---------- Ecrãs mais estreitos ---------- */
+
+/*
+ * As colunas que a lista de utilizadores larga quando não cabe, medidas pela
+ * largura do cartão da tabela e não pela do ecrã — é esse o espaço que ela
+ * tem, com ou sem a navegação lateral ao lado. Saem pela ordem do que menos
+ * falta faz na lista, porque está tudo no perfil: a data de registo, o
+ * telefone, o último acesso, a empresa e, no telemóvel, o e-mail.
+ */
+.jar-cartao--tabela {
+	container-type: inline-size;
+}
+
+/*
+ * Os limites são a largura mínima medida de cada conjunto de colunas, com a
+ * lista cheia (nomes e e-mails longos, os três botões de um pedido por
+ * aprovar), mais uma folga de 10px. Se as colunas mudarem, medir de novo.
+ */
+@container (max-width: 1180px) {
+	.jar-col--registo { display: none; }
+}
+
+@container (max-width: 1080px) {
+	.jar-col--telefone { display: none; }
+}
+
+@container (max-width: 930px) {
+	.jar-col--ultimo { display: none; }
+}
+
+@container (max-width: 810px) {
+	.jar-col--empresa { display: none; }
+}
+
+@container (max-width: 710px) {
+	.jar-col--email { display: none; }
+}
+
+/* A lista de eventos: saem as marcações, o estado, o local e, no telemóvel, as datas. */
+@container (max-width: 900px) {
+	.jar-col--marcacoes { display: none; }
+}
+
+@container (max-width: 780px) {
+	.jar-col--estado { display: none; }
+}
+
+@container (max-width: 660px) {
+	.jar-col--local { display: none; }
+}
+
+/* A lista de documentos: saem as descargas, a data e, no telemóvel, a categoria. */
+@container (max-width: 760px) {
+	.jar-col--descargas { display: none; }
+}
+
+@container (max-width: 640px) {
+	.jar-col--data { display: none; }
+}
+
+@container (max-width: 520px) {
+	.jar-col--categoria { display: none; }
+}
+
+/*
+ * No telemóvel, o avatar e as margens largas dão lugar ao nome, que aqui já
+ * pode ir para duas linhas — nome numa, apelido na outra.
+ */
+@container (max-width: 480px) {
+	.jar-pessoa .jar-avatar { display: none; }
+
+	.jar-pessoa strong { white-space: normal; }
+
+	.jar-tabela th,
+	.jar-tabela td {
+		padding-inline: 8px;
+	}
+
+	.jar-tabela th:first-child,
+	.jar-tabela td:first-child {
+		padding-left: 16px;
+	}
+
+	.jar-tabela th:last-child,
+	.jar-tabela td:last-child {
+		padding-right: 16px;
+	}
+}
+
+/* E a seta para o perfil sai: o nome já leva lá. */
+@container (max-width: 380px) {
+	.jar-tabela__fim a.jar-acao { display: none; }
+}
+
+@media (max-width: 1280px) {
+	.jar-numeros {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.jar-grelha--1-2,
+	.jar-grelha--2-1 {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	/* No perfil, o cartão da pessoa passa a faixa em vez de coluna. */
+	.jar-perfil {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		column-gap: 20px;
+		align-items: center;
+		text-align: left;
+	}
+
+	.jar-perfil .jar-avatar--grande,
+	.jar-perfil .jar-ficheiro-cartao__icone {
+		grid-row: 1 / 3;
+	}
+
+	.jar-perfil h2 {
+		align-self: end;
+	}
+
+	.jar-perfil > p {
+		align-self: start;
+	}
+
+	.jar-perfil .jar-botoes {
+		grid-column: 1 / -1;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+
+	.jar-perfil .jar-botoes .jar-btn--largo {
+		width: auto;
+		flex: 1 1 200px;
+	}
+
+	.jar .jar-perfil h2 {
+		margin-top: 0;
+	}
+
+	.jar-perfil .jar-dados,
+	.jar-perfil .jar-btn {
+		grid-column: 1 / -1;
+	}
+}
+
+@media (max-width: 960px) {
+	.jar {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.jar__lado {
+		position: fixed;
+		inset: 0 auto 0 0;
+		z-index: 20;
+		width: 260px;
+		transform: translateX(-100%);
+		transition: transform 0.25s ease;
+	}
+
+	.jar.is-menu-aberto .jar__lado {
+		transform: none;
+		box-shadow: 0 0 0 100vmax rgba(27, 42, 51, 0.5);
+	}
+
+	.jar .jar__menu {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		margin: 0;
+		padding: 0;
+		border: 1px solid var(--jar-linha);
+		border-radius: 50%;
+		background: #fff;
+		font-size: 16px;
+		color: var(--jar-preto);
+		cursor: pointer;
+	}
+
+	.jar__topo,
+	.jar__conteudo {
+		padding-inline: 20px;
+	}
+}
+
+@media (max-width: 600px) {
+	.jar__exemplo {
+		display: none;
+	}
+
+	.jar-numeros,
+	.jar-form,
+	.jar-leitura {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.jar .jar-cabeca__titulo {
+		font-size: 26px;
+	}
+
+	.jar-filtro {
+		flex-basis: 100%;
+	}
+
+	/* No telemóvel não cabem os dois: a pesquisa desce para a linha de baixo. */
+	.jar-barra__filtros {
+		flex-wrap: wrap;
+		justify-content: flex-start;
+	}
+
+	.jar-barra__filtros .jar-filtro {
+		flex: 1 1 100%;
+	}
+
+	/* As páginas descem para uma linha delas, ao centro. */
+	.jar-paginas {
+		justify-content: center;
+		width: 100%;
+		margin-left: 0;
+	}
+}

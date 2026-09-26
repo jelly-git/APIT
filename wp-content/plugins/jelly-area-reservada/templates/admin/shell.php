@@ -1,0 +1,123 @@
+<?php
+/**
+ * Moldura do back-office: navegação à esquerda, barra de topo e a área em que
+ * se está. Cada área é um template em templates/admin/<chave>.php.
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+$chave   = $args['chave'];
+$paginas = jelly_ar_admin_paginas();
+$eu      = wp_get_current_user();
+$logo    = jelly_ar_logo_url();
+$nome    = $eu->first_name ? trim( $eu->first_name . ' ' . $eu->last_name ) : $eu->display_name;
+
+// Os registos à espera, para o contador ao lado de Utilizadores.
+$por_aprovar = count( array_filter( jelly_ar_exemplo_utilizadores(), function ( $u ) {
+	return 'pendente' === $u['estado'];
+} ) );
+?>
+<div class="jar" data-jar>
+	<aside class="jar__lado">
+		<a class="jar__marca" href="<?php echo esc_url( jelly_ar_admin_url( 'utilizadores' ) ); ?>">
+			<?php if ( $logo ) : ?>
+				<img src="<?php echo esc_url( $logo ); ?>" alt="<?php bloginfo( 'name' ); ?>">
+			<?php endif; ?>
+			<span><?php esc_html_e( 'Área Reservada', 'jelly-area-reservada' ); ?></span>
+		</a>
+
+		<nav class="jar__nav" aria-label="<?php esc_attr_e( 'Back-office da Área Reservada', 'jelly-area-reservada' ); ?>">
+			<?php foreach ( $paginas as $c => $p ) : ?>
+				<?php if ( $p['pronta'] ) : ?>
+					<a
+						class="jar__nav-item<?php echo $c === $chave ? ' is-atual' : ''; ?>"
+						href="<?php echo esc_url( jelly_ar_admin_url( $c ) ); ?>"
+						<?php echo $c === $chave ? 'aria-current="page"' : ''; ?>
+					>
+						<i class="fa-solid <?php echo esc_attr( $p['icone'] ); ?>" aria-hidden="true"></i>
+						<span><?php echo esc_html( $p['titulo'] ); ?></span>
+						<?php if ( 'utilizadores' === $c && $por_aprovar ) : ?>
+							<b class="jar__contador" title="<?php esc_attr_e( 'Registos por aprovar', 'jelly-area-reservada' ); ?>"><?php echo (int) $por_aprovar; ?></b>
+						<?php endif; ?>
+					</a>
+				<?php else : ?>
+					<span class="jar__nav-item is-em-breve" aria-disabled="true">
+						<i class="fa-solid <?php echo esc_attr( $p['icone'] ); ?>" aria-hidden="true"></i>
+						<span><?php echo esc_html( $p['titulo'] ); ?></span>
+						<em><?php esc_html_e( 'Em breve', 'jelly-area-reservada' ); ?></em>
+					</span>
+				<?php endif; ?>
+			<?php endforeach; ?>
+		</nav>
+
+		<div class="jar__lado-fim">
+			<a class="jar__nav-item" href="<?php echo esc_url( home_url( '/#area-reservada' ) ); ?>" target="_blank" rel="noopener">
+				<i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+				<span><?php esc_html_e( 'Ver o site', 'jelly-area-reservada' ); ?></span>
+			</a>
+			<a class="jar__nav-item" href="<?php echo esc_url( admin_url() ); ?>">
+				<i class="fa-brands fa-wordpress" aria-hidden="true"></i>
+				<span><?php esc_html_e( 'Voltar ao WordPress', 'jelly-area-reservada' ); ?></span>
+			</a>
+		</div>
+	</aside>
+
+	<div class="jar__principal">
+		<header class="jar__topo">
+			<button type="button" class="jar__menu" data-jar-menu aria-label="<?php esc_attr_e( 'Abrir menu', 'jelly-area-reservada' ); ?>">
+				<i class="fa-solid fa-bars" aria-hidden="true"></i>
+			</button>
+
+			<?php
+			/*
+			 * O aviso dos dados de exemplo só onde os há, e a dizer o que lá é
+			 * verdade: os Utilizadores são todos de exemplo; nos Documentos,
+			 * os de exemplo convivem com os carregados a sério; os Eventos são
+			 * os do site e não levam aviso.
+			 */
+			$exemplo = [
+				'utilizadores' => __( 'Pré-visualização — utilizadores de exemplo, nada é gravado.', 'jelly-area-reservada' ),
+				'documentos'   => __( 'Há documentos de exemplo, sem ficheiro. Os que carregar são guardados a sério.', 'jelly-area-reservada' ),
+			];
+			?>
+			<?php if ( JELLY_AR_EXEMPLO && isset( $exemplo[ $chave ] ) ) : ?>
+				<p class="jar__exemplo">
+					<i class="fa-solid fa-flask" aria-hidden="true"></i>
+					<?php echo esc_html( $exemplo[ $chave ] ); ?>
+				</p>
+			<?php endif; ?>
+
+			<div class="jar__eu">
+				<?php echo get_avatar( $eu->ID, 40, '', '', [ 'class' => 'jar__avatar' ] ); ?>
+				<div>
+					<strong><?php echo esc_html( $nome ); ?></strong>
+					<span><?php esc_html_e( 'Equipa APIT', 'jelly-area-reservada' ); ?></span>
+				</div>
+			</div>
+		</header>
+
+		<main class="jar__conteudo">
+			<?php jelly_ar_template( 'admin/' . $chave ); ?>
+		</main>
+	</div>
+
+	<?php
+	/*
+	 * A confirmação das ações que não se desfazem com um clique — suspender,
+	 * rejeitar, apagar. Uma só para a página: o botão que a abre traz o título,
+	 * o texto e o rótulo do botão de confirmar em data-*.
+	 */
+	?>
+	<div class="jar-confirmar" data-jar-confirmacao hidden>
+		<div class="jar-confirmar__fundo" data-jar-confirmar-nao></div>
+		<div class="jar-confirmar__caixa" role="alertdialog" aria-modal="true" aria-labelledby="jar-confirmar-titulo" aria-describedby="jar-confirmar-texto">
+			<span class="jar-confirmar__icone"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></span>
+			<h2 id="jar-confirmar-titulo"></h2>
+			<p id="jar-confirmar-texto"></p>
+			<div class="jar-confirmar__acoes">
+				<button type="button" class="jar-btn jar-btn--contorno" data-jar-confirmar-nao><?php esc_html_e( 'Cancelar', 'jelly-area-reservada' ); ?></button>
+				<button type="button" class="jar-btn jar-btn--perigo" data-jar-confirmar-sim></button>
+			</div>
+		</div>
+	</div>
+</div>

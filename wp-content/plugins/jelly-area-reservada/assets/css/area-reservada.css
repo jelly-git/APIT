@@ -1,0 +1,518 @@
+/*
+ * Pop-up da Área Reservada.
+ *
+ * Vestido com os tokens do tema (--apit-*), com fallback para os valores de
+ * hoje, para o plugin não ficar em branco se um dia correr noutro tema. Os
+ * esboços dão a estrutura — painel de arte à esquerda, formulário à direita —;
+ * o desenho é o do site: cantos retos, campos como os do media kit, botão em
+ * pílula e o gradiente de marca do menu móvel.
+ *
+ * Os botões são todos reescritos de raiz: o reset.css do Hello põe em cada
+ * <button> uma borda e uma cor rosa que não são as nossas.
+ */
+
+.apit-ar {
+	--ar-preto: var(--apit-black, #1b2a33);
+	--ar-magenta: var(--apit-magenta, #f41892);
+	--ar-azul: var(--apit-azul, #4a85c8);
+	--ar-roxo: var(--apit-roxo, #8048a6);
+	--ar-turquesa: var(--apit-turquesa, #2ec6b0);
+	--ar-branco: var(--apit-branco, #f4f9ff);
+	--ar-erro: #c4213b;
+	--ar-fonte: var(--apit-font, "omnes-pro", sans-serif);
+
+	position: fixed;
+	inset: 0;
+	/* Acima do menu móvel (100), de onde também se pode abrir. */
+	z-index: 110;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 24px;
+	font-family: var(--ar-fonte);
+	color: var(--ar-preto);
+}
+
+.apit-ar[hidden],
+.apit-ar [hidden] {
+	display: none !important;
+}
+
+body.apit-ar-aberto {
+	overflow: hidden;
+}
+
+.apit-ar__fundo {
+	position: absolute;
+	inset: 0;
+	background: rgba(27, 42, 51, 0.78);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+	cursor: pointer;
+}
+
+.apit-ar__dialogo {
+	position: relative;
+	display: grid;
+	grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+	width: 100%;
+	max-width: 1040px;
+	max-height: calc(100vh - 48px);
+	max-height: calc(100dvh - 48px);
+	overflow: hidden;
+	border-radius: 3px;
+	background: #fff;
+	box-shadow: 0 18px 40px rgba(27, 42, 51, 0.18);
+	outline: none;
+	animation: apit-ar-entrar 0.25s ease-out;
+}
+
+@keyframes apit-ar-entrar {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.apit-ar__dialogo {
+		animation: none;
+	}
+}
+
+/* ---------- Fechar ---------- */
+
+.apit-ar__fechar {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: transparent;
+	font-size: 22px;
+	line-height: 1;
+	color: var(--ar-preto);
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.apit-ar__fechar:hover,
+.apit-ar__fechar:focus-visible {
+	background: rgba(27, 42, 51, 0.08);
+	color: var(--ar-preto);
+}
+
+/* ---------- Painel de arte ---------- */
+
+.apit-ar__arte {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 40px;
+	padding: 48px 40px 44px;
+	background-color: var(--ar-magenta);
+	background-image:
+		radial-gradient(80% 55% at 100% 78%, var(--ar-turquesa) 0%, rgba(46, 198, 176, 0) 60%),
+		radial-gradient(75% 50% at 96% 52%, var(--ar-azul) 0%, rgba(74, 133, 200, 0) 62%),
+		radial-gradient(90% 45% at 78% 96%, var(--ar-roxo) 0%, rgba(128, 72, 166, 0) 65%);
+	color: #fff;
+}
+
+.apit-ar__logo {
+	display: block;
+	width: 150px;
+	height: auto;
+}
+
+.apit-ar__logo--texto {
+	font-weight: 700;
+	font-size: 28px;
+	letter-spacing: 1px;
+}
+
+.apit-ar__slogan {
+	max-width: 12em;
+	margin: 0;
+	font-weight: 500;
+	font-size: 30px;
+	line-height: 1.2;
+}
+
+/* ---------- Conteúdo ---------- */
+
+.apit-ar__conteudo {
+	/*
+	 * A altura máxima vem repetida aqui: a do diálogo não chega para a linha da
+	 * grelha, que cresceria com o formulário e seria cortada em vez de rolar.
+	 */
+	max-height: calc(100vh - 48px);
+	max-height: calc(100dvh - 48px);
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	padding: 56px 56px 40px;
+}
+
+.apit-ar__titulo {
+	margin: 0 0 8px;
+	font-family: var(--ar-fonte);
+	font-weight: 500;
+	font-size: 34px;
+	line-height: 1.15;
+	color: var(--ar-preto);
+}
+
+.apit-ar__intro {
+	margin: 0 0 32px;
+	font-size: 16px;
+	line-height: 1.5;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+.apit-ar__form {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.apit-ar__grelha {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 20px;
+}
+
+.apit-ar__campo--largo {
+	grid-column: 1 / -1;
+}
+
+/* ---------- Campos ---------- */
+
+.apit-ar__campo {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.apit-ar__campo > label:not(.apit-ar__caixa) {
+	font-weight: 500;
+	font-size: 14px;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: var(--ar-preto);
+}
+
+.apit-ar__campo input[type="text"],
+.apit-ar__campo input[type="email"],
+.apit-ar__campo input[type="tel"],
+.apit-ar__campo input[type="password"] {
+	width: 100%;
+	height: 56px;
+	margin: 0;
+	padding: 0 14px;
+	border: 1px solid var(--ar-preto);
+	border-radius: 0;
+	background: rgba(27, 42, 51, 0.04);
+	font-family: var(--ar-fonte);
+	font-size: 16px;
+	color: var(--ar-preto);
+	transition: border-color 0.2s;
+}
+
+.apit-ar__campo input::placeholder {
+	color: rgba(27, 42, 51, 0.45);
+}
+
+/*
+ * O mesmo que o tema faz na newsletter: desfazer o anel branco, o contorno e a
+ * cor de borda que o reset.css do Hello põe no foco, e deixar só a borda
+ * magenta a marcá-lo.
+ */
+.apit-ar__campo input:focus,
+.apit-ar__campo input:focus-visible {
+	outline: none;
+	box-shadow: none;
+	border-color: var(--ar-magenta);
+}
+
+.apit-ar__campo.is-erro input[type="text"],
+.apit-ar__campo.is-erro input[type="email"],
+.apit-ar__campo.is-erro input[type="tel"],
+.apit-ar__campo.is-erro input[type="password"] {
+	border-color: var(--ar-erro);
+}
+
+.apit-ar__erro {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.4;
+	color: var(--ar-erro);
+}
+
+/* Palavra-passe com o olho por dentro do campo. */
+.apit-ar__senha {
+	position: relative;
+}
+
+.apit-ar__senha input {
+	padding-right: 52px !important;
+}
+
+.apit-ar__ver-senha {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 56px;
+	padding: 0;
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	font-size: 18px;
+	color: rgba(27, 42, 51, 0.6);
+	cursor: pointer;
+}
+
+.apit-ar__ver-senha:hover,
+.apit-ar__ver-senha:focus-visible {
+	background: transparent;
+	color: var(--ar-magenta);
+}
+
+/* ---------- Caixas e linhas ---------- */
+
+.apit-ar__linha {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px 24px;
+}
+
+.apit-ar__caixa {
+	display: inline-flex;
+	align-items: flex-start;
+	gap: 10px;
+	font-size: 15px;
+	line-height: 1.4;
+	cursor: pointer;
+}
+
+.apit-ar__caixa input {
+	flex: none;
+	width: 18px;
+	height: 18px;
+	margin: 1px 0 0;
+	accent-color: var(--ar-magenta);
+	cursor: pointer;
+}
+
+.apit-ar__campo--caixa.is-erro .apit-ar__caixa {
+	color: var(--ar-erro);
+}
+
+.apit-ar__link {
+	font-weight: 500;
+	color: var(--ar-magenta);
+	text-decoration: underline;
+	text-decoration-color: transparent;
+	text-underline-offset: 3px;
+	transition: text-decoration-color 0.2s;
+}
+
+.apit-ar__link:hover,
+.apit-ar__link:focus-visible {
+	color: var(--ar-magenta);
+	text-decoration-color: currentColor;
+}
+
+.apit-ar__linha .apit-ar__link {
+	font-size: 15px;
+}
+
+.apit-ar__nota {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 0;
+	padding: 14px 16px;
+	background: rgba(46, 198, 176, 0.12);
+	font-size: 15px;
+	line-height: 1.4;
+}
+
+.apit-ar__nota i {
+	margin-top: 2px;
+	color: var(--ar-turquesa);
+}
+
+/* ---------- Botões ---------- */
+
+.apit-ar .apit-ar__submeter {
+	justify-content: center;
+	width: 100%;
+	margin-top: 4px;
+	background: var(--ar-magenta);
+	border-color: var(--ar-magenta);
+	color: var(--ar-branco);
+	cursor: pointer;
+	transition: background-color 0.2s, border-color 0.2s;
+}
+
+.apit-ar .apit-ar__submeter:hover,
+.apit-ar .apit-ar__submeter:focus-visible {
+	background: var(--ar-preto);
+	border-color: var(--ar-preto);
+	color: var(--ar-branco);
+	outline: none;
+}
+
+.apit-ar .apit-ar__voltar {
+	color: var(--ar-preto);
+	background: transparent;
+	cursor: pointer;
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.apit-ar .apit-ar__voltar:hover,
+.apit-ar .apit-ar__voltar:focus-visible {
+	background: var(--ar-preto);
+	border-color: var(--ar-preto);
+	color: var(--ar-branco);
+	outline: none;
+}
+
+/* ---------- Estados ---------- */
+
+.apit-ar__aviso {
+	margin: 0;
+	padding: 14px 16px;
+	border-left: 3px solid var(--ar-azul);
+	background: rgba(74, 133, 200, 0.1);
+	font-size: 15px;
+	line-height: 1.4;
+}
+
+.apit-ar__sucesso {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+	padding: 8px 0 16px;
+	outline: none;
+}
+
+.apit-ar__sucesso p {
+	margin: 0 0 12px;
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+.apit-ar__sucesso-icone {
+	font-size: 44px;
+	color: var(--ar-turquesa);
+}
+
+.apit-ar__sucesso-titulo {
+	margin: 0;
+	font-family: var(--ar-fonte);
+	font-weight: 500;
+	font-size: 24px;
+	color: var(--ar-preto);
+}
+
+.apit-ar__rodape {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	margin-top: 28px;
+	padding-top: 24px;
+	border-top: 1px solid rgba(27, 42, 51, 0.12);
+	font-size: 15px;
+}
+
+.apit-ar__rodape p {
+	margin: 0;
+}
+
+/* ---------- Ecrãs estreitos ---------- */
+
+@media (max-width: 900px) {
+	.apit-ar__conteudo {
+		padding: 48px 32px 32px;
+	}
+
+	.apit-ar__slogan {
+		font-size: 24px;
+	}
+}
+
+/*
+ * No telemóvel o pop-up é o ecrã inteiro, e o painel de arte encolhe a uma
+ * faixa com o logótipo: o slogan fica para quem tem espaço para ele.
+ */
+@media (max-width: 767px) {
+	.apit-ar {
+		padding: 0;
+	}
+
+	.apit-ar__dialogo {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: auto minmax(0, 1fr);
+		max-width: none;
+		height: 100%;
+		max-height: none;
+		border-radius: 0;
+	}
+
+	.apit-ar__arte {
+		flex-direction: row;
+		align-items: center;
+		padding: 22px 24px;
+	}
+
+	.apit-ar__logo {
+		width: 110px;
+	}
+
+	.apit-ar__slogan {
+		display: none;
+	}
+
+	.apit-ar__fechar {
+		top: 14px;
+		right: 12px;
+		color: #fff;
+	}
+
+	.apit-ar__fechar:hover,
+	.apit-ar__fechar:focus-visible {
+		background: rgba(255, 255, 255, 0.18);
+		color: #fff;
+	}
+
+	.apit-ar__conteudo {
+		max-height: none;
+		padding: 32px 24px 32px;
+	}
+
+	.apit-ar__titulo {
+		font-size: 28px;
+	}
+
+	.apit-ar__intro {
+		margin-bottom: 24px;
+	}
+
+	.apit-ar__grelha {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}

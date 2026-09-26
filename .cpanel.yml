@@ -27,6 +27,16 @@ deployment:
     - /bin/mkdir -p $TEMA
     - /bin/cp -R wp-content/themes/hello-elementor-child/. $TEMA/
 
+    # The Área Reservada plugin: our code, rebuilt the same way. The site's
+    # calendar reads its events from it, so theme and plugin go up together.
+    # Its data lives in the database (wp_jelly_ar_* tables) and its files in
+    # wp-content/uploads/jelly-area-reservada/, neither of which this touches.
+    - /usr/bin/test -d $DEPLOYPATH/wp-content/plugins
+    - export PLUGIN=$DEPLOYPATH/wp-content/plugins/jelly-area-reservada
+    - /bin/rm -rf $PLUGIN
+    - /bin/mkdir -p $PLUGIN
+    - /bin/cp -R wp-content/plugins/jelly-area-reservada/. $PLUGIN/
+
     # Hardening: keep directory listings off in the shared wp-content folders.
     - /bin/cp -n wp-content/themes/index.php $DEPLOYPATH/wp-content/themes/index.php
     - /bin/cp -n wp-content/plugins/index.php $DEPLOYPATH/wp-content/plugins/index.php

@@ -1,0 +1,293 @@
+<?php
+/**
+ * As tabelas da Área Reservada, e a criação delas.
+ *
+ * A AR guarda os seus dados em tabelas próprias, e não nas do WordPress: o
+ * plugin leva o esquema consigo para qualquer WordPress, não depende de tipos
+ * nem de campos do tema, e as listas — que podem crescer muito — filtram,
+ * ordenam e paginam por colunas com índice, não por meta.
+ *
+ * Do WordPress usa só o login: um associado é um utilizador do WordPress com o
+ * papel apit_associado, e é por ele que entra, define e recupera a palavra-
+ * passe. O resto do associado está em jelly_ar_associados.
+ *
+ *   jelly_ar_associados        o perfil de cada associado, 1 para 1 com o
+ *                              utilizador (user_id). O e-mail fica só no
+ *                              wp_users, porque é com ele que se entra
+ *   jelly_ar_acessos           uma linha por login de um associado
+ *
+ *   jelly_ar_doc_categorias    as categorias dos documentos
+ *   jelly_ar_documentos        os documentos; o ficheiro está na pasta
+ *                              uploads/jelly-area-reservada/documentos/
+ *   jelly_ar_descargas         uma linha por descarga de um associado
+ *
+ *   jelly_ar_evento_categorias as categorias dos eventos, com as duas cores
+ *   jelly_ar_eventos           os eventos — do calendário do site e da AR
+ *
+ *   jelly_ar_mesas             as mesas de um evento com marcações
+ *   jelly_ar_evento_horarios   os dias e as horas de marcação de um evento
+ *   jelly_ar_marcacoes         os pedidos de mesa dos associados
+ *
+ * Os estados guardam-se como texto (varchar) e não como ENUM: acrescentar um
+ * estado não obriga a mudar o esquema, e os valores aceites são verificados no
+ * PHP, antes de chegarem aqui.
+ *
+ * As datas e horas de registo estão em UTC, como as do WordPress; as datas dos
+ * eventos e das marcações são dias e horas do calendário, sem fuso.
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+// Sobe quando o que jelly_ar_instalar() cria mudar, para ela voltar a correr.
+define( 'JELLY_AR_DB_VERSION', '5' );
+
+/**
+ * O nome completo de uma tabela da AR: jelly_ar_tabela( 'eventos' ).
+ */
+function jelly_ar_tabela( $nome ) {
+	global $wpdb;
+
+	return $wpdb->prefix . 'jelly_ar_' . $nome;
+}
+
+/**
+ * Um slug que ainda não existe, a partir do nome: "Eventos" → "eventos",
+ * e "eventos-2" se esse já estiver tomado.
+ */
+function jelly_ar_slug_livre( $tabela, $nome ) {
+	global $wpdb;
+
+	$base = sanitize_title( $nome );
+	$base = '' !== $base ? mb_substr( $base, 0, 70 ) : 'categoria';
+	$slug = $base;
+
+	for ( $n = 2; $wpdb->get_var( $wpdb->prepare( 'SELECT id FROM ' . jelly_ar_tabela( $tabela ) . ' WHERE slug = %s', $slug ) ); $n++ ) { // phpcs:ignore WordPress.DB
+		$slug = $base . '-' . $n;
+	}
+
+	return $slug;
+}
+
+function jelly_ar_tabela_acessos() {
+	return jelly_ar_tabela( 'acessos' );
+}
+
+function jelly_ar_tabela_descargas() {
+	return jelly_ar_tabela( 'descargas' );
+}
+
+/**
+ * O esquema, tabela a tabela, na forma que o dbDelta pede: uma coluna por
+ * linha e dois espaços depois de PRIMARY KEY. O dbDelta cria o que falta e
+ * acrescenta colunas e índices novos, sem apagar nada.
+ */
+function jelly_ar_esquema() {
+	global $wpdb;
+
+	$c = $wpdb->get_charset_collate();
+	$t = 'jelly_ar_tabela';
+
+	return [
+		"CREATE TABLE {$t( 'associados' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL,
+			nome varchar(100) NOT NULL DEFAULT '',
+			apelido varchar(100) NOT NULL DEFAULT '',
+			telefone varchar(30) NOT NULL DEFAULT '',
+			empresa varchar(150) NOT NULL DEFAULT '',
+			estado varchar(20) NOT NULL DEFAULT 'pendente',
+			registado_em datetime NOT NULL,
+			aprovado_em datetime DEFAULT NULL,
+			aprovado_por bigint(20) unsigned DEFAULT NULL,
+			atualizado_em datetime NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY user_id (user_id),
+			KEY estado (estado),
+			KEY apelido (apelido),
+			KEY empresa (empresa)
+		) {$c};",
+
+		"CREATE TABLE {$t( 'acessos' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			user_id bigint(20) unsigned NOT NULL,
+			criado_em datetime NOT NULL,
+			ip varchar(45) NOT NULL DEFAULT '',
+			user_agent varchar(255) NOT NULL DEFAULT '',
+			PRIMARY KEY  (id),
+			KEY user_id (user_id),
+			KEY criado_em (criado_em)
+		) {$c};",
+
+		"CREATE TABLE {$t( 'doc_categorias' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			nome varchar(80) NOT NULL,
+			slug varchar(80) NOT NULL,
+			criado_em datetime NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY slug (slug)
+		) {$c};",
+
+		"CREATE TABLE {$t( 'documentos' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			titulo varchar(255) NOT NULL,
+			descricao text NOT NULL,
+			categoria_id bigint(20) unsigned DEFAULT NULL,
+			estado varchar(20) NOT NULL DEFAULT 'publicado',
+			ficheiro varchar(100) NOT NULL,
+			nome_original varchar(255) NOT NULL,
+			tipo varchar(10) NOT NULL,
+			tamanho bigint(20) unsigned NOT NULL DEFAULT 0,
+			autor_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			criado_em datetime NOT NULL,
+			atualizado_em datetime NOT NULL,
+			PRIMARY KEY  (id),
+			KEY estado (estado),
+			KEY categoria_id (categoria_id),
+			KEY criado_em (criado_em)
+		) {$c};",
+
+		"CREATE TABLE {$t( 'descargas' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			documento_id bigint(20) unsigned NOT NULL,
+			user_id bigint(20) unsigned NOT NULL,
+			criado_em datetime NOT NULL,
+			PRIMARY KEY  (id),
+			KEY documento_id (documento_id),
+			KEY user_id (user_id)
+		) {$c};",
+
+		"CREATE TABLE {$t( 'evento_categorias' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			nome varchar(80) NOT NULL,
+			slug varchar(80) NOT NULL,
+			cor_inicio varchar(7) NOT NULL DEFAULT '#f41892',
+			cor_fim varchar(7) NOT NULL DEFAULT '#e9edf0',
+			criado_em datetime NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY slug (slug)
+		) {$c};",
+
+		"CREATE TABLE {$t( 'eventos' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			titulo varchar(255) NOT NULL,
+			resumo text NOT NULL,
+			categoria_id bigint(20) unsigned DEFAULT NULL,
+			inicio date NOT NULL,
+			fim date DEFAULT NULL,
+			local varchar(150) NOT NULL DEFAULT '',
+			onde varchar(20) NOT NULL DEFAULT 'site',
+			marcacoes tinyint(1) NOT NULL DEFAULT 0,
+			botao_texto varchar(60) NOT NULL DEFAULT '',
+			estado varchar(20) NOT NULL DEFAULT 'publicado',
+			autor_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			criado_em datetime NOT NULL,
+			atualizado_em datetime NOT NULL,
+			PRIMARY KEY  (id),
+			KEY calendario (estado,onde,fim),
+			KEY inicio (inicio),
+			KEY categoria_id (categoria_id)
+		) {$c};",
+
+		"CREATE TABLE {$t( 'mesas' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			evento_id bigint(20) unsigned NOT NULL,
+			nome varchar(80) NOT NULL,
+			localizacao varchar(150) NOT NULL DEFAULT '',
+			lugares smallint(5) unsigned NOT NULL DEFAULT 4,
+			ordem smallint(5) unsigned NOT NULL DEFAULT 0,
+			PRIMARY KEY  (id),
+			KEY evento_id (evento_id)
+		) {$c};",
+
+		"CREATE TABLE {$t( 'evento_horarios' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			evento_id bigint(20) unsigned NOT NULL,
+			dia date NOT NULL,
+			hora_inicio time NOT NULL,
+			hora_fim time NOT NULL,
+			intervalo smallint(5) unsigned NOT NULL DEFAULT 30,
+			PRIMARY KEY  (id),
+			UNIQUE KEY evento_dia (evento_id,dia)
+		) {$c};",
+
+		/*
+		 * `ocupa` é 1 enquanto a marcação prende o bloco (pendente ou aprovada)
+		 * e NULL quando o solta (rejeitada ou cancelada). Como dois NULL nunca
+		 * colidem numa chave única, a chave (mesa, dia, hora, ocupa) impede duas
+		 * marcações vivas no mesmo bloco — a própria base de dados recusa a
+		 * segunda, mesmo que dois associados reservem ao mesmo tempo — e deixa
+		 * as rejeitadas ficar no histórico.
+		 */
+		"CREATE TABLE {$t( 'marcacoes' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			evento_id bigint(20) unsigned NOT NULL,
+			mesa_id bigint(20) unsigned NOT NULL,
+			user_id bigint(20) unsigned NOT NULL,
+			dia date NOT NULL,
+			hora time NOT NULL,
+			estado varchar(20) NOT NULL DEFAULT 'pendente',
+			ocupa tinyint(1) DEFAULT 1,
+			pedido_em datetime NOT NULL,
+			decidido_em datetime DEFAULT NULL,
+			decidido_por bigint(20) unsigned DEFAULT NULL,
+			notas text NOT NULL,
+			PRIMARY KEY  (id),
+			UNIQUE KEY bloco (mesa_id,dia,hora,ocupa),
+			KEY evento_id (evento_id),
+			KEY user_id (user_id),
+			KEY estado (estado)
+		) {$c};",
+	];
+}
+
+function jelly_ar_instalar() {
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+
+	foreach ( jelly_ar_esquema() as $sql ) {
+		dbDelta( $sql );
+	}
+
+	// A pasta dos ficheiros, já fechada ao público antes do primeiro ficheiro.
+	jelly_ar_pasta_documentos();
+
+	if ( ! get_role( 'apit_associado' ) ) {
+		add_role( 'apit_associado', __( 'Associado APIT', 'jelly-area-reservada' ), [ 'read' => true ] );
+	}
+
+	jelly_ar_limpar_migracao();
+
+	// As categorias com que a área começa, se ainda não houver nenhuma.
+	jelly_ar_criar_categorias_iniciais();
+
+	update_option( 'jelly_ar_db_version', JELLY_AR_DB_VERSION );
+}
+
+/*
+ * Os eventos vieram dos posts apit_evento do WordPress numa migração que já
+ * correu e saiu do plugin (esquema 4). O que ela deixou para trás sai aqui: a
+ * coluna que ligava cada evento ao post de onde veio, e o registo da passagem.
+ * O dbDelta acrescenta colunas mas nunca as tira, por isso é à mão.
+ */
+function jelly_ar_limpar_migracao() {
+	global $wpdb;
+
+	$tabela = jelly_ar_tabela( 'eventos' );
+
+	if ( $wpdb->get_var( "SHOW COLUMNS FROM {$tabela} LIKE 'origem_post_id'" ) ) { // phpcs:ignore WordPress.DB
+		$wpdb->query( "ALTER TABLE {$tabela} DROP INDEX origem_post_id, DROP COLUMN origem_post_id" ); // phpcs:ignore WordPress.DB
+	}
+
+	delete_option( 'jelly_ar_migracao' );
+}
+
+/*
+ * A ativação corre a instalação; esta verificação apanha o que a ativação não
+ * apanha — uma atualização do plugin, ou o servidor, onde o plugin chega pelo
+ * deploy já ativo na base de dados.
+ */
+function jelly_ar_verificar_instalacao() {
+	if ( get_option( 'jelly_ar_db_version' ) !== JELLY_AR_DB_VERSION ) {
+		jelly_ar_instalar();
+	}
+}
+add_action( 'admin_init', 'jelly_ar_verificar_instalacao' );

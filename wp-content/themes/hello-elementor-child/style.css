@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.36.5
+Version: 0.37.0
 */
 
 :root {
@@ -1625,6 +1625,96 @@ a.btn--escuro:focus-visible {
 	font-size: 16px;
 	line-height: 1.68;
 	color: #fff;
+}
+
+/*
+ * The summary, when there is one, under the dates: the same white, a size
+ * down and lighter, so the dates stay the line that reads first.
+ */
+.evento-card__resumo {
+	margin-top: 0;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+/* ---------- Pagination: news archive and calendar ---------- */
+
+/*
+ * One look for both lists that page: the news archive and the Calendário
+ * grid. It lived in noticias.css, which the calendar page does not load.
+ */
+.noticias-paginacao,
+.calendario-paginacao {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+	margin-top: 64px;
+}
+
+/*
+ * paginate_links prints a flat run of links and spans, all carrying
+ * .page-numbers — so the nav is the flex row and every child is sized here.
+ */
+.noticias-paginacao .page-numbers,
+.calendario-paginacao .page-numbers {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 44px;
+	height: 44px;
+	padding: 2px 14px 0;
+	border: 2px solid transparent;
+	border-radius: 200px;
+	font-family: var(--apit-font);
+	font-weight: 500;
+	font-size: 16px;
+	color: var(--apit-black);
+	transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.noticias-paginacao a.page-numbers:hover,
+.noticias-paginacao a.page-numbers:focus-visible,
+.calendario-paginacao a.page-numbers:hover,
+.calendario-paginacao a.page-numbers:focus-visible {
+	border-color: var(--apit-magenta);
+	color: var(--apit-magenta);
+}
+
+.noticias-paginacao .page-numbers.current,
+.calendario-paginacao .page-numbers.current {
+	background: var(--apit-magenta);
+	color: #fff;
+}
+
+.noticias-paginacao .page-numbers.dots,
+.calendario-paginacao .page-numbers.dots {
+	min-width: 0;
+	padding-inline: 4px;
+	color: rgba(27, 42, 51, 0.45);
+}
+
+.noticias-paginacao .prev,
+.noticias-paginacao .next,
+.calendario-paginacao .prev,
+.calendario-paginacao .next {
+	font-size: 14px;
+	letter-spacing: 1.4px;
+	text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.noticias-paginacao .page-numbers,
+	.calendario-paginacao .page-numbers {
+		transition: none;
+	}
+}
+
+/* The anchor the page links point at: the grid, clear of the fixed header. */
+#calendario {
+	scroll-margin-top: 120px;
 }
 
 .evento-card__actions {

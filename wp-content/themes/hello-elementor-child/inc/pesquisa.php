@@ -8,6 +8,10 @@
  * Em vez disso a pesquisa olha para eles e o resultado leva onde a coisa vive:
  * o documento abre o PDF, o evento vai ao calendário, na sua vez.
  *
+ * Os eventos já não são posts: estão nas tabelas do plugin da área reservada,
+ * e é ele que os procura (jelly_ar_eventos_pesquisa()). O resto do que se diz
+ * aqui sobre tipos privados vale hoje só para os documentos.
+ *
  * `exclude_from_search` nesses dois tipos só vale quando a consulta não nomeia
  * os tipos. Ao nomeá-los em `pre_get_posts`, entram — que é exactamente o que
  * essa bandeira serve para permitir: ficam fora do "tudo" e dentro do que se
@@ -40,7 +44,8 @@ function apit_pesquisa_consulta( $query ) {
 		return;
 	}
 
-	$query->set( 'post_type', array_keys( apit_pesquisa_tipos() ) );
+	// Os eventos não são posts: vêm do plugin da área reservada (apit_pesquisa_agrupada()).
+	$query->set( 'post_type', array_values( array_diff( array_keys( apit_pesquisa_tipos() ), array( 'apit_evento' ) ) ) );
 	$query->set( 'posts_per_page', 30 );
 
 	/*
@@ -77,12 +82,6 @@ function apit_pesquisa_url( $post ) {
 		return $pagina ? get_permalink( $pagina ) : home_url( '/' );
 	}
 
-	if ( 'apit_evento' === $post->post_type ) {
-		$pagina = get_page_by_path( 'calendario' );
-
-		return ( $pagina ? get_permalink( $pagina ) : home_url( '/' ) ) . '#evento-' . $post->ID;
-	}
-
 	return get_permalink( $post );
 }
 
@@ -96,19 +95,6 @@ function apit_pesquisa_contexto( $post ) {
 		$areas = wp_get_post_terms( $post->ID, 'apit_area_documento', array( 'fields' => 'names' ) );
 
 		return is_array( $areas ) && $areas ? $areas[0] : __( 'Documento', 'apit' );
-	}
-
-	if ( 'apit_evento' === $post->post_type ) {
-		$data  = get_post_meta( $post->ID, 'apit_evento_data', true );
-		$local = get_post_meta( $post->ID, 'apit_evento_local', true );
-		$carimbo = $data ? strtotime( $data ) : false;
-
-		$partes = array_filter( array(
-			$carimbo ? wp_date( 'j \d\e F \d\e Y', $carimbo ) : '',
-			$local,
-		) );
-
-		return implode( ' · ', $partes );
 	}
 
 	if ( 'post' === $post->post_type ) {
@@ -195,6 +181,24 @@ function apit_pesquisa_agrupada( $termo, $por_tipo = 0 ) {
 	$grupos = array();
 
 	foreach ( apit_pesquisa_tipos() as $tipo => $etiqueta ) {
+		/*
+		 * Os eventos estão nas tabelas do plugin da área reservada, que os
+		 * devolve já na forma de resultado e sem os que são só da área. Sem o
+		 * plugin, não há eventos — como no calendário.
+		 */
+		if ( 'apit_evento' === $tipo ) {
+			$eventos = function_exists( 'jelly_ar_eventos_pesquisa' ) ? jelly_ar_eventos_pesquisa( $termo, $por_tipo > 0 ? $por_tipo : 50 ) : array();
+
+			if ( $eventos ) {
+				$grupos[ $tipo ] = array(
+					'etiqueta'   => $etiqueta,
+					'resultados' => $eventos,
+				);
+			}
+
+			continue;
+		}
+
 		$posts = get_posts( array(
 			's'                => $termo,
 			'post_type'        => $tipo,

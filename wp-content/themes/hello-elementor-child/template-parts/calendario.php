@@ -32,7 +32,37 @@ if ( $limite < 1 ) {
 	$limite = max( $limite, 12 );
 }
 
-$eventos = apit_get_proximos_eventos( $limite );
+/*
+ * The events come only from the Área Reservada back-office (the
+ * jelly-area-reservada plugin): it decides which ones show — published, on
+ * the site, not past their last day —, in what order, and hands them over
+ * with their dates written out, colours and button. The theme only draws the
+ * card. Without the plugin there is no source, and the section stays out.
+ */
+if ( ! function_exists( 'jelly_ar_eventos_calendario_pagina' ) ) {
+	return;
+}
+
+/*
+ * The grid is the Calendário page: `limite` is how many go on a page, and the
+ * rest are on the next ones — with 13 events and a limit of 12, the thirteenth
+ * used to be simply missing. The page number rides on `pg`, the parameter the
+ * news archive already uses, so the two read the same. The carousel scrolls
+ * and has "Calendário completo" for the rest, so it takes the first ones only.
+ */
+$var_pag = 'pg';
+$pagina  = 1;
+$paginas = 1;
+
+if ( 'grelha' === $layout ) {
+	$pedida  = isset( $_GET[ $var_pag ] ) ? absint( $_GET[ $var_pag ] ) : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a page number, not an action.
+	$lote    = jelly_ar_eventos_calendario_pagina( $limite, $pedida );
+	$eventos = $lote['eventos'];
+	$pagina  = $lote['pagina'];
+	$paginas = $lote['paginas'];
+} else {
+	$eventos = jelly_ar_eventos_calendario( $limite );
+}
 
 if ( ! $eventos ) {
 	return;
@@ -54,7 +84,7 @@ if ( '' === $etiqueta && 'carrossel' === $layout ) {
 // The arrows belong to a carousel. A grid wraps and has nothing to scroll.
 $mostrar_setas = 'carrossel' === $layout;
 ?>
-<section class="calendario calendario--<?php echo esc_attr( $layout ); ?>">
+<section class="calendario calendario--<?php echo esc_attr( $layout ); ?>"<?php echo 'grelha' === $layout ? ' id="calendario"' : ''; ?>>
 	<div class="apit-container">
 		<?php
 		/*
@@ -93,19 +123,15 @@ $mostrar_setas = 'carrossel' === $layout;
 		<ul class="calendario__track">
 			<?php foreach ( $eventos as $evento ) : ?>
 				<?php
-				$data       = get_post_meta( $evento->ID, 'apit_evento_data', true );
-				$local      = get_post_meta( $evento->ID, 'apit_evento_local', true );
-				$acao_texto = get_post_meta( $evento->ID, 'apit_evento_acao_texto', true );
-				$acao_url   = get_post_meta( $evento->ID, 'apit_evento_acao_url', true );
-				$timestamp  = $data ? strtotime( $data ) : false;
-				// Name and both gradient stops come from the category term.
-				$cores      = apit_cores_evento( $evento->ID );
+				// Everything below comes ready from the plugin (jelly_ar_eventos_calendario()).
+				$timestamp = $evento['inicio'] ? strtotime( $evento['inicio'] ) : false;
+				$acao      = $evento['botao'];
 				?>
 				<?php // O id é o destino dos resultados de pesquisa: /calendario/#evento-123. ?>
-				<li class="calendario__item" id="evento-<?php echo (int) $evento->ID; ?>" style="<?php echo esc_attr( apit_estilo_evento( $cores ) ); ?>">
+				<li class="calendario__item" id="evento-<?php echo (int) $evento['id']; ?>" style="<?php echo esc_attr( sprintf( '--apit-cat-inicio: %s; --apit-cat-fim: %s;', $evento['cores']['inicio'], $evento['cores']['fim'] ) ); ?>">
 					<article class="evento-card">
-						<?php if ( $cores['nome'] ) : ?>
-							<span class="evento-card__categoria"><?php echo esc_html( $cores['nome'] ); ?></span>
+						<?php if ( $evento['categoria'] ) : ?>
+							<span class="evento-card__categoria"><?php echo esc_html( $evento['categoria'] ); ?></span>
 						<?php endif; ?>
 
 						<div class="evento-card__body">
@@ -117,36 +143,47 @@ $mostrar_setas = 'carrossel' === $layout;
 							 * only appears when it has somewhere to go.
 							 */
 							?>
-							<h3 class="evento-card__title"><?php echo esc_html( get_the_title( $evento ) ); ?></h3>
+							<h3 class="evento-card__title"><?php echo esc_html( $evento['titulo'] ); ?></h3>
 
-							<?php if ( $evento->post_excerpt ) : ?>
-								<p class="evento-card__meta"><?php echo esc_html( $evento->post_excerpt ); ?></p>
+							<?php // "6–9 out 2026": from the event's start and end, never typed into the summary. ?>
+							<?php if ( $evento['datas'] ) : ?>
+								<p class="evento-card__meta evento-card__datas"><?php echo esc_html( $evento['datas'] ); ?></p>
 							<?php endif; ?>
 
-							<?php // The button needs both a label and a destination; without a URL there is nowhere to send anyone. ?>
-							<?php $mostrar_acao = $acao_texto && $acao_url; ?>
+							<?php if ( $evento['resumo'] ) : ?>
+								<p class="evento-card__meta evento-card__resumo"><?php echo esc_html( $evento['resumo'] ); ?></p>
+							<?php endif; ?>
 
-							<?php if ( $local || $mostrar_acao ) : ?>
+							<?php
+							/*
+							 * The button shows only on events where members can book
+							 * a table, and leads to the booking (or to the login
+							 * pop-up) — both decided by the plugin.
+							 */
+							$mostrar_acao = is_array( $acao ) && ! empty( $acao['texto'] ) && ! empty( $acao['url'] );
+							?>
+
+							<?php if ( $evento['local'] || $mostrar_acao ) : ?>
 								<div class="evento-card__actions">
-									<?php if ( $local ) : ?>
+									<?php if ( $evento['local'] ) : ?>
 										<span class="evento-pill evento-pill--local">
 											<i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-											<?php echo esc_html( $local ); ?>
+											<?php echo esc_html( $evento['local'] ); ?>
 										</span>
 									<?php endif; ?>
 
 									<?php if ( $mostrar_acao ) : ?>
-										<a class="evento-pill evento-pill--acao" href="<?php echo esc_url( $acao_url ); ?>">
-											<?php echo esc_html( $acao_texto ); ?>
+										<a class="evento-pill evento-pill--acao" href="<?php echo esc_url( $acao['url'] ); ?>">
+											<?php echo esc_html( $acao['texto'] ); ?>
 										</a>
 									<?php endif; ?>
 								</div>
 							<?php endif; ?>
 						</div>
 
+						<?php // The badge keeps the day the event starts; the full span is in the line under the title. ?>
 						<?php if ( $timestamp ) : ?>
-							<?php // The meta is stored as Ymd, which is not a valid datetime attribute. ?>
-							<time class="evento-card__date" datetime="<?php echo esc_attr( $timestamp ? gmdate( 'Y-m-d', $timestamp ) : $data ); ?>">
+							<time class="evento-card__date" datetime="<?php echo esc_attr( gmdate( 'Y-m-d', $timestamp ) ); ?>">
 								<span class="evento-card__month"><?php echo esc_html( date_i18n( 'F', $timestamp ) ); ?></span>
 								<span class="evento-card__day"><?php echo esc_html( date_i18n( 'd', $timestamp ) ); ?></span>
 							</time>
@@ -155,5 +192,37 @@ $mostrar_setas = 'carrossel' === $layout;
 				</li>
 			<?php endforeach; ?>
 		</ul>
+
+		<?php if ( $paginas > 1 ) : ?>
+			<nav class="calendario-paginacao" aria-label="<?php esc_attr_e( 'Páginas do calendário', 'apit' ); ?>">
+				<?php
+				/*
+				 * The same pagination as the news archive: paginate_links on the
+				 * page's own clean address, so no stray query argument is carried
+				 * into the links (see template-parts/noticias/resultados.php). The
+				 * fragment brings the visitor back to the grid, not the top of the
+				 * page.
+				 */
+				$sem_extras = function () {
+					return get_permalink();
+				};
+
+				add_filter( 'get_pagenum_link', $sem_extras, 99 );
+
+				echo paginate_links( [ // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- paginate_links escapes its own output.
+					'base'         => add_query_arg( $var_pag, '%#%', get_permalink() ),
+					'format'       => '',
+					'current'      => $pagina,
+					'total'        => $paginas,
+					'mid_size'     => 1,
+					'prev_text'    => esc_html__( 'Anterior', 'apit' ),
+					'next_text'    => esc_html__( 'Seguinte', 'apit' ),
+					'add_fragment' => '#calendario',
+				] );
+
+				remove_filter( 'get_pagenum_link', $sem_extras, 99 );
+				?>
+			</nav>
+		<?php endif; ?>
 	</div>
 </section>
