@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.42.3] - 2026-09-26
+
+### Corrigido
+- Nos Horários das Mesas, as horas de início e de fim mostravam AM/PM num
+  computador em inglês: o campo de hora do browser segue o idioma do sistema.
+  Passam a ser uma lista de 15 em 15 minutos, sempre em 24 horas (11:00,
+  13:30…). Plugin 0.6.3.
+
 ## [0.42.2] - 2026-09-26
 
 ### Corrigido

@@ -56,6 +56,31 @@ $mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros ) {
 	}
 };
 
+/*
+ * Uma hora, escolhida de uma lista de 15 em 15 minutos, sempre em 24 horas
+ * (11:00, 13:30…). O <input type="time"> do browser segue o idioma do sistema
+ * e mostra AM/PM num computador em inglês. Os intervalos são todos múltiplos
+ * de 15; uma hora guardada que não caia na lista entra também, para não se
+ * perder ao gravar.
+ */
+$select_hora = function ( $nome, $valor, $rotulo ) {
+	$horas = [];
+	for ( $m = 0; $m < 24 * 60; $m += 15 ) {
+		$horas[] = sprintf( '%02d:%02d', intdiv( $m, 60 ), $m % 60 );
+	}
+	if ( ! in_array( $valor, $horas, true ) ) {
+		$horas[] = $valor;
+		sort( $horas );
+	}
+	?>
+	<select name="<?php echo esc_attr( $nome ); ?>" class="jar-hora" aria-label="<?php echo esc_attr( $rotulo ); ?>">
+		<?php foreach ( $horas as $h ) : ?>
+			<option value="<?php echo esc_attr( $h ); ?>" <?php selected( $h, $valor ); ?>><?php echo esc_html( $h ); ?></option>
+		<?php endforeach; ?>
+	</select>
+	<?php
+};
+
 // A capa: o gradiente da categoria, como nos Eventos.
 $capa = function ( $e ) {
 	printf(
@@ -407,8 +432,9 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 									</span>
 								</label>
 							</td>
-							<td><input type="time" name="inicio[<?php echo esc_attr( $dia ); ?>]" value="<?php echo esc_attr( $h['inicio'] ?? '10:00' ); ?>" step="300"></td>
-							<td><input type="time" name="fim[<?php echo esc_attr( $dia ); ?>]" value="<?php echo esc_attr( $h['fim'] ?? '18:00' ); ?>" step="300"></td>
+							<?php // Início e fim, sempre em 24 horas ($select_hora, acima). ?>
+							<td><?php $select_hora( 'inicio[' . $dia . ']', $h['inicio'] ?? '10:00', __( 'Início', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ) ); ?></td>
+							<td><?php $select_hora( 'fim[' . $dia . ']', $h['fim'] ?? '18:00', __( 'Fim', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ) ); ?></td>
 							<td class="jar-tabela__num"><?php echo $h ? (int) count( jelly_ar_blocos( $h ) ) : '—'; ?></td>
 						</tr>
 					<?php endforeach; ?>

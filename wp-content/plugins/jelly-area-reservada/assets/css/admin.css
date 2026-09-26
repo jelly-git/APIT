@@ -2304,7 +2304,7 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	margin-bottom: 20px;
 }
 
-.jar .jar-horarios__tabela input[type="time"] {
+.jar .jar-horarios__tabela .jar-hora {
 	height: 40px;
 	min-width: 120px;
 }
