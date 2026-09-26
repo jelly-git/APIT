@@ -39,7 +39,7 @@ $avisos  = [
 	'rejeitado' => __( 'Pedido rejeitado. Foi enviado um e-mail a avisar.', 'jelly-area-reservada' ),
 	'suspenso'  => __( 'Acesso suspenso: o login da área reservada recusa este e-mail até ser reativado.', 'jelly-area-reservada' ),
 	'reativado' => __( 'Acesso reativado. A palavra-passe continua a mesma.', 'jelly-area-reservada' ),
-	'apagado'   => __( 'Pedido apagado, com a conta e os dados do registo.', 'jelly-area-reservada' ),
+	'apagado'   => __( 'Utilizador apagado, com a conta e todos os dados associados.', 'jelly-area-reservada' ),
 	'senha'     => __( 'Foi enviado o e-mail para definir uma palavra-passe nova. A atual continua a funcionar até ser trocada.', 'jelly-area-reservada' ),
 ];
 $erros   = [
@@ -47,6 +47,7 @@ $erros   = [
 	'decisao'            => __( 'Essa mudança não é possível a partir do estado atual.', 'jelly-area-reservada' ),
 	'senha-sem-email'    => __( 'O e-mail da palavra-passe nova não saiu. Confirme o envio no WP Mail SMTP.', 'jelly-area-reservada' ),
 	'senha-estado'       => __( 'A palavra-passe nova só se envia a um acesso ativo.', 'jelly-area-reservada' ),
+	'apagar-admin'       => __( 'Esta conta é também de administrador e não se apaga a partir da Área Reservada.', 'jelly-area-reservada' ),
 ];
 $mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros ) {
 	if ( isset( $avisos[ $aviso ] ) ) {
@@ -166,6 +167,21 @@ if ( $u ) :
 		</div>
 		<div class="jar-cabeca__acoes">
 			<?php
+			/*
+			 * Apagar, em qualquer estado, e discreto, como o "Enviar para o lixo" dos
+			 * eventos — com a diferença de que aqui não há lixo: sai tudo, de vez.
+			 */
+			$confirmar(
+				'<i class="fa-regular fa-trash-can" aria-hidden="true"></i> ' . esc_html__( 'Apagar utilizador', 'jelly-area-reservada' ),
+				__( 'Apagar este utilizador?', 'jelly-area-reservada' ),
+				/* translators: %s: nome */
+				sprintf( __( 'A conta de %s e todos os dados associados — o perfil, o histórico de acessos, as descargas e as marcações — são apagados de vez. Não é possível recuperá-los.', 'jelly-area-reservada' ), $completo ),
+				__( 'Apagar utilizador', 'jelly-area-reservada' ),
+				'',
+				'jar-btn--discreto',
+				'apagar'
+			);
+
 			switch ( $u['estado'] ) {
 				case 'pendente':
 					$confirmar(
@@ -199,15 +215,6 @@ if ( $u ) :
 					break;
 
 				case 'rejeitado':
-					$confirmar(
-						'<i class="fa-regular fa-trash-can" aria-hidden="true"></i> ' . esc_html__( 'Apagar pedido', 'jelly-area-reservada' ),
-						__( 'Apagar este pedido?', 'jelly-area-reservada' ),
-						__( 'O pedido e os dados do registo são apagados de vez.', 'jelly-area-reservada' ),
-						__( 'Apagar', 'jelly-area-reservada' ),
-						'',
-						'jar-btn--discreto',
-						'apagar'
-					);
 					$botao( __( 'Aprovar registo', 'jelly-area-reservada' ), 'ativo' );
 					break;
 			}

@@ -23,8 +23,37 @@ function jelly_ar_email_logo_url() {
 	return (string) apply_filters( 'jelly_ar_email_logo_url', $url );
 }
 
+/**
+ * O ficheiro do logótipo, para ir embutido no e-mail (cid:apit-logo). Um
+ * logótipo por endereço só aparece se o programa de e-mail o conseguir ir
+ * buscar — e não consegue a um servidor com autenticação HTTP, como o de
+ * testes, nem quando o programa bloqueia imagens externas. Embutido, vai com a
+ * mensagem.
+ */
+function jelly_ar_email_logo_ficheiro() {
+	$logo = get_stylesheet_directory() . '/assets/img/logo-apit.png';
+
+	return (string) apply_filters( 'jelly_ar_email_logo_ficheiro', file_exists( $logo ) ? $logo : '' );
+}
+
 function jelly_ar_email_morada() {
 	return (string) apply_filters( 'jelly_ar_email_morada', 'Av. Fernando Pessoa, 11 1º Sala 4, 1990-108 Lisboa · geral@apitv.com' );
+}
+
+/**
+ * A saudação, o primeiro parágrafo de cada e-mail: formal e sem supor o
+ * género, como a APIT escreve aos associados.
+ */
+function jelly_ar_email_saudacao( $nome ) {
+	/* translators: %s: nome completo */
+	return esc_html( sprintf( __( 'Caro(a) %s,', 'jelly-area-reservada' ), trim( $nome ) ) );
+}
+
+/*
+ * A nota comum aos e-mails com uma ligação para a palavra-passe.
+ */
+function jelly_ar_email_nota_ligacao() {
+	return __( 'Por motivos de segurança, esta ligação é válida durante 24 horas e só pode ser utilizada uma vez. Findo esse prazo, pode ser solicitada uma nova em «Esqueceu-se da palavra-passe?», na Área Reservada.', 'jelly-area-reservada' );
 }
 
 /**
@@ -82,14 +111,25 @@ function jelly_ar_email_texto( $args ) {
  * @return bool O que o wp_mail() devolver.
  */
 function jelly_ar_enviar_email( $para, $assunto, $args ) {
+	// O logótipo vai embutido na mensagem, e o HTML aponta para ele pelo cid.
+	$ficheiro = jelly_ar_email_logo_ficheiro();
+
+	if ( $ficheiro ) {
+		$args['logo'] = 'cid:apit-logo';
+	}
+
 	$html  = jelly_ar_email_html( $args );
 	$texto = jelly_ar_email_texto( $args );
 
 	$nome = function () {
 		return 'APIT';
 	};
-	$alternativa = function ( $phpmailer ) use ( $texto ) {
+	$alternativa = function ( $phpmailer ) use ( $texto, $ficheiro ) {
 		$phpmailer->AltBody = $texto; // phpcs:ignore WordPress.NamingConventions.ValidVariableName
+
+		if ( $ficheiro ) {
+			$phpmailer->addEmbeddedImage( $ficheiro, 'apit-logo', 'apit.png', 'base64', 'image/png' );
+		}
 	};
 
 	add_filter( 'wp_mail_from_name', $nome );
@@ -107,23 +147,8 @@ function jelly_ar_enviar_email( $para, $assunto, $args ) {
 /* ---------- A decisão sobre um pedido ---------- */
 
 /**
- * A ligação para definir a palavra-passe: a da recuperação do WordPress
- * (wp-login.php?action=rp), com uma chave nova, válida durante um dia. A
- * palavra-passe atual continua a funcionar até ser trocada. '' se a chave não
- * se puder criar.
- */
-function jelly_ar_ligacao_senha( $user ) {
-	$chave = get_password_reset_key( $user );
-
-	if ( is_wp_error( $chave ) ) {
-		return '';
-	}
-
-	return network_site_url( 'wp-login.php?action=rp&key=' . $chave . '&login=' . rawurlencode( $user->user_login ), 'login' );
-}
-
-/**
- * Uma palavra-passe nova, a pedido da equipa (o botão do perfil do associado).
+ * Uma palavra-passe nova: pedida pela equipa (o botão do perfil) ou pelo
+ * próprio associado ("Esqueceu-se da palavra-passe?").
  *
  * @return bool Se o e-mail saiu.
  */
@@ -136,32 +161,30 @@ function jelly_ar_email_nova_senha( $user, $perfil ) {
 
 	return jelly_ar_enviar_email(
 		$user->user_email,
-		__( 'Nova palavra-passe da Área Reservada', 'jelly-area-reservada' ),
+		__( 'Redefinição da palavra-passe — Área Reservada APIT', 'jelly-area-reservada' ),
 		[
-			/* translators: %s: nome próprio */
-			'titulo'     => sprintf( __( 'Olá %s,', 'jelly-area-reservada' ), $perfil->nome ),
-			'previa'     => __( 'A ligação para definir uma palavra-passe nova da Área Reservada da APIT.', 'jelly-area-reservada' ),
+			'titulo'     => __( 'Redefinição da palavra-passe', 'jelly-area-reservada' ),
+			'previa'     => __( 'Ligação para definir uma nova palavra-passe de acesso à Área Reservada da APIT.', 'jelly-area-reservada' ),
 			'paragrafos' => [
-				esc_html__( 'A APIT enviou a ligação para definir uma palavra-passe nova da Área Reservada.', 'jelly-area-reservada' ),
+				jelly_ar_email_saudacao( $perfil->nome . ' ' . $perfil->apelido ),
 				sprintf(
 					/* translators: %s: e-mail */
-					esc_html__( 'O botão abaixo abre a página para a escolher. A entrada continua a fazer-se com o endereço %s.', 'jelly-area-reservada' ),
+					esc_html__( 'Foi solicitada a definição de uma nova palavra-passe de acesso à Área Reservada da APIT, associada ao endereço %s.', 'jelly-area-reservada' ),
 					'<strong>' . esc_html( $user->user_email ) . '</strong>'
 				),
+				esc_html__( 'Para a definir, basta seguir a ligação abaixo. Até lá, a palavra-passe atual mantém-se válida.', 'jelly-area-reservada' ),
 			],
 			'botao'      => [
-				'texto' => __( 'Definir palavra-passe', 'jelly-area-reservada' ),
+				'texto' => __( 'Definir nova palavra-passe', 'jelly-area-reservada' ),
 				'url'   => $ligacao,
 			],
-			'nota'       => __( 'A ligação é válida durante 24 horas. Até a palavra-passe ser trocada, a atual continua a funcionar; quem não esperava este e-mail pode ignorá-lo.', 'jelly-area-reservada' ),
+			'nota'       => jelly_ar_email_nota_ligacao() . ' ' . __( 'Caso este pedido não tenha sido efetuado pelo titular da conta, esta mensagem pode ser ignorada.', 'jelly-area-reservada' ),
 		]
 	);
 }
 
 /**
  * O pedido foi aprovado: o e-mail com a ligação para definir a palavra-passe.
- * A ligação é a da recuperação do WordPress (wp-login.php?action=rp), válida
- * durante um dia; depois disso pede-se outra em "Esqueceu-se da palavra-passe?".
  *
  * @return bool Se o e-mail saiu. Sem ele, a pessoa não tem como entrar.
  */
@@ -174,16 +197,16 @@ function jelly_ar_email_aprovado( $user, $perfil ) {
 
 	return jelly_ar_enviar_email(
 		$user->user_email,
-		__( 'Pedido de acesso aprovado', 'jelly-area-reservada' ),
+		__( 'Acesso à Área Reservada aprovado — APIT', 'jelly-area-reservada' ),
 		[
-			/* translators: %s: nome próprio */
-			'titulo'     => sprintf( __( 'Olá %s,', 'jelly-area-reservada' ), $perfil->nome ),
-			'previa'     => __( 'O acesso à Área Reservada da APIT foi aprovado. Falta definir a palavra-passe.', 'jelly-area-reservada' ),
+			'titulo'     => __( 'Acesso aprovado', 'jelly-area-reservada' ),
+			'previa'     => __( 'O pedido de acesso à Área Reservada da APIT foi aprovado.', 'jelly-area-reservada' ),
 			'paragrafos' => [
-				esc_html__( 'A APIT aprovou o pedido de acesso à Área Reservada.', 'jelly-area-reservada' ),
+				jelly_ar_email_saudacao( $perfil->nome . ' ' . $perfil->apelido ),
+				esc_html__( 'O pedido de acesso à Área Reservada da APIT foi aprovado.', 'jelly-area-reservada' ),
 				sprintf(
 					/* translators: %s: e-mail */
-					esc_html__( 'Falta só definir a palavra-passe, no botão abaixo. A partir daí, a entrada na área reservada faz-se com o endereço %s e essa palavra-passe.', 'jelly-area-reservada' ),
+					esc_html__( 'Para concluir a ativação da conta, falta apenas definir a palavra-passe através da ligação abaixo. O acesso passa a ser feito com o endereço %s e a palavra-passe escolhida.', 'jelly-area-reservada' ),
 					'<strong>' . esc_html( $user->user_email ) . '</strong>'
 				),
 			],
@@ -192,7 +215,7 @@ function jelly_ar_email_aprovado( $user, $perfil ) {
 				'texto' => __( 'Definir palavra-passe', 'jelly-area-reservada' ),
 				'url'   => $ligacao,
 			],
-			'nota'       => __( 'A ligação é válida durante 24 horas. Depois disso, é possível pedir outra em "Esqueceu-se da palavra-passe?", no login.', 'jelly-area-reservada' ),
+			'nota'       => jelly_ar_email_nota_ligacao(),
 		]
 	);
 }
@@ -203,16 +226,16 @@ function jelly_ar_email_aprovado( $user, $perfil ) {
 function jelly_ar_email_rejeitado( $user, $perfil ) {
 	return jelly_ar_enviar_email(
 		$user->user_email,
-		__( 'Pedido de acesso à Área Reservada', 'jelly-area-reservada' ),
+		__( 'Pedido de acesso à Área Reservada — APIT', 'jelly-area-reservada' ),
 		[
-			/* translators: %s: nome próprio */
-			'titulo'     => sprintf( __( 'Olá %s,', 'jelly-area-reservada' ), $perfil->nome ),
-			'previa'     => __( 'Sobre o pedido de acesso à Área Reservada da APIT.', 'jelly-area-reservada' ),
+			'titulo'     => __( 'Pedido de acesso', 'jelly-area-reservada' ),
+			'previa'     => __( 'Informação sobre o pedido de acesso à Área Reservada da APIT.', 'jelly-area-reservada' ),
 			'paragrafos' => [
-				esc_html__( 'O pedido de acesso à Área Reservada não foi aprovado.', 'jelly-area-reservada' ),
+				jelly_ar_email_saudacao( $perfil->nome . ' ' . $perfil->apelido ),
+				esc_html__( 'Após análise, o pedido de acesso à Área Reservada da APIT não foi aprovado.', 'jelly-area-reservada' ),
 				sprintf(
 					/* translators: %s: e-mail da APIT */
-					esc_html__( 'Para saber mais, a APIT está disponível em %s.', 'jelly-area-reservada' ),
+					esc_html__( 'Para qualquer esclarecimento, a APIT encontra-se disponível através do endereço %s.', 'jelly-area-reservada' ),
 					'<a href="mailto:geral@apitv.com" style="color:#f41892;text-decoration:none;">geral@apitv.com</a>'
 				),
 			],

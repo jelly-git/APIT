@@ -1,10 +1,12 @@
 /**
- * Pop-up da Área Reservada: abre com qualquer link para #area-reservada (Login)
- * ou #area-reservada-registo (Registo), troca entre os dois sem sair do sítio e
- * valida os formulários no browser.
+ * Pop-up da Área Reservada: abre com qualquer link para #area-reservada
+ * (Login), #area-reservada-registo (Registo), #area-reservada-recuperar
+ * (Esqueceu-se da palavra-passe?) ou #area-reservada-senha (Definir a
+ * palavra-passe, a partir da ligação dos e-mails). Troca entre os painéis sem
+ * sair do sítio e valida os formulários no browser.
  *
- * O Registo envia o pedido para a Área Reservada (inc/registo.php). O Login
- * ainda não entra: uma submissão válida mostra o aviso de que vem aí.
+ * Os quatro formulários vão para o servidor pelo admin-ajax (inc/registo.php e
+ * inc/sessao.php), sem recarregar a página.
  */
 ( function () {
 	'use strict';
@@ -19,15 +21,22 @@
 	var paineis = modal.querySelectorAll( '[data-ar-painel]' );
 	var ANCORAS = {
 		'#area-reservada': 'login',
-		'#area-reservada-registo': 'registo'
+		'#area-reservada-registo': 'registo',
+		'#area-reservada-recuperar': 'recuperar',
+		'#area-reservada-senha': 'senha'
 	};
 	var origem = null;
+
+	// O mínimo de caracteres de uma palavra-passe: o mesmo que o servidor (JELLY_AR_SENHA_MINIMO).
+	var SENHA_MINIMO = 10;
 
 	var MENSAGENS = {
 		obrigatorio: 'Preencha este campo.',
 		email: 'Escreva um e-mail válido, como nome@empresa.pt.',
 		telefone: 'Escreva um número de telefone válido.',
-		termos: 'Tem de aceitar a Política de Privacidade.'
+		termos: 'Tem de aceitar a Política de Privacidade.',
+		senhaCurta: 'A palavra-passe tem de ter pelo menos ' + SENHA_MINIMO + ' caracteres.',
+		senhaDiferente: 'As duas palavras-passe não são iguais.'
 	};
 
 	/* ---------- Abrir, fechar, trocar ---------- */
@@ -37,7 +46,11 @@
 	}
 
 	function ancoraDoPainel( nome ) {
-		return 'registo' === nome ? '#area-reservada-registo' : '#area-reservada';
+		var ancora = Object.keys( ANCORAS ).filter( function ( a ) {
+			return ANCORAS[ a ] === nome;
+		} )[ 0 ];
+
+		return ancora || '#area-reservada';
 	}
 
 	// A âncora acompanha o painel, para que o endereço se possa partilhar, sem
@@ -203,6 +216,15 @@
 			return MENSAGENS.telefone;
 		}
 
+		// Definir a palavra-passe: o mínimo, e a repetição igual à primeira.
+		if ( 'senha' === campo.name && campo.value.length < SENHA_MINIMO ) {
+			return MENSAGENS.senhaCurta;
+		}
+
+		if ( 'senha2' === campo.name && campo.form.senha && campo.value !== campo.form.senha.value ) {
+			return MENSAGENS.senhaDiferente;
+		}
+
 		return '';
 	}
 
@@ -294,15 +316,31 @@
 				return;
 			}
 
-			if ( 'registo' === form.getAttribute( 'data-ar-form' ) ) {
-				enviar( form, campos );
-				return;
-			}
-
-			// O Login ainda não tem contas contra as quais entrar.
-			avisar( form, 'A área reservada estará disponível em breve.', false );
+			// Todos os formulários do pop-up vão para o servidor (inc/registo.php e inc/sessao.php).
+			enviar( form, campos );
 		} );
 	} );
+
+	/*
+	 * O que cada formulário faz quando o servidor diz que correu bem: o login
+	 * segue para o destino que o servidor indica; os outros mostram a sua
+	 * confirmação. Depois de definir a palavra-passe, a chave sai do endereço —
+	 * já não serve, e não deve ficar no histórico nem ser partilhada.
+	 */
+	function concluir( form, dados ) {
+		var tipo = form.getAttribute( 'data-ar-form' );
+
+		if ( 'login' === tipo ) {
+			window.location.assign( dados.destino || window.location.href.split( '#' )[ 0 ] );
+			return;
+		}
+
+		if ( 'senha' === tipo ) {
+			window.history.replaceState( window.history.state, '', window.location.pathname + window.location.hash );
+		}
+
+		mostrarSucesso( form );
+	}
 
 	function avisar( form, texto, erro ) {
 		var aviso = form.querySelector( '[data-ar-aviso]' );
@@ -395,7 +433,7 @@
 				terminar();
 
 				if ( dados && dados.sucesso ) {
-					mostrarSucesso( form );
+					concluir( form, dados );
 					return;
 				}
 
@@ -426,15 +464,21 @@
 			} );
 	}
 
-	// Links que ainda não levam a lado nenhum, como a recuperação da palavra-passe.
-	Array.prototype.forEach.call( modal.querySelectorAll( '[data-ar-em-breve]' ), function ( link ) {
-		link.addEventListener( 'click', function ( e ) {
-			e.preventDefault();
-			var form = modal.querySelector( '[data-ar-form="login"]' );
+	/*
+	 * "Entrar", depois de definir a palavra-passe: abre o login (pelo ouvinte
+	 * das âncoras, acima) com o e-mail já escrito, e o foco na palavra-passe.
+	 */
+	modal.addEventListener( 'click', function ( e ) {
+		var link = e.target.closest ? e.target.closest( '[data-ar-entrar-com]' ) : null;
+		var login = modal.querySelector( '[data-ar-form="login"]' );
 
-			if ( form ) {
-				avisar( form, 'A recuperação da palavra-passe estará disponível em breve.', false );
-			}
-		} );
+		if ( ! link || ! login ) {
+			return;
+		}
+
+		window.setTimeout( function () {
+			login.user_login.value = link.getAttribute( 'data-ar-entrar-com' );
+			login.user_pass.focus();
+		}, 0 );
 	} );
 }() );

@@ -266,6 +266,39 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.40.0] - 2026-09-26
+
+Tudo no plugin `jelly-area-reservada`, que passa à versão 0.4.0. O tema e a
+base de dados não mudam.
+
+### Adicionado
+- **Definir a palavra-passe no site, e não na página do WordPress.** A
+  ligação dos e-mails abre o pop-up no painel "Definir palavra-passe", com o
+  desenho do site (`/?ar-chave=…&ar-conta=…#area-reservada-senha`). A chave é a
+  da recuperação do WordPress: vale 24 horas e uma vez só. Uma ligação
+  expirada diz isso logo, e oferece uma nova. Um associado que chegue à página
+  do WordPress com uma dessas ligações é reencaminhado para o site; os
+  administradores continuam na do WordPress.
+- **O login do pop-up entra.** Pelo e-mail e a palavra-passe; um acesso por
+  aprovar, suspenso ou rejeitado não entra, e a mensagem diz porquê. Um
+  administrador segue para o back-office da AR; um associado, para o site. Com
+  a sessão iniciada, o painel mostra quem entrou e a saída.
+- **"Esqueceu-se da palavra-passe?"** no pop-up: envia a ligação a um associado
+  com o acesso ativo. A resposta é a mesma haja ou não conta.
+- Limites por IP: 8 tentativas de login em 15 minutos, 5 pedidos de
+  recuperação e 10 de palavra-passe por hora.
+- **Apagar utilizador**, no perfil, em qualquer estado: sai a conta e todos os
+  dados associados (perfil, acessos, descargas e marcações), depois de
+  confirmar. Uma conta que seja também de administrador não se apaga daqui.
+
+### Alterado
+- **Os e-mails têm um tom institucional**: saudação formal ("Caro(a) Nome
+  Apelido,"), frases completas, "acusa a receção", "por motivos de
+  segurança", tudo na 3.ª pessoa.
+- **O logótipo vai embutido no e-mail** (`cid:apit-logo`), em vez de ser ido
+  buscar ao servidor. O de testes está atrás de autenticação HTTP, e o
+  programa de e-mail não conseguia mostrá-lo.
+
 ## [0.39.1] - 2026-09-26
 
 ### Corrigido

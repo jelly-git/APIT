@@ -45,6 +45,14 @@ $logo = jelly_ar_logo_url();
 			<section class="apit-ar__painel" data-ar-painel="registo" hidden>
 				<?php jelly_ar_template( 'form-registo' ); ?>
 			</section>
+
+			<section class="apit-ar__painel" data-ar-painel="recuperar" hidden>
+				<?php jelly_ar_template( 'form-recuperar' ); ?>
+			</section>
+
+			<section class="apit-ar__painel" data-ar-painel="senha" hidden>
+				<?php jelly_ar_template( 'form-senha' ); ?>
+			</section>
 		</div>
 	</div>
 </div>

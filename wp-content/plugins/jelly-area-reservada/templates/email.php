@@ -18,6 +18,9 @@
  *   botao      [ 'texto' => …, 'url' => … ] (opcional)
  *   nota       uma linha pequena por baixo (opcional)
  *   previa     o texto que o programa de e-mail mostra ao lado do assunto
+ *   logo       o endereço da imagem do logótipo: cid:apit-logo no envio (a
+ *              imagem vai embutida no e-mail), o endereço normal nas
+ *              pré-visualizações
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -32,10 +35,11 @@ $a = wp_parse_args(
 		'botao'      => null,
 		'nota'       => '',
 		'previa'     => '',
+		'logo'       => jelly_ar_email_logo_url(),
 	]
 );
 
-$logo     = jelly_ar_email_logo_url();
+$logo     = $a['logo'];
 $site     = home_url( '/' );
 $fonte    = "'Omnes', 'Segoe UI', Helvetica, Arial, sans-serif";
 $preto    = '#1b2a33';
@@ -72,7 +76,7 @@ $passos   = [
 						<td style="padding:32px 40px 28px;">
 							<a href="<?php echo esc_url( $site ); ?>" style="text-decoration:none;">
 								<?php if ( $logo ) : ?>
-									<img src="<?php echo esc_url( $logo ); ?>" width="150" alt="APIT" style="display:block;width:150px;max-width:150px;height:auto;border:0;">
+									<img src="<?php echo esc_url( $logo, [ 'cid', 'http', 'https' ] ); ?>" width="150" alt="APIT" style="display:block;width:150px;max-width:150px;height:auto;border:0;">
 								<?php else : ?>
 									<span style="font-family:<?php echo esc_attr( $fonte ); ?>;font-size:28px;font-weight:700;color:<?php echo esc_attr( $magenta ); ?>;">APIT</span>
 								<?php endif; ?>

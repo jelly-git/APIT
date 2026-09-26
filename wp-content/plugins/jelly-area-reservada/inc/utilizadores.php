@@ -161,18 +161,20 @@ function jelly_ar_acessos_de( $u, $limite = 0 ) {
  *
  * De cada estado, só se sai para os que fazem sentido:
  *   pendente  → ativo (aprovar) ou rejeitado
- *   rejeitado → ativo (aprovar) ou apagado (a conta e o perfil saem de vez)
+ *   rejeitado → ativo (aprovar)
  *   ativo     → suspenso
  *   suspenso  → ativo (reativar)
+ * e de qualquer um se pode apagar: sai tudo o que é da pessoa (a conta, o
+ * perfil, os acessos, as descargas e as marcações), de vez.
  *
  * Aprovar envia o e-mail para definir a palavra-passe; rejeitar avisa a pessoa.
- * Suspender e reativar não enviam nada.
+ * Suspender, reativar e apagar não enviam nada.
  */
 const JELLY_AR_DECISOES = [
-	'pendente'  => [ 'ativo', 'rejeitado' ],
+	'pendente'  => [ 'ativo', 'rejeitado', 'apagar' ],
 	'rejeitado' => [ 'ativo', 'apagar' ],
-	'ativo'     => [ 'suspenso' ],
-	'suspenso'  => [ 'ativo' ],
+	'ativo'     => [ 'suspenso', 'apagar' ],
+	'suspenso'  => [ 'ativo', 'apagar' ],
 ];
 
 function jelly_ar_url_decidir( $user_id, $para ) {
@@ -234,11 +236,21 @@ function jelly_ar_utilizador_estado() {
 
 	$tabela = jelly_ar_tabela( 'associados' );
 
-	// Apagar: só um pedido rejeitado, e sai tudo — a conta, o perfil e os acessos.
+	/*
+	 * Apagar: sai tudo o que é da pessoa — as tabelas da AR e a conta do
+	 * WordPress. Uma conta que seja também administrador não se apaga daqui: é
+	 * da equipa, e a sua saída faz-se no WordPress.
+	 */
 	if ( 'apagar' === $para ) {
+		if ( jelly_ar_e_administrador( $user ) ) {
+			$voltar( [ 'erro' => 'apagar-admin' ] );
+		}
+
 		require_once ABSPATH . 'wp-admin/includes/user.php';
 
-		$wpdb->delete( jelly_ar_tabela( 'acessos' ), [ 'user_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+		foreach ( [ 'acessos', 'descargas', 'marcacoes' ] as $t ) {
+			$wpdb->delete( jelly_ar_tabela( $t ), [ 'user_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+		}
 		$wpdb->delete( $tabela, [ 'user_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
 		wp_delete_user( $id );
 
