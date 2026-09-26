@@ -46,7 +46,7 @@ defined( 'ABSPATH' ) || exit;
 	<div class="apit-ar__linha">
 		<label class="apit-ar__caixa">
 			<input type="checkbox" name="remember" value="forever">
-			<span><?php esc_html_e( 'Lembrar-me', 'jelly-area-reservada' ); ?></span>
+			<span><?php esc_html_e( 'Manter a sessão iniciada', 'jelly-area-reservada' ); ?></span>
 		</label>
 
 		<?php // Sem destino nesta fase: a recuperação chega com o módulo dos utilizadores. ?>
@@ -68,6 +68,6 @@ defined( 'ABSPATH' ) || exit;
 	</p>
 	<p>
 		<?php esc_html_e( 'Precisa de ajuda?', 'jelly-area-reservada' ); ?>
-		<a href="<?php echo esc_url( home_url( '/contactos/' ) ); ?>" class="apit-ar__link"><?php esc_html_e( 'Contacte-nos', 'jelly-area-reservada' ); ?></a>
+		<a href="<?php echo esc_url( home_url( '/contactos/' ) ); ?>" class="apit-ar__link"><?php esc_html_e( 'Contactar a APIT', 'jelly-area-reservada' ); ?></a>
 	</p>
 </div>

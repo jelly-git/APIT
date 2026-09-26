@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Área Reservada APIT
  * Description: Área reservada dos associados da APIT — login, registo e, nas fases seguintes, documentos, encontros, marcações e calendário.
- * Version:     0.1.0
+ * Version:     0.2.0
  * Author:      Jelly
  * Author URI:  https://jelly.pt
  * Text Domain: jelly-area-reservada
@@ -12,16 +12,19 @@
 defined( 'ABSPATH' ) || exit;
 
 // Acertar com o cabeçalho acima e com a entrada do CHANGELOG.md do repositório.
-define( 'JELLY_AR_VERSION', '0.1.0' );
+define( 'JELLY_AR_VERSION', '0.2.0' );
 define( 'JELLY_AR_DIR', plugin_dir_path( __FILE__ ) );
 define( 'JELLY_AR_URL', plugin_dir_url( __FILE__ ) );
 
 /*
- * Enquanto for true, o back-office e a exportação mostram os dados de
- * inc/admin-exemplo.php em vez dos da base de dados. Passa a false quando o
- * registo e a aprovação estiverem ligados.
+ * Enquanto for true, o back-office e a exportação mostram, a seguir aos dados
+ * reais, os de inc/admin-exemplo.php — para a apresentação não mostrar listas
+ * vazias. Os de exemplo têm ids a partir de JELLY_AR_EXEMPLO_ID, para nunca
+ * darem com uma conta ou um documento verdadeiro. Passa a false quando a área
+ * tiver dados seus.
  */
 define( 'JELLY_AR_EXEMPLO', true );
+define( 'JELLY_AR_EXEMPLO_ID', 900000 );
 
 /*
  * Um ficheiro por módulo. Os que vêm a seguir — encontros,
@@ -30,6 +33,7 @@ define( 'JELLY_AR_EXEMPLO', true );
 require_once JELLY_AR_DIR . 'inc/instalar.php';
 require_once JELLY_AR_DIR . 'inc/acessos.php';
 require_once JELLY_AR_DIR . 'inc/associados.php';
+require_once JELLY_AR_DIR . 'inc/registo.php';
 require_once JELLY_AR_DIR . 'inc/documentos-dados.php';
 require_once JELLY_AR_DIR . 'inc/eventos-dados.php';
 require_once JELLY_AR_DIR . 'inc/assets.php';

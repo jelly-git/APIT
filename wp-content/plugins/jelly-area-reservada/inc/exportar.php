@@ -132,12 +132,27 @@ function jelly_ar_url_exportar_acessos( $utilizador = 0 ) {
  * quando / nome / email / ip / dispositivo.
  */
 function jelly_ar_obter_acessos( $utilizador = 0 ) {
-	if ( JELLY_AR_EXEMPLO ) {
+	/*
+	 * Os de exemplo têm ids a partir de 900000 (inc/admin-exemplo.php): esses
+	 * leem-se dos exemplos. Os outros, e todos juntos, da tabela — com os de
+	 * exemplo a seguir, enquanto os houver.
+	 */
+	$exemplo = [];
+
+	if ( JELLY_AR_EXEMPLO && ( ! $utilizador || $utilizador >= JELLY_AR_EXEMPLO_ID ) ) {
 		require_once JELLY_AR_DIR . 'inc/admin-exemplo.php';
 
-		return jelly_ar_exemplo_acessos( $utilizador );
+		$exemplo = jelly_ar_exemplo_acessos( $utilizador );
+
+		if ( $utilizador ) {
+			return $exemplo;
+		}
 	}
 
+	return array_merge( jelly_ar_acessos_reais( $utilizador ), $exemplo );
+}
+
+function jelly_ar_acessos_reais( $utilizador = 0 ) {
 	global $wpdb;
 
 	$tabela = jelly_ar_tabela_acessos();

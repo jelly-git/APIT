@@ -47,3 +47,16 @@ function jelly_ar_imprimir_modal() {
 	jelly_ar_template( 'modal' );
 }
 add_action( 'wp_footer', 'jelly_ar_imprimir_modal', 5 );
+
+/**
+ * A versão de um ficheiro do plugin para o endereço (?ver=): a do plugin e a
+ * hora da última alteração. Com só a do plugin, um ficheiro mudado sem mudar
+ * a versão continuava com o mesmo endereço, e o browser servia o antigo da
+ * cache — foi assim que um registo mostrou "Pedido enviado" com o JavaScript
+ * de demonstração, sem nada chegar ao servidor.
+ */
+function jelly_ar_versao_ficheiro( $relativo ) {
+	$caminho = JELLY_AR_DIR . $relativo;
+
+	return JELLY_AR_VERSION . ( file_exists( $caminho ) ? '.' . filemtime( $caminho ) : '' );
+}

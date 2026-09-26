@@ -83,11 +83,72 @@ function jelly_ar_utilizadores_filtrar( $utilizadores, $pedido ) {
 }
 
 /**
- * Os utilizadores, de onde vierem. Hoje os de exemplo; com os dados reais, a
- * leitura dos utilizadores com o papel apit_associado.
+ * Os associados a sério: o perfil na tabela jelly_ar_associados e o e-mail na
+ * conta do WordPress, na forma que os ecrãs usam — a mesma dos de exemplo.
+ * O id é o da conta do WordPress.
+ */
+function jelly_ar_utilizadores_reais() {
+	global $wpdb;
+
+	$a  = jelly_ar_tabela( 'associados' );
+	$ac = jelly_ar_tabela( 'acessos' );
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+	$linhas = $wpdb->get_results(
+		"SELECT a.*, u.user_email, ap.display_name AS aprovador,
+			(SELECT COUNT(*) FROM {$ac} x WHERE x.user_id = a.user_id) AS acessos,
+			(SELECT MAX(x.criado_em) FROM {$ac} x WHERE x.user_id = a.user_id) AS ultimo
+		FROM {$a} a
+		INNER JOIN {$wpdb->users} u ON u.ID = a.user_id
+		LEFT JOIN {$wpdb->users} ap ON ap.ID = a.aprovado_por"
+	);
+
+	$data = function ( $gmt ) {
+		return $gmt ? get_date_from_gmt( $gmt, 'd/m/Y H:i' ) : '';
+	};
+
+	return array_map( function ( $l ) use ( $data ) {
+		return [
+			'id'           => (int) $l->user_id,
+			'nome'         => $l->nome,
+			'apelido'      => $l->apelido,
+			'empresa'      => $l->empresa,
+			'email'        => $l->user_email,
+			'telefone'     => $l->telefone,
+			'estado'       => $l->estado,
+			'registo'      => $data( $l->registado_em ),
+			'aprovado'     => $data( $l->aprovado_em ),
+			'aprovado_por' => (string) $l->aprovador,
+			'ultimo'       => $data( $l->ultimo ),
+			'acessos'      => (int) $l->acessos,
+			'real'         => true,
+		];
+	}, $linhas );
+}
+
+/**
+ * Os utilizadores: os associados a sério e, enquanto JELLY_AR_EXEMPLO for
+ * true, os de exemplo a seguir, com ids a partir de 900000 para nunca darem
+ * com uma conta verdadeira.
  */
 function jelly_ar_utilizadores_todos() {
+	$reais = jelly_ar_utilizadores_reais();
+
+	if ( ! JELLY_AR_EXEMPLO ) {
+		return $reais;
+	}
+
 	require_once JELLY_AR_DIR . 'inc/admin-exemplo.php';
 
-	return jelly_ar_exemplo_utilizadores();
+	return array_merge( $reais, jelly_ar_exemplo_utilizadores() );
+}
+
+/**
+ * Os acessos de um utilizador, do mais recente para o mais antigo: da tabela,
+ * se for real; dos exemplos, se não.
+ */
+function jelly_ar_acessos_de( $u, $limite = 0 ) {
+	$linhas = jelly_ar_obter_acessos( $u['id'] );
+
+	return $limite ? array_slice( $linhas, 0, $limite ) : $linhas;
 }

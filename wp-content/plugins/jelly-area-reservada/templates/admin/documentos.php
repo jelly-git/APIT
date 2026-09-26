@@ -8,6 +8,10 @@
  *   site; os rascunhos, não;
  * - cada descarga fica registada com o associado que a fez, e o histórico do
  *   documento leva ao perfil dele nos Utilizadores;
+ * - um documento pode estar em vários eventos, e aparece aos associados na
+ *   página de cada um. Escolhe-se no cartão Eventos do documento ou no cartão
+ *   Documentos do evento (templates/admin/eventos.php): os dois gravam a
+ *   mesma tabela, jelly_ar_evento_documentos;
  * - o Calendário vai poder mostrar a publicação de um documento, quando essa
  *   área existir.
  */
@@ -33,6 +37,7 @@ $avisos  = [
 	'guardado'             => __( 'Documento guardado.', 'jelly-area-reservada' ),
 	'atualizado'           => __( 'Dados do documento guardados.', 'jelly-area-reservada' ),
 	'substituido'          => __( 'Dados guardados e ficheiro substituído. O anterior foi apagado.', 'jelly-area-reservada' ),
+	'eventos'              => __( 'Eventos do documento guardados.', 'jelly-area-reservada' ),
 	'apagado'              => __( 'Documento apagado, com o ficheiro e o histórico de descargas.', 'jelly-area-reservada' ),
 	'categoria-criada'     => __( 'Categoria criada.', 'jelly-area-reservada' ),
 	'categoria-atualizada' => __( 'Nome da categoria mudado.', 'jelly-area-reservada' ),
@@ -406,6 +411,112 @@ if ( $doc ) :
 				</form>
 			</section>
 
+			<?php
+			/*
+			 * Os eventos do documento, fora da edição dos dados — o espelho do
+			 * cartão Documentos do evento. Os dois leem e gravam a mesma tabela
+			 * (jelly_ar_evento_documentos): o que se marcou lá aparece aqui já
+			 * marcado, e ao contrário. Um documento pode estar em vários eventos.
+			 *
+			 * Só nos documentos da AR; os de exemplo não têm onde guardar a ligação.
+			 */
+			?>
+			<?php if ( $real ) : ?>
+				<?php
+				$doc_eventos = jelly_ar_documento_eventos( $doc['id'] );
+				$marcados    = wp_list_pluck( $doc_eventos, 'id' );
+				$eventos     = jelly_ar_eventos_todos();
+
+				// Os que ainda vêm primeiro, do mais próximo; os que já passaram a seguir.
+				$hoje = current_time( 'Ymd' );
+				usort( $eventos, function ( $a, $b ) use ( $hoje ) {
+					$pa = ( $a['fim'] ? $a['fim'] : $a['inicio'] ) < $hoje;
+					$pb = ( $b['fim'] ? $b['fim'] : $b['inicio'] ) < $hoje;
+
+					if ( $pa !== $pb ) {
+						return $pa ? 1 : -1;
+					}
+
+					return $pa ? strcmp( $b['inicio'], $a['inicio'] ) : strcmp( $a['inicio'], $b['inicio'] );
+				} );
+				?>
+				<section class="jar-cartao jar-cartao--tabela"<?php echo $eventos ? ' data-jar-editavel' : ''; ?>>
+					<header class="jar-cartao__cabeca jar-cartao__cabeca--acao">
+						<div>
+							<h2><?php esc_html_e( 'Eventos', 'jelly-area-reservada' ); ?></h2>
+							<span class="jar-cartao__meta"><?php esc_html_e( 'Os associados veem este documento na página de cada um destes eventos', 'jelly-area-reservada' ); ?></span>
+						</div>
+						<?php if ( $eventos ) : ?>
+							<button type="button" class="jar-btn jar-btn--pequeno jar-btn--contorno" data-jar-editar>
+								<i class="fa-solid fa-pen" aria-hidden="true"></i> <?php esc_html_e( 'Escolher eventos', 'jelly-area-reservada' ); ?>
+							</button>
+						<?php endif; ?>
+					</header>
+
+					<div data-jar-leitura>
+						<?php if ( ! $doc_eventos ) : ?>
+							<p class="jar-vazio"><?php esc_html_e( 'Este documento ainda não está em nenhum evento.', 'jelly-area-reservada' ); ?></p>
+						<?php else : ?>
+							<table class="jar-tabela">
+								<tbody>
+									<?php foreach ( $doc_eventos as $e ) : ?>
+										<tr>
+											<td>
+												<a class="jar-link" href="<?php echo esc_url( jelly_ar_admin_url( 'eventos', [ 'evento' => $e['id'] ] ) ); ?>"><strong><?php echo esc_html( $e['titulo'] ); ?></strong></a>
+												<small class="jar-escolha__meta"><?php echo esc_html( jelly_ar_intervalo_datas( $e['inicio'], $e['fim'] ) . ( $e['local'] ? ' · ' . $e['local'] : '' ) ); ?></small>
+											</td>
+											<td class="jar-tabela__fim"><?php jelly_ar_estado( $e['estado'] ); ?></td>
+										</tr>
+									<?php endforeach; ?>
+								</tbody>
+							</table>
+						<?php endif; ?>
+					</div>
+
+					<?php if ( $eventos ) : ?>
+						<?php // Vai para jelly_ar_documento_eventos_guardar(), em inc/documentos-dados.php. ?>
+						<form class="jar-evento-docs" data-jar-edicao data-jar-gravar hidden method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+							<input type="hidden" name="action" value="jelly_ar_documento_eventos">
+							<input type="hidden" name="documento" value="<?php echo (int) $doc['id']; ?>">
+							<?php wp_nonce_field( 'jelly_ar_documento_eventos_' . $doc['id'] ); ?>
+
+							<div class="jar-filtro jar-evento-docs__procura" role="search">
+								<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+								<label class="screen-reader-text" for="jar-eventos-procura"><?php esc_html_e( 'Procurar eventos', 'jelly-area-reservada' ); ?></label>
+								<input type="search" id="jar-eventos-procura" placeholder="<?php esc_attr_e( 'Procurar por título, data ou local', 'jelly-area-reservada' ); ?>" data-jar-filtrar="jar-eventos-lista" autocomplete="off">
+							</div>
+
+							<fieldset class="jar-opcoes" id="jar-eventos-lista">
+								<legend class="screen-reader-text"><?php esc_html_e( 'Eventos deste documento', 'jelly-area-reservada' ); ?></legend>
+								<?php foreach ( $eventos as $e ) : ?>
+									<?php $quando = jelly_ar_intervalo_datas( $e['inicio'], $e['fim'] ) . ( $e['local'] ? ' · ' . $e['local'] : '' ); ?>
+									<label class="jar-caixa" data-jar-filtrar-texto="<?php echo esc_attr( $e['titulo'] . ' ' . $quando ); ?>">
+										<input type="checkbox" name="eventos[]" value="<?php echo (int) $e['id']; ?>" <?php checked( in_array( $e['id'], $marcados, true ) ); ?>>
+										<span>
+											<?php echo esc_html( $e['titulo'] ); ?>
+											<small class="jar-evento-docs__meta">
+												<?php
+												echo esc_html( $quando );
+												if ( 'rascunho' === $e['estado'] ) {
+													echo ' · ' . esc_html__( 'Rascunho', 'jelly-area-reservada' );
+												}
+												?>
+											</small>
+										</span>
+									</label>
+								<?php endforeach; ?>
+								<p class="jar-evento-docs__nada" data-jar-filtrar-nada hidden><?php esc_html_e( 'Nenhum evento corresponde à procura.', 'jelly-area-reservada' ); ?></p>
+							</fieldset>
+
+							<footer class="jar-cartao__pe">
+								<button type="button" class="jar-btn jar-btn--contorno" data-jar-cancelar><?php esc_html_e( 'Cancelar', 'jelly-area-reservada' ); ?></button>
+								<button type="submit" class="jar-btn"><?php esc_html_e( 'Guardar', 'jelly-area-reservada' ); ?></button>
+							</footer>
+						</form>
+					<?php endif; ?>
+				</section>
+			<?php endif; ?>
+
 			<section class="jar-cartao jar-cartao--tabela">
 				<header class="jar-cartao__cabeca">
 					<div>
@@ -549,6 +660,9 @@ $resumo  = [
 				$tabela->coluna( 'titulo', __( 'Documento', 'jelly-area-reservada' ) );
 				$tabela->coluna( 'categoria', __( 'Categoria', 'jelly-area-reservada' ), 'jar-col--categoria' );
 				$tabela->coluna( 'data', __( 'Data', 'jelly-area-reservada' ), 'jar-col--data' );
+				?>
+				<th class="jar-col--eventos jar-tabela__centro"><?php esc_html_e( 'Eventos', 'jelly-area-reservada' ); ?></th>
+				<?php
 				$tabela->coluna( 'descargas', __( 'Descargas', 'jelly-area-reservada' ), 'jar-col--descargas' );
 				$tabela->coluna( 'estado', __( 'Estado', 'jelly-area-reservada' ) );
 				?>
@@ -558,7 +672,7 @@ $resumo  = [
 		<tbody>
 			<?php if ( ! $lista ) : ?>
 				<tr>
-					<td colspan="6" class="jar-vazio">
+					<td colspan="7" class="jar-vazio">
 						<?php
 						if ( '' !== $pesquisa ) {
 							/* translators: %s: o que se pesquisou */
@@ -584,6 +698,9 @@ $resumo  = [
 					</td>
 					<td class="jar-col--categoria"><?php echo esc_html( $categorias[ $d['categoria'] ] ?? '—' ); ?></td>
 					<td class="jar-tabela__num jar-col--data"><?php jelly_ar_data_hora( $d['data'] ); ?></td>
+					<?php // Os nomes dos eventos vão no visto: aparecem ao passar e o leitor de ecrã lê-os. ?>
+					<?php /* translators: %s: títulos dos eventos */ ?>
+					<td class="jar-col--eventos jar-tabela__centro"><?php jelly_ar_marca( ! empty( $d['eventos'] ), sprintf( __( 'Em: %s', 'jelly-area-reservada' ), implode( ', ', $d['eventos'] ?? [] ) ), __( 'Sem eventos', 'jelly-area-reservada' ) ); ?></td>
 					<td class="jar-tabela__num jar-col--descargas"><?php echo (int) $d['descargas']; ?></td>
 					<td data-jar-estado><?php jelly_ar_estado( $d['estado'] ); ?></td>
 					<td class="jar-tabela__fim">

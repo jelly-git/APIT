@@ -18,49 +18,13 @@ function jelly_ar_exemplo_utilizadores() {
 		return $lista;
 	}
 
-	$lista = [
-		[ 'id' => 1, 'nome' => 'João', 'apelido' => 'Silva', 'empresa' => 'Produtora Exemplo', 'email' => 'joao.silva@exemplo.pt', 'telefone' => '+351 912345678', 'estado' => 'ativo', 'registo' => '02/03/2026 16:48', 'aprovado' => '04/03/2026 10:15', 'aprovado_por' => 'Ana Martins', 'ultimo' => '25/09/2026 14:32', 'acessos' => 42 ],
-		[ 'id' => 2, 'nome' => 'Marta', 'apelido' => 'Santos', 'empresa' => 'Luz Filmes', 'email' => 'marta@luzfilmes.pt', 'telefone' => '+351 913222111', 'estado' => 'ativo', 'registo' => '14/04/2026 09:02', 'aprovado' => '15/04/2026 11:40', 'aprovado_por' => 'Ana Martins', 'ultimo' => '25/09/2026 11:20', 'acessos' => 27 ],
-		[ 'id' => 3, 'nome' => 'Pedro', 'apelido' => 'Costa', 'empresa' => 'Atlântico TV', 'email' => 'pedro@atlanticotv.pt', 'telefone' => '', 'estado' => 'pendente', 'registo' => '24/09/2026 18:42', 'aprovado' => '', 'aprovado_por' => '', 'ultimo' => '', 'acessos' => 0 ],
-		[ 'id' => 4, 'nome' => 'Ana', 'apelido' => 'Ferreira', 'empresa' => 'Norte Conteúdos', 'email' => 'ana@norteconteudos.pt', 'telefone' => '+351 936555010', 'estado' => 'ativo', 'registo' => '20/01/2026 12:10', 'aprovado' => '21/01/2026 09:30', 'aprovado_por' => 'Rui Lopes', 'ultimo' => '23/09/2026 09:12', 'acessos' => 63 ],
-		[ 'id' => 5, 'nome' => 'Carlos', 'apelido' => 'Mendes', 'empresa' => 'Estúdio Sete', 'email' => 'carlos@estudiosete.pt', 'telefone' => '+351 918700300', 'estado' => 'suspenso', 'registo' => '11/11/2025 15:27', 'aprovado' => '12/11/2025 10:05', 'aprovado_por' => 'Rui Lopes', 'ultimo' => '02/08/2026 18:03', 'acessos' => 15 ],
-		[ 'id' => 6, 'nome' => 'Rita', 'apelido' => 'Almeida', 'empresa' => '', 'email' => 'rita.almeida@gmail.com', 'telefone' => '+34 612345678', 'estado' => 'pendente', 'registo' => '25/09/2026 08:55', 'aprovado' => '', 'aprovado_por' => '', 'ultimo' => '', 'acessos' => 0 ],
-		[ 'id' => 7, 'nome' => 'Tiago', 'apelido' => 'Rocha', 'empresa' => 'Maré Produções', 'email' => 'tiago@mareproducoes.pt', 'telefone' => '+351 914010202', 'estado' => 'rejeitado', 'registo' => '10/09/2026 21:13', 'aprovado' => '', 'aprovado_por' => '', 'ultimo' => '', 'acessos' => 0 ],
-	];
-
 	/*
-	 * Mais trinta e nove, gerados, para a lista ter páginas. Sempre os mesmos:
-	 * cada um sai do seu número, sem nada ao acaso.
+	 * Só a Ana Ferreira: os outros utilizadores de exemplo saíram. O número
+	 * dela fica, porque as marcações e os acessos de exemplo usam-no.
 	 */
-	$nomes    = [ 'Beatriz', 'Miguel', 'Inês', 'Rui', 'Sofia', 'Nuno', 'Catarina', 'Hugo', 'Joana', 'André', 'Leonor', 'Filipe', 'Mariana' ];
-	$apelidos = [ 'Oliveira', 'Pereira', 'Rodrigues', 'Martins', 'Sousa', 'Fernandes', 'Gonçalves', 'Gomes', 'Lopes', 'Marques', 'Alves', 'Ribeiro', 'Pinto' ];
-	$empresas = [ 'Filmes do Tejo', 'Cinemate', 'Onda Curta', 'Take 2', 'Plano Geral', 'Bando à Parte', 'Arquipélago', '', 'Sete Colinas', 'Fado Filmes' ];
-	$estados  = [ 'ativo', 'ativo', 'ativo', 'ativo', 'suspenso', 'ativo', 'ativo', 'pendente', 'ativo', 'rejeitado', 'ativo' ];
-
-	for ( $i = 0; $i < 39; $i++ ) {
-		$nome    = $nomes[ $i % count( $nomes ) ];
-		// Desfasado a cada volta dos nomes, para não repetir pares nome-apelido.
-		$apelido = $apelidos[ ( $i * 5 + intdiv( $i, count( $nomes ) ) * 4 ) % count( $apelidos ) ];
-		$empresa = $empresas[ $i % count( $empresas ) ];
-		$estado  = $estados[ $i % count( $estados ) ];
-		$aceite  = in_array( $estado, [ 'ativo', 'suspenso' ], true );
-		$dia     = sprintf( '%02d/%02d/2026', 1 + ( $i * 7 ) % 28, 1 + $i % 9 );
-
-		$lista[] = [
-			'id'           => 100 + $i,
-			'nome'         => $nome,
-			'apelido'      => $apelido,
-			'empresa'      => $empresa,
-			'email'        => strtolower( remove_accents( $nome . '.' . $apelido ) ) . '@' . ( $empresa ? sanitize_title( $empresa ) . '.pt' : 'gmail.com' ),
-			'telefone'     => 0 === $i % 4 ? '' : '+351 9' . ( 1 + $i % 6 ) . sprintf( '%07d', ( $i * 7919 ) % 10000000 ),
-			'estado'       => $estado,
-			'registo'      => $dia . sprintf( ' %02d:%02d', 9 + $i % 10, ( $i * 13 ) % 60 ),
-			'aprovado'     => $aceite ? $dia . ' 17:30' : '',
-			'aprovado_por' => $aceite ? ( $i % 2 ? 'Ana Martins' : 'Rui Lopes' ) : '',
-			'ultimo'       => $aceite ? sprintf( '%02d/09/2026 %02d:%02d', 1 + $i % 25, 8 + $i % 11, ( $i * 17 ) % 60 ) : '',
-			'acessos'      => $aceite ? 3 + ( $i * 11 ) % 60 : 0,
-		];
-	}
+	$lista = [
+		[ 'id' => JELLY_AR_EXEMPLO_ID + 4, 'nome' => 'Ana', 'apelido' => 'Ferreira', 'empresa' => 'Norte Conteúdos', 'email' => 'ana@norteconteudos.pt', 'telefone' => '+351 936555010', 'estado' => 'ativo', 'registo' => '20/01/2026 12:10', 'aprovado' => '21/01/2026 09:30', 'aprovado_por' => 'Rui Lopes', 'ultimo' => '23/09/2026 09:12', 'acessos' => 63 ],
+	];
 
 	return $lista;
 }
@@ -105,7 +69,7 @@ function jelly_ar_exemplo_acessos( $utilizador = 0 ) {
  * para mostrar onde o perfil se liga a ele.
  */
 function jelly_ar_exemplo_marcacoes_de( $id ) {
-	if ( 1 !== $id && 4 !== $id ) {
+	if ( JELLY_AR_EXEMPLO_ID + 4 !== $id ) {
 		return [];
 	}
 

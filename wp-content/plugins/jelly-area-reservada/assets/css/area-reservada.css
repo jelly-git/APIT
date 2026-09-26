@@ -375,21 +375,6 @@ body.apit-ar-aberto {
 	outline: none;
 }
 
-.apit-ar .apit-ar__voltar {
-	color: var(--ar-preto);
-	background: transparent;
-	cursor: pointer;
-	transition: background-color 0.2s, color 0.2s;
-}
-
-.apit-ar .apit-ar__voltar:hover,
-.apit-ar .apit-ar__voltar:focus-visible {
-	background: var(--ar-preto);
-	border-color: var(--ar-preto);
-	color: var(--ar-branco);
-	outline: none;
-}
-
 /* ---------- Estados ---------- */
 
 .apit-ar__aviso {
@@ -401,32 +386,161 @@ body.apit-ar-aberto {
 	line-height: 1.4;
 }
 
+/* Um erro do servidor: a mesma caixa, na cor dos erros dos campos. */
+.apit-ar__aviso.is-erro {
+	border-left-color: var(--ar-erro);
+	background: rgba(196, 33, 59, 0.08);
+	color: var(--ar-erro);
+}
+
+/* Enquanto o pedido vai a caminho: o botão não aceita outro clique. */
+.apit-ar .apit-ar__submeter[aria-busy="true"] {
+	opacity: 0.7;
+	cursor: progress;
+}
+
+/*
+ * O campo-armadilha do Registo, fora do ecrã. Não é display:none, que alguns
+ * robôs sabem saltar; fica lá, só que ninguém o vê.
+ */
+.apit-ar__armadilha {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/*
+ * O fim do registo. Com o pedido enviado, o painel fica só com a confirmação:
+ * o título, a introdução e o rodapé do formulário saem, e o que resta centra-se
+ * na coluna, como um estado e não como mais um bloco do formulário.
+ */
+.apit-ar__painel.is-enviado .apit-ar__titulo,
+.apit-ar__painel.is-enviado .apit-ar__intro,
+.apit-ar__painel.is-enviado .apit-ar__rodape {
+	display: none;
+}
+
 .apit-ar__sucesso {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
-	gap: 12px;
-	padding: 8px 0 16px;
-	outline: none;
-}
-
-.apit-ar__sucesso p {
-	margin: 0 0 12px;
-	font-size: 16px;
-	line-height: 1.5;
+	align-items: center;
+	padding: 24px 0 8px;
+	text-align: center;
 }
 
 .apit-ar__sucesso-icone {
-	font-size: 44px;
-	color: var(--ar-turquesa);
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 88px;
+	height: 88px;
+	margin-bottom: 28px;
+	border-radius: 50%;
+	background: var(--ar-turquesa);
+	box-shadow: 0 0 0 12px rgba(46, 198, 176, 0.14);
+	font-size: 36px;
+	color: #fff;
 }
 
 .apit-ar__sucesso-titulo {
-	margin: 0;
+	margin: 0 0 12px;
 	font-family: var(--ar-fonte);
 	font-weight: 500;
-	font-size: 24px;
+	font-size: 34px;
+	line-height: 1.15;
 	color: var(--ar-preto);
+	outline: none;
+}
+
+.apit-ar__sucesso-texto {
+	max-width: 400px;
+	margin: 0 0 32px;
+	font-size: 16px;
+	line-height: 1.55;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+.apit-ar__sucesso-texto strong {
+	font-weight: 500;
+	color: var(--ar-preto);
+	overflow-wrap: anywhere;
+}
+
+/*
+ * Os três passos, na horizontal e ligados por uma linha: o primeiro feito, o
+ * segundo o que está a acontecer agora, o terceiro o que falta.
+ */
+.apit-ar__passos {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	width: 100%;
+	margin: 0 0 36px;
+	padding: 0;
+	list-style: none;
+	counter-reset: none;
+}
+
+.apit-ar__passos li {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	padding: 0 6px;
+	font-size: 14px;
+	line-height: 1.35;
+	color: rgba(27, 42, 51, 0.55);
+}
+
+/* A linha até ao passo seguinte, atrás das marcas. */
+.apit-ar__passos li:not(:last-child)::after {
+	content: "";
+	position: absolute;
+	top: 17px;
+	left: calc(50% + 24px);
+	right: calc(-50% + 24px);
+	height: 2px;
+	background: rgba(27, 42, 51, 0.12);
+}
+
+.apit-ar__passos li.is-feito:not(:last-child)::after {
+	background: var(--ar-turquesa);
+}
+
+.apit-ar__passo-marca {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border: 2px solid rgba(27, 42, 51, 0.18);
+	border-radius: 50%;
+	background: #fff;
+	font-weight: 500;
+	font-size: 15px;
+	color: rgba(27, 42, 51, 0.55);
+}
+
+.apit-ar__passos li.is-feito,
+.apit-ar__passos li.is-atual {
+	color: var(--ar-preto);
+}
+
+.apit-ar__passos li.is-feito .apit-ar__passo-marca {
+	border-color: var(--ar-turquesa);
+	background: var(--ar-turquesa);
+	color: #fff;
+}
+
+.apit-ar__passos li.is-atual .apit-ar__passo-marca {
+	border-color: var(--ar-magenta);
+	color: var(--ar-magenta);
+}
+
+.apit-ar__sucesso .apit-ar__submeter {
+	max-width: 280px;
 }
 
 .apit-ar__rodape {

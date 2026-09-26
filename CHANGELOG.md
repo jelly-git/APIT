@@ -266,6 +266,61 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.38.0] - 2026-09-26
+
+Tudo no plugin `jelly-area-reservada`, que passa à versão 0.2.0. O tema não
+muda.
+
+### Adicionado
+- **O pedido de registo do pop-up chega à Área Reservada.** Cria a conta do
+  WordPress (papel `apit_associado`, palavra-passe aleatória) e o perfil em
+  `wp_jelly_ar_associados`, "por aprovar", com a hora do registo e da
+  aceitação da Política de Privacidade. Aparece em Utilizadores → Por aprovar.
+  - Envia um e-mail à equipa (o e-mail de administração do WordPress), com o
+    link para o perfil, e outro à pessoa, a confirmar o pedido.
+  - Contra abusos: nonce, um campo-armadilha escondido e um limite de 5
+    pedidos por IP e por hora. Um e-mail já registado recebe a mesma resposta
+    que um novo, para não revelar quem tem conta; o dono do e-mail é avisado
+    por correio.
+  - Uma conta que não esteja aprovada não entra, nem pelo `wp-login.php`.
+  - O ecrã "Pedido enviado" foi redesenhado: o e-mail para onde vai a
+    mensagem e os três passos (enviado, aprovação, palavra-passe).
+- **Eventos e documentos ligados**, muitos para muitos, numa tabela nova
+  (`wp_jelly_ar_evento_documentos`). No evento, o cartão Documentos; no
+  documento, o cartão Eventos — os dois com procura, e o que se marca de um
+  lado aparece marcado do outro. É o que a página do evento na área do
+  associado vai mostrar.
+- Nas listas, colunas de sim ou não com o visto ou o traço: Marcações e
+  Documentos nos eventos, Eventos nos documentos.
+- Um aviso no back-office enquanto os e-mails não saem autenticados pelo
+  plugin de SMTP (o WP Mail SMTP no envio "Default (none)" não conta).
+
+### Alterado
+- Os textos para os associados estão na 3.ª pessoa: sem "nós" ("Recebemos"
+  passou a "A APIT recebeu") nem "recebe um e-mail" dito à pessoa ("é enviado
+  um e-mail").
+- Os associados não aparecem na lista de Utilizadores do WordPress; geram-se
+  na Área Reservada.
+- Dos utilizadores de exemplo fica só a Ana Ferreira. Os de exemplo têm
+  números a partir de 900000, para não darem com contas verdadeiras.
+- No evento, "Botão no calendário" passou a "Marcações", as Mesas e horários
+  vêm antes dos Documentos, e a caixa de cor da tabela não leva texto.
+- Os botões dos cabeçalhos ficam sempre à direita.
+
+### Corrigido
+- **O registo não chegava ao servidor.** O formulário tem um campo chamado
+  `action`, e `form.action` devolvia esse campo em vez do endereço: o pedido ia
+  para `[object HTMLInputElement]`. Lê-se agora do atributo, e o endereço é
+  relativo, para ficar sempre na origem da página.
+- **O browser servia o JavaScript antigo**, de demonstração, porque o endereço
+  do ficheiro só mudava com a versão do plugin. Passa a levar também a hora da
+  última alteração.
+
+### Base de dados
+- Esquema da AR 5 → 8: `termos_em` nos associados, e a tabela
+  `wp_jelly_ar_evento_documentos`. Aplica-se sozinho no primeiro acesso ao
+  wp-admin.
+
 ## [0.37.0] - 2026-09-26
 
 ### Adicionado

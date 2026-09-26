@@ -13,7 +13,7 @@ $logo    = jelly_ar_logo_url();
 $nome    = $eu->first_name ? trim( $eu->first_name . ' ' . $eu->last_name ) : $eu->display_name;
 
 // Os registos à espera, para o contador ao lado de Utilizadores.
-$por_aprovar = count( array_filter( jelly_ar_exemplo_utilizadores(), function ( $u ) {
+$por_aprovar = count( array_filter( jelly_ar_utilizadores_todos(), function ( $u ) {
 	return 'pendente' === $u['estado'];
 } ) );
 ?>
@@ -97,6 +97,32 @@ $por_aprovar = count( array_filter( jelly_ar_exemplo_utilizadores(), function ( 
 		</header>
 
 		<main class="jar__conteudo">
+			<?php
+			/*
+			 * Os e-mails da AR (pedidos de registo, aprovações) saem pelo plugin
+			 * de SMTP. Enquanto o envio não for autenticado, avisa-se em todas as
+			 * áreas: os e-mails podem não chegar, ou chegar ao spam.
+			 */
+			?>
+			<?php if ( false === jelly_ar_envio_autenticado() ) : ?>
+				<div class="jar-aviso jar-aviso--pendente" role="status">
+					<i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i>
+					<p>
+						<?php
+						if ( function_exists( 'wp_mail_smtp' ) ) {
+							printf(
+								/* translators: %s: ligação às definições do WP Mail SMTP */
+								esc_html__( 'Os e-mails da área reservada ainda não saem autenticados: o WP Mail SMTP está no envio "Default (none)". Para ficarem autenticados, é preciso escolher um envio por SMTP e as credenciais em %s.', 'jelly-area-reservada' ),
+								'<a class="jar-link" href="' . esc_url( admin_url( 'admin.php?page=wp-mail-smtp' ) ) . '">' . esc_html__( 'WP Mail SMTP → Definições', 'jelly-area-reservada' ) . '</a>'
+							);
+						} else {
+							esc_html_e( 'Os e-mails da área reservada ainda não saem autenticados: não há nenhum plugin de SMTP ativo.', 'jelly-area-reservada' );
+						}
+						?>
+					</p>
+				</div>
+			<?php endif; ?>
+
 			<?php jelly_ar_template( 'admin/' . $chave ); ?>
 		</main>
 	</div>

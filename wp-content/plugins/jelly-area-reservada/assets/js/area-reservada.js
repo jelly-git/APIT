@@ -3,8 +3,8 @@
  * ou #area-reservada-registo (Registo), troca entre os dois sem sair do sítio e
  * valida os formulários no browser.
  *
- * Nesta fase nada é enviado para o servidor: uma submissão válida mostra o
- * estado a que o pedido real há de chegar.
+ * O Registo envia o pedido para a Área Reservada (inc/registo.php). O Login
+ * ainda não entra: uma submissão válida mostra o aviso de que vem aí.
  */
 ( function () {
 	'use strict';
@@ -253,6 +253,7 @@
 		}
 		if ( sucesso ) {
 			sucesso.hidden = true;
+			form.closest( '[data-ar-painel]' ).classList.remove( 'is-enviado' );
 		}
 	}
 
@@ -293,41 +294,146 @@
 				return;
 			}
 
-			mostrarResultado( form );
+			if ( 'registo' === form.getAttribute( 'data-ar-form' ) ) {
+				enviar( form, campos );
+				return;
+			}
+
+			// O Login ainda não tem contas contra as quais entrar.
+			avisar( form, 'A área reservada estará disponível em breve.', false );
 		} );
 	} );
 
-	/*
-	 * O que o servidor há de responder, por enquanto dito pelo browser. No
-	 * Registo, o formulário dá lugar à confirmação; no Login, que ainda não tem
-	 * contas contra as quais entrar, fica um aviso por baixo do botão.
-	 */
-	function mostrarResultado( form ) {
-		var sucesso = form.parentNode.querySelector( '[data-ar-sucesso]' );
+	function avisar( form, texto, erro ) {
 		var aviso = form.querySelector( '[data-ar-aviso]' );
 
-		if ( sucesso ) {
-			form.hidden = true;
-			sucesso.hidden = false;
-			sucesso.focus();
+		if ( ! aviso ) {
 			return;
 		}
 
-		if ( aviso ) {
-			aviso.textContent = 'A área reservada estará disponível em breve.';
-			aviso.hidden = false;
+		aviso.textContent = texto;
+		aviso.classList.toggle( 'is-erro', !! erro );
+		aviso.hidden = ! texto;
+	}
+
+	function mostrarSucesso( form ) {
+		var sucesso = form.parentNode.querySelector( '[data-ar-sucesso]' );
+		var email = sucesso.querySelector( '[data-ar-sucesso-email]' );
+		var foco = sucesso.querySelector( '[data-ar-sucesso-foco]' );
+
+		// O e-mail para onde vai a mensagem, para a pessoa saber onde a procurar.
+		if ( email && form.email ) {
+			email.textContent = form.email.value.trim();
 		}
+
+		form.hidden = true;
+		sucesso.hidden = false;
+		form.closest( '[data-ar-painel]' ).classList.add( 'is-enviado' );
+
+		// O foco no título, que o leitor de ecrã lê primeiro.
+		( foco || sucesso ).focus();
+	}
+
+	/*
+	 * O Registo vai para o servidor (inc/registo.php), que responde em JSON:
+	 * { sucesso }, { erros: { campo: mensagem } } ou { mensagem }. Os erros dos
+	 * campos ficam por baixo de cada um, como os do browser; uma mensagem geral,
+	 * por baixo do botão.
+	 */
+	function enviar( form, campos ) {
+		var botao = form.querySelector( '[type="submit"]' );
+		var rotulo = botao.querySelector( '[data-ar-rotulo]' );
+		var texto = rotulo ? rotulo.textContent : '';
+		var FALHOU = 'Não foi possível enviar o pedido. Verifique a ligação e tente de novo.';
+
+		if ( 'true' === botao.getAttribute( 'aria-busy' ) ) {
+			return;
+		}
+
+		botao.setAttribute( 'aria-busy', 'true' );
+		botao.disabled = true;
+		if ( rotulo ) {
+			rotulo.textContent = 'A enviar…';
+		}
+		avisar( form, '', false );
+
+		function terminar() {
+			botao.removeAttribute( 'aria-busy' );
+			botao.disabled = false;
+			if ( rotulo ) {
+				rotulo.textContent = texto;
+			}
+		}
+
+		/*
+		 * O endereço lê-se do atributo: o formulário tem um campo chamado
+		 * "action" (o do WordPress), e form.action devolve esse campo, não o
+		 * endereço — o pedido ia para "[object HTMLInputElement]".
+		 */
+		var destino = form.getAttribute( 'action' );
+
+		fetch( destino, {
+			method: 'POST',
+			body: new FormData( form ),
+			credentials: 'same-origin'
+		} )
+			.then( function ( resposta ) {
+				/*
+				 * Uma resposta que não é JSON é um erro do servidor (uma página de
+				 * erro, um aviso do PHP antes do JSON): a mensagem diz o código, e
+				 * o princípio da resposta fica na consola, para se ver o que foi.
+				 */
+				return resposta.clone().json().catch( function () {
+					return resposta.text().then( function ( corpo ) {
+						window.console.error( 'Área Reservada: resposta inesperada do registo (' + resposta.status + ')', corpo.slice( 0, 500 ) );
+
+						return { mensagem: 'O servidor não conseguiu tratar o pedido (erro ' + resposta.status + '). Tente de novo daqui a pouco.' };
+					} );
+				} );
+			} )
+			.then( function ( dados ) {
+				terminar();
+
+				if ( dados && dados.sucesso ) {
+					mostrarSucesso( form );
+					return;
+				}
+
+				if ( dados && dados.erros ) {
+					var primeiro = null;
+
+					campos.forEach( function ( campo ) {
+						var mensagem = dados.erros[ campo.name ] || '';
+						marcar( campo, mensagem );
+						if ( mensagem && ! primeiro ) {
+							primeiro = campo;
+						}
+					} );
+
+					if ( primeiro ) {
+						primeiro.focus();
+						return;
+					}
+				}
+
+				avisar( form, ( dados && dados.mensagem ) || FALHOU, true );
+			} )
+			// A ligação falhou, ou o browser não deixou ler a resposta: o motivo fica na consola.
+			.catch( function ( erro ) {
+				window.console.error( 'Área Reservada: o registo não chegou ao servidor', destino, erro );
+				terminar();
+				avisar( form, FALHOU, true );
+			} );
 	}
 
 	// Links que ainda não levam a lado nenhum, como a recuperação da palavra-passe.
 	Array.prototype.forEach.call( modal.querySelectorAll( '[data-ar-em-breve]' ), function ( link ) {
 		link.addEventListener( 'click', function ( e ) {
 			e.preventDefault();
-			var aviso = modal.querySelector( '[data-ar-painel="login"] [data-ar-aviso]' );
+			var form = modal.querySelector( '[data-ar-form="login"]' );
 
-			if ( aviso ) {
-				aviso.textContent = 'A recuperação da palavra-passe estará disponível em breve.';
-				aviso.hidden = false;
+			if ( form ) {
+				avisar( form, 'A recuperação da palavra-passe estará disponível em breve.', false );
 			}
 		} );
 	} );

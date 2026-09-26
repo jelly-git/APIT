@@ -88,7 +88,7 @@ endif;
 if ( $u ) :
 	$completo  = $u['nome'] . ' ' . $u['apelido'];
 	$marcacoes = jelly_ar_exemplo_marcacoes_de( $u['id'] );
-	$acessos   = jelly_ar_exemplo_acessos( $u['id'] );
+	$acessos   = jelly_ar_acessos_de( $u );
 
 	/*
 	 * O que se pode fazer em cada estado. Suspender e rejeitar pedem

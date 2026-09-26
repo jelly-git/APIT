@@ -100,6 +100,34 @@ function jelly_ar_associado_estado( $user_id ) {
 	return $a ? $a->estado : 'pendente';
 }
 
+/* ---------- Só entra quem está aprovado ---------- */
+
+/*
+ * A conta de um pedido de registo existe desde o primeiro minuto, mas só entra
+ * depois de a APIT o aprovar. Corre a seguir à verificação da palavra-passe
+ * (prioridade 30), para que uma palavra-passe errada continue a dar o erro de
+ * sempre e só quem acertou fique a saber do estado do pedido.
+ */
+function jelly_ar_login_so_aprovados( $user ) {
+	if ( ! $user instanceof WP_User || ! jelly_ar_so_associado( $user ) ) {
+		return $user;
+	}
+
+	$estado    = jelly_ar_associado_estado( $user->ID );
+	$mensagens = [
+		'pendente'  => __( 'O pedido de acesso ainda está à espera de aprovação. Quando a APIT o aprovar, é enviado um e-mail.', 'jelly-area-reservada' ),
+		'suspenso'  => __( 'O seu acesso à área reservada está suspenso. Para saber mais, contacte a APIT.', 'jelly-area-reservada' ),
+		'rejeitado' => __( 'O seu pedido de acesso não foi aprovado. Para saber mais, contacte a APIT.', 'jelly-area-reservada' ),
+	];
+
+	if ( 'ativo' === $estado ) {
+		return $user;
+	}
+
+	return new WP_Error( 'jelly_ar_sem_acesso', $mensagens[ $estado ] ?? $mensagens['pendente'] );
+}
+add_filter( 'authenticate', 'jelly_ar_login_so_aprovados', 30 );
+
 /* ---------- Fora da lista de utilizadores do WordPress ---------- */
 
 /*

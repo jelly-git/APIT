@@ -20,6 +20,9 @@
  *   jelly_ar_documentos        os documentos; o ficheiro está na pasta
  *                              uploads/jelly-area-reservada/documentos/
  *   jelly_ar_descargas         uma linha por descarga de um associado
+ *   jelly_ar_evento_documentos que documentos tem cada evento: uma linha por
+ *                              par. Um documento pode estar em vários
+ *                              eventos, e um evento ter vários documentos
  *
  *   jelly_ar_evento_categorias as categorias dos eventos, com as duas cores
  *   jelly_ar_eventos           os eventos — do calendário do site e da AR
@@ -39,7 +42,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Sobe quando o que jelly_ar_instalar() cria mudar, para ela voltar a correr.
-define( 'JELLY_AR_DB_VERSION', '5' );
+define( 'JELLY_AR_DB_VERSION', '8' );
 
 /**
  * O nome completo de uma tabela da AR: jelly_ar_tabela( 'eventos' ).
@@ -99,6 +102,7 @@ function jelly_ar_esquema() {
 			registado_em datetime NOT NULL,
 			aprovado_em datetime DEFAULT NULL,
 			aprovado_por bigint(20) unsigned DEFAULT NULL,
+			termos_em datetime DEFAULT NULL,
 			atualizado_em datetime NOT NULL,
 			PRIMARY KEY  (id),
 			UNIQUE KEY user_id (user_id),
@@ -154,6 +158,19 @@ function jelly_ar_esquema() {
 			PRIMARY KEY  (id),
 			KEY documento_id (documento_id),
 			KEY user_id (user_id)
+		) {$c};",
+
+		/*
+		 * A ligação entre eventos e documentos, escolhida dos dois lados — no
+		 * cartão Documentos do evento e no cartão Eventos do documento. Os dois
+		 * leem e gravam aqui, e por isso mostram sempre o mesmo.
+		 */
+		"CREATE TABLE {$t( 'evento_documentos' )} (
+			evento_id bigint(20) unsigned NOT NULL,
+			documento_id bigint(20) unsigned NOT NULL,
+			criado_em datetime NOT NULL,
+			PRIMARY KEY  (evento_id,documento_id),
+			KEY documento_id (documento_id)
 		) {$c};",
 
 		"CREATE TABLE {$t( 'evento_categorias' )} (
@@ -278,6 +295,18 @@ function jelly_ar_limpar_migracao() {
 	}
 
 	delete_option( 'jelly_ar_migracao' );
+
+	/*
+	 * Esquema 7 → 8: um documento tinha um só evento, na coluna evento_id.
+	 * Passou a poder ter vários, na tabela jelly_ar_evento_documentos, que o
+	 * dbDelta já criou: o que estiver na coluna passa para lá, e a coluna sai.
+	 */
+	$documentos = jelly_ar_tabela( 'documentos' );
+
+	if ( $wpdb->get_var( "SHOW COLUMNS FROM {$documentos} LIKE 'evento_id'" ) ) { // phpcs:ignore WordPress.DB
+		$wpdb->query( $wpdb->prepare( 'INSERT IGNORE INTO ' . jelly_ar_tabela( 'evento_documentos' ) . " (evento_id, documento_id, criado_em) SELECT evento_id, id, %s FROM {$documentos} WHERE evento_id IS NOT NULL", current_time( 'mysql', true ) ) ); // phpcs:ignore WordPress.DB
+		$wpdb->query( "ALTER TABLE {$documentos} DROP INDEX evento_id, DROP COLUMN evento_id" ); // phpcs:ignore WordPress.DB
+	}
 }
 
 /*

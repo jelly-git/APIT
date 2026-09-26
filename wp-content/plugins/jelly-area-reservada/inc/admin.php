@@ -122,8 +122,8 @@ function jelly_ar_admin_assets() {
 	// As mesmas fontes que o tema usa no site.
 	wp_enqueue_style( 'jelly-ar-omnes', 'https://use.typekit.net/uqy3rtf.css', [], null );
 	wp_enqueue_style( 'jelly-ar-fa', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css', [], '6.7.2' );
-	wp_enqueue_style( 'jelly-ar-admin', JELLY_AR_URL . 'assets/css/admin.css', [], JELLY_AR_VERSION );
-	wp_enqueue_script( 'jelly-ar-admin', JELLY_AR_URL . 'assets/js/admin.js', [], JELLY_AR_VERSION, true );
+	wp_enqueue_style( 'jelly-ar-admin', JELLY_AR_URL . 'assets/css/admin.css', [], jelly_ar_versao_ficheiro( 'assets/css/admin.css' ) );
+	wp_enqueue_script( 'jelly-ar-admin', JELLY_AR_URL . 'assets/js/admin.js', [], jelly_ar_versao_ficheiro( 'assets/js/admin.js' ), true );
 }
 add_action( 'admin_enqueue_scripts', 'jelly_ar_admin_assets' );
 
@@ -158,6 +158,23 @@ function jelly_ar_admin_render() {
 }
 
 /* ---------- Pequenos auxiliares dos templates ---------- */
+
+/**
+ * Um sim ou não numa coluna das listas: o visto ou o traço, sem texto à vista.
+ * O leitor de ecrã lê o que o ícone quer dizer — $sim ou $nao —, e o mesmo
+ * aparece ao passar o rato.
+ */
+function jelly_ar_marca( $valor, $sim, $nao ) {
+	if ( $valor ) {
+		printf(
+			'<span class="jar-marca" title="%1$s"><i class="fa-solid fa-check" aria-hidden="true"></i><span class="screen-reader-text">%1$s</span></span>',
+			esc_attr( $sim )
+		);
+		return;
+	}
+
+	printf( '<span class="jar-marca jar-marca--nao" title="%1$s"><span aria-hidden="true">—</span><span class="screen-reader-text">%1$s</span></span>', esc_attr( $nao ) );
+}
 
 /**
  * Etiqueta de estado. As cores estão no CSS, por estado.

@@ -133,9 +133,20 @@ function jelly_ar_documentos_consulta( $onde = '' ) {
 	$d  = jelly_ar_tabela( 'documentos' );
 	$c  = jelly_ar_tabela( 'doc_categorias' );
 	$dl = jelly_ar_tabela( 'descargas' );
+	$e  = jelly_ar_tabela( 'eventos' );
+	$ed = jelly_ar_tabela( 'evento_documentos' );
 
+	/*
+	 * Os eventos do documento vêm juntos numa coluna só, pela ordem das datas,
+	 * para a lista os mostrar sem uma consulta por linha. Os do lixo não contam.
+	 */
 	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-	return $wpdb->get_results( "SELECT d.*, c.slug AS cat_slug, (SELECT COUNT(*) FROM {$dl} x WHERE x.documento_id = d.id) AS descargas FROM {$d} d LEFT JOIN {$c} c ON c.id = d.categoria_id {$onde}" );
+	return $wpdb->get_results(
+		"SELECT d.*, c.slug AS cat_slug, c.nome AS cat_nome,
+			(SELECT COUNT(*) FROM {$dl} x WHERE x.documento_id = d.id) AS descargas,
+			(SELECT GROUP_CONCAT(e.titulo ORDER BY e.inicio SEPARATOR '\n') FROM {$ed} l INNER JOIN {$e} e ON e.id = l.evento_id WHERE l.documento_id = d.id AND e.estado <> 'lixo') AS eventos_titulos
+		FROM {$d} d LEFT JOIN {$c} c ON c.id = d.categoria_id {$onde}"
+	);
 }
 
 /**
@@ -158,6 +169,7 @@ function jelly_ar_documento_da_linha( $l ) {
 		'estado'    => $l->estado,
 		'autor'     => $autor ? $autor->display_name : '',
 		'descargas' => (int) $l->descargas,
+		'eventos'   => '' !== (string) $l->eventos_titulos ? explode( "\n", $l->eventos_titulos ) : [],
 		'real'      => true,
 	];
 }
@@ -422,6 +434,7 @@ function jelly_ar_apagar_documento() {
 	}
 
 	$wpdb->delete( jelly_ar_tabela( 'descargas' ), [ 'documento_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+	$wpdb->delete( jelly_ar_tabela( 'evento_documentos' ), [ 'documento_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
 	$wpdb->delete( jelly_ar_tabela( 'documentos' ), [ 'id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
 
 	wp_safe_redirect( jelly_ar_admin_url( 'documentos', [ 'aviso' => 'apagado' ] ) );
@@ -515,3 +528,147 @@ function jelly_ar_descarregar_sem_sessao() {
 	exit;
 }
 add_action( 'admin_post_nopriv_jelly_ar_descarregar', 'jelly_ar_descarregar_sem_sessao' );
+
+/* ---------- Eventos e documentos ---------- */
+
+/*
+ * Um documento pode estar em vários eventos, e um evento ter vários
+ * documentos: a tabela jelly_ar_evento_documentos guarda um par por linha.
+ * Escolhe-se dos dois lados — o cartão Documentos do evento e o cartão Eventos
+ * do documento —, e os dois leem e gravam essa tabela: o que se marca de um
+ * lado aparece já marcado do outro.
+ */
+
+/**
+ * Os documentos de um evento, por título. Com $so_publicados, só os que os
+ * associados veem — é o que a página do evento na área reservada vai usar.
+ */
+function jelly_ar_evento_documentos( $evento, $so_publicados = false ) {
+	global $wpdb;
+
+	$onde = $wpdb->prepare( 'WHERE d.id IN (SELECT documento_id FROM ' . jelly_ar_tabela( 'evento_documentos' ) . ' WHERE evento_id = %d)', $evento )
+		. ( $so_publicados ? " AND d.estado = 'publicado'" : '' );
+
+	return array_map( 'jelly_ar_documento_da_linha', jelly_ar_documentos_consulta( $onde . ' ORDER BY d.titulo' ) );
+}
+
+/**
+ * Os ids dos eventos de um documento. Os do lixo contam: se o evento for
+ * recuperado, volta com os seus documentos.
+ */
+function jelly_ar_documento_eventos_ids( $documento ) {
+	global $wpdb;
+
+	return array_map( 'intval', $wpdb->get_col( $wpdb->prepare( 'SELECT evento_id FROM ' . jelly_ar_tabela( 'evento_documentos' ) . ' WHERE documento_id = %d', $documento ) ) ); // phpcs:ignore WordPress.DB
+}
+
+/**
+ * Os eventos de um documento, pela ordem das datas, sem os do lixo.
+ */
+function jelly_ar_documento_eventos( $documento ) {
+	$ids     = jelly_ar_documento_eventos_ids( $documento );
+	$eventos = array_values( array_filter( jelly_ar_eventos_todos(), function ( $e ) use ( $ids ) {
+		return in_array( $e['id'], $ids, true );
+	} ) );
+
+	// A mesma ordem que a lista de Documentos usa: do mais cedo para o mais tarde.
+	usort( $eventos, function ( $a, $b ) {
+		return strcmp( $a['inicio'], $b['inicio'] );
+	} );
+
+	return $eventos;
+}
+
+/**
+ * Grava as ligações de um lado: para o evento (ou o documento) $id, ficam
+ * exatamente as de $escolhidos. As que não vêm saem, as novas entram, e as
+ * dos outros eventos (ou documentos) não se tocam.
+ *
+ * @param string $lado 'evento' ou 'documento' — de qual dos dois é o $id.
+ */
+function jelly_ar_ligacoes_gravar( $lado, $id, $escolhidos ) {
+	global $wpdb;
+
+	$tabela = jelly_ar_tabela( 'evento_documentos' );
+	$este   = 'evento' === $lado ? 'evento_id' : 'documento_id';
+	$outro  = 'evento' === $lado ? 'documento_id' : 'evento_id';
+	$manter = $escolhidos ? " AND {$outro} NOT IN (" . implode( ',', $escolhidos ) . ')' : '';
+
+	$wpdb->query( $wpdb->prepare( "DELETE FROM {$tabela} WHERE {$este} = %d{$manter}", $id ) ); // phpcs:ignore WordPress.DB
+
+	foreach ( $escolhidos as $o ) {
+		$wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO {$tabela} ({$este}, {$outro}, criado_em) VALUES (%d, %d, %s)", $id, $o, current_time( 'mysql', true ) ) ); // phpcs:ignore WordPress.DB
+	}
+}
+
+/**
+ * Os ids que chegaram marcados, só os que existem: documentos da AR, ou
+ * eventos que não estão no lixo.
+ */
+function jelly_ar_ligacoes_pedidas( $campo, $validos ) {
+	$pedidos = isset( $_POST[ $campo ] ) ? array_map( 'absint', (array) wp_unslash( $_POST[ $campo ] ) ) : []; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+	return array_values( array_intersect( array_unique( $pedidos ), $validos ) );
+}
+
+function jelly_ar_ligacoes_pode() {
+	if ( ! jelly_ar_e_administrador() ) {
+		wp_die( esc_html__( 'Esta área é só para administradores.', 'jelly-area-reservada' ), '', [ 'response' => 403 ] );
+	}
+}
+
+/**
+ * O cartão Documentos do evento.
+ */
+function jelly_ar_evento_documentos_guardar() {
+	$id = isset( $_POST['evento'] ) ? absint( $_POST['evento'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+	jelly_ar_ligacoes_pode();
+	check_admin_referer( 'jelly_ar_evento_documentos_' . $id );
+
+	if ( ! jelly_ar_evento( $id ) ) {
+		wp_die( esc_html__( 'Esse evento não existe.', 'jelly-area-reservada' ), '', [ 'response' => 404 ] );
+	}
+
+	jelly_ar_ligacoes_gravar( 'evento', $id, jelly_ar_ligacoes_pedidas( 'documentos', wp_list_pluck( jelly_ar_documentos_reais(), 'id' ) ) );
+
+	wp_safe_redirect( jelly_ar_admin_url( 'eventos', [ 'evento' => $id, 'aviso' => 'documentos' ] ) );
+	exit;
+}
+add_action( 'admin_post_jelly_ar_evento_documentos', 'jelly_ar_evento_documentos_guardar' );
+
+/**
+ * O cartão Eventos do documento.
+ */
+function jelly_ar_documento_eventos_guardar() {
+	$id = isset( $_POST['documento'] ) ? absint( $_POST['documento'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+	jelly_ar_ligacoes_pode();
+	check_admin_referer( 'jelly_ar_documento_eventos_' . $id );
+
+	if ( ! jelly_ar_documento_real( $id ) ) {
+		wp_die( esc_html__( 'Esse documento não existe.', 'jelly-area-reservada' ), '', [ 'response' => 404 ] );
+	}
+
+	/*
+	 * Os eventos do lixo não aparecem no cartão, por isso não vêm no pedido;
+	 * juntam-se aqui, para gravar do cartão não os desligar sem se ver.
+	 */
+	$lixo = array_diff( jelly_ar_documento_eventos_ids( $id ), wp_list_pluck( jelly_ar_eventos_todos(), 'id' ) );
+
+	jelly_ar_ligacoes_gravar( 'documento', $id, array_merge( jelly_ar_ligacoes_pedidas( 'eventos', wp_list_pluck( jelly_ar_eventos_todos(), 'id' ) ), $lixo ) );
+
+	wp_safe_redirect( jelly_ar_admin_url( 'documentos', [ 'documento' => $id, 'aviso' => 'eventos' ] ) );
+	exit;
+}
+add_action( 'admin_post_jelly_ar_documento_eventos', 'jelly_ar_documento_eventos_guardar' );
+
+/**
+ * Os ids dos eventos que têm pelo menos um documento — para a coluna
+ * Documentos da lista de eventos, numa consulta só.
+ */
+function jelly_ar_eventos_com_documentos() {
+	global $wpdb;
+
+	return array_map( 'intval', $wpdb->get_col( 'SELECT DISTINCT evento_id FROM ' . jelly_ar_tabela( 'evento_documentos' ) ) ); // phpcs:ignore WordPress.DB
+}

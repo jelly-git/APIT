@@ -375,10 +375,23 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	color: var(--jar-suave);
 }
 
+/*
+ * O título e a introdução encolhem (e a introdução passa a duas linhas) antes
+ * de os botões saírem da linha; se mesmo assim não couberem, os botões descem
+ * mas continuam à direita — como em todas as páginas, fosse qual fosse o
+ * comprimento da introdução.
+ */
+.jar-cabeca > div:first-child {
+	flex: 1 1 320px;
+	min-width: 0;
+}
+
 .jar-cabeca__acoes {
 	display: flex;
 	flex-wrap: wrap;
+	justify-content: flex-end;
 	gap: 10px;
+	margin-left: auto;
 }
 
 .jar-voltar {
@@ -1986,9 +1999,16 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	.jar-col--email { display: none; }
 }
 
-/* A lista de eventos: saem as marcações, o estado, o local e, no telemóvel, as datas. */
-@container (max-width: 900px) {
+/*
+ * A lista de eventos: saem as marcações, os documentos, o estado, o local e,
+ * no telemóvel, as datas. Medido a 26 de setembro, com a coluna Documentos.
+ */
+@container (max-width: 958px) {
 	.jar-col--marcacoes { display: none; }
+}
+
+@container (max-width: 860px) {
+	.jar-col--documentos { display: none; }
 }
 
 @container (max-width: 780px) {
@@ -1999,7 +2019,14 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	.jar-col--local { display: none; }
 }
 
-/* A lista de documentos: saem as descargas, a data e, no telemóvel, a categoria. */
+/*
+ * A lista de documentos: saem os eventos, as descargas, a data e, no
+ * telemóvel, a categoria. Medido a 26 de setembro, com a coluna Eventos.
+ */
+@container (max-width: 796px) {
+	.jar-col--eventos { display: none; }
+}
+
 @container (max-width: 760px) {
 	.jar-col--descargas { display: none; }
 }
@@ -2171,4 +2198,85 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 		width: 100%;
 		margin-left: 0;
 	}
+}
+
+/* ---------- Documentos de um evento ---------- */
+
+/*
+ * O cartão é de tabela (sem margem interior) por causa da lista de leitura; o
+ * formulário de escolha leva a sua.
+ */
+.jar-evento-docs {
+	padding: 0 24px 24px;
+}
+
+.jar-evento-docs .jar-opcoes {
+	margin-top: 12px;
+}
+
+.jar-evento-docs__meta {
+	display: block;
+	margin-top: 2px;
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+/* A procura por cima da lista: a toda a largura do cartão. */
+.jar-evento-docs__procura {
+	max-width: none;
+	margin-top: 20px;
+}
+
+/* Uma opção escondida pela procura sai mesmo — o .jar-caixa é flex. */
+.jar-evento-docs .jar-caixa[hidden] {
+	display: none;
+}
+
+.jar-evento-docs__nada {
+	margin: 8px 0 0;
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+/* ---------- Eventos de um documento ---------- */
+
+/* A linha das datas e do local, por baixo do título do evento no cartão Eventos. */
+.jar-escolha__meta {
+	display: block;
+	margin-top: 2px;
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+/*
+ * As colunas de sim ou não das listas (Marcações, Documentos, Eventos): só o
+ * visto ou o traço, centrados por baixo do título da coluna.
+ */
+.jar-tabela th.jar-tabela__centro,
+.jar-tabela td.jar-tabela__centro {
+	text-align: center;
+}
+
+.jar-tabela__centro .jar-marca {
+	justify-content: center;
+	font-size: 15px;
+}
+
+/*
+ * Os cartões de ligação (Documentos no evento, Eventos no documento): o botão
+ * de escolher fica sempre à direita. O título e a frase ocupam o que sobra e,
+ * se não couberem, a frase passa a duas linhas — em vez de o botão cair para
+ * baixo dela.
+ */
+.jar-cartao__cabeca--acao {
+	flex-wrap: nowrap;
+}
+
+.jar-cartao__cabeca--acao > div {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.jar-cartao__cabeca--acao > .jar-btn {
+	flex: none;
 }

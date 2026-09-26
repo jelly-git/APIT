@@ -2,6 +2,9 @@
 /**
  * Formulário de Registo.
  *
+ * Enviado pelo pop-up para o admin-ajax (inc/registo.php), que cria o pedido
+ * na Área Reservada.
+ *
  * Nome, apelido, e-mail, telefone e empresa. Não há nome de utilizador nem
  * palavra-passe: a conta entra pelo e-mail, e a palavra-passe define-se
  * depois de a APIT aprovar o pedido — como hoje as credenciais só chegam
@@ -16,7 +19,30 @@ $privacidade = home_url( '/politica-privacidade/' );
 <h2 class="apit-ar__titulo" id="apit-ar-titulo-registo"><?php esc_html_e( 'Criar conta', 'jelly-area-reservada' ); ?></h2>
 <p class="apit-ar__intro"><?php esc_html_e( 'Peça acesso aos conteúdos exclusivos da área reservada da APIT.', 'jelly-area-reservada' ); ?></p>
 
-<form class="apit-ar__form" data-ar-form="registo" method="post" action="#" novalidate>
+<?php
+/*
+ * O endereço do admin-ajax sem o domínio (/wp-admin/admin-ajax.php, ou
+ * /apit/wp-admin/… no servidor): o pedido vai sempre para a origem da própria
+ * página. Com o endereço completo, uma página aberta por outro endereço —
+ * https, outra porta, um IP — fazia um pedido de outra origem, que o browser
+ * envia sem os cookies e cuja resposta não deixa ler.
+ */
+?>
+<form class="apit-ar__form" data-ar-form="registo" method="post" action="<?php echo esc_attr( wp_make_link_relative( admin_url( 'admin-ajax.php' ) ) ); ?>" novalidate>
+	<input type="hidden" name="action" value="jelly_ar_registo">
+	<?php wp_nonce_field( 'jelly_ar_registo', '_wpnonce', false ); ?>
+
+	<?php
+	/*
+	 * O campo-armadilha (inc/registo.php): fora do ecrã, fora do Tab e do
+	 * preenchimento automático. Uma pessoa não o vê; um robô preenche-o.
+	 */
+	?>
+	<div class="apit-ar__armadilha" aria-hidden="true">
+		<label for="apit-ar-registo-hp"><?php esc_html_e( 'Deixe este campo vazio', 'jelly-area-reservada' ); ?></label>
+		<input type="text" id="apit-ar-registo-hp" name="jelly_ar_hp" value="" tabindex="-1" autocomplete="off" data-lpignore="true" data-1p-ignore data-bwignore>
+	</div>
+
 	<div class="apit-ar__grelha">
 		<div class="apit-ar__campo">
 			<label for="apit-ar-registo-nome"><?php esc_html_e( 'Nome', 'jelly-area-reservada' ); ?> <span aria-hidden="true">*</span></label>
@@ -84,7 +110,7 @@ $privacidade = home_url( '/politica-privacidade/' );
 				<?php
 				printf(
 					/* translators: %s: link para a política de privacidade */
-					esc_html__( 'Li e aceito a %s.', 'jelly-area-reservada' ),
+					esc_html__( 'Leu e aceita a %s.', 'jelly-area-reservada' ),
 					'<a href="' . esc_url( $privacidade ) . '" class="apit-ar__link" target="_blank" rel="noopener">' . esc_html__( 'Política de Privacidade', 'jelly-area-reservada' ) . '</a>'
 				);
 				?>
@@ -94,20 +120,45 @@ $privacidade = home_url( '/politica-privacidade/' );
 
 	<p class="apit-ar__nota">
 		<i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-		<?php esc_html_e( 'Depois de a APIT aprovar o pedido, recebe um e-mail para definir a palavra-passe.', 'jelly-area-reservada' ); ?>
+		<?php esc_html_e( 'Depois de a APIT aprovar o pedido, é enviado um e-mail para definir a palavra-passe.', 'jelly-area-reservada' ); ?>
 	</p>
 
 	<button type="submit" class="btn btn--solid apit-ar__submeter">
-		<?php esc_html_e( 'Criar conta', 'jelly-area-reservada' ); ?>
+		<span data-ar-rotulo><?php esc_html_e( 'Criar conta', 'jelly-area-reservada' ); ?></span>
 		<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
 	</button>
+
+	<p class="apit-ar__aviso" data-ar-aviso role="alert" hidden></p>
 </form>
 
-<div class="apit-ar__sucesso" data-ar-sucesso role="status" tabindex="-1" hidden>
-	<i class="fa-solid fa-circle-check apit-ar__sucesso-icone" aria-hidden="true"></i>
-	<h3 class="apit-ar__sucesso-titulo"><?php esc_html_e( 'Pedido enviado', 'jelly-area-reservada' ); ?></h3>
-	<p><?php esc_html_e( 'Quando a APIT aprovar o seu acesso, recebe um e-mail para definir a palavra-passe.', 'jelly-area-reservada' ); ?></p>
-	<button type="button" class="btn btn--outline apit-ar__voltar" data-ar-fechar><?php esc_html_e( 'Fechar', 'jelly-area-reservada' ); ?></button>
+<?php
+/*
+ * O fim do registo. O painel ganha `is-enviado`, que tira o título, a
+ * introdução e o rodapé do formulário: o que fica é só isto. Os três passos
+ * dizem onde o pedido está e o que falta, e o e-mail, para onde vai a
+ * mensagem — é o que a pessoa precisa de saber para esperar por ela.
+ */
+?>
+<div class="apit-ar__sucesso" data-ar-sucesso role="status" hidden>
+	<span class="apit-ar__sucesso-icone" aria-hidden="true"><i class="fa-solid fa-check"></i></span>
+	<h2 class="apit-ar__sucesso-titulo" tabindex="-1" data-ar-sucesso-foco><?php esc_html_e( 'Pedido enviado', 'jelly-area-reservada' ); ?></h2>
+	<p class="apit-ar__sucesso-texto">
+		<?php
+		printf(
+			/* translators: %s: e-mail de quem pediu o registo */
+			esc_html__( 'A APIT vai analisar o pedido. Depois de aprovado, é enviado para %s um e-mail para definir a palavra-passe.', 'jelly-area-reservada' ),
+			'<strong data-ar-sucesso-email></strong>'
+		);
+		?>
+	</p>
+
+	<ol class="apit-ar__passos">
+		<li class="is-feito"><span class="apit-ar__passo-marca" aria-hidden="true"><i class="fa-solid fa-check"></i></span> <?php esc_html_e( 'Pedido enviado', 'jelly-area-reservada' ); ?></li>
+		<li class="is-atual"><span class="apit-ar__passo-marca" aria-hidden="true">2</span> <?php esc_html_e( 'Aprovação pela APIT', 'jelly-area-reservada' ); ?></li>
+		<li><span class="apit-ar__passo-marca" aria-hidden="true">3</span> <?php echo esc_html( str_replace( '-', "\u{2011}", __( 'Definição da palavra-passe', 'jelly-area-reservada' ) ) ); // Hífen que não parte a palavra. ?></li>
+	</ol>
+
+	<button type="button" class="btn btn--solid apit-ar__submeter" data-ar-fechar><?php esc_html_e( 'Fechar', 'jelly-area-reservada' ); ?></button>
 </div>
 
 <div class="apit-ar__rodape">

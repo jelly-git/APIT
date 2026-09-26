@@ -383,6 +383,61 @@
 		} );
 	} );
 
+	/* ---------- Procura dentro de uma lista de escolha ---------- */
+
+	/*
+	 * Um campo com data-jar-filtrar="<id da lista>" esconde, enquanto se
+	 * escreve, as opções da lista cujo data-jar-filtrar-texto não tem o que se
+	 * procura — sem distinguir maiúsculas nem acentos. Só esconde: as caixas
+	 * marcadas continuam marcadas e vão com o formulário.
+	 */
+	function semAcentos( texto ) {
+		return texto.normalize( 'NFD' ).replace( /[̀-ͯ]/g, '' ).toLowerCase();
+	}
+
+	Array.prototype.forEach.call( raiz.querySelectorAll( '[data-jar-filtrar]' ), function ( campo ) {
+		var lista = document.getElementById( campo.getAttribute( 'data-jar-filtrar' ) );
+
+		if ( ! lista ) {
+			return;
+		}
+
+		var opcoes = lista.querySelectorAll( '[data-jar-filtrar-texto]' );
+		var nada = lista.querySelector( '[data-jar-filtrar-nada]' );
+
+		function filtrar() {
+			var procura = semAcentos( campo.value.trim() );
+			var vistas = 0;
+
+			Array.prototype.forEach.call( opcoes, function ( opcao ) {
+				var mostra = ! procura || -1 !== semAcentos( opcao.getAttribute( 'data-jar-filtrar-texto' ) ).indexOf( procura );
+
+				opcao.hidden = ! mostra;
+				vistas += mostra ? 1 : 0;
+			} );
+
+			if ( nada ) {
+				nada.hidden = vistas > 0;
+			}
+		}
+
+		campo.addEventListener( 'input', filtrar );
+
+		// O Enter na procura não grava o formulário à volta.
+		campo.addEventListener( 'keydown', function ( e ) {
+			if ( 'Enter' === e.key ) {
+				e.preventDefault();
+			}
+		} );
+
+		// Cancelar faz reset ao formulário, que limpa a procura: a lista volta inteira.
+		if ( campo.form ) {
+			campo.form.addEventListener( 'reset', function () {
+				window.setTimeout( filtrar, 0 );
+			} );
+		}
+	} );
+
 	/* ---------- Menu lateral no telemóvel ---------- */
 
 	var abrir = raiz.querySelector( '[data-jar-menu]' );

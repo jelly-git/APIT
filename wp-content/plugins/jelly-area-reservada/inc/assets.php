@@ -20,14 +20,14 @@ function jelly_ar_enqueue_assets() {
 		'jelly-area-reservada',
 		JELLY_AR_URL . 'assets/css/area-reservada.css',
 		$depende,
-		JELLY_AR_VERSION
+		jelly_ar_versao_ficheiro( 'assets/css/area-reservada.css' )
 	);
 
 	wp_enqueue_script(
 		'jelly-area-reservada',
 		JELLY_AR_URL . 'assets/js/area-reservada.js',
 		[],
-		JELLY_AR_VERSION,
+		jelly_ar_versao_ficheiro( 'assets/js/area-reservada.js' ),
 		true
 	);
 }
