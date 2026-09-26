@@ -78,17 +78,13 @@ $onde = function ( $valor, $longo = false ) use ( $onde_nomes ) {
 	);
 };
 
-/*
- * A capa: o gradiente da categoria, o mesmo do cartão do calendário. Na
- * tabela é só a cor; a grande, na página do evento, leva as iniciais.
- */
+// A capa: o gradiente da categoria, o mesmo do cartão do calendário. Só a cor, sem texto.
 $capa = function ( $e, $grande = false ) {
 	printf(
-		'<span class="jar-evento-capa%1$s" style="--jar-cat-inicio: %2$s; --jar-cat-fim: %3$s;" aria-hidden="true">%4$s</span>',
+		'<span class="jar-evento-capa%1$s" style="--jar-cat-inicio: %2$s; --jar-cat-fim: %3$s;" aria-hidden="true"></span>',
 		$grande ? ' jar-evento-capa--grande' : '',
 		esc_attr( $e['cores']['inicio'] ),
-		esc_attr( $e['cores']['fim'] ),
-		$grande ? '<span>' . esc_html( jelly_ar_iniciais( $e['titulo'] ) ) . '</span>' : ''
+		esc_attr( $e['cores']['fim'] )
 	);
 };
 

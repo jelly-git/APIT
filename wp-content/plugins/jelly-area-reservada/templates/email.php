@@ -16,6 +16,7 @@
  *   dados      [ rótulo => valor ] numa tabela (opcional)
  *   passos     o passo em que o pedido está, 1 a 3 (opcional)
  *   botao      [ 'texto' => …, 'url' => … ] (opcional)
+ *   botao2     um segundo botão, em contorno, ao lado do primeiro (opcional)
  *   nota       uma linha pequena por baixo (opcional)
  *   previa     o texto que o programa de e-mail mostra ao lado do assunto
  *   logo       o endereço da imagem do logótipo: cid:apit-logo no envio (a
@@ -33,6 +34,7 @@ $a = wp_parse_args(
 		'dados'      => [],
 		'passos'     => 0,
 		'botao'      => null,
+		'botao2'     => null,
 		'nota'       => '',
 		'previa'     => '',
 		'logo'       => jelly_ar_email_logo_url(),
@@ -154,6 +156,13 @@ $passos   = [
 										<td align="center" bgcolor="<?php echo esc_attr( $magenta ); ?>" style="border-radius:200px;background:<?php echo esc_attr( $magenta ); ?>;">
 											<a href="<?php echo esc_url( $a['botao']['url'] ); ?>" style="display:inline-block;padding:15px 32px;font-family:<?php echo esc_attr( $fonte ); ?>;font-size:14px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:#ffffff;text-decoration:none;border-radius:200px;"><?php echo esc_html( $a['botao']['texto'] ); ?></a>
 										</td>
+										<?php // O segundo, em contorno: a alternativa ao principal, ao lado dele. ?>
+										<?php if ( ! empty( $a['botao2']['url'] ) ) : ?>
+											<td width="12" style="width:12px;font-size:0;line-height:0;">&nbsp;</td>
+											<td align="center" style="border:2px solid <?php echo esc_attr( $preto ); ?>;border-radius:200px;">
+												<a href="<?php echo esc_url( $a['botao2']['url'] ); ?>" style="display:inline-block;padding:13px 30px;font-family:<?php echo esc_attr( $fonte ); ?>;font-size:14px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:<?php echo esc_attr( $preto ); ?>;text-decoration:none;border-radius:200px;"><?php echo esc_html( $a['botao2']['texto'] ); ?></a>
+											</td>
+										<?php endif; ?>
 									</tr>
 								</table>
 							</td>

@@ -90,9 +90,11 @@ function jelly_ar_email_texto( $args ) {
 		$linhas[] = '';
 	}
 
-	if ( ! empty( $args['botao']['url'] ) ) {
-		$linhas[] = $args['botao']['texto'] . ': ' . $args['botao']['url'];
-		$linhas[] = '';
+	foreach ( [ 'botao', 'botao2' ] as $b ) {
+		if ( ! empty( $args[ $b ]['url'] ) ) {
+			$linhas[] = $args[ $b ]['texto'] . ': ' . $args[ $b ]['url'];
+			$linhas[] = '';
+		}
 	}
 
 	if ( ! empty( $args['nota'] ) ) {
@@ -239,6 +241,74 @@ function jelly_ar_email_rejeitado( $user, $perfil ) {
 					'<a href="mailto:geral@apitv.com" style="color:#f41892;text-decoration:none;">geral@apitv.com</a>'
 				),
 			],
+		]
+	);
+}
+
+/**
+ * A palavra-passe foi definida. Na primeira vez (a conta ainda não entrou
+ * nenhuma vez), é o fim do registo: os três passos concluídos, e os botões para
+ * entrar e para o site. Depois disso, é o aviso de segurança de que a
+ * palavra-passe mudou — quem não a mudou fica a saber.
+ */
+function jelly_ar_email_senha_definida( $user, $perfil ) {
+	global $wpdb;
+
+	$primeira = 0 === (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jelly_ar_tabela( 'acessos' ) . ' WHERE user_id = %d', $user->ID ) ); // phpcs:ignore WordPress.DB
+	$nome     = $perfil->nome . ' ' . $perfil->apelido;
+	$contacto = '<a href="mailto:geral@apitv.com" style="color:#f41892;text-decoration:none;">geral@apitv.com</a>';
+	$entrar   = [
+		'texto' => __( 'Entrar na Área Reservada', 'jelly-area-reservada' ),
+		'url'   => home_url( '/#area-reservada' ),
+	];
+
+	if ( $primeira ) {
+		return jelly_ar_enviar_email(
+			$user->user_email,
+			__( 'Conta ativada — Área Reservada APIT', 'jelly-area-reservada' ),
+			[
+				'titulo'     => __( 'Conta ativada', 'jelly-area-reservada' ),
+				'previa'     => __( 'O registo na Área Reservada da APIT está concluído.', 'jelly-area-reservada' ),
+				'paragrafos' => [
+					jelly_ar_email_saudacao( $nome ),
+					esc_html__( 'O registo na Área Reservada da APIT está concluído: o pedido foi aprovado e a palavra-passe definida. A conta encontra-se ativa.', 'jelly-area-reservada' ),
+					sprintf(
+						/* translators: %s: e-mail */
+						esc_html__( 'O acesso faz-se com o endereço %s e a palavra-passe escolhida, a partir do botão «Área Reservada» no topo do site.', 'jelly-area-reservada' ),
+						'<strong>' . esc_html( $user->user_email ) . '</strong>'
+					),
+				],
+				'passos'     => 4,
+				'botao'      => $entrar,
+				'botao2'     => [
+					'texto' => __( 'Visitar o site', 'jelly-area-reservada' ),
+					'url'   => home_url( '/' ),
+				],
+				'nota'       => __( 'Caso a palavra-passe não tenha sido definida pelo titular da conta, a APIT deve ser contactada de imediato através do endereço geral@apitv.com.', 'jelly-area-reservada' ),
+			]
+		);
+	}
+
+	return jelly_ar_enviar_email(
+		$user->user_email,
+		__( 'Palavra-passe alterada — Área Reservada APIT', 'jelly-area-reservada' ),
+		[
+			'titulo'     => __( 'Palavra-passe alterada', 'jelly-area-reservada' ),
+			'previa'     => __( 'A palavra-passe de acesso à Área Reservada da APIT foi alterada.', 'jelly-area-reservada' ),
+			'paragrafos' => [
+				jelly_ar_email_saudacao( $nome ),
+				sprintf(
+					/* translators: %s: e-mail */
+					esc_html__( 'A palavra-passe de acesso à Área Reservada da APIT, associada ao endereço %s, foi alterada.', 'jelly-area-reservada' ),
+					'<strong>' . esc_html( $user->user_email ) . '</strong>'
+				),
+				sprintf(
+					/* translators: %s: e-mail da APIT */
+					esc_html__( 'Caso esta alteração não tenha sido feita pelo titular da conta, a APIT deve ser contactada de imediato através do endereço %s.', 'jelly-area-reservada' ),
+					$contacto
+				),
+			],
+			'botao'      => $entrar,
 		]
 	);
 }

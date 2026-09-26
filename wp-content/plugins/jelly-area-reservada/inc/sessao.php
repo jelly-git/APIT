@@ -241,8 +241,20 @@ function jelly_ar_definir_senha() {
 		jelly_ar_responder( [ 'erros' => $erros ], 422 );
 	}
 
-	// Muda a palavra-passe e apaga a chave: a ligação já não serve outra vez.
+	/*
+	 * Muda a palavra-passe e apaga a chave: a ligação já não serve outra vez.
+	 * O aviso do WordPress ao administrador ("Password changed", em inglês e
+	 * texto simples) não sai: o e-mail da AR, abaixo, é o que conta.
+	 */
+	remove_action( 'after_password_reset', 'wp_password_change_notification' );
 	reset_password( $user, $senha );
+
+	// A conclusão do registo, ou o aviso de que a palavra-passe mudou (inc/emails.php).
+	$perfil = jelly_ar_so_associado( $user ) ? jelly_ar_associado( $user->ID ) : null;
+
+	if ( $perfil ) {
+		jelly_ar_email_senha_definida( $user, $perfil );
+	}
 
 	jelly_ar_responder( [ 'sucesso' => true, 'email' => $user->user_email ] );
 }

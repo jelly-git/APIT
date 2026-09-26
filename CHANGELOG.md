@@ -266,6 +266,26 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.41.0] - 2026-09-26
+
+Plugin `jelly-area-reservada` 0.5.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **O e-mail "Conta ativada"**, quando a palavra-passe é definida pela
+  primeira vez: os três passos do registo concluídos e dois botões, "Entrar na
+  Área Reservada" (abre o login do pop-up) e "Visitar o site". Nas vezes
+  seguintes — uma recuperação —, sai em vez dele o aviso "Palavra-passe
+  alterada", para o titular saber se não foi ele.
+- O modelo dos e-mails aceita um segundo botão, em contorno, ao lado do
+  principal.
+
+### Alterado
+- A caixa de cor na página de cada evento deixa de ter as iniciais, como na
+  tabela.
+- O aviso do próprio WordPress ao administrador quando uma palavra-passe muda
+  (em inglês e em texto simples) deixa de sair nas palavras-passe definidas
+  pelo pop-up: o e-mail da AR cobre o caso.
+
 ## [0.40.0] - 2026-09-26
 
 Tudo no plugin `jelly-area-reservada`, que passa à versão 0.4.0. O tema e a
