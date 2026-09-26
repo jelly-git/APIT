@@ -106,6 +106,17 @@ function jelly_ar_blocos( $horario ) {
 	return $blocos;
 }
 
+/**
+ * De quantos em quantos minutos se escolhem as horas de início e de fim, para
+ * um intervalo: o próprio intervalo (30 → 10:00, 10:30…; 60 → horas certas),
+ * menos com 45, que fica de 15 em 15 — de 45 em 45 a contar da meia-noite
+ * daria 00:45, 01:30, 02:15…, e 10:00 nem existiria. Os blocos têm sempre o
+ * intervalo, a partir da hora escolhida.
+ */
+function jelly_ar_passo_horas( $intervalo ) {
+	return 45 === (int) $intervalo ? 15 : max( 15, (int) $intervalo );
+}
+
 // "09:30" → 570.
 function jelly_ar_minutos( $hora ) {
 	list( $h, $m ) = array_map( 'intval', explode( ':', $hora . ':0' ) );

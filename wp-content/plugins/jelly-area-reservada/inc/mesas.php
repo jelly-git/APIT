@@ -168,6 +168,12 @@ function jelly_ar_horarios_guardar() {
 			$voltar( [ 'erro' => 'horario-horas', 'dia' => $dia ] );
 		}
 
+		// As horas vão ao passo do intervalo: com 30 minutos, 10:00 ou 10:30, e não 10:15.
+		$passo = jelly_ar_passo_horas( $intervalo );
+		if ( jelly_ar_minutos( $inicio ) % $passo || jelly_ar_minutos( $fim ) % $passo ) {
+			$voltar( [ 'erro' => 'horario-passo', 'dia' => $dia ] );
+		}
+
 		$novos[ $dia ] = [ 'inicio' => $inicio, 'fim' => $fim, 'intervalo' => $intervalo ];
 	}
 

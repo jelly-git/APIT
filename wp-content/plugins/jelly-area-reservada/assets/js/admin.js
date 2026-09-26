@@ -269,6 +269,39 @@
 	/* ---------- Opções que mostram mais campos ---------- */
 
 	/*
+	 * Os horários das mesas: as horas de início e de fim (data-jar-hora) vão ao
+	 * passo do intervalo (data-jar-intervalo) — com 30 minutos, 10:00, 10:30…
+	 * Trocar o intervalo refaz as listas; uma hora que deixe de caber passa à
+	 * anterior que cabe. O mesmo passo que o servidor verifica
+	 * (jelly_ar_passo_horas(), inc/mesas-dados.php): 45 minutos vai de 15 em 15.
+	 */
+	var intervaloHoras = raiz.querySelector( '[data-jar-intervalo]' );
+
+	if ( intervaloHoras ) {
+		var passoDe = function ( intervalo ) {
+			return 45 === intervalo ? 15 : Math.max( 15, intervalo );
+		};
+		var hhmm = function ( m ) {
+			return ( '0' + Math.floor( m / 60 ) ).slice( -2 ) + ':' + ( '0' + ( m % 60 ) ).slice( -2 );
+		};
+
+		intervaloHoras.addEventListener( 'change', function () {
+			var passo = passoDe( parseInt( intervaloHoras.value, 10 ) );
+
+			Array.prototype.forEach.call( raiz.querySelectorAll( '[data-jar-hora]' ), function ( select ) {
+				var partes = select.value.split( ':' );
+				var atual = parseInt( partes[ 0 ], 10 ) * 60 + parseInt( partes[ 1 ], 10 );
+				var escolhida = hhmm( Math.floor( atual / passo ) * passo );
+
+				select.innerHTML = '';
+				for ( var m = 0; m < 24 * 60; m += passo ) {
+					select.appendChild( new Option( hhmm( m ), hhmm( m ), false, hhmm( m ) === escolhida ) );
+				}
+			} );
+		} );
+	}
+
+	/*
 	 * Uma caixa com data-jar-revela="<id>" mostra esse bloco quando marcada e
 	 * esconde-o quando não. O Cancelar da edição repõe a caixa, e o bloco
 	 * acompanha-a.

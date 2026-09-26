@@ -44,6 +44,8 @@ $erros  = [
 	/* translators: %s: dia */
 	'horario-horas'     => sprintf( __( 'Em %s, a hora de fim tem de ser depois da de início, com espaço para pelo menos um bloco.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
 	/* translators: %s: dia */
+	'horario-passo'     => sprintf( __( 'Em %s, as horas de início e de fim têm de acompanhar o intervalo escolhido: com 30 minutos, por exemplo, 10:00 ou 10:30.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
+	/* translators: %s: dia */
 	'horario-marcacoes' => sprintf( __( 'Em %s há marcações que ficariam fora dos blocos novos. Nada foi gravado: o horário desse dia tem de continuar a incluí-las.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
 ];
 
@@ -57,15 +59,15 @@ $mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros ) {
 };
 
 /*
- * Uma hora, escolhida de uma lista de 15 em 15 minutos, sempre em 24 horas
- * (11:00, 13:30…). O <input type="time"> do browser segue o idioma do sistema
- * e mostra AM/PM num computador em inglês. Os intervalos são todos múltiplos
- * de 15; uma hora guardada que não caia na lista entra também, para não se
- * perder ao gravar.
+ * Uma hora, escolhida de uma lista sempre em 24 horas (11:00, 13:30…): o
+ * <input type="time"> do browser segue o idioma do sistema e mostra AM/PM num
+ * computador em inglês. A lista vai ao passo do intervalo
+ * (jelly_ar_passo_horas()): com 30 minutos, 10:00, 10:30… Uma hora guardada
+ * que não caia na lista entra também, para se ver o que está gravado.
  */
-$select_hora = function ( $nome, $valor, $rotulo ) {
+$select_hora = function ( $nome, $valor, $rotulo, $passo ) {
 	$horas = [];
-	for ( $m = 0; $m < 24 * 60; $m += 15 ) {
+	for ( $m = 0; $m < 24 * 60; $m += $passo ) {
 		$horas[] = sprintf( '%02d:%02d', intdiv( $m, 60 ), $m % 60 );
 	}
 	if ( ! in_array( $valor, $horas, true ) ) {
@@ -73,7 +75,8 @@ $select_hora = function ( $nome, $valor, $rotulo ) {
 		sort( $horas );
 	}
 	?>
-	<select name="<?php echo esc_attr( $nome ); ?>" class="jar-hora" aria-label="<?php echo esc_attr( $rotulo ); ?>">
+	<?php // As opções refazem-se no browser quando o intervalo muda (assets/js/admin.js, data-jar-hora). ?>
+	<select name="<?php echo esc_attr( $nome ); ?>" class="jar-hora" aria-label="<?php echo esc_attr( $rotulo ); ?>" data-jar-hora>
 		<?php foreach ( $horas as $h ) : ?>
 			<option value="<?php echo esc_attr( $h ); ?>" <?php selected( $h, $valor ); ?>><?php echo esc_html( $h ); ?></option>
 		<?php endforeach; ?>
@@ -392,7 +395,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 
 			<label class="jar-campo jar-horarios__intervalo">
 				<span><?php esc_html_e( 'Intervalo entre marcações', 'jelly-area-reservada' ); ?></span>
-				<select name="intervalo">
+				<select name="intervalo" data-jar-intervalo>
 					<?php foreach ( JELLY_AR_INTERVALOS as $i ) : ?>
 						<?php /* translators: %d: minutos */ ?>
 						<option value="<?php echo (int) $i; ?>" <?php selected( $i, $intervalo ); ?>><?php echo esc_html( sprintf( __( '%d minutos', 'jelly-area-reservada' ), $i ) ); ?></option>
@@ -433,8 +436,8 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 								</label>
 							</td>
 							<?php // Início e fim, sempre em 24 horas ($select_hora, acima). ?>
-							<td><?php $select_hora( 'inicio[' . $dia . ']', $h['inicio'] ?? '10:00', __( 'Início', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ) ); ?></td>
-							<td><?php $select_hora( 'fim[' . $dia . ']', $h['fim'] ?? '18:00', __( 'Fim', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ) ); ?></td>
+							<td><?php $select_hora( 'inicio[' . $dia . ']', $h['inicio'] ?? '10:00', __( 'Início', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ), jelly_ar_passo_horas( $intervalo ) ); ?></td>
+							<td><?php $select_hora( 'fim[' . $dia . ']', $h['fim'] ?? '18:00', __( 'Fim', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ), jelly_ar_passo_horas( $intervalo ) ); ?></td>
 							<td class="jar-tabela__num"><?php echo $h ? (int) count( jelly_ar_blocos( $h ) ) : '—'; ?></td>
 						</tr>
 					<?php endforeach; ?>

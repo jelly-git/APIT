@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.42.4] - 2026-09-26
+
+### Alterado
+- Nos Horários das Mesas, as horas de início e de fim vão ao passo do
+  intervalo: com 30 minutos, 10:00, 10:30…; com 60, horas certas; com 15, de 15
+  em 15. Com 45 ficam de 15 em 15 (de 45 em 45 a contar da meia-noite, 10:00
+  nem existiria), e os blocos têm 45 minutos a partir da hora escolhida.
+  Trocar o intervalo refaz as listas logo; uma hora que deixe de caber passa à
+  anterior. O servidor verifica o mesmo ao gravar. Plugin 0.6.4.
+
 ## [0.42.3] - 2026-09-26
 
 ### Corrigido
