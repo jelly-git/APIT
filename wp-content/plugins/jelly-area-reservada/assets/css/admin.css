@@ -2280,3 +2280,138 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 .jar-cartao__cabeca--acao > .jar-btn {
 	flex: none;
 }
+
+/* ---------- Mesas e horários ---------- */
+
+.jar-mesa-nome strong,
+.jar-mesa-nome small {
+	display: block;
+}
+
+.jar-mesa-nome small {
+	margin-top: 2px;
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-linha-edicao--mesa .jar-campo--lugares {
+	flex: 0 0 90px;
+}
+
+/* O intervalo, por cima da tabela dos dias. */
+.jar-horarios__intervalo {
+	max-width: 320px;
+	margin-bottom: 20px;
+}
+
+.jar .jar-horarios__tabela input[type="time"] {
+	height: 40px;
+	min-width: 120px;
+}
+
+.jar-horarios__tabela tr.is-erro td {
+	background: rgba(196, 33, 59, 0.06);
+}
+
+/* A legenda e os blocos da grelha: disponível, pendente, confirmado. */
+.jar-legenda {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 20px;
+	margin: 0 0 16px;
+	padding: 0;
+	list-style: none;
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-legenda li {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.jar-bloco {
+	display: block;
+	width: 100%;
+	min-width: 38px;
+	height: 30px;
+	border-radius: 4px;
+}
+
+.jar-legenda .jar-bloco {
+	width: 18px;
+	min-width: 0;
+	height: 18px;
+}
+
+.jar-bloco--livre {
+	background: rgba(46, 198, 176, 0.14);
+	box-shadow: inset 0 0 0 1px rgba(46, 198, 176, 0.35);
+}
+
+.jar-bloco--pendente {
+	background: rgba(128, 72, 166, 0.16);
+	box-shadow: inset 0 0 0 1px rgba(128, 72, 166, 0.45);
+}
+
+.jar-bloco--aprovada {
+	background: var(--jar-magenta);
+}
+
+/*
+ * A grelha: a primeira coluna (as mesas) fica parada e as horas deslizam, para
+ * um dia comprido caber sem esticar o ecrã.
+ */
+.jar-grelha-horas {
+	overflow-x: auto;
+	padding: 16px 24px 24px;
+}
+
+.jar-grelha-horas table {
+	border-collapse: separate;
+	border-spacing: 4px;
+}
+
+.jar-grelha-horas th {
+	padding: 0 4px 6px;
+	font-weight: 500;
+	font-size: 12px;
+	color: var(--jar-suave);
+	white-space: nowrap;
+	text-align: center;
+}
+
+.jar-grelha-horas tbody th {
+	position: sticky;
+	left: 0;
+	z-index: 1;
+	padding: 0 12px 0 0;
+	background: #fff;
+	font-size: 14px;
+	color: var(--jar-preto);
+	text-align: left;
+}
+
+.jar-grelha-horas td {
+	padding: 0;
+}
+
+/* Na página do evento: o resumo do cartão Mesas e horários. */
+.jar-mesas-resumo {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 24px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+.jar-mesas-resumo strong {
+	margin-right: 4px;
+	font-size: 18px;
+	font-weight: 500;
+	color: var(--jar-preto);
+}

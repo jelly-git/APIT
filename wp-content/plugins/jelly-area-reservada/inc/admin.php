@@ -27,7 +27,7 @@ function jelly_ar_admin_paginas() {
 		'painel'       => [ 'titulo' => __( 'Painel', 'jelly-area-reservada' ), 'icone' => 'fa-gauge-high', 'pronta' => false ],
 		'utilizadores' => [ 'titulo' => __( 'Utilizadores', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'pronta' => true ],
 		'eventos'      => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-earth-europe', 'pronta' => true ],
-		'mesas'        => [ 'titulo' => __( 'Mesas e horários', 'jelly-area-reservada' ), 'icone' => 'fa-table-cells-large', 'pronta' => false ],
+		'mesas'        => [ 'titulo' => __( 'Mesas e horários', 'jelly-area-reservada' ), 'icone' => 'fa-table-cells-large', 'pronta' => true ],
 		'marcacoes'    => [ 'titulo' => __( 'Aprovações', 'jelly-area-reservada' ), 'icone' => 'fa-circle-check', 'pronta' => false ],
 		'documentos'   => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'pronta' => true ],
 		'encontros'    => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-people-group', 'pronta' => false ],

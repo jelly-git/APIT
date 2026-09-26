@@ -525,20 +525,41 @@ if ( $evento ) :
 				</form>
 			</section>
 
+			<?php
+			/*
+			 * As mesas e os horários do evento, em resumo; configuram-se na área
+			 * Mesas e horários (templates/admin/mesas.php). Sem marcações, o
+			 * cartão diz como as ligar.
+			 */
+			$mesas_resumo = jelly_ar_mesas_resumo( $evento['id'] );
+			?>
 			<section class="jar-cartao">
-				<header class="jar-cartao__cabeca">
-					<h2><?php esc_html_e( 'Mesas e horários', 'jelly-area-reservada' ); ?></h2>
-					<span class="jar-link is-em-breve"><?php esc_html_e( 'Gerir mesas', 'jelly-area-reservada' ); ?> <em><?php esc_html_e( 'em breve', 'jelly-area-reservada' ); ?></em></span>
+				<header class="jar-cartao__cabeca jar-cartao__cabeca--acao">
+					<div>
+						<h2><?php esc_html_e( 'Mesas e horários', 'jelly-area-reservada' ); ?></h2>
+						<?php if ( $evento['marcacoes'] ) : ?>
+							<span class="jar-cartao__meta"><?php esc_html_e( 'Onde e quando os associados podem marcar', 'jelly-area-reservada' ); ?></span>
+						<?php endif; ?>
+					</div>
+					<?php if ( $evento['marcacoes'] ) : ?>
+						<a class="jar-btn jar-btn--pequeno jar-btn--contorno" href="<?php echo esc_url( jelly_ar_admin_url( 'mesas', [ 'evento' => $evento['id'] ] ) ); ?>">
+							<i class="fa-solid fa-table-cells-large" aria-hidden="true"></i> <?php esc_html_e( 'Gerir mesas e horários', 'jelly-area-reservada' ); ?>
+						</a>
+					<?php endif; ?>
 				</header>
-				<p class="jar-vazio jar-vazio--esquerda">
-					<?php
-					echo esc_html(
-						$evento['marcacoes']
-							? __( 'Este evento aceita marcações. As mesas e os horários de 30 minutos configuram-se na área Mesas e horários, quando chegar.', 'jelly-area-reservada' )
-							: __( 'Este evento não aceita marcações. Para os associados poderem marcar mesas, edite os dados e ligue as marcações.', 'jelly-area-reservada' )
-					);
-					?>
-				</p>
+				<?php if ( ! $evento['marcacoes'] ) : ?>
+					<p class="jar-vazio jar-vazio--esquerda"><?php esc_html_e( 'Este evento não aceita marcações. Para os associados poderem marcar mesas, é necessário editar os dados do evento e ligar as marcações.', 'jelly-area-reservada' ); ?></p>
+				<?php elseif ( ! $mesas_resumo['mesas'] || ! $mesas_resumo['dias'] ) : ?>
+					<p class="jar-vazio jar-vazio--esquerda"><?php esc_html_e( 'Este evento aceita marcações, mas ainda não tem mesas e horários: sem eles, os associados não têm onde marcar.', 'jelly-area-reservada' ); ?></p>
+				<?php else : ?>
+					<ul class="jar-mesas-resumo">
+
+						<li><strong><?php echo (int) $mesas_resumo['mesas']; ?></strong> <?php echo esc_html( _n( 'mesa', 'mesas', $mesas_resumo['mesas'], 'jelly-area-reservada' ) ); ?></li>
+						<li><strong><?php echo (int) $mesas_resumo['dias']; ?></strong> <?php echo esc_html( _n( 'dia com horário', 'dias com horário', $mesas_resumo['dias'], 'jelly-area-reservada' ) ); ?></li>
+						<li><strong><?php echo (int) $mesas_resumo['blocos']; ?></strong> <?php esc_html_e( 'blocos para marcar', 'jelly-area-reservada' ); ?></li>
+						<li><strong><?php echo (int) ( $mesas_resumo['confirmadas'] + $mesas_resumo['pendentes'] ); ?></strong> <?php esc_html_e( 'ocupados', 'jelly-area-reservada' ); ?></li>
+					</ul>
+				<?php endif; ?>
 			</section>
 
 			<?php

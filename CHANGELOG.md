@@ -266,6 +266,33 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.42.0] - 2026-09-26
+
+Plugin `jelly-area-reservada` 0.6.0. O tema e a base de dados não mudam: as
+tabelas das mesas, dos horários e das marcações já existiam, vazias.
+
+### Adicionado
+- **A área Mesas e horários**, no menu da AR, ligada aos eventos: lista os que
+  aceitam marcações, com as mesas, os dias configurados e a ocupação. Cada
+  evento configura-se em três separadores:
+  - **Mesas**: nome, localização e lugares (até 50); criar, mudar na própria
+    linha e apagar. Uma mesa com marcações não se apaga.
+  - **Horários**: os dias do evento, cada um com a hora de início e a de fim,
+    e o intervalo entre marcações (15, 30, 45 ou 60 minutos; 30 por omissão).
+    Nada se grava se deixar uma marcação fora dos blocos — tirando o dia,
+    encolhendo as horas ou mudando o intervalo.
+  - **Grelha**: as mesas por hora, dia a dia, com o estado de cada bloco
+    (disponível, pendente, confirmado) e, ao passar, quem o marcou.
+- Na página do evento, o cartão "Mesas e horários" mostra o resumo e leva à
+  configuração. Sem mesas ou sem horários, avisa que os associados não têm
+  onde marcar.
+- `inc/mesas-dados.php`, sempre carregado: os dias, as mesas, os blocos e a
+  grelha, para a área do associado usar quando for feita.
+
+### A seguir
+- As marcações em si: o associado escolhe um bloco livre na área dele, e o
+  pedido é aprovado em Aprovações. Até lá, a grelha só mostra o estado.
+
 ## [0.41.0] - 2026-09-26
 
 Plugin `jelly-area-reservada` 0.5.0. O tema e a base de dados não mudam.
