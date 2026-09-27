@@ -53,6 +53,11 @@ $logo = jelly_ar_logo_url();
 			<section class="apit-ar__painel" data-ar-painel="senha" hidden>
 				<?php jelly_ar_template( 'form-senha' ); ?>
 			</section>
+
+			<?php // A marcação de mesa, pelo botão dos cartões do calendário (#area-reservada-marcar-<id>). ?>
+			<section class="apit-ar__painel" data-ar-painel="marcar" hidden>
+				<?php jelly_ar_template( 'form-marcar' ); ?>
+			</section>
 		</div>
 	</div>
 </div>

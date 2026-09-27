@@ -297,7 +297,13 @@ function jelly_ar_marcar( $evento_id, $mesa_id, $dia, $hora, $users ) {
 		return new WP_Error( 'marcacao-hora' );
 	}
 
+	// O mesmo trinco do pedido do associado (jelly_ar_pedir()): um de cada vez neste bloco.
+	if ( ! jelly_ar_bloco_trancar( $mesa['id'], $dia, $hora ) ) {
+		return new WP_Error( 'marcacao-ocupado' );
+	}
+
 	if ( jelly_ar_bloco_ocupados( $mesa['id'], $dia, $hora ) + count( $users ) > $mesa['lugares'] ) {
+		jelly_ar_bloco_soltar( $mesa['id'], $dia, $hora );
 		return new WP_Error( 'marcacao-cheia' );
 	}
 
@@ -321,6 +327,8 @@ function jelly_ar_marcar( $evento_id, $mesa_id, $dia, $hora, $users ) {
 			]
 		);
 	}
+
+	jelly_ar_bloco_soltar( $mesa['id'], $dia, $hora );
 
 	return $users;
 }
@@ -456,3 +464,278 @@ function jelly_ar_eventos_com_grelha() {
 	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
 	return array_map( 'intval', $wpdb->get_col( "SELECT DISTINCT m.evento_id FROM {$m} m WHERE EXISTS (SELECT 1 FROM {$h} h WHERE h.evento_id = m.evento_id)" ) );
 }
+
+/* ---------- Trinco de um bloco ---------- */
+
+/*
+ * Dois pedidos para o último lugar de um bloco, ao mesmo tempo, veriam os dois
+ * o lugar livre e entrariam os dois. O trinco (GET_LOCK do MySQL, por mesa,
+ * dia e hora) põe-nos em fila: o segundo só verifica os lugares depois de o
+ * primeiro gravar. Solta-se sozinho se o pedido morrer a meio.
+ */
+function jelly_ar_bloco_trancar( $mesa_id, $dia, $hora ) {
+	global $wpdb;
+
+	return '1' === (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK(%s, 5)', 'jelly_ar_' . $mesa_id . '_' . $dia . '_' . $hora ) ); // phpcs:ignore WordPress.DB
+}
+
+function jelly_ar_bloco_soltar( $mesa_id, $dia, $hora ) {
+	global $wpdb;
+
+	$wpdb->get_var( $wpdb->prepare( 'SELECT RELEASE_LOCK(%s)', 'jelly_ar_' . $mesa_id . '_' . $dia . '_' . $hora ) ); // phpcs:ignore WordPress.DB
+}
+
+/* ---------- O pedido do associado ---------- */
+
+/**
+ * A marcação viva (pendente ou aprovada) de um associado num evento, ou null.
+ * Cada associado tem no máximo uma por evento.
+ */
+function jelly_ar_marcacao_do_associado( $evento_id, $user_id ) {
+	global $wpdb;
+
+	$l = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jelly_ar_tabela( 'marcacoes' ) . ' WHERE evento_id = %d AND user_id = %d AND ocupa = 1 ORDER BY id DESC LIMIT 1', $evento_id, $user_id ) ); // phpcs:ignore WordPress.DB
+
+	return $l ? [
+		'id'      => (int) $l->id,
+		'mesa_id' => (int) $l->mesa_id,
+		'dia'     => $l->dia,
+		'hora'    => substr( $l->hora, 0, 5 ),
+		'estado'  => $l->estado,
+	] : null;
+}
+
+/**
+ * O que o associado pode escolher num evento: os dias com horário, de hoje em
+ * diante; em cada dia, os blocos; em cada bloco, as mesas com os lugares
+ * livres. Uma hora já passada, no dia de hoje, não entra.
+ */
+function jelly_ar_disponibilidade( $evento ) {
+	$mesas    = jelly_ar_mesas( $evento['id'] );
+	$horarios = jelly_ar_horarios( $evento['id'] );
+	$ocupados = jelly_ar_marcacoes_grelha( $evento['id'] );
+	$hoje     = current_time( 'Y-m-d' );
+	$agora    = current_time( 'H:i' );
+	$dias     = [];
+
+	foreach ( jelly_ar_evento_dias( $evento ) as $dia ) {
+		if ( ! isset( $horarios[ $dia ] ) || $dia < $hoje ) {
+			continue;
+		}
+
+		$intervalo = $horarios[ $dia ]['intervalo'];
+		$blocos    = [];
+
+		foreach ( jelly_ar_blocos( $horarios[ $dia ] ) as $hora ) {
+			if ( $dia === $hoje && $hora <= $agora ) {
+				continue;
+			}
+
+			$fim    = jelly_ar_minutos( $hora ) + $intervalo;
+			$livres = [];
+
+			foreach ( $mesas as $m ) {
+				$n = $m['lugares'] - count( $ocupados[ $m['id'] ][ $dia ][ $hora ] ?? [] );
+
+				$livres[] = [
+					'id'          => $m['id'],
+					'nome'        => $m['nome'],
+					'localizacao' => $m['localizacao'],
+					'lugares'     => $m['lugares'],
+					'livres'      => max( 0, $n ),
+				];
+			}
+
+			$blocos[] = [
+				'hora'  => $hora,
+				'fim'   => sprintf( '%02d:%02d', intdiv( $fim, 60 ), $fim % 60 ),
+				'mesas' => $livres,
+			];
+		}
+
+		if ( $blocos ) {
+			$d      = DateTime::createFromFormat( '!Y-m-d', $dia );
+			$dias[] = [
+				'dia'    => $dia,
+				'rotulo' => wp_date( 'D, j M', $d->getTimestamp() ),
+				'blocos' => $blocos,
+			];
+		}
+	}
+
+	return $dias;
+}
+
+/**
+ * Um associado pede um lugar numa mesa, a uma hora: fica pendente, à espera
+ * da aprovação da equipa (Aprovações).
+ *
+ * @return array|WP_Error A mesa, ou o erro: marcacao-fechada (o evento não
+ *                        aceita marcações), marcacao-tem (já tem uma neste
+ *                        evento), marcacao-bloco, marcacao-cheia,
+ *                        marcacao-ocupado (o trinco não se conseguiu).
+ */
+function jelly_ar_pedir( $evento, $user_id, $mesa_id, $dia, $hora ) {
+	global $wpdb;
+
+	if ( empty( $evento['marcacoes'] ) || 'publicado' !== $evento['estado'] ) {
+		return new WP_Error( 'marcacao-fechada' );
+	}
+
+	if ( jelly_ar_marcacao_do_associado( $evento['id'], $user_id ) ) {
+		return new WP_Error( 'marcacao-tem' );
+	}
+
+	// Só os blocos que a disponibilidade mostra: de hoje em diante.
+	$aberto = false;
+	foreach ( jelly_ar_disponibilidade( $evento ) as $d ) {
+		if ( $d['dia'] === $dia && in_array( $hora, wp_list_pluck( $d['blocos'], 'hora' ), true ) ) {
+			$aberto = true;
+		}
+	}
+
+	$mesa = $aberto ? jelly_ar_bloco_valido( $evento['id'], $mesa_id, $dia, $hora ) : null;
+
+	if ( ! $mesa ) {
+		return new WP_Error( 'marcacao-bloco' );
+	}
+
+	if ( ! jelly_ar_bloco_trancar( $mesa['id'], $dia, $hora ) ) {
+		return new WP_Error( 'marcacao-ocupado' );
+	}
+
+	if ( jelly_ar_bloco_ocupados( $mesa['id'], $dia, $hora ) >= $mesa['lugares'] ) {
+		jelly_ar_bloco_soltar( $mesa['id'], $dia, $hora );
+		return new WP_Error( 'marcacao-cheia' );
+	}
+
+	$wpdb->insert( // phpcs:ignore WordPress.DB
+		jelly_ar_tabela( 'marcacoes' ),
+		[
+			'evento_id' => $evento['id'],
+			'mesa_id'   => $mesa['id'],
+			'user_id'   => $user_id,
+			'dia'       => $dia,
+			'hora'      => $hora . ':00',
+			'estado'    => 'pendente',
+			'ocupa'     => 1,
+			'pedido_em' => current_time( 'mysql', true ),
+			'notas'     => '',
+		]
+	);
+
+	$ok = (bool) $wpdb->insert_id;
+	jelly_ar_bloco_soltar( $mesa['id'], $dia, $hora );
+
+	return $ok ? $mesa : new WP_Error( 'marcacao-cheia' );
+}
+
+/* ---------- As aprovações ---------- */
+
+/**
+ * Aprovar ou rejeitar pedidos pendentes. Rejeitado, o lugar solta-se
+ * (ocupa = NULL) e o pedido fica no histórico. A grelha lê o estado daqui, por
+ * isso fica logo certa: confirmado, ou o lugar outra vez livre.
+ *
+ * @param int[]  $ids     As marcações.
+ * @param string $decisao aprovada ou rejeitada.
+ * @return array As marcações decididas (só as que estavam pendentes).
+ */
+function jelly_ar_marcacoes_decidir( $ids, $decisao ) {
+	global $wpdb;
+
+	if ( ! in_array( $decisao, [ 'aprovada', 'rejeitada' ], true ) ) {
+		return [];
+	}
+
+	$ids = array_filter( array_map( 'intval', (array) $ids ) );
+
+	if ( ! $ids ) {
+		return [];
+	}
+
+	$lista  = implode( ',', $ids );
+	$tabela = jelly_ar_tabela( 'marcacoes' );
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+	$linhas = $wpdb->get_results( "SELECT * FROM {$tabela} WHERE estado = 'pendente' AND ocupa = 1 AND id IN ({$lista})" );
+
+	foreach ( $linhas as $l ) {
+		$wpdb->update( // phpcs:ignore WordPress.DB
+			$tabela,
+			[
+				'estado'       => $decisao,
+				'ocupa'        => 'aprovada' === $decisao ? 1 : null,
+				'decidido_em'  => current_time( 'mysql', true ),
+				'decidido_por' => get_current_user_id(),
+			],
+			[ 'id' => $l->id ]
+		);
+	}
+
+	return array_map( function ( $l ) {
+		return [
+			'id'        => (int) $l->id,
+			'evento_id' => (int) $l->evento_id,
+			'mesa_id'   => (int) $l->mesa_id,
+			'user_id'   => (int) $l->user_id,
+			'dia'       => $l->dia,
+			'hora'      => substr( $l->hora, 0, 5 ),
+		];
+	}, $linhas );
+}
+
+/**
+ * As marcações para a lista das Aprovações, com o associado, o evento e a
+ * mesa; as mais recentes primeiro.
+ */
+function jelly_ar_marcacoes_todas() {
+	global $wpdb;
+
+	$c = jelly_ar_tabela( 'marcacoes' );
+	$a = jelly_ar_tabela( 'associados' );
+	$e = jelly_ar_tabela( 'eventos' );
+	$m = jelly_ar_tabela( 'mesas' );
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+	$linhas = $wpdb->get_results(
+		"SELECT c.*, a.nome, a.apelido, a.empresa, u.user_email, e.titulo AS evento, m.nome AS mesa, m.localizacao
+		FROM {$c} c
+		LEFT JOIN {$a} a ON a.user_id = c.user_id
+		LEFT JOIN {$wpdb->users} u ON u.ID = c.user_id
+		LEFT JOIN {$e} e ON e.id = c.evento_id
+		LEFT JOIN {$m} m ON m.id = c.mesa_id
+		ORDER BY c.pedido_em DESC, c.id DESC"
+	);
+
+	return array_map( function ( $l ) {
+		return [
+			'id'          => (int) $l->id,
+			'evento_id'   => (int) $l->evento_id,
+			'evento'      => (string) $l->evento,
+			'mesa_id'     => (int) $l->mesa_id,
+			'mesa'        => (string) $l->mesa,
+			'localizacao' => (string) $l->localizacao,
+			'user_id'     => (int) $l->user_id,
+			'nome'        => trim( $l->nome . ' ' . $l->apelido ),
+			'empresa'     => (string) $l->empresa,
+			'email'       => (string) $l->user_email,
+			'dia'         => $l->dia,
+			'hora'        => substr( $l->hora, 0, 5 ),
+			'estado'      => $l->estado,
+			'pedido'      => get_date_from_gmt( $l->pedido_em, 'd/m/Y H:i' ),
+			// As feitas pela equipa na grelha: decididas no mesmo instante em que foram feitas.
+			'pela_equipa' => $l->decidido_em && $l->decidido_em === $l->pedido_em,
+		];
+	}, $linhas );
+}
+
+/**
+ * O dia (Y-m-d) e a hora (H:i) de um pedido, ou '' se não tiverem a forma certa.
+ */
+function jelly_ar_bloco_pedido( $dia, $hora ) {
+	return [
+		preg_match( '/^\d{4}-\d{2}-\d{2}$/', $dia ) ? $dia : '',
+		preg_match( '/^([01]\d|2[0-3]):[0-5]\d$/', $hora ) ? $hora : '',
+	];
+}
+

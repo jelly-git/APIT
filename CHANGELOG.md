@@ -266,6 +266,43 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.46.0] - 2026-09-27
+
+Plugin `jelly-area-reservada` 0.10.0. O tema e o esquema da base de dados não
+mudam.
+
+### Adicionado
+- **Marcação de mesa pelos associados, no calendário do site.** O botão
+  "Fazer inscrição" dos cartões dos eventos com marcações abre o pop-up da
+  Área Reservada nessa marcação (`#area-reservada-marcar-<id>`):
+  - sem sessão, abre o login com um aviso, e depois de entrar volta à
+    marcação;
+  - com a sessão de um associado ativo, a escolha em três passos — o dia, a
+    hora e a mesa —, só com o que ainda tem lugar (os blocos cheios e as horas
+    já passadas aparecem desligados ou não aparecem). Uma mesa por hora e uma
+    marcação por evento;
+  - com a marcação já feita neste evento, o resumo dela e o estado (a aguardar
+    aprovação ou confirmada), em vez da escolha;
+  - com a sessão da equipa, um aviso: a marcação é feita pelos associados.
+- O pedido entra pendente. O associado recebe "Pedido de marcação recebido",
+  e a equipa o aviso "Novo pedido de marcação", com a ligação para as
+  Aprovações.
+- **Aprovações**, no back-office: os pedidos por estado (Por aprovar,
+  Aprovadas, Rejeitadas, Canceladas, Todas), com filtro por evento, pesquisa
+  por associado, empresa, evento ou mesa, e ordem. Aprova-se ou rejeita-se um
+  a um, ou vários escolhidos de uma vez; rejeitar pede confirmação. Cada
+  associado recebe o e-mail da decisão ("Marcação aprovada" ou "Pedido de
+  marcação não aprovado"), e cada linha leva à grelha do evento.
+- A grelha de Mesas e horários acompanha as aprovações: aprovado, o lugar
+  passa a confirmado; rejeitado, volta a ficar livre, e o associado pode
+  voltar a pedir.
+- Dois pedidos para o último lugar ao mesmo tempo já não entram os dois: cada
+  bloco tem um trinco na base de dados (`GET_LOCK`) enquanto se verificam os
+  lugares e se grava — nos pedidos do site e nas marcações da equipa.
+
+### Alterado
+- Nos e-mails das marcações, os meses em minúscula ("7 de outubro de 2026").
+
 ## [0.45.1] - 2026-09-27
 
 Plugin `jelly-area-reservada` 0.9.1. O tema e a base de dados não mudam.

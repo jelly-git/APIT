@@ -28,7 +28,7 @@ function jelly_ar_admin_paginas() {
 		'utilizadores' => [ 'titulo' => __( 'Utilizadores', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'pronta' => true ],
 		'eventos'      => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-earth-europe', 'pronta' => true ],
 		'mesas'        => [ 'titulo' => __( 'Mesas e horários', 'jelly-area-reservada' ), 'icone' => 'fa-table-cells-large', 'pronta' => true ],
-		'marcacoes'    => [ 'titulo' => __( 'Aprovações', 'jelly-area-reservada' ), 'icone' => 'fa-circle-check', 'pronta' => false ],
+		'marcacoes'    => [ 'titulo' => __( 'Aprovações', 'jelly-area-reservada' ), 'icone' => 'fa-circle-check', 'pronta' => true ],
 		'documentos'   => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'pronta' => true ],
 		'encontros'    => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-people-group', 'pronta' => false ],
 		'calendario'   => [ 'titulo' => __( 'Calendário', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'pronta' => false ],
@@ -189,6 +189,7 @@ function jelly_ar_estado( $estado ) {
 		// Marcações, no perfil.
 		'aprovada'  => __( 'Aprovada', 'jelly-area-reservada' ),
 		'rejeitada' => __( 'Rejeitada', 'jelly-area-reservada' ),
+		'cancelada' => __( 'Cancelada', 'jelly-area-reservada' ),
 		// Documentos.
 		'publicado' => __( 'Publicado', 'jelly-area-reservada' ),
 		'rascunho'  => __( 'Rascunho', 'jelly-area-reservada' ),

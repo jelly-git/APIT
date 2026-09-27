@@ -326,7 +326,8 @@ function jelly_ar_email_quando( $dia, $hora, $intervalo ) {
 	return sprintf(
 		/* translators: 1: dia, 2: hora de início, 3: hora de fim */
 		__( '%1$s, das %2$s às %3$s', 'jelly-area-reservada' ),
-		$d ? wp_date( 'j \d\e F \d\e Y', $d->getTimestamp() ) : $dia,
+		// Os meses em minúscula, como se escrevem em português ("7 de outubro").
+		$d ? mb_strtolower( wp_date( 'j \d\e F \d\e Y', $d->getTimestamp() ) ) : $dia,
 		$hora,
 		sprintf( '%02d:%02d', intdiv( $fim, 60 ), $fim % 60 )
 	);
@@ -388,6 +389,28 @@ function jelly_ar_email_marcacao( $user_id, $tipo, $evento, $mesa, $dia, $hora, 
 			/* translators: %s: evento */
 			'texto'    => __( 'A marcação de mesa no evento %s foi alterada pela APIT. Os novos dados são os seguintes.', 'jelly-area-reservada' ),
 		],
+		// Os três passos do pedido feito pelo associado no site.
+		'pedida'    => [
+			'assunto'  => __( 'Pedido de marcação de mesa recebido — APIT', 'jelly-area-reservada' ),
+			'titulo'   => __( 'Pedido de marcação recebido', 'jelly-area-reservada' ),
+			'previa'   => __( 'O pedido de marcação de mesa foi recebido e aguarda aprovação da APIT.', 'jelly-area-reservada' ),
+			/* translators: %s: evento */
+			'texto'    => __( 'Foi recebido o pedido de marcação de mesa no evento %s, com os dados abaixo. O pedido aguarda aprovação da APIT; a confirmação segue por e-mail.', 'jelly-area-reservada' ),
+		],
+		'aprovada'  => [
+			'assunto'  => __( 'Marcação de mesa aprovada — APIT', 'jelly-area-reservada' ),
+			'titulo'   => __( 'Marcação aprovada', 'jelly-area-reservada' ),
+			'previa'   => __( 'O pedido de marcação de mesa foi aprovado pela APIT.', 'jelly-area-reservada' ),
+			/* translators: %s: evento */
+			'texto'    => __( 'O pedido de marcação de mesa no evento %s foi aprovado. A marcação encontra-se confirmada, com os dados abaixo.', 'jelly-area-reservada' ),
+		],
+		'rejeitada' => [
+			'assunto'  => __( 'Pedido de marcação de mesa — APIT', 'jelly-area-reservada' ),
+			'titulo'   => __( 'Pedido de marcação não aprovado', 'jelly-area-reservada' ),
+			'previa'   => __( 'Informação sobre o pedido de marcação de mesa.', 'jelly-area-reservada' ),
+			/* translators: %s: evento */
+			'texto'    => __( 'Após análise, o pedido de marcação de mesa no evento %s, com os dados abaixo, não foi aprovado. O horário pode ser escolhido de novo no calendário do site, entre os que se encontrem disponíveis.', 'jelly-area-reservada' ),
+		],
 	];
 
 	if ( ! isset( $textos[ $tipo ] ) ) {
@@ -416,6 +439,50 @@ function jelly_ar_email_marcacao( $user_id, $tipo, $evento, $mesa, $dia, $hora, 
 				'url'   => home_url( '/#area-reservada' ),
 			],
 			'nota'       => __( 'Para qualquer esclarecimento, a APIT encontra-se disponível através do endereço geral@apitv.com.', 'jelly-area-reservada' ),
+		]
+	);
+}
+
+/**
+ * Um pedido de marcação novo, feito por um associado no site: o aviso à
+ * equipa, com a ligação para as Aprovações.
+ */
+function jelly_ar_email_marcacao_equipa( $user_id, $evento, $mesa, $dia, $hora ) {
+	$perfil = jelly_ar_associado( $user_id );
+	$user   = get_userdata( $user_id );
+
+	if ( ! $perfil || ! $user ) {
+		return false;
+	}
+
+	$nome      = trim( $perfil->nome . ' ' . $perfil->apelido );
+	$horarios  = jelly_ar_horarios( $evento['id'] );
+	$intervalo = $horarios[ $dia ]['intervalo'] ?? JELLY_AR_INTERVALO_OMISSAO;
+	// O slug da página vem de inc/admin.php, que o admin-ajax carrega; fora dele, o de sempre.
+	$link = add_query_arg( [ 'page' => function_exists( 'jelly_ar_admin_slug' ) ? jelly_ar_admin_slug( 'marcacoes' ) : 'jelly-ar-marcacoes' ], admin_url( 'admin.php' ) );
+
+	return jelly_ar_enviar_email(
+		jelly_ar_emails_equipa(),
+		/* translators: 1: nome, 2: evento */
+		sprintf( __( 'Novo pedido de marcação de mesa: %1$s — %2$s', 'jelly-area-reservada' ), $nome, $evento['titulo'] ),
+		[
+			'titulo'     => __( 'Novo pedido de marcação', 'jelly-area-reservada' ),
+			/* translators: %s: nome */
+			'previa'     => sprintf( __( '%s pediu uma marcação de mesa.', 'jelly-area-reservada' ), $nome ),
+			'paragrafos' => [
+				esc_html__( 'Foi recebido um novo pedido de marcação de mesa, que aguarda aprovação no back-office.', 'jelly-area-reservada' ),
+			],
+			'dados'      => [
+				__( 'Associado', 'jelly-area-reservada' ) => $nome . ( $perfil->empresa ? ' · ' . $perfil->empresa : '' ),
+				__( 'E-mail', 'jelly-area-reservada' )    => $user->user_email,
+				__( 'Evento', 'jelly-area-reservada' )    => $evento['titulo'],
+				__( 'Data', 'jelly-area-reservada' )      => jelly_ar_email_quando( $dia, $hora, $intervalo ),
+				__( 'Mesa', 'jelly-area-reservada' )      => jelly_ar_email_mesa( $mesa ),
+			],
+			'botao'      => [
+				'texto' => __( 'Analisar pedido', 'jelly-area-reservada' ),
+				'url'   => $link,
+			],
 		]
 	);
 }

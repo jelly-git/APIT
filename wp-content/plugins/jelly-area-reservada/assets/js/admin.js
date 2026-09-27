@@ -823,6 +823,63 @@
 		} );
 	}
 
+	/* ---------- Escolher várias linhas de uma lista ---------- */
+
+	/*
+	 * Um formulário data-jar-escolhas (as Aprovações): a caixa de cima escolhe
+	 * todas as linhas; os botões data-jar-precisa-escolha só se ligam com alguma
+	 * escolhida; e a barra diz quantas.
+	 */
+	Array.prototype.forEach.call( raiz.querySelectorAll( '[data-jar-escolhas]' ), function ( form ) {
+		var todas = form.querySelector( '[data-jar-escolhas-todas]' );
+		var caixas = form.querySelectorAll( '[data-jar-escolha]' );
+		var conta = form.querySelector( '[data-jar-escolhas-conta]' );
+		var barra = form.querySelector( '[data-jar-escolhas-barra]' );
+		var inicial = conta ? conta.textContent : '';
+
+		function acertar() {
+			var n = form.querySelectorAll( '[data-jar-escolha]:checked' ).length;
+
+			Array.prototype.forEach.call( form.querySelectorAll( '[data-jar-precisa-escolha]' ), function ( b ) {
+				b.disabled = 0 === n;
+			} );
+
+			Array.prototype.forEach.call( caixas, function ( c ) {
+				c.closest( 'tr' ).classList.toggle( 'is-escolhida', c.checked );
+			} );
+
+			if ( todas ) {
+				todas.checked = n > 0 && n === caixas.length;
+				todas.indeterminate = n > 0 && n < caixas.length;
+			}
+
+			if ( conta ) {
+				conta.textContent = n ? n + ( 1 === n ? ' pedido escolhido' : ' pedidos escolhidos' ) : inicial;
+			}
+
+			if ( barra ) {
+				barra.classList.toggle( 'is-ativa', n > 0 );
+			}
+		}
+
+		if ( todas ) {
+			todas.addEventListener( 'change', function () {
+				Array.prototype.forEach.call( caixas, function ( c ) {
+					c.checked = todas.checked;
+				} );
+				acertar();
+			} );
+		}
+
+		form.addEventListener( 'change', function ( e ) {
+			if ( e.target.hasAttribute( 'data-jar-escolha' ) ) {
+				acertar();
+			}
+		} );
+
+		acertar();
+	} );
+
 	/* ---------- Menu lateral no telemóvel ---------- */
 
 	var abrir = raiz.querySelector( '[data-jar-menu]' );

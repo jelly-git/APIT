@@ -557,6 +557,326 @@ body.apit-ar-aberto {
 	margin: 0;
 }
 
+/* ---------- Marcação de mesa ---------- */
+
+/* O que se marca por cima do título: "Marcação de mesa", em magenta. */
+.apit-ar__sobretitulo {
+	margin: 0 0 8px;
+	font-weight: 500;
+	font-size: 13px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--ar-magenta);
+}
+
+.apit-ar__marcar .apit-ar__titulo {
+	outline: none;
+}
+
+.apit-ar__marcar-evento {
+	margin-bottom: 28px;
+}
+
+/* A carregar: uma roda pequena e a frase. */
+.apit-ar__carregar {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin: 0;
+	padding: 24px 0;
+	font-size: 15px;
+	color: rgba(27, 42, 51, 0.7);
+}
+
+.apit-ar__roda {
+	width: 20px;
+	height: 20px;
+	border: 2px solid rgba(244, 24, 146, 0.2);
+	border-top-color: var(--ar-magenta);
+	border-radius: 50%;
+	animation: apit-ar-rodar 0.8s linear infinite;
+}
+
+@keyframes apit-ar-rodar {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.apit-ar__escolha {
+	gap: 24px;
+}
+
+/* Cada passo: o número num círculo, o nome, e as opções por baixo. */
+.apit-ar__passo {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	min-width: 0;
+}
+
+.apit-ar__passo legend {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 12px;
+	padding: 0;
+	font-weight: 500;
+	font-size: 14px;
+	letter-spacing: 0.8px;
+	text-transform: uppercase;
+	color: var(--ar-preto);
+}
+
+.apit-ar__passo-n {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	background: var(--ar-preto);
+	font-size: 12px;
+	letter-spacing: 0;
+	color: #fff;
+}
+
+.apit-ar__opcoes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+/* As horas numa grelha certa, para as colunas alinharem de linha para linha. */
+.apit-ar__opcoes--horas {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+}
+
+/*
+ * Uma opção: o radio escondido e o rótulo desenhado — em pílula nos dias e nas
+ * horas. O foco do teclado vê-se no rótulo.
+ */
+.apit-ar__opcao {
+	position: relative;
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px;
+	padding: 8px 18px;
+	border: 1px solid rgba(27, 42, 51, 0.2);
+	border-radius: 200px;
+	background: #fff;
+	font-size: 15px;
+	line-height: 1.2;
+	cursor: pointer;
+	transition: border-color 0.15s, background-color 0.15s, color 0.15s;
+}
+
+.apit-ar__opcao input {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+
+.apit-ar__opcao:hover {
+	border-color: var(--ar-magenta);
+}
+
+.apit-ar__opcao:has(input:focus-visible) {
+	outline: 2px solid var(--ar-magenta);
+	outline-offset: 2px;
+}
+
+.apit-ar__opcao:has(input:checked) {
+	border-color: var(--ar-magenta);
+	background: var(--ar-magenta);
+	color: #fff;
+}
+
+.apit-ar__opcao.is-desligada {
+	border-style: dashed;
+	background: rgba(27, 42, 51, 0.03);
+	color: rgba(27, 42, 51, 0.35);
+	cursor: not-allowed;
+}
+
+.apit-ar__opcao.is-desligada:hover {
+	border-color: rgba(27, 42, 51, 0.2);
+}
+
+.apit-ar__opcao-texto {
+	font-weight: 500;
+}
+
+/* Só nas horas os algarismos de largura igual, para as colunas alinharem; noutro texto abrem os espaços. */
+.apit-ar__opcoes--horas .apit-ar__opcao-texto {
+	font-variant-numeric: tabular-nums;
+}
+
+.apit-ar__opcao-extra {
+	font-size: 12px;
+	opacity: 0.8;
+}
+
+/*
+ * As mesas: cartões de canto reto, a toda a largura — o nome, a localização e
+ * os lugares livres, com a marca de escolha à direita.
+ */
+.apit-ar__mesas {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.apit-ar__opcao.apit-ar__mesa {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: center;
+	gap: 2px 16px;
+	padding: 14px 18px;
+	border-radius: 3px;
+	text-align: left;
+}
+
+.apit-ar__mesa .apit-ar__opcao-texto {
+	grid-column: 1;
+	font-size: 16px;
+}
+
+.apit-ar__mesa-local {
+	grid-column: 1;
+	font-size: 14px;
+	color: rgba(27, 42, 51, 0.6);
+}
+
+.apit-ar__mesa .apit-ar__opcao-extra {
+	grid-column: 2;
+	grid-row: 1 / span 2;
+	padding: 4px 10px;
+	border-radius: 200px;
+	background: rgba(46, 198, 176, 0.14);
+	font-weight: 500;
+	font-size: 13px;
+	color: #13806f;
+	opacity: 1;
+}
+
+.apit-ar__opcao.apit-ar__mesa:has(input:checked) {
+	background: rgba(244, 24, 146, 0.06);
+	color: var(--ar-preto);
+	box-shadow: inset 0 0 0 1px var(--ar-magenta);
+}
+
+.apit-ar__mesa:has(input:checked) .apit-ar__opcao-extra {
+	background: var(--ar-magenta);
+	color: #fff;
+}
+
+.apit-ar__mesa.is-desligada .apit-ar__opcao-extra {
+	background: rgba(27, 42, 51, 0.06);
+	color: rgba(27, 42, 51, 0.5);
+}
+
+.apit-ar__mesa.is-desligada .apit-ar__mesa-local {
+	color: inherit;
+}
+
+.apit-ar__vazio {
+	margin: 0;
+	padding: 16px 18px;
+	border: 1px dashed rgba(27, 42, 51, 0.2);
+	font-size: 15px;
+	color: rgba(27, 42, 51, 0.6);
+}
+
+/* O fim da escolha: o que ficou escolhido, e o botão. */
+.apit-ar__marcar-fim {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding-top: 20px;
+	border-top: 1px solid rgba(27, 42, 51, 0.12);
+}
+
+.apit-ar__marcar-resumo {
+	margin: 0;
+	font-weight: 500;
+	font-size: 16px;
+}
+
+.apit-ar__marcar-resumo:empty {
+	display: none;
+}
+
+.apit-ar .apit-ar__submeter:disabled {
+	opacity: 0.45;
+	cursor: not-allowed;
+}
+
+.apit-ar .apit-ar__submeter:disabled:hover {
+	background: var(--ar-magenta);
+	border-color: var(--ar-magenta);
+}
+
+/* A marcação feita: a ficha dos dados, e o estado em etiqueta. */
+.apit-ar__marcada .apit-ar__sucesso-icone.is-pendente {
+	background: var(--ar-roxo);
+	box-shadow: 0 0 0 12px rgba(128, 72, 166, 0.14);
+}
+
+.apit-ar__ficha {
+	width: 100%;
+	margin: 0 0 32px;
+	border-top: 1px solid rgba(27, 42, 51, 0.12);
+	text-align: left;
+}
+
+.apit-ar__ficha div {
+	display: grid;
+	grid-template-columns: 110px minmax(0, 1fr);
+	gap: 16px;
+	padding: 12px 0;
+	border-bottom: 1px solid rgba(27, 42, 51, 0.12);
+}
+
+.apit-ar__ficha dt {
+	font-size: 13px;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+	color: rgba(27, 42, 51, 0.6);
+}
+
+.apit-ar__ficha dd {
+	margin: 0;
+	font-size: 15px;
+}
+
+.apit-ar__estado {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 200px;
+	font-weight: 500;
+	font-size: 13px;
+}
+
+.apit-ar__estado--pendente {
+	background: rgba(128, 72, 166, 0.12);
+	color: #6a3790;
+}
+
+.apit-ar__estado--aprovada {
+	background: rgba(46, 198, 176, 0.14);
+	color: #13806f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.apit-ar__roda {
+		animation-duration: 2s;
+	}
+}
+
 /* ---------- Ecrãs estreitos ---------- */
 
 @media (max-width: 900px) {

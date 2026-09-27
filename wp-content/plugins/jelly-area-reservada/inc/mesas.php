@@ -238,18 +238,9 @@ add_action( 'admin_post_jelly_ar_horarios_guardar', 'jelly_ar_horarios_guardar' 
  * (templates/admin/mesas.php): com lugares livres, a equipa marca associados;
  * com marcações, remove-as ou muda-as para outro bloco. Cada associado afetado
  * recebe um e-mail (jelly_ar_email_marcacao()). As regras — os lugares da
- * mesa, ninguém em duas mesas à mesma hora — estão em inc/mesas-dados.php.
+ * mesa, ninguém em duas mesas à mesma hora — estão em inc/mesas-dados.php. O
+ * dia e a hora do pedido limpam-se com jelly_ar_bloco_pedido(), também lá.
  */
-
-/**
- * O dia (Y-m-d) e a hora (H:i) de um pedido, ou '' se não tiverem a forma certa.
- */
-function jelly_ar_bloco_pedido( $dia, $hora ) {
-	return [
-		preg_match( '/^\d{4}-\d{2}-\d{2}$/', $dia ) ? $dia : '',
-		preg_match( '/^([01]\d|2[0-3]):[0-5]\d$/', $hora ) ? $hora : '',
-	];
-}
 
 function jelly_ar_marcacao_criar() {
 	list( $evento, $voltar ) = jelly_ar_mesas_pedido( 'jelly_ar_marcacoes', 'grelha' );

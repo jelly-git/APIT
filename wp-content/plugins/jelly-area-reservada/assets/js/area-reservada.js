@@ -41,11 +41,29 @@
 
 	/* ---------- Abrir, fechar, trocar ---------- */
 
+	/*
+	 * A marcação de mesa tem uma âncora por evento, #area-reservada-marcar-<id>
+	 * (o botão dos cartões do calendário); o evento fica em marcarEvento.
+	 */
+	var MARCAR = /^#area-reservada-marcar-(\d+)$/;
+	var marcarEvento = null;
+
 	function painelDaAncora( hash ) {
+		var marcar = MARCAR.exec( hash );
+
+		if ( marcar ) {
+			marcarEvento = marcar[ 1 ];
+			return 'marcar';
+		}
+
 		return Object.prototype.hasOwnProperty.call( ANCORAS, hash ) ? ANCORAS[ hash ] : null;
 	}
 
 	function ancoraDoPainel( nome ) {
+		if ( 'marcar' === nome ) {
+			return '#area-reservada-marcar-' + marcarEvento;
+		}
+
 		var ancora = Object.keys( ANCORAS ).filter( function ( a ) {
 			return ANCORAS[ a ] === nome;
 		} )[ 0 ];
@@ -69,6 +87,11 @@
 
 		var primeiro = modal.querySelector( '[data-ar-painel="' + nome + '"] input' );
 		( primeiro || dialogo ).focus();
+
+		// A marcação pede ao servidor o que é do evento (mais abaixo).
+		if ( 'marcar' === nome ) {
+			carregarMarcacao( marcarEvento );
+		}
 	}
 
 	function abrir( nome ) {
@@ -94,6 +117,8 @@
 		modal.hidden = true;
 		document.body.classList.remove( 'apit-ar-aberto' );
 		escreverAncora( '' );
+		// Fechado sem entrar, a marcação à espera do login deixa de estar.
+		guardarPendente( null );
 		Array.prototype.forEach.call( modal.querySelectorAll( '[data-ar-form]' ), repor );
 
 		if ( origem && document.contains( origem ) ) {
@@ -127,7 +152,7 @@
 		}
 	} );
 
-	/* Links diretos e e-mails: a página abre já com o pop-up. */
+	/* Links diretos e e-mails: a página abre já com o pop-up (a primeira leitura está no fim do script). */
 	function lerAncora() {
 		var nome = painelDaAncora( window.location.hash );
 
@@ -137,7 +162,6 @@
 	}
 
 	window.addEventListener( 'hashchange', lerAncora );
-	lerAncora();
 
 	/* ---------- Teclado: Escape fecha, Tab não sai do pop-up ---------- */
 
@@ -331,6 +355,20 @@
 		var tipo = form.getAttribute( 'data-ar-form' );
 
 		if ( 'login' === tipo ) {
+			/*
+			 * Entrou a meio de uma marcação: fica nesta página e volta a ela,
+			 * agora com a sessão. A página recarrega (o cabeçalho e o pop-up
+			 * mudam com a sessão) e a âncora abre outra vez a marcação.
+			 */
+			var pendente = lerPendente();
+
+			if ( pendente ) {
+				guardarPendente( null );
+				window.history.replaceState( window.history.state, '', window.location.pathname + window.location.search + '#area-reservada-marcar-' + pendente );
+				window.location.reload();
+				return;
+			}
+
 			window.location.assign( dados.destino || window.location.href.split( '#' )[ 0 ] );
 			return;
 		}
@@ -481,4 +519,376 @@
 			login.user_pass.focus();
 		}, 0 );
 	} );
+
+	/* ---------- Marcação de mesa ---------- */
+
+	/*
+	 * O botão dos cartões do calendário abre este painel. O servidor diz o que
+	 * mostrar (inc/marcacoes.php): sem sessão, o login — e a marcação fica
+	 * guardada para depois de entrar; com a sessão de um associado, os dias, as
+	 * horas e as mesas com lugar, ou a marcação que já tem neste evento.
+	 *
+	 * A escolha é em três passos — dia, hora, mesa — e cada um só mostra o que
+	 * ainda tem lugar. Os lugares voltam a ser verificados no servidor.
+	 */
+	var marcar = modal.querySelector( '[data-ar-marcar]' );
+	var CHAVE_PENDENTE = 'apit-ar-marcar';
+
+	// A marcação à espera do login. O sessionStorage pode não existir (modo privado): sem ele, só não se volta à marcação.
+	function lerPendente() {
+		try {
+			return window.sessionStorage.getItem( CHAVE_PENDENTE );
+		} catch ( e ) {
+			return null;
+		}
+	}
+
+	function guardarPendente( id ) {
+		try {
+			if ( id ) {
+				window.sessionStorage.setItem( CHAVE_PENDENTE, id );
+			} else {
+				window.sessionStorage.removeItem( CHAVE_PENDENTE );
+			}
+		} catch ( e ) {}
+	}
+
+	var ESTADOS = {
+		pendente: 'A aguardar aprovação',
+		aprovada: 'Confirmada'
+	};
+
+	function el( tag, classe, texto ) {
+		var e = document.createElement( tag );
+
+		if ( classe ) {
+			e.className = classe;
+		}
+		if ( undefined !== texto ) {
+			e.textContent = texto;
+		}
+
+		return e;
+	}
+
+	function plural( n, um, varios ) {
+		return n + ' ' + ( 1 === n ? um : varios );
+	}
+
+	function parte( nome ) {
+		return marcar.querySelector( '[data-ar-marcar-' + nome + ']' );
+	}
+
+	// Mostra só uma das partes do painel: carregar, mensagem, form ou feita.
+	function mostrarParte( nome ) {
+		[ 'carregar', 'mensagem', 'form', 'feita' ].forEach( function ( p ) {
+			parte( p ).hidden = p !== nome;
+		} );
+	}
+
+	/*
+	 * A marcação feita — a de agora, ou a que já existia. Os passos acompanham o
+	 * estado: pendente fica na aprovação; aprovada, com os três feitos.
+	 */
+	function mostrarFeita( evento, m, agora ) {
+		var aprovada = 'aprovada' === m.estado;
+		var passos = parte( 'passos' );
+		var titulo = marcar.querySelector( '[data-ar-marcar-feita-titulo]' );
+
+		titulo.textContent = agora ? 'Pedido enviado' : ( aprovada ? 'Mesa confirmada' : 'Pedido em análise' );
+		marcar.querySelector( '[data-ar-marcar-feita-texto]' ).textContent = agora
+			? 'O pedido foi recebido e aguarda aprovação da APIT. Foi enviado um e-mail com os dados, e a confirmação segue da mesma forma.'
+			: ( aprovada
+				? 'A marcação neste evento está confirmada. Para a alterar, a APIT deve ser contactada através do endereço geral@apitv.com.'
+				: 'Já existe um pedido de marcação neste evento, que aguarda aprovação da APIT. Para o alterar, a APIT deve ser contactada através do endereço geral@apitv.com.' );
+
+		marcar.querySelector( '[data-ar-ficha-evento]' ).textContent = evento.titulo;
+		marcar.querySelector( '[data-ar-ficha-quando]' ).textContent = m.quando;
+		marcar.querySelector( '[data-ar-ficha-mesa]' ).textContent = m.mesa;
+
+		var estado = marcar.querySelector( '[data-ar-ficha-estado]' );
+		estado.textContent = ESTADOS[ m.estado ] || m.estado;
+		estado.className = 'apit-ar__estado apit-ar__estado--' + m.estado;
+
+		passos.querySelector( '[data-ar-passo-aprovacao]' ).className = aprovada ? 'is-feito' : 'is-atual';
+		passos.querySelector( '[data-ar-passo-confirmada]' ).className = aprovada ? 'is-feito' : '';
+		marcar.querySelector( '[data-ar-marcar-icone]' ).classList.toggle( 'is-pendente', ! aprovada );
+		marcar.querySelector( '[data-ar-marcar-icone] i' ).className = aprovada || agora ? 'fa-solid fa-check' : 'fa-solid fa-hourglass-half';
+
+		mostrarParte( 'feita' );
+		titulo.focus();
+	}
+
+	/* A escolha: os dias, as horas de um dia, as mesas de uma hora. */
+	var escolha = { dias: [], dia: null, hora: null };
+
+	function blocoAtual() {
+		var dia = escolha.dias.filter( function ( d ) {
+			return d.dia === escolha.dia;
+		} )[ 0 ];
+
+		return dia ? dia.blocos.filter( function ( b ) {
+			return b.hora === escolha.hora;
+		} )[ 0 ] : null;
+	}
+
+	function livresNoBloco( b ) {
+		return b.mesas.reduce( function ( soma, m ) {
+			return soma + m.livres;
+		}, 0 );
+	}
+
+	// Uma opção em pílula: um radio escondido e o rótulo desenhado.
+	function opcao( nome, valor, texto, extra, desligada, escolhida ) {
+		var rotulo = el( 'label', 'apit-ar__opcao' + ( desligada ? ' is-desligada' : '' ) );
+		var radio = el( 'input' );
+
+		radio.type = 'radio';
+		radio.name = nome;
+		radio.value = valor;
+		radio.disabled = !! desligada;
+		radio.checked = !! escolhida;
+
+		rotulo.appendChild( radio );
+		rotulo.appendChild( el( 'span', 'apit-ar__opcao-texto', texto ) );
+		if ( extra ) {
+			rotulo.appendChild( el( 'small', 'apit-ar__opcao-extra', extra ) );
+		}
+
+		return rotulo;
+	}
+
+	function desenharEscolha() {
+		var dias = parte( 'dias' );
+		var horas = parte( 'horas' );
+		var mesas = parte( 'mesas' );
+		var dia = escolha.dias.filter( function ( d ) {
+			return d.dia === escolha.dia;
+		} )[ 0 ];
+		var bloco = blocoAtual();
+
+		dias.textContent = '';
+		escolha.dias.forEach( function ( d ) {
+			var livres = d.blocos.reduce( function ( s, b ) {
+				return s + livresNoBloco( b );
+			}, 0 );
+
+			dias.appendChild( opcao( 'dia', d.dia, d.rotulo, livres ? '' : 'Completo', ! livres, d.dia === escolha.dia ) );
+		} );
+
+		horas.textContent = '';
+		( dia ? dia.blocos : [] ).forEach( function ( b ) {
+			var livres = livresNoBloco( b );
+
+			horas.appendChild( opcao( 'hora', b.hora, b.hora, '', ! livres, b.hora === escolha.hora ) );
+		} );
+
+		mesas.textContent = '';
+		parte( 'sem-hora' ).hidden = !! bloco;
+
+		( bloco ? bloco.mesas : [] ).forEach( function ( m ) {
+			var cartao = opcao(
+				'mesa',
+				m.id,
+				m.nome,
+				m.livres ? plural( m.livres, 'lugar livre', 'lugares livres' ) : 'Completa',
+				! m.livres,
+				1 === bloco.mesas.filter( function ( x ) {
+					return x.livres;
+				} ).length && m.livres
+			);
+
+			cartao.classList.add( 'apit-ar__mesa' );
+			if ( m.localizacao ) {
+				cartao.insertBefore( el( 'small', 'apit-ar__mesa-local', m.localizacao ), cartao.querySelector( '.apit-ar__opcao-extra' ) );
+			}
+			mesas.appendChild( cartao );
+		} );
+
+		acertarResumo();
+	}
+
+	function acertarResumo() {
+		var form = parte( 'form' );
+		var mesa = form.querySelector( 'input[name="mesa"]:checked' );
+		var bloco = blocoAtual();
+		var dia = escolha.dias.filter( function ( d ) {
+			return d.dia === escolha.dia;
+		} )[ 0 ];
+
+		form.querySelector( '[data-ar-marcar-enviar]' ).disabled = ! mesa;
+		parte( 'resumo' ).textContent = mesa && bloco
+			? dia.rotulo + ' · ' + bloco.hora + '–' + bloco.fim + ' · ' + mesa.parentNode.querySelector( '.apit-ar__opcao-texto' ).textContent
+			: '';
+	}
+
+	function mostrarEscolha( dados ) {
+		var form = parte( 'form' );
+
+		escolha.dias = dados.dias || [];
+		form.evento.value = dados.evento.id;
+		if ( dados.nonce ) {
+			form._wpnonce.value = dados.nonce;
+		}
+
+		if ( ! escolha.dias.length ) {
+			mostrarMensagem( 'De momento, não há horários disponíveis para marcação neste evento.' );
+			return;
+		}
+
+		// O primeiro dia com lugar, se o escolhido já não tiver.
+		var dia = escolha.dias.filter( function ( d ) {
+			return d.dia === escolha.dia;
+		} )[ 0 ];
+
+		if ( ! dia ) {
+			escolha.dia = ( escolha.dias.filter( function ( d ) {
+				return d.blocos.some( function ( b ) {
+					return livresNoBloco( b ) > 0;
+				} );
+			} )[ 0 ] || escolha.dias[ 0 ] ).dia;
+			escolha.hora = null;
+		}
+
+		var bloco = blocoAtual();
+		if ( bloco && ! livresNoBloco( bloco ) ) {
+			escolha.hora = null;
+		}
+
+		desenharEscolha();
+		mostrarParte( 'form' );
+	}
+
+	function mostrarMensagem( texto ) {
+		parte( 'mensagem' ).textContent = texto;
+		mostrarParte( 'mensagem' );
+	}
+
+	function carregarMarcacao( id ) {
+		var ajax = marcar.getAttribute( 'data-ar-ajax' );
+
+		escolha = { dias: [], dia: null, hora: null };
+		parte( 'titulo' ).textContent = 'Marcar mesa';
+		parte( 'evento' ).textContent = '';
+		parte( 'erro' ).hidden = true;
+		mostrarParte( 'carregar' );
+
+		fetch( ajax + '?action=jelly_ar_marcacao_dados&evento=' + encodeURIComponent( id ), { credentials: 'same-origin' } )
+			.then( function ( r ) {
+				return r.json();
+			} )
+			.then( function ( dados ) {
+				// Sem sessão: o login, e depois de entrar volta-se aqui.
+				if ( ! dados.sessao ) {
+					guardarPendente( id );
+					mostrarPainel( 'login' );
+					avisar( modal.querySelector( '[data-ar-form="login"]' ), 'Para marcar uma mesa, é necessário iniciar sessão na Área Reservada.', false );
+					return;
+				}
+
+				if ( dados.evento ) {
+					parte( 'titulo' ).textContent = dados.evento.titulo;
+					parte( 'evento' ).textContent = [ dados.evento.datas, dados.evento.local ].filter( Boolean ).join( ' · ' );
+				}
+
+				if ( dados.mensagem ) {
+					mostrarMensagem( dados.mensagem );
+				} else if ( dados.marcacao ) {
+					mostrarFeita( dados.evento, dados.marcacao, false );
+				} else {
+					mostrarEscolha( dados );
+				}
+			} )
+			.catch( function ( erro ) {
+				window.console.error( 'Área Reservada: a marcação não carregou', erro );
+				mostrarMensagem( 'Não foi possível carregar os horários. Verifique a ligação e tente de novo.' );
+			} );
+	}
+
+	if ( marcar ) {
+		var formMarcar = parte( 'form' );
+
+		formMarcar.addEventListener( 'change', function ( e ) {
+			var campo = e.target;
+
+			parte( 'erro' ).hidden = true;
+
+			if ( 'dia' === campo.name ) {
+				escolha.dia = campo.value;
+				escolha.hora = null;
+				desenharEscolha();
+			} else if ( 'hora' === campo.name ) {
+				escolha.hora = campo.value;
+				desenharEscolha();
+			} else {
+				acertarResumo();
+			}
+		} );
+
+		formMarcar.addEventListener( 'submit', function ( e ) {
+			var botao = formMarcar.querySelector( '[data-ar-marcar-enviar]' );
+			var rotulo = botao.querySelector( '[data-ar-rotulo]' );
+			var texto = rotulo.textContent;
+
+			e.preventDefault();
+
+			if ( botao.disabled || 'true' === botao.getAttribute( 'aria-busy' ) ) {
+				return;
+			}
+
+			botao.setAttribute( 'aria-busy', 'true' );
+			botao.disabled = true;
+			rotulo.textContent = 'A enviar…';
+
+			function terminar() {
+				botao.removeAttribute( 'aria-busy' );
+				rotulo.textContent = texto;
+				acertarResumo();
+			}
+
+			fetch( formMarcar.getAttribute( 'action' ), {
+				method: 'POST',
+				body: new FormData( formMarcar ),
+				credentials: 'same-origin'
+			} )
+				.then( function ( r ) {
+					return r.json();
+				} )
+				.then( function ( dados ) {
+					terminar();
+
+					if ( dados.sucesso ) {
+						mostrarFeita( { titulo: parte( 'titulo' ).textContent }, dados.marcacao, true );
+						return;
+					}
+
+					if ( false === dados.sessao ) {
+						guardarPendente( formMarcar.evento.value );
+						mostrarPainel( 'login' );
+						return;
+					}
+
+					// Os lugares mudaram: a escolha volta a desenhar-se com os de agora.
+					if ( dados.dias ) {
+						escolha.dias = dados.dias;
+						mostrarEscolha( { dias: dados.dias, evento: { id: formMarcar.evento.value } } );
+					}
+
+					parte( 'erro' ).textContent = dados.mensagem || 'Não foi possível fazer o pedido.';
+					parte( 'erro' ).hidden = false;
+				} )
+				.catch( function ( erro ) {
+					window.console.error( 'Área Reservada: o pedido de marcação não chegou ao servidor', erro );
+					terminar();
+					parte( 'erro' ).textContent = 'Não foi possível enviar o pedido. Verifique a ligação e tente de novo.';
+					parte( 'erro' ).hidden = false;
+				} );
+		} );
+	}
+
+	/*
+	 * Links diretos e e-mails: a página abre já com o pop-up. Só no fim, com
+	 * tudo o que os painéis usam já definido — a marcação também.
+	 */
+	lerAncora();
 }() );

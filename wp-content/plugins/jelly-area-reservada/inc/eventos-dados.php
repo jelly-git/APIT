@@ -116,15 +116,13 @@ function jelly_ar_evento_categoria_cores( $id ) {
 /* ---------- O botão do cartão ---------- */
 
 /**
- * Para onde leva o botão de um evento com marcações.
- *
- * Por agora, ao pop-up de login da área reservada. Quando existir a área das
- * marcações, um associado com sessão iniciada vai diretamente à marcação de
- * mesa deste evento — dia e hora — na página do perfil dele; quem não tiver
- * sessão continua a ir ao login. É esta função que muda, e só ela.
+ * Para onde leva o botão de um evento com marcações: ao pop-up da marcação de
+ * mesa desse evento. É o mesmo endereço com ou sem sessão, para a página poder
+ * vir de uma cache; o pop-up pergunta ao servidor no clique e mostra o login ou
+ * a escolha do dia, da hora e da mesa (inc/marcacoes.php).
  */
-function jelly_ar_url_marcacao( $evento ) {
-	return '#area-reservada';
+function jelly_ar_url_marcacao( $evento_id ) {
+	return '#area-reservada-marcar-' . (int) $evento_id;
 }
 
 /*

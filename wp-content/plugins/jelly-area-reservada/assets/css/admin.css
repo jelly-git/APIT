@@ -1209,7 +1209,8 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	color: #6a3790;
 }
 
-.jar-estado--suspenso {
+.jar-estado--suspenso,
+.jar-estado--cancelada {
 	background: rgba(27, 42, 51, 0.08);
 	color: rgba(27, 42, 51, 0.7);
 }
@@ -2874,4 +2875,87 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 .jar-horarios__sem {
 	color: var(--jar-suave);
 	font-style: italic;
+}
+
+/* ---------- Aprovações ---------- */
+
+/* A coluna das caixas de escolha: estreita, e a caixa sem a margem dos formulários. */
+.jar-tabela th.jar-tabela__escolha,
+.jar-tabela td.jar-tabela__escolha {
+	width: 1%;
+	padding-right: 0;
+}
+
+.jar-tabela__escolha .jar-caixa {
+	margin-top: 0;
+}
+
+.jar-tabela tr.is-escolhida {
+	background: rgba(244, 24, 146, 0.04);
+}
+
+/*
+ * A barra dos escolhidos, por cima da tabela: diz quantos estão escolhidos e
+ * leva os botões para os decidir de uma vez. Ganha cor quando há escolhidos.
+ */
+.jar-aprovacoes__barra {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 10px;
+	padding: 12px 24px;
+	border-top: 1px solid var(--jar-linha);
+	font-size: 14px;
+	color: var(--jar-suave);
+	transition: background 0.15s ease;
+}
+
+.jar-aprovacoes__barra > span {
+	flex: 1 1 auto;
+}
+
+.jar-aprovacoes__barra.is-ativa {
+	background: rgba(244, 24, 146, 0.05);
+	color: var(--jar-preto);
+}
+
+.jar-aprovacoes__local {
+	display: block;
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+/* A tabela larga as colunas pela ordem do que menos falta faz: a data do pedido, a mesa, o evento. */
+.jar-aprovacoes {
+	container-type: inline-size;
+}
+
+@container (max-width: 900px) {
+	.jar-aprovacoes .jar-col--data { display: none; }
+}
+
+@container (max-width: 760px) {
+	.jar-aprovacoes .jar-col--mesa { display: none; }
+}
+
+@container (max-width: 620px) {
+	.jar-aprovacoes .jar-col--evento { display: none; }
+}
+
+/* No telemóvel: o dia, a hora e a mesa por baixo do nome, e as colunas deles saem. */
+.jar-aprovacoes__movel {
+	display: none;
+}
+
+@container (max-width: 520px) {
+	.jar-aprovacoes .jar-col--quando,
+	.jar-aprovacoes .jar-col--estado {
+		display: none;
+	}
+
+	.jar-aprovacoes .jar-aprovacoes__movel {
+		display: block;
+		color: var(--jar-preto);
+	}
 }
