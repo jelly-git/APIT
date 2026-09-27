@@ -553,11 +553,6 @@
 		} catch ( e ) {}
 	}
 
-	var ESTADOS = {
-		pendente: 'A aguardar aprovação',
-		aprovada: 'Confirmada'
-	};
-
 	function el( tag, classe, texto ) {
 		var e = document.createElement( tag );
 
@@ -587,33 +582,56 @@
 	}
 
 	/*
-	 * A marcação feita — a de agora, ou a que já existia. Os passos acompanham o
-	 * estado: pendente fica na aprovação; aprovada, com os três feitos.
+	 * A marcação feita — a de agora, ou a que já existia: a faixa do estado, o
+	 * cartão com a data, as horas e a mesa, e os passos do pedido.
 	 */
 	function mostrarFeita( evento, m, agora ) {
 		var aprovada = 'aprovada' === m.estado;
-		var passos = parte( 'passos' );
 		var titulo = marcar.querySelector( '[data-ar-marcar-feita-titulo]' );
+		var local = marcar.querySelector( '[data-ar-bilhete-local]' );
+		var texto = function ( seletor, valor ) {
+			marcar.querySelector( seletor ).textContent = valor || '';
+		};
 
-		titulo.textContent = agora ? 'Pedido enviado' : ( aprovada ? 'Mesa confirmada' : 'Pedido em análise' );
-		marcar.querySelector( '[data-ar-marcar-feita-texto]' ).textContent = agora
-			? 'O pedido foi recebido e aguarda aprovação da APIT. Foi enviado um e-mail com os dados, e a confirmação segue da mesma forma.'
-			: ( aprovada
-				? 'A marcação neste evento está confirmada. Para a alterar, a APIT deve ser contactada através do endereço geral@apitv.com.'
-				: 'Já existe um pedido de marcação neste evento, que aguarda aprovação da APIT. Para o alterar, a APIT deve ser contactada através do endereço geral@apitv.com.' );
+		/* A faixa do estado: confirmada a turquesa, à espera a roxo. */
+		marcar.querySelector( '[data-ar-marcar-estado]' ).className = 'apit-ar__marcada-estado apit-ar__marcada-estado--' + ( aprovada ? 'aprovada' : 'pendente' );
+		marcar.querySelector( '[data-ar-marcar-icone]' ).className = aprovada || agora ? 'fa-solid fa-check' : 'fa-solid fa-hourglass-half';
+		titulo.textContent = aprovada ? 'Mesa confirmada' : ( agora ? 'Pedido enviado' : 'Pedido em análise' );
+		// "e‑mail" com o hífen que não parte: no telemóvel ficava "e-" numa linha e "mail" na outra.
+		texto( '[data-ar-marcar-feita-texto]', aprovada
+			? 'A marcação está confirmada. Os dados seguiram também por e‑mail.'
+			: 'O pedido aguarda aprovação da APIT. A confirmação segue por e‑mail.' );
 
-		marcar.querySelector( '[data-ar-ficha-evento]' ).textContent = evento.titulo;
-		marcar.querySelector( '[data-ar-ficha-quando]' ).textContent = m.quando;
-		marcar.querySelector( '[data-ar-ficha-mesa]' ).textContent = m.mesa;
+		/* O cartão da marcação. */
+		texto( '[data-ar-bilhete-mes]', m.mes );
+		texto( '[data-ar-bilhete-dia]', m.dia );
+		texto( '[data-ar-bilhete-ano]', m.ano );
+		texto( '[data-ar-bilhete-semana]', m.semana );
+		texto( '[data-ar-bilhete-horas]', m.horas );
+		texto( '[data-ar-bilhete-mesa]', m.mesa_nome || m.mesa );
+		local.hidden = ! m.mesa_local;
+		local.querySelector( 'span' ).textContent = m.mesa_local || '';
 
-		var estado = marcar.querySelector( '[data-ar-ficha-estado]' );
-		estado.textContent = ESTADOS[ m.estado ] || m.estado;
-		estado.className = 'apit-ar__estado apit-ar__estado--' + m.estado;
+		/*
+		 * Os passos: o pedido está sempre feito; a aprovação é o passo atual até
+		 * a APIT decidir; aprovada, os três ficam feitos, com o visto em vez do
+		 * número.
+		 */
+		var feitos = aprovada ? 3 : 1;
 
-		passos.querySelector( '[data-ar-passo-aprovacao]' ).className = aprovada ? 'is-feito' : 'is-atual';
-		passos.querySelector( '[data-ar-passo-confirmada]' ).className = aprovada ? 'is-feito' : '';
-		marcar.querySelector( '[data-ar-marcar-icone]' ).classList.toggle( 'is-pendente', ! aprovada );
-		marcar.querySelector( '[data-ar-marcar-icone] i' ).className = aprovada || agora ? 'fa-solid fa-check' : 'fa-solid fa-hourglass-half';
+		Array.prototype.forEach.call( marcar.querySelectorAll( '[data-ar-passo]' ), function ( li ) {
+			var n = parseInt( li.getAttribute( 'data-ar-passo' ), 10 );
+			var marca = li.querySelector( '.apit-ar__passo-marca' );
+
+			li.className = n <= feitos ? 'is-feito' : ( n === feitos + 1 ? 'is-atual' : '' );
+			marca.textContent = '';
+
+			if ( n <= feitos ) {
+				marca.appendChild( el( 'i', 'fa-solid fa-check' ) );
+			} else {
+				marca.textContent = n;
+			}
+		} );
 
 		mostrarParte( 'feita' );
 		titulo.focus();

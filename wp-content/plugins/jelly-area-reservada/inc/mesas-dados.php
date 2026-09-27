@@ -557,7 +557,7 @@ function jelly_ar_disponibilidade( $evento ) {
 			$d      = DateTime::createFromFormat( '!Y-m-d', $dia );
 			$dias[] = [
 				'dia'    => $dia,
-				'rotulo' => wp_date( 'D, j M', $d->getTimestamp() ),
+				'rotulo' => ucfirst( jelly_ar_data( 'D, j M', $d->getTimestamp() ) ),
 				'blocos' => $blocos,
 			];
 		}

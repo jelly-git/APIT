@@ -820,56 +820,198 @@ body.apit-ar-aberto {
 	border-color: var(--ar-magenta);
 }
 
-/* A marcação feita: a ficha dos dados, e o estado em etiqueta. */
-.apit-ar__marcada .apit-ar__sucesso-icone.is-pendente {
-	background: var(--ar-roxo);
-	box-shadow: 0 0 0 12px rgba(128, 72, 166, 0.14);
+/*
+ * A marcação feita, por ordem de leitura: a faixa do estado, o cartão da
+ * marcação, os passos do pedido e as ações.
+ */
+.apit-ar__marcada {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
 }
 
-.apit-ar__ficha {
-	width: 100%;
-	margin: 0 0 32px;
-	border-top: 1px solid rgba(27, 42, 51, 0.12);
-	text-align: left;
-}
-
-.apit-ar__ficha div {
-	display: grid;
-	grid-template-columns: 110px minmax(0, 1fr);
+/* A faixa do estado, na cor dele: turquesa confirmada, roxo à espera. */
+.apit-ar__marcada-estado {
+	display: flex;
+	align-items: center;
 	gap: 16px;
-	padding: 12px 0;
-	border-bottom: 1px solid rgba(27, 42, 51, 0.12);
+	padding: 18px 20px;
+	border-left: 3px solid var(--ar-turquesa);
+	background: rgba(46, 198, 176, 0.1);
 }
 
-.apit-ar__ficha dt {
+.apit-ar__marcada-estado--pendente {
+	border-left-color: var(--ar-roxo);
+	background: rgba(128, 72, 166, 0.08);
+}
+
+.apit-ar__marcada-icone {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: var(--ar-turquesa);
+	font-size: 18px;
+	color: #fff;
+}
+
+.apit-ar__marcada-estado--pendente .apit-ar__marcada-icone {
+	background: var(--ar-roxo);
+}
+
+.apit-ar__marcada-titulo {
+	margin: 0 0 2px;
+	font-family: var(--ar-fonte);
+	font-weight: 500;
+	font-size: 22px;
+	line-height: 1.2;
+	color: var(--ar-preto);
+	outline: none;
+}
+
+.apit-ar__marcada-texto {
+	margin: 0;
+	font-size: 15px;
+	line-height: 1.45;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+/*
+ * O cartão da marcação: a data em bloco à esquerda, no gradiente de marca, e
+ * à direita o dia da semana, as horas em destaque, a mesa e o sítio dela.
+ */
+.apit-ar__bilhete {
+	display: grid;
+	grid-template-columns: 96px minmax(0, 1fr);
+	border: 1px solid rgba(27, 42, 51, 0.12);
+}
+
+.apit-ar__bilhete-data {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 16px 8px;
+	background: linear-gradient(160deg, var(--ar-magenta), var(--ar-roxo));
+	color: #fff;
+	text-align: center;
+}
+
+.apit-ar__bilhete-data span {
+	font-weight: 500;
 	font-size: 13px;
-	letter-spacing: 0.6px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	opacity: 0.9;
+}
+
+.apit-ar__bilhete-data strong {
+	font-weight: 500;
+	font-size: 40px;
+	line-height: 1;
+	margin: 2px 0;
+}
+
+.apit-ar__bilhete-info {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 6px;
+	padding: 16px 20px;
+	min-width: 0;
+}
+
+.apit-ar__bilhete-semana {
+	font-size: 13px;
+	letter-spacing: 0.8px;
 	text-transform: uppercase;
 	color: rgba(27, 42, 51, 0.6);
 }
 
-.apit-ar__ficha dd {
-	margin: 0;
-	font-size: 15px;
+.apit-ar__bilhete-horas {
+	font-weight: 500;
+	font-size: 22px;
+	line-height: 1.2;
 }
 
-.apit-ar__estado {
-	display: inline-block;
-	padding: 3px 10px;
-	border-radius: 200px;
-	font-weight: 500;
+.apit-ar__bilhete-horas i {
+	margin-right: 4px;
+	font-size: 17px;
+	color: var(--ar-magenta);
+}
+
+.apit-ar__bilhete-linha {
+	font-size: 15px;
+	line-height: 1.35;
+}
+
+.apit-ar__bilhete-linha i {
+	width: 18px;
+	margin-right: 4px;
+	font-size: 13px;
+	color: rgba(27, 42, 51, 0.5);
+	text-align: center;
+}
+
+/* Os passos, mais pequenos do que no registo: aqui são contexto, não o assunto. */
+.apit-ar__passos--compacto {
+	margin: 0;
+}
+
+.apit-ar__passos--compacto li {
+	gap: 8px;
 	font-size: 13px;
 }
 
-.apit-ar__estado--pendente {
-	background: rgba(128, 72, 166, 0.12);
-	color: #6a3790;
+.apit-ar__passos--compacto .apit-ar__passo-marca {
+	width: 30px;
+	height: 30px;
+	font-size: 13px;
 }
 
-.apit-ar__estado--aprovada {
-	background: rgba(46, 198, 176, 0.14);
-	color: #13806f;
+.apit-ar__passos--compacto li:not(:last-child)::after {
+	top: 14px;
+	left: calc(50% + 20px);
+	right: calc(-50% + 20px);
 }
+
+.apit-ar__marcada-acoes {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	padding-top: 20px;
+	border-top: 1px solid rgba(27, 42, 51, 0.12);
+}
+
+.apit-ar__marcada-acoes .apit-ar__submeter {
+	margin-top: 0;
+}
+
+.apit-ar__marcada-contacto {
+	margin: 0;
+	font-size: 14px;
+	line-height: 1.45;
+	color: rgba(27, 42, 51, 0.7);
+	text-align: center;
+}
+
+@media (max-width: 480px) {
+	.apit-ar__bilhete {
+		grid-template-columns: 78px minmax(0, 1fr);
+	}
+
+	.apit-ar__bilhete-data strong {
+		font-size: 32px;
+	}
+
+	.apit-ar__bilhete-info {
+		padding: 14px 16px;
+	}
+}
+
 
 @media (prefers-reduced-motion: reduce) {
 	.apit-ar__roda {

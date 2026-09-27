@@ -30,7 +30,7 @@ $dia_erro = isset( $_GET['dia'] ) ? sanitize_text_field( wp_unslash( $_GET['dia'
 $dia_curto = function ( $ymd ) {
 	$d = DateTime::createFromFormat( '!Y-m-d', $ymd );
 
-	return $d ? wp_date( 'D, j M', $d->getTimestamp() ) : $ymd;
+	return $d ? ucfirst( jelly_ar_data( 'D, j M', $d->getTimestamp() ) ) : $ymd;
 };
 
 // Quantas marcações fez o pedido, e quantos e-mails não saíram.

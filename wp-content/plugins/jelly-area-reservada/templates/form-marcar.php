@@ -67,28 +67,53 @@ $ajax = wp_make_link_relative( admin_url( 'admin-ajax.php' ) );
 
 	<?php
 	/*
-	 * O pedido enviado, ou a marcação que já existia neste evento: o resumo e o
-	 * estado. O JavaScript escolhe o título, o texto e os passos.
+	 * O pedido enviado, ou a marcação que já existia neste evento, por ordem de
+	 * leitura: o estado (a faixa de cima, na cor dele), a marcação (o cartão com
+	 * a data, as horas e a mesa), o caminho do pedido e as ações. O evento não
+	 * se repete: está no título do painel. O JavaScript escolhe o estado e
+	 * preenche o cartão.
 	 */
 	?>
-	<div class="apit-ar__sucesso apit-ar__marcada" data-ar-marcar-feita role="status" hidden>
-		<span class="apit-ar__sucesso-icone" aria-hidden="true" data-ar-marcar-icone><i class="fa-solid fa-check"></i></span>
-		<h3 class="apit-ar__sucesso-titulo" tabindex="-1" data-ar-marcar-feita-titulo></h3>
-		<p class="apit-ar__sucesso-texto" data-ar-marcar-feita-texto></p>
+	<div class="apit-ar__marcada" data-ar-marcar-feita hidden>
+		<div class="apit-ar__marcada-estado" data-ar-marcar-estado role="status">
+			<span class="apit-ar__marcada-icone" aria-hidden="true"><i class="fa-solid fa-check" data-ar-marcar-icone></i></span>
+			<div>
+				<h3 class="apit-ar__marcada-titulo" tabindex="-1" data-ar-marcar-feita-titulo></h3>
+				<p class="apit-ar__marcada-texto" data-ar-marcar-feita-texto></p>
+			</div>
+		</div>
 
-		<dl class="apit-ar__ficha">
-			<div><dt><?php esc_html_e( 'Evento', 'jelly-area-reservada' ); ?></dt><dd data-ar-ficha-evento></dd></div>
-			<div><dt><?php esc_html_e( 'Data', 'jelly-area-reservada' ); ?></dt><dd data-ar-ficha-quando></dd></div>
-			<div><dt><?php esc_html_e( 'Mesa', 'jelly-area-reservada' ); ?></dt><dd data-ar-ficha-mesa></dd></div>
-			<div><dt><?php esc_html_e( 'Estado', 'jelly-area-reservada' ); ?></dt><dd><span class="apit-ar__estado" data-ar-ficha-estado></span></dd></div>
-		</dl>
+		<div class="apit-ar__bilhete">
+			<div class="apit-ar__bilhete-data" aria-hidden="true">
+				<span data-ar-bilhete-mes></span>
+				<strong data-ar-bilhete-dia></strong>
+				<span data-ar-bilhete-ano></span>
+			</div>
+			<div class="apit-ar__bilhete-info">
+				<span class="apit-ar__bilhete-semana" data-ar-bilhete-semana></span>
+				<strong class="apit-ar__bilhete-horas"><i class="fa-regular fa-clock" aria-hidden="true"></i> <span data-ar-bilhete-horas></span></strong>
+				<span class="apit-ar__bilhete-linha"><i class="fa-solid fa-chair" aria-hidden="true"></i> <span data-ar-bilhete-mesa></span></span>
+				<span class="apit-ar__bilhete-linha" data-ar-bilhete-local><i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span></span></span>
+			</div>
+		</div>
 
-		<ol class="apit-ar__passos" data-ar-marcar-passos>
-			<li class="is-feito"><span class="apit-ar__passo-marca" aria-hidden="true"><i class="fa-solid fa-check"></i></span> <?php esc_html_e( 'Pedido enviado', 'jelly-area-reservada' ); ?></li>
-			<li data-ar-passo-aprovacao><span class="apit-ar__passo-marca" aria-hidden="true">2</span> <?php esc_html_e( 'Aprovação pela APIT', 'jelly-area-reservada' ); ?></li>
-			<li data-ar-passo-confirmada><span class="apit-ar__passo-marca" aria-hidden="true">3</span> <?php esc_html_e( 'Mesa confirmada', 'jelly-area-reservada' ); ?></li>
+		<ol class="apit-ar__passos apit-ar__passos--compacto" data-ar-marcar-passos aria-label="<?php esc_attr_e( 'Estado do pedido', 'jelly-area-reservada' ); ?>">
+			<li data-ar-passo="1"><span class="apit-ar__passo-marca" aria-hidden="true">1</span> <?php esc_html_e( 'Pedido enviado', 'jelly-area-reservada' ); ?></li>
+			<li data-ar-passo="2"><span class="apit-ar__passo-marca" aria-hidden="true">2</span> <?php esc_html_e( 'Aprovação pela APIT', 'jelly-area-reservada' ); ?></li>
+			<li data-ar-passo="3"><span class="apit-ar__passo-marca" aria-hidden="true">3</span> <?php esc_html_e( 'Mesa confirmada', 'jelly-area-reservada' ); ?></li>
 		</ol>
 
-		<button type="button" class="btn btn--solid apit-ar__submeter" data-ar-fechar><?php esc_html_e( 'Fechar', 'jelly-area-reservada' ); ?></button>
+		<div class="apit-ar__marcada-acoes">
+			<button type="button" class="btn btn--solid apit-ar__submeter" data-ar-fechar><?php esc_html_e( 'Fechar', 'jelly-area-reservada' ); ?></button>
+			<p class="apit-ar__marcada-contacto">
+				<?php
+				printf(
+					/* translators: %s: e-mail da APIT */
+					esc_html__( 'Para alterar ou cancelar a marcação, a APIT deve ser contactada através do endereço %s.', 'jelly-area-reservada' ),
+					'<a class="apit-ar__link" href="mailto:geral@apitv.com">geral@apitv.com</a>'
+				);
+				?>
+			</p>
+		</div>
 	</div>
 </div>

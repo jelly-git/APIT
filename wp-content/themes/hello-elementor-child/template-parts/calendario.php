@@ -184,7 +184,8 @@ $mostrar_setas = 'carrossel' === $layout;
 						<?php // The badge keeps the day the event starts; the full span is in the line under the title. ?>
 						<?php if ( $timestamp ) : ?>
 							<time class="evento-card__date" datetime="<?php echo esc_attr( gmdate( 'Y-m-d', $timestamp ) ); ?>">
-								<span class="evento-card__month"><?php echo esc_html( date_i18n( 'F', $timestamp ) ); ?></span>
+								<?php // In Portuguese from the plugin, which doesn't rely on WordPress's translations being installed on the server. ?>
+								<span class="evento-card__month"><?php echo esc_html( function_exists( 'jelly_ar_data' ) ? ucfirst( jelly_ar_data( 'F', $timestamp ) ) : date_i18n( 'F', $timestamp ) ); ?></span>
 								<span class="evento-card__day"><?php echo esc_html( date_i18n( 'd', $timestamp ) ); ?></span>
 							</time>
 						<?php endif; ?>

@@ -59,7 +59,7 @@ $pendentes_na_pagina = array_filter( $lista, function ( $m ) {
 $quando = function ( $m ) {
 	$d = DateTime::createFromFormat( '!Y-m-d', $m['dia'] );
 
-	return ( $d ? wp_date( 'D, j M', $d->getTimestamp() ) : $m['dia'] ) . ' · ' . $m['hora'];
+	return ( $d ? ucfirst( jelly_ar_data( 'D, j M', $d->getTimestamp() ) ) : $m['dia'] ) . ' · ' . $m['hora'];
 };
 ?>
 <div class="jar-cabeca">

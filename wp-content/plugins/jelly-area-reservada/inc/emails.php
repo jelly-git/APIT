@@ -326,8 +326,8 @@ function jelly_ar_email_quando( $dia, $hora, $intervalo ) {
 	return sprintf(
 		/* translators: 1: dia, 2: hora de início, 3: hora de fim */
 		__( '%1$s, das %2$s às %3$s', 'jelly-area-reservada' ),
-		// Os meses em minúscula, como se escrevem em português ("7 de outubro").
-		$d ? mb_strtolower( wp_date( 'j \d\e F \d\e Y', $d->getTimestamp() ) ) : $dia,
+		// Em português mesmo sem as traduções do WordPress ("7 de outubro"): jelly_ar_data().
+		$d ? jelly_ar_data( 'j \d\e F \d\e Y', $d->getTimestamp() ) : $dia,
 		$hora,
 		sprintf( '%02d:%02d', intdiv( $fim, 60 ), $fim % 60 )
 	);

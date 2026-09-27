@@ -282,7 +282,7 @@ function jelly_ar_eventos_pesquisa( $termo, $limite = 50, $por_pagina = 12 ) {
 			'titulo'   => $e['titulo'],
 			'url'      => $url,
 			'contexto' => implode( ' · ', array_filter( [
-				$data ? wp_date( 'j \d\e F \d\e Y', $data->getTimestamp() ) : '',
+				$data ? jelly_ar_data( 'j \d\e F \d\e Y', $data->getTimestamp() ) : '',
 				$e['local'],
 			] ) ),
 			'externo'  => false,
@@ -298,6 +298,59 @@ function jelly_ar_eventos_pesquisa( $termo, $limite = 50, $por_pagina = 12 ) {
  *
  *   12 out 2026 · 6–9 out 2026 · 30 nov – 3 dez 2026 · 30 dez 2026 – 2 jan 2027
  */
+/**
+ * Uma data em português, sem depender das traduções do WordPress: num servidor
+ * sem o pacote pt_PT, o wp_date() dá "october" e "Wed". Aceita as letras do
+ * date() que a AR usa — D (qua), l (quarta-feira), j, d, M (out), F (outubro),
+ * Y, H, i — e \ para escrever uma letra tal como está ("j \d\e F").
+ * Os dias e os meses vão em minúscula, como se escrevem em português.
+ */
+function jelly_ar_data( $formato, $timestamp ) {
+	$meses  = [ 'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro' ];
+	$curtos = [ 'jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez' ];
+	$dias   = [ 'domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado' ];
+	$dcurto = [ 'dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb' ];
+
+	// As datas da AR são dias do calendário, sem fuso: lidas tal como estão.
+	$d = ( new DateTime( '@' . (int) $timestamp ) )->setTimezone( new DateTimeZone( 'UTC' ) );
+	$r = '';
+
+	for ( $i = 0, $n = strlen( $formato ); $i < $n; $i++ ) {
+		$c = $formato[ $i ];
+
+		if ( '\\' === $c && $i + 1 < $n ) {
+			$r .= $formato[ ++$i ];
+			continue;
+		}
+
+		switch ( $c ) {
+			case 'D':
+				$r .= $dcurto[ (int) $d->format( 'w' ) ];
+				break;
+			case 'l':
+				$r .= $dias[ (int) $d->format( 'w' ) ];
+				break;
+			case 'M':
+				$r .= $curtos[ (int) $d->format( 'n' ) - 1 ];
+				break;
+			case 'F':
+				$r .= $meses[ (int) $d->format( 'n' ) - 1 ];
+				break;
+			case 'j':
+			case 'd':
+			case 'Y':
+			case 'H':
+			case 'i':
+				$r .= $d->format( $c );
+				break;
+			default:
+				$r .= $c;
+		}
+	}
+
+	return $r;
+}
+
 function jelly_ar_intervalo_datas( $inicio, $fim ) {
 	$a = DateTime::createFromFormat( '!Ymd', (string) $inicio );
 	$b = DateTime::createFromFormat( '!Ymd', (string) $fim );
@@ -307,7 +360,7 @@ function jelly_ar_intervalo_datas( $inicio, $fim ) {
 	}
 
 	$mes = function ( $d ) {
-		return rtrim( mb_strtolower( date_i18n( 'M', $d->getTimestamp() ) ), '.' );
+		return jelly_ar_data( 'M', $d->getTimestamp() );
 	};
 
 	if ( ! $b || $b <= $a ) {

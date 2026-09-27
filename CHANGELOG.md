@@ -266,6 +266,28 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.46.1] - 2026-09-27
+
+Plugin `jelly-area-reservada` 0.10.1. A base de dados não muda.
+
+### Alterado
+- A marcação feita, no pop-up, foi reorganizada por ordem de leitura:
+  - uma faixa com o estado, na cor dele: "Mesa confirmada" a turquesa, "Pedido
+    enviado" ou "Pedido em análise" a roxo;
+  - um cartão com a marcação: a data em bloco (mês, dia, ano) no gradiente de
+    marca, e ao lado o dia da semana, as horas em destaque, a mesa e o sítio
+    dela;
+  - os três passos do pedido, mais pequenos, com o visto nos que estão feitos
+    (antes mostravam o número mesmo depois de feitos);
+  - Fechar, e por baixo o contacto para alterar ou cancelar.
+  - O evento já não se repete: está no título do painel.
+
+### Corrigido
+- As datas saíam em inglês ("7 oct 2026", "7 de october") num servidor sem as
+  traduções portuguesas do WordPress instaladas. A AR e o mês dos cartões do
+  calendário passam a usar os nomes dos dias e dos meses do próprio plugin
+  (`jelly_ar_data()`), e ficam em português em qualquer servidor.
+
 ## [0.46.0] - 2026-09-27
 
 Plugin `jelly-area-reservada` 0.10.0. O tema e o esquema da base de dados não

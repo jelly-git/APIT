@@ -33,10 +33,22 @@ function jelly_ar_marcacao_resumo( $evento, $marcacao ) {
 		}
 	}
 
+	$d   = DateTime::createFromFormat( '!Y-m-d', $marcacao['dia'] );
+	$ts  = $d ? $d->getTimestamp() : 0;
+	$fim = jelly_ar_minutos( $marcacao['hora'] ) + $intervalo;
+
 	return [
-		'quando' => jelly_ar_email_quando( $marcacao['dia'], $marcacao['hora'], $intervalo ),
-		'mesa'   => $mesa ? jelly_ar_email_mesa( $mesa ) : '—',
-		'estado' => $marcacao['estado'],
+		'quando'     => jelly_ar_email_quando( $marcacao['dia'], $marcacao['hora'], $intervalo ),
+		'mesa'       => $mesa ? jelly_ar_email_mesa( $mesa ) : '—',
+		'estado'     => $marcacao['estado'],
+		// Em partes, para o cartão da marcação no pop-up: a data em bloco, as horas e a mesa.
+		'semana'     => $ts ? jelly_ar_data( 'l', $ts ) : '',
+		'dia'        => $ts ? jelly_ar_data( 'j', $ts ) : '',
+		'mes'        => $ts ? jelly_ar_data( 'M', $ts ) : '',
+		'ano'        => $ts ? jelly_ar_data( 'Y', $ts ) : '',
+		'horas'      => $marcacao['hora'] . ' – ' . sprintf( '%02d:%02d', intdiv( $fim, 60 ), $fim % 60 ),
+		'mesa_nome'  => $mesa ? $mesa['nome'] : '—',
+		'mesa_local' => $mesa ? $mesa['localizacao'] : '',
 	];
 }
 
