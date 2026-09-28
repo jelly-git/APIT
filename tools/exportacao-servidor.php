@@ -16,8 +16,12 @@
  *    tabela temporária antes e repostas no fim — com o valor que lá tinham;
  *  - os termos da taxonomia `jelly_ar_doc_categoria`, restos órfãos de uma
  *    versão antiga do plugin, que já não a regista;
- *  - o diagnóstico do último envio falhado do WP Mail SMTP, com o IP e o nome
- *    desta máquina.
+ *  - a configuração do envio de e-mail (as opções `wp_mail_smtp*` do WP Mail
+ *    SMTP e os transientes dele): o envio é o de cada servidor — em produção
+ *    é o PHP, porque o SMTP era bloqueado lá —, e nunca muda com uma versão
+ *    da base de dados. Como as da AR, as do servidor são guardadas antes e
+ *    repostas no fim. Vai com elas o diagnóstico do último envio falhado, com
+ *    o IP e o nome desta máquina.
  *
  * E os endereços escapados dentro do JSON do Elementor (`http:\\/\\/apit.local`),
  * que o search-replace não apanha. Feito aqui e não em sed: o padrão é feito de
@@ -43,7 +47,7 @@ $s = str_replace( 'http:' . $b . $b . 'apit.local', 'https:' . $b . $b . 'dev.je
 preg_match_all( "~^\('\d+', '(\d+)', 'jelly_ar_[^']*',~m", $s, $m );
 
 $fora = array(
-	'wp_options'       => "~^\('\d+', '(jelly_ar_[^']*|_transient_[^']*jelly_ar_[^']*|wp_mail_smtp_email_sending_debug)',~",
+	'wp_options'       => "~^\('\d+', '(jelly_ar_[^']*|_transient_[^']*jelly_ar_[^']*|wp_mail_smtp[^']*|_transient_[^']*wp_mail_smtp[^']*)',~",
 	'wp_term_taxonomy' => "~^\('\d+', '\d+', 'jelly_ar_[^']*',~",
 	'wp_terms'         => $m[1] ? "~^\('(" . implode( '|', $m[1] ) . ")', ~" : null,
 );
@@ -90,9 +94,10 @@ $inicio = "SET @OLD_SQL_MODE = @@SQL_MODE;\n"
 	. "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';\n"
 	. "SET NAMES utf8mb4;\n"
 	. "SET FOREIGN_KEY_CHECKS = 0;\n"
-	. "-- As opcoes da Area Reservada que estiverem no servidor ficam como estao:\n"
-	. "-- a wp_options e substituida abaixo, e estas linhas voltam no fim.\n"
-	. "CREATE TEMPORARY TABLE apit_ar_opcoes SELECT option_name, option_value, autoload FROM wp_options WHERE option_name LIKE 'jelly\\_ar\\_%' OR option_name LIKE '\\_transient\\_%jelly\\_ar\\_%';\n";
+	. "-- As opcoes da Area Reservada e as do envio de e-mail (WP Mail SMTP) que\n"
+	. "-- estiverem no servidor ficam como estao: a wp_options e substituida\n"
+	. "-- abaixo, e estas linhas voltam no fim.\n"
+	. "CREATE TEMPORARY TABLE apit_ar_opcoes SELECT option_name, option_value, autoload FROM wp_options WHERE option_name LIKE 'jelly\\_ar\\_%' OR option_name LIKE '\\_transient\\_%jelly\\_ar\\_%' OR option_name LIKE 'wp\\_mail\\_smtp%' OR option_name LIKE '\\_transient\\_%wp\\_mail\\_smtp%';\n";
 
 $fim = "INSERT INTO wp_options (option_name, option_value, autoload) SELECT option_name, option_value, autoload FROM apit_ar_opcoes ON DUPLICATE KEY UPDATE option_value = VALUES(option_value), autoload = VALUES(autoload);\n"
 	. "DROP TEMPORARY TABLE apit_ar_opcoes;\n"

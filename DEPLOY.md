@@ -60,10 +60,13 @@ O tema filho não funciona sozinho. Instalar antes do primeiro deploy:
 | Plugin `wp-mail-smtp` | 4.9.0 |
 
 O **WP Mail SMTP** é gratuito (`wp plugin install wp-mail-smtp --version=4.9.0
---activate`). A configuração do envio viaja na base de dados, na opção
-`wp_mail_smtp` — incluindo a palavra-passe, cifrada com a chave da opção
-`wp_mail_smtp_mail_key`. Os e-mails da Área Reservada saem por ele; sem SMTP
-autenticado, o back-office da AR mostra um aviso.
+--activate`). **A configuração do envio é a de cada servidor e nunca viaja na
+base de dados**: as opções `wp_mail_smtp*` (a configuração, a chave
+`wp_mail_smtp_mail_key`, os contadores) e as tabelas `wp_wpmailsmtp_*` ficam de
+fora da exportação, e as do servidor são guardadas e repostas na importação
+(secção 3). Em produção o envio é o **PHP** (`mail()`), escolhido a 28 de
+setembro de 2026 porque o SMTP estava a ser bloqueado no servidor: muda-se lá,
+no WP Mail SMTP, e não aqui. Os e-mails da Área Reservada saem por ele.
 
 Por SSH, se houver WP-CLI no servidor:
 
@@ -300,7 +303,8 @@ O que fica fora do ficheiro, e porquê:
 | as tabelas `wp_jelly_ar_*` | são a Área Reservada |
 | `wp_users`, `wp_usermeta` | os associados são utilizadores; e os administradores de produção são os de produção |
 | `wp_gf_entry*`, `wp_gf_draft_submissions` | as respostas aos formulários (Media Kit) recebidas em produção |
-| `wp_wpmailsmtp_debug_events` | falhas de envio desta máquina |
+| `wp_wpmailsmtp_*` (`debug_events`, `tasks_meta`) | o envio de e-mail é o de cada servidor |
+| as opções `wp_mail_smtp*` e os transientes dele | a configuração do envio de produção (o PHP) fica como está: guardadas antes e repostas depois, como as da AR |
 | as opções `jelly_ar_*` e os transientes da AR | a `wp_options` é substituída inteira; estas são guardadas antes e repostas depois, com o valor que tinham no servidor |
 | os termos `jelly_ar_doc_categoria` | restos órfãos de uma versão antiga do plugin |
 
@@ -320,7 +324,7 @@ cd "C:\Users\faust\Local Sites\apit"
 # conhece, e as do Gravity Forms caíam em silêncio — o formulário do Media Kit
 # ficava fora sem aviso nenhum.
 TABELAS=$(wp db tables --all-tables-with-prefix --format=csv | tr ',' '\n' | tr -d '\r' \
-  | grep -v -E '^wp_(jelly_ar_.*|users|usermeta|wpmailsmtp_debug_events|gf_entry|gf_entry_meta|gf_entry_notes|gf_draft_submissions)$')
+  | grep -v -E '^wp_(jelly_ar_.*|users|usermeta|wpmailsmtp_.*|gf_entry|gf_entry_meta|gf_entry_notes|gf_draft_submissions)$')
 
 # troca os URLs e escreve o ficheiro, sem tocar na base de dados local.
 # --precise porque os dados do Elementor estão serializados.
@@ -329,8 +333,8 @@ wp search-replace "http://apit.local" "https://dev.jellycode.agency/apit" \
 
 # O resto é texto: os endereços escapados dentro do JSON do Elementor, que o
 # comando acima não apanha; as linhas da AR que estão em tabelas partilhadas;
-# o diagnóstico do SMTP; e o cabeçalho (SQL_MODE, e guardar/repor as opções da
-# AR que estiverem no servidor). O porquê de cada um está no próprio script.
+# as opções do WP Mail SMTP; e o cabeçalho (SQL_MODE, e guardar/repor as opções
+# da AR e do SMTP que estiverem no servidor). O porquê de cada um está no próprio script.
 php app/public/tools/exportacao-servidor.php bd-sem-cabecalho.sql apit-bd-para-servidor.sql
 rm bd-sem-cabecalho.sql
 
@@ -341,17 +345,19 @@ grep -c "autosave-v1" $F                                   # 0
 grep -c "email_sending_debug" $F                           # 0
 grep -c "'_elementor_css'" $F                              # 0
 grep -v apit_ar_opcoes $F | grep -c "jelly_ar"             # 0
+grep -v apit_ar_opcoes $F | grep -c "wp_mail_smtp"         # 0
+grep -c "wpmailsmtp" $F                                   # 0
 grep -c -E 'TABLE[^`]*`wp_(jelly_ar_|users|usermeta)' $F   # 0
 grep -c -E "demo-|example\.test|192\.0\.2\." $F            # 0
-grep -c "CREATE TABLE" $F                                  # 20
+grep -c "CREATE TABLE" $F                                  # 19
 
 # arquivar a cópia versionada, com a versão lida do próprio tema
 VERSAO=$(sed -n 's/^Version: //p' app/public/wp-content/themes/hello-elementor-child/style.css | tr -d '\r')
 cp $F "bd/apit-bd-v$VERSAO-$(date +%F).sql"
 ```
 
-As 20 tabelas: 11 do WordPress, 4 do Gravity Forms (o formulário), 4 do Action
-Scheduler, a `wp_e_events` do Elementor e a `wp_wpmailsmtp_tasks_meta`.
+As 19 tabelas: 11 do WordPress, 4 do Gravity Forms (o formulário), 4 do Action
+Scheduler e a `wp_e_events` do Elementor.
 
 ### 3.3 Provar por importação
 
@@ -360,13 +366,14 @@ produção — com as tabelas da AR e os utilizadores já lá dentro — e ver q
 saem da importação exactamente como entraram:
 
 1. criar `apit_prova` e copiar para lá, da BD local, as tabelas `wp_jelly_ar_*`,
-   `wp_users`, `wp_usermeta`, `wp_gf_entry*` e `wp_wpmailsmtp_debug_events`;
-   criar a `wp_options` com uma `jelly_ar_db_version` de valor **diferente** do
-   local (por exemplo `9`), para se ver qual sobrevive;
+   `wp_users`, `wp_usermeta`, `wp_gf_entry*` e `wp_wpmailsmtp_*`; criar a
+   `wp_options` com uma `jelly_ar_db_version` de valor **diferente** do local
+   (por exemplo `9`) e uma `wp_mail_smtp` como a de produção (o envio pelo
+   PHP, `mailer` = `mail`), para se ver quais sobrevivem;
 2. tirar `CHECKSUM TABLE` e a contagem de cada uma;
 3. importar `apit-bd-para-servidor.sql`;
-4. repetir o `CHECKSUM TABLE`: **zero diferenças**, e a `jelly_ar_db_version`
-   continua `9`;
+4. repetir o `CHECKSUM TABLE`: **zero diferenças**; a `jelly_ar_db_version`
+   continua `9`, e a `wp_mail_smtp` continua a de produção;
 5. contagens de `wp_posts`, `wp_postmeta`, `wp_options` e `wp_gf_form` iguais às
    do local, e nenhum `post_content` a diferir fora da troca de URLs;
 6. decodificar o `_elementor_data` de cada página já importado, lendo por
@@ -396,8 +403,8 @@ das classes CSS que o tema dessa versão define.
 Área Reservada e os utilizadores, e importá-las apagava os de produção.
 
 Nada disto entra no git. As exportações antigas contêm a `wp_users`, e com ela
-o *hash* da palavra-passe do administrador; as novas levam a configuração do
-WP Mail SMTP, com a palavra-passe do correio cifrada.
+o *hash* da palavra-passe do administrador, e as feitas até à v0.60.1 a
+configuração do WP Mail SMTP, com a palavra-passe do correio cifrada.
 
 > **Substitui** o conteúdo do site em `agencydevjellyc_apit` — páginas,
 > notícias, multimédia, menus, opções, o formulário — **e mais nada**. A Área
