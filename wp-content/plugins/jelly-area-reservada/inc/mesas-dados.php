@@ -842,3 +842,53 @@ function jelly_ar_disponibilidade_estado( $evento ) {
 
 	return [ 'estado' => $livres ? 'disponivel' : 'completo', 'livres' => $livres ];
 }
+
+/* ---------- O calendário ---------- */
+
+/**
+ * As marcações vivas (pendentes e confirmadas) entre dois dias, para o
+ * Calendário do back-office: [ Y-m-d => [ marcações, pela hora ] ], cada uma
+ * com o associado, o evento e a mesa. Com $evento_id, só as desse evento.
+ */
+function jelly_ar_marcacoes_entre( $de, $ate, $evento_id = 0 ) {
+	global $wpdb;
+
+	$c = jelly_ar_tabela( 'marcacoes' );
+	$a = jelly_ar_tabela( 'associados' );
+	$e = jelly_ar_tabela( 'eventos' );
+	$m = jelly_ar_tabela( 'mesas' );
+
+	$onde = $evento_id ? $wpdb->prepare( ' AND c.evento_id = %d', $evento_id ) : '';
+
+	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+	$linhas = $wpdb->get_results(
+		$wpdb->prepare(
+			"SELECT c.id, c.evento_id, c.dia, c.hora, c.estado, a.nome, a.apelido, a.empresa, e.titulo AS evento, e.categoria_id, m.nome AS mesa, m.localizacao
+			FROM {$c} c
+			LEFT JOIN {$a} a ON a.user_id = c.user_id
+			LEFT JOIN {$e} e ON e.id = c.evento_id
+			LEFT JOIN {$m} m ON m.id = c.mesa_id
+			WHERE c.ocupa = 1 AND c.dia BETWEEN %s AND %s{$onde}
+			ORDER BY c.dia, c.hora, m.ordem, c.id",
+			$de,
+			$ate
+		)
+	);
+
+	$r = [];
+	foreach ( $linhas as $l ) {
+		$r[ $l->dia ][] = [
+			'id'          => (int) $l->id,
+			'evento_id'   => (int) $l->evento_id,
+			'evento'      => (string) $l->evento,
+			'hora'        => substr( $l->hora, 0, 5 ),
+			'estado'      => $l->estado,
+			'quem'        => trim( $l->nome . ' ' . $l->apelido ),
+			'empresa'     => (string) $l->empresa,
+			'mesa'        => (string) $l->mesa,
+			'localizacao' => (string) $l->localizacao,
+		];
+	}
+
+	return $r;
+}

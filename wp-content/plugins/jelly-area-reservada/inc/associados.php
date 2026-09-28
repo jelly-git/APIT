@@ -191,3 +191,20 @@ function jelly_ar_separadores_sem_associados( $separadores ) {
 	return $separadores;
 }
 add_filter( 'views_users', 'jelly_ar_separadores_sem_associados' );
+
+/*
+ * Um utilizador apagado por outra via que não a Área Reservada (o wp-admin, o
+ * WP-CLI, outro plugin) levava consigo a conta, mas deixava na AR o perfil,
+ * os acessos, as descargas e as marcações — marcações que continuavam a
+ * ocupar horários na grelha, de alguém que já não existe. Sai tudo com ele,
+ * como no Apagar do perfil (inc/utilizadores.php).
+ */
+function jelly_ar_apagar_dados_do_utilizador( $id ) {
+	global $wpdb;
+
+	foreach ( [ 'acessos', 'descargas', 'marcacoes', 'associados' ] as $t ) {
+		$wpdb->delete( jelly_ar_tabela( $t ), [ 'user_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+	}
+	$wpdb->delete( jelly_ar_tabela( 'registo' ), [ 'associado_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+}
+add_action( 'delete_user', 'jelly_ar_apagar_dados_do_utilizador' );

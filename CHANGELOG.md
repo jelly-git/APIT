@@ -266,6 +266,31 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.50.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.14.0. O tema e o esquema da base de dados não
+mudam.
+
+### Adicionado
+- **Calendário**, no back-office (deixa de estar "em breve"): as marcações de
+  mesa no tempo, mês a mês.
+  - À esquerda, a grelha do mês, de segunda a domingo, com o número de
+    marcações de cada dia — confirmadas a magenta, por aprovar a roxo —, o
+    dia de hoje destacado e os dias de fora do mês esbatidos.
+  - À direita, as marcações do dia escolhido, pela hora: o associado, a
+    empresa, a mesa e o evento, com a barra de cor do estado; as por aprovar
+    levam às Aprovações, e todas à grelha do evento.
+  - Setas para o mês anterior e o seguinte, o botão Hoje (a rosa) e o filtro
+    por evento. Os cartões de cima: marcações no mês, confirmadas, por aprovar
+    e dias com marcações.
+  - Um clique num dia mostra-o sem recarregar; no telemóvel, a lista fica por
+    baixo da grelha e a página desce até ela.
+
+### Corrigido
+- Um utilizador apagado por outra via que não o Apagar da Área Reservada
+  (o wp-admin, o WP-CLI) deixava na AR o perfil, os acessos e as marcações,
+  que continuavam a ocupar horários na grelha. Passa a sair tudo com ele.
+
 ## [0.49.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.13.1. O tema e a base de dados não mudam.

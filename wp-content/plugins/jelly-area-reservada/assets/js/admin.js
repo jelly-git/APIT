@@ -922,6 +922,43 @@
 		acertar();
 	} );
 
+	/* ---------- Calendário: escolher o dia ---------- */
+
+	/*
+	 * Um clique num dia da grelha (data-jar-calendario-dia) mostra as
+	 * marcações desse dia, que já vêm todas na página
+	 * (templates/admin/calendario.php).
+	 */
+	var calendario = raiz.querySelector( '[data-jar-calendario]' );
+
+	if ( calendario ) {
+		calendario.addEventListener( 'click', function ( e ) {
+			var botao = e.target.closest( '[data-jar-calendario-dia]' );
+
+			if ( ! botao ) {
+				return;
+			}
+
+			var dia = botao.getAttribute( 'data-jar-calendario-dia' );
+
+			Array.prototype.forEach.call( calendario.querySelectorAll( '[data-jar-calendario-dia]' ), function ( b ) {
+				var este = b === botao;
+
+				b.classList.toggle( 'is-escolhido', este );
+				b.setAttribute( 'aria-pressed', este ? 'true' : 'false' );
+			} );
+
+			Array.prototype.forEach.call( calendario.querySelectorAll( '[data-jar-calendario-lista]' ), function ( l ) {
+				l.hidden = l.getAttribute( 'data-jar-calendario-lista' ) !== dia;
+			} );
+
+			// No telemóvel a lista fica por baixo da grelha: vai-se até ela.
+			if ( window.matchMedia( '(max-width: 900px)' ).matches ) {
+				calendario.querySelector( '[data-jar-calendario-lista="' + dia + '"]' ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
+			}
+		} );
+	}
+
 	/* ---------- Menu lateral no telemóvel ---------- */
 
 	var abrir = raiz.querySelector( '[data-jar-menu]' );
