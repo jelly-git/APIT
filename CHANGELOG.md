@@ -266,6 +266,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.46.2] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.10.2. O tema e a base de dados não mudam.
+
+### Corrigido
+- **O login, o registo e a recuperação da palavra-passe deixaram de funcionar
+  no pop-up** desde a 0.46.0: ao carregar no botão, nada acontecia. O módulo
+  da marcação de mesa criou uma variável `marcar`, com o mesmo nome da função
+  que assinala os erros dos campos; a variável tapava a função, e o envio
+  parava com um erro antes de chegar ao servidor. A variável passa a
+  `painelMarcar`.
+
 ## [0.46.1] - 2026-09-27
 
 Plugin `jelly-area-reservada` 0.10.1. A base de dados não muda.

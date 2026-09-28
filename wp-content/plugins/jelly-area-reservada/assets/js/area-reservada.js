@@ -49,10 +49,10 @@
 	var marcarEvento = null;
 
 	function painelDaAncora( hash ) {
-		var marcar = MARCAR.exec( hash );
+		var achado = MARCAR.exec( hash );
 
-		if ( marcar ) {
-			marcarEvento = marcar[ 1 ];
+		if ( achado ) {
+			marcarEvento = achado[ 1 ];
 			return 'marcar';
 		}
 
@@ -531,7 +531,7 @@
 	 * A escolha é em três passos — dia, hora, mesa — e cada um só mostra o que
 	 * ainda tem lugar. Os lugares voltam a ser verificados no servidor.
 	 */
-	var marcar = modal.querySelector( '[data-ar-marcar]' );
+	var painelMarcar = modal.querySelector( '[data-ar-marcar]' );
 	var CHAVE_PENDENTE = 'apit-ar-marcar';
 
 	// A marcação à espera do login. O sessionStorage pode não existir (modo privado): sem ele, só não se volta à marcação.
@@ -571,7 +571,7 @@
 	}
 
 	function parte( nome ) {
-		return marcar.querySelector( '[data-ar-marcar-' + nome + ']' );
+		return painelMarcar.querySelector( '[data-ar-marcar-' + nome + ']' );
 	}
 
 	// Mostra só uma das partes do painel: carregar, mensagem, form ou feita.
@@ -587,15 +587,15 @@
 	 */
 	function mostrarFeita( evento, m, agora ) {
 		var aprovada = 'aprovada' === m.estado;
-		var titulo = marcar.querySelector( '[data-ar-marcar-feita-titulo]' );
-		var local = marcar.querySelector( '[data-ar-bilhete-local]' );
+		var titulo = painelMarcar.querySelector( '[data-ar-marcar-feita-titulo]' );
+		var local = painelMarcar.querySelector( '[data-ar-bilhete-local]' );
 		var texto = function ( seletor, valor ) {
-			marcar.querySelector( seletor ).textContent = valor || '';
+			painelMarcar.querySelector( seletor ).textContent = valor || '';
 		};
 
 		/* A faixa do estado: confirmada a turquesa, à espera a roxo. */
-		marcar.querySelector( '[data-ar-marcar-estado]' ).className = 'apit-ar__marcada-estado apit-ar__marcada-estado--' + ( aprovada ? 'aprovada' : 'pendente' );
-		marcar.querySelector( '[data-ar-marcar-icone]' ).className = aprovada || agora ? 'fa-solid fa-check' : 'fa-solid fa-hourglass-half';
+		painelMarcar.querySelector( '[data-ar-marcar-estado]' ).className = 'apit-ar__marcada-estado apit-ar__marcada-estado--' + ( aprovada ? 'aprovada' : 'pendente' );
+		painelMarcar.querySelector( '[data-ar-marcar-icone]' ).className = aprovada || agora ? 'fa-solid fa-check' : 'fa-solid fa-hourglass-half';
 		titulo.textContent = aprovada ? 'Mesa confirmada' : ( agora ? 'Pedido enviado' : 'Pedido em análise' );
 		// "e‑mail" com o hífen que não parte: no telemóvel ficava "e-" numa linha e "mail" na outra.
 		texto( '[data-ar-marcar-feita-texto]', aprovada
@@ -619,7 +619,7 @@
 		 */
 		var feitos = aprovada ? 3 : 1;
 
-		Array.prototype.forEach.call( marcar.querySelectorAll( '[data-ar-passo]' ), function ( li ) {
+		Array.prototype.forEach.call( painelMarcar.querySelectorAll( '[data-ar-passo]' ), function ( li ) {
 			var n = parseInt( li.getAttribute( 'data-ar-passo' ), 10 );
 			var marca = li.querySelector( '.apit-ar__passo-marca' );
 
@@ -783,7 +783,7 @@
 	}
 
 	function carregarMarcacao( id ) {
-		var ajax = marcar.getAttribute( 'data-ar-ajax' );
+		var ajax = painelMarcar.getAttribute( 'data-ar-ajax' );
 
 		escolha = { dias: [], dia: null, hora: null };
 		parte( 'titulo' ).textContent = 'Marcar mesa';
@@ -823,7 +823,7 @@
 			} );
 	}
 
-	if ( marcar ) {
+	if ( painelMarcar ) {
 		var formMarcar = parte( 'form' );
 
 		formMarcar.addEventListener( 'change', function ( e ) {
