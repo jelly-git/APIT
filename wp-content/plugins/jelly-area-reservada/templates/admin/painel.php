@@ -276,24 +276,36 @@ if ( JELLY_AR_EXEMPLO ) {
 					<?php foreach ( array_slice( array_reverse( $p['pedidos'] ), 0, 5 ) as $m ) : ?>
 						<li>
 							<span class="jar-painel__tipo jar-painel__tipo--marcacao"><i class="fa-solid fa-calendar-check" aria-hidden="true"></i></span>
-							<span class="jar-painel__texto">
+							<?php // Como no Calendário: o nome, a empresa (discreta) e a mesa (entre os dois), com o evento, o dia e a hora. ?>
+							<span class="jar-painel__texto jar-painel__pessoa">
 								<strong><?php echo esc_html( $m['nome'] ? $m['nome'] : '—' ); ?></strong>
-								<?php /* translators: 1: evento, 2: dia, 3: hora, 4: mesa */ ?>
-								<small><?php echo esc_html( sprintf( __( 'Marcação · %1$s · %2$s %3$s · %4$s', 'jelly-area-reservada' ), $m['evento'], $dia_curto( $m['dia'] ), $m['hora'], $m['mesa'] ) ); ?></small>
+								<?php if ( $m['empresa'] ) : ?>
+									<small><?php echo esc_html( $m['empresa'] ); ?></small>
+								<?php endif; ?>
+								<span class="jar-painel__mesa">
+									<i class="fa-solid fa-chair" aria-hidden="true"></i>
+									<?php echo esc_html( $m['mesa'] ); ?>
+								</span>
+								<?php // O evento, o dia e a hora, e quando chegou o pedido: uma linha discreta por baixo. ?>
+								<?php /* translators: 1: evento, 2: dia, 3: hora, 4: data do pedido */ ?>
+								<small class="jar-painel__detalhe"><?php echo esc_html( sprintf( __( '%1$s · %2$s, %3$s · pedido a %4$s', 'jelly-area-reservada' ), $m['evento'], $dia_curto( $m['dia'] ), $m['hora'], $m['pedido'] ) ); ?></small>
 							</span>
-							<span class="jar-painel__quando"><?php echo esc_html( $m['pedido'] ); ?></span>
 							<a class="jar-btn jar-btn--pequeno" href="<?php echo esc_url( jelly_ar_admin_url( 'marcacoes', [ 'evento' => $m['evento_id'] ] ) ); ?>"><?php esc_html_e( 'Decidir', 'jelly-area-reservada' ); ?></a>
 						</li>
 					<?php endforeach; ?>
 					<?php foreach ( array_slice( $p['registos'], 0, 5 ) as $u ) : ?>
 						<li>
 							<span class="jar-painel__tipo jar-painel__tipo--registo"><i class="fa-solid fa-user-plus" aria-hidden="true"></i></span>
-							<span class="jar-painel__texto">
+							<span class="jar-painel__texto jar-painel__pessoa">
 								<strong><?php echo esc_html( trim( $u['nome'] . ' ' . $u['apelido'] ) ); ?></strong>
-								<?php /* translators: %s: empresa ou e-mail */ ?>
-								<small><?php echo esc_html( sprintf( __( 'Registo · %s', 'jelly-area-reservada' ), $u['empresa'] ? $u['empresa'] : $u['email'] ) ); ?></small>
+								<small><?php echo esc_html( $u['empresa'] ? $u['empresa'] : $u['email'] ); ?></small>
+								<span class="jar-painel__mesa">
+									<i class="fa-solid fa-user-plus" aria-hidden="true"></i>
+									<?php esc_html_e( 'Pedido de registo', 'jelly-area-reservada' ); ?>
+								</span>
+								<?php /* translators: %s: data do pedido */ ?>
+								<small class="jar-painel__detalhe"><?php echo esc_html( sprintf( __( 'pedido a %s', 'jelly-area-reservada' ), $u['registo'] ) ); ?></small>
 							</span>
-							<span class="jar-painel__quando"><?php echo esc_html( $u['registo'] ); ?></span>
 							<a class="jar-btn jar-btn--pequeno" href="<?php echo esc_url( jelly_ar_admin_url( 'utilizadores', [ 'utilizador' => $u['id'] ] ) ); ?>"><?php esc_html_e( 'Analisar', 'jelly-area-reservada' ); ?></a>
 						</li>
 					<?php endforeach; ?>

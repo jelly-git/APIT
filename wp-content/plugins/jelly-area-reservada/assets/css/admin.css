@@ -3668,13 +3668,6 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	color: var(--jar-magenta);
 }
 
-.jar-painel__quando {
-	flex: none;
-	font-size: 13px;
-	color: var(--jar-suave);
-	font-variant-numeric: tabular-nums;
-}
-
 .jar-painel__mais {
 	display: flex;
 	flex-wrap: wrap;
@@ -3868,16 +3861,6 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 }
 
 @media (max-width: 560px) {
-	.jar-painel__lista li {
-		flex-wrap: wrap;
-	}
-
-	.jar-painel__quando {
-		order: 3;
-		width: 100%;
-		padding-left: 50px;
-	}
-
 	.jar-painel__alerta {
 		flex-wrap: wrap;
 	}
@@ -3971,4 +3954,41 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 
 .jar .jar-painel__variacao--desce {
 	color: var(--jar-erro);
+}
+
+/*
+ * Por decidir, como no Calendário: o nome, a empresa (a mais discreta) e a
+ * mesa com a cadeira (entre os dois); o evento, o dia e a hora vão a seguir à
+ * mesa, mais leves. As três linhas partem em vez de se cortarem.
+ */
+.jar-painel__pessoa strong,
+.jar-painel__pessoa small {
+	white-space: normal;
+}
+
+.jar-painel__mesa {
+	display: block;
+	margin-top: 2px;
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 1.35;
+	color: rgba(27, 42, 51, 0.85);
+}
+
+.jar-painel__mesa i {
+	margin-right: 3px;
+	font-size: 11px;
+	color: var(--jar-magenta);
+}
+
+/* A linha de baixo: o evento, o dia e a hora, e quando chegou o pedido. */
+.jar .jar-painel__pessoa .jar-painel__detalhe {
+	margin-top: 3px;
+	font-size: 12px;
+	color: var(--jar-suave);
+}
+
+/* Com três linhas, o ícone e as ações ficam no alto, junto do nome. */
+.jar-painel__lista li {
+	align-items: flex-start;
 }

@@ -266,6 +266,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.54.2] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.18.2. O tema e a base de dados não mudam.
+
+### Alterado
+- No Painel, cada pedido de "Por decidir" lê-se como no Calendário: o nome;
+  a empresa, a mais discreta; e a mesa, com a cadeira, entre os dois. O
+  evento, o dia, a hora e a data do pedido ficam numa linha discreta por
+  baixo — a mesma informação de antes, que deixa de se cortar. Nos registos,
+  a terceira linha diz "Pedido de registo". A data do pedido sai de ao lado
+  do botão, que fica com mais espaço.
+
 ## [0.54.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.18.1. O tema e a base de dados não mudam.
