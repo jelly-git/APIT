@@ -32,6 +32,7 @@ $avisos = [
 	'publicado'  => __( 'Evento publicado.', 'jelly-area-reservada' ),
 	'rascunho'   => __( 'Evento passado a rascunho: saiu do calendário do site e da área reservada.', 'jelly-area-reservada' ),
 	'documentos' => __( 'Documentos do evento guardados.', 'jelly-area-reservada' ),
+	'documento-novo' => __( 'Documento carregado e ligado a este evento.', 'jelly-area-reservada' ),
 	'lixo'       => __( 'Evento enviado para o lixo: saiu das listas e do site, e fica guardado para se poder recuperar.', 'jelly-area-reservada' ),
 	'categoria-criada'     => __( 'Categoria criada.', 'jelly-area-reservada' ),
 	'categoria-atualizada' => __( 'Categoria guardada. Os cartões do calendário do site já usam as cores novas.', 'jelly-area-reservada' ),
@@ -590,12 +591,23 @@ if ( $evento ) :
 						<h2><?php esc_html_e( 'Documentos', 'jelly-area-reservada' ); ?></h2>
 						<span class="jar-cartao__meta"><?php esc_html_e( 'Os associados veem os publicados na página deste evento', 'jelly-area-reservada' ); ?></span>
 					</div>
-					<?php if ( $docs_todos ) : ?>
-						<?php // Cheio (cor-de-rosa) enquanto o evento não tem documentos, para chamar a atenção; em contorno depois. ?>
-						<button type="button" class="jar-btn jar-btn--pequeno<?php echo $docs_evento ? ' jar-btn--contorno' : ''; ?>" data-jar-editar>
-							<i class="fa-solid fa-pen" aria-hidden="true"></i> <?php esc_html_e( 'Escolher documentos', 'jelly-area-reservada' ); ?>
-						</button>
-					<?php endif; ?>
+					<span class="jar-cartao__botoes">
+						<?php
+						/*
+						 * Um documento novo, carregado já para este evento: o formulário
+						 * Novo documento abre com ele escolhido e, ao guardar, volta aqui.
+						 */
+						?>
+						<a class="jar-btn jar-btn--pequeno jar-btn--contorno" href="<?php echo esc_url( jelly_ar_admin_url( 'documentos', [ 'novo' => 1, 'evento' => $evento['id'] ] ) ); ?>">
+							<i class="fa-solid fa-plus" aria-hidden="true"></i> <?php esc_html_e( 'Novo documento', 'jelly-area-reservada' ); ?>
+						</a>
+						<?php if ( $docs_todos ) : ?>
+							<?php // Cheio (cor-de-rosa) enquanto o evento não tem documentos, para chamar a atenção; em contorno depois. ?>
+							<button type="button" class="jar-btn jar-btn--pequeno<?php echo $docs_evento ? ' jar-btn--contorno' : ''; ?>" data-jar-editar>
+								<i class="fa-solid fa-pen" aria-hidden="true"></i> <?php esc_html_e( 'Escolher documentos', 'jelly-area-reservada' ); ?>
+							</button>
+						<?php endif; ?>
+					</span>
 				</header>
 
 				<div data-jar-leitura>

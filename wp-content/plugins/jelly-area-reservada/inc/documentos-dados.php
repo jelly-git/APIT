@@ -334,8 +334,12 @@ function jelly_ar_receber_ficheiro( $obrigatorio, $voltar ) {
 function jelly_ar_guardar_documento() {
 	global $wpdb;
 
-	$voltar = function ( $erro ) {
-		wp_safe_redirect( jelly_ar_admin_url( 'documentos', [ 'novo' => 1, 'erro' => $erro ] ) );
+	// O evento de onde se veio (o botão Novo documento do cartão dele), para voltar a ele.
+	$origem = isset( $_POST['evento_origem'] ) ? absint( $_POST['evento_origem'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$origem = $origem && jelly_ar_evento( $origem ) ? $origem : 0;
+
+	$voltar = function ( $erro ) use ( $origem ) {
+		wp_safe_redirect( jelly_ar_admin_url( 'documentos', array_filter( [ 'novo' => 1, 'erro' => $erro, 'evento' => $origem ] ) ) );
 		exit;
 	};
 
@@ -362,7 +366,17 @@ function jelly_ar_guardar_documento() {
 		$voltar( 'falhou' );
 	}
 
-	wp_safe_redirect( jelly_ar_admin_url( 'documentos', [ 'documento' => (int) $wpdb->insert_id, 'aviso' => 'guardado' ] ) );
+	$id = (int) $wpdb->insert_id;
+
+	// Os eventos escolhidos no formulário (os que existem e não estão no lixo).
+	jelly_ar_ligacoes_gravar( 'documento', $id, jelly_ar_ligacoes_pedidas( 'eventos', wp_list_pluck( jelly_ar_eventos_todos(), 'id' ) ) );
+
+	// Vindo de um evento, volta-se a ele; senão, à página do documento novo.
+	wp_safe_redirect(
+		$origem
+			? jelly_ar_admin_url( 'eventos', [ 'evento' => $origem, 'aviso' => 'documento-novo' ] )
+			: jelly_ar_admin_url( 'documentos', [ 'documento' => $id, 'aviso' => 'guardado' ] )
+	);
 	exit;
 }
 add_action( 'admin_post_jelly_ar_guardar_documento', 'jelly_ar_guardar_documento' );

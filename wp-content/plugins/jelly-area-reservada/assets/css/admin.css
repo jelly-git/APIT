@@ -2327,6 +2327,15 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	flex: none;
 }
 
+/* Dois botões na cabeça do cartão (Novo documento e Escolher documentos): lado a lado, à direita. */
+.jar-cartao__cabeca--acao > .jar-cartao__botoes {
+	display: flex;
+	flex: none;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 8px;
+}
+
 /* ---------- Mesas e horários ---------- */
 
 .jar-mesa-nome strong,
@@ -3349,4 +3358,47 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	.jar-calendario__acoes {
 		grid-column: 2;
 	}
+}
+
+/*
+ * Os eventos no Novo documento: a procura e a lista, que desliza por dentro
+ * para um calendário cheio não esticar o formulário.
+ */
+.jar-novo-eventos {
+	margin-top: 20px;
+}
+
+.jar-novo-eventos__titulo {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0.7px;
+	text-transform: uppercase;
+	color: var(--jar-preto);
+}
+
+.jar-novo-eventos__titulo small {
+	margin-left: 6px;
+	font-weight: 400;
+	letter-spacing: 0;
+	text-transform: none;
+	color: var(--jar-suave);
+}
+
+.jar-novo-eventos .jar-evento-docs__procura {
+	margin-top: 4px;
+}
+
+.jar .jar-novo-eventos__lista {
+	max-height: 260px;
+	margin-top: 8px;
+	padding: 4px 12px 8px;
+	overflow-y: auto;
+	border: 1px solid var(--jar-linha);
+	border-radius: 3px;
+}
+
+.jar-novo-eventos__lista .jar-caixa {
+	margin-top: 8px;
 }

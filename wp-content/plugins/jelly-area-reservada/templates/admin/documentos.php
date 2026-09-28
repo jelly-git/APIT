@@ -215,10 +215,20 @@ endif;
 /* ---------------------------------------------------------------- Novo */
 
 if ( $novo ) :
+	/*
+	 * Vindo de um evento (o botão Novo documento do cartão Documentos dele):
+	 * esse evento vem já escolhido, e o voltar e o cancelar levam a ele.
+	 */
+	$origem      = isset( $_GET['evento'] ) ? jelly_ar_evento( absint( $_GET['evento'] ) ) : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$novo_evts   = jelly_ar_eventos_todos();
+	$sair        = $origem ? jelly_ar_admin_url( 'eventos', [ 'evento' => $origem['id'] ] ) : jelly_ar_admin_url( 'documentos' );
+	usort( $novo_evts, function ( $a, $b ) {
+		return strcmp( $b['inicio'], $a['inicio'] );
+	} );
 	?>
 	<div class="jar-cabeca">
 		<div>
-			<a class="jar-voltar" href="<?php echo esc_url( jelly_ar_admin_url( 'documentos' ) ); ?>"><i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i> <?php esc_html_e( 'Documentos', 'jelly-area-reservada' ); ?></a>
+			<a class="jar-voltar" href="<?php echo esc_url( $sair ); ?>"><i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i> <?php echo esc_html( $origem ? $origem['titulo'] : __( 'Documentos', 'jelly-area-reservada' ) ); ?></a>
 			<h1 class="jar-cabeca__titulo"><?php esc_html_e( 'Novo documento', 'jelly-area-reservada' ); ?></h1>
 			<p class="jar-cabeca__intro"><?php esc_html_e( 'O ficheiro fica só para os associados: não tem endereço público.', 'jelly-area-reservada' ); ?></p>
 		</div>
@@ -242,6 +252,44 @@ if ( $novo ) :
 
 		<?php $campos( [] ); ?>
 
+		<?php if ( $novo_evts ) : ?>
+			<?php
+			/*
+			 * Os eventos onde o documento aparece, já ao criar — o mesmo que o
+			 * cartão Eventos da página do documento, depois. Opcional.
+			 */
+			?>
+			<div class="jar-campo--largo jar-novo-eventos">
+				<span class="jar-novo-eventos__titulo"><?php esc_html_e( 'Eventos', 'jelly-area-reservada' ); ?> <small><?php esc_html_e( 'opcional — onde o documento aparece aos associados', 'jelly-area-reservada' ); ?></small></span>
+
+				<div class="jar-filtro jar-evento-docs__procura" role="search">
+					<i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+					<label class="screen-reader-text" for="jar-novo-eventos-procura"><?php esc_html_e( 'Procurar eventos', 'jelly-area-reservada' ); ?></label>
+					<input type="search" id="jar-novo-eventos-procura" placeholder="<?php esc_attr_e( 'Procurar por título, data ou local', 'jelly-area-reservada' ); ?>" data-jar-filtrar="jar-novo-eventos-lista" autocomplete="off">
+				</div>
+
+				<fieldset class="jar-opcoes jar-novo-eventos__lista" id="jar-novo-eventos-lista">
+					<legend class="screen-reader-text"><?php esc_html_e( 'Eventos do documento', 'jelly-area-reservada' ); ?></legend>
+					<?php foreach ( $novo_evts as $e ) : ?>
+						<?php $quando = jelly_ar_intervalo_datas( $e['inicio'], $e['fim'] ) . ( $e['local'] ? ' · ' . $e['local'] : '' ); ?>
+						<label class="jar-caixa" data-jar-filtrar-texto="<?php echo esc_attr( $e['titulo'] . ' ' . $quando ); ?>">
+							<input type="checkbox" name="eventos[]" value="<?php echo (int) $e['id']; ?>" <?php checked( $origem && $origem['id'] === $e['id'] ); ?>>
+							<span>
+								<?php echo esc_html( $e['titulo'] ); ?>
+								<small class="jar-evento-docs__meta"><?php echo esc_html( $quando . ( 'rascunho' === $e['estado'] ? ' · ' . __( 'Rascunho', 'jelly-area-reservada' ) : '' ) ); ?></small>
+							</span>
+						</label>
+					<?php endforeach; ?>
+					<p class="jar-evento-docs__nada" data-jar-filtrar-nada hidden><?php esc_html_e( 'Nenhum evento corresponde à procura.', 'jelly-area-reservada' ); ?></p>
+				</fieldset>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( $origem ) : ?>
+			<?php // Para, ao guardar, voltar ao evento de onde se veio (jelly_ar_guardar_documento()). ?>
+			<input type="hidden" name="evento_origem" value="<?php echo (int) $origem['id']; ?>">
+		<?php endif; ?>
+
 		<fieldset class="jar-opcoes">
 			<legend><?php esc_html_e( 'Publicação', 'jelly-area-reservada' ); ?></legend>
 			<label class="jar-caixa"><input type="radio" name="estado" value="publicado" checked> <span><?php esc_html_e( 'Publicar já — fica visível para os associados', 'jelly-area-reservada' ); ?></span></label>
@@ -249,7 +297,7 @@ if ( $novo ) :
 		</fieldset>
 
 		<footer class="jar-cartao__pe">
-			<a class="jar-btn jar-btn--contorno" href="<?php echo esc_url( jelly_ar_admin_url( 'documentos' ) ); ?>"><?php esc_html_e( 'Cancelar', 'jelly-area-reservada' ); ?></a>
+			<a class="jar-btn jar-btn--contorno" href="<?php echo esc_url( $sair ); ?>"><?php esc_html_e( 'Cancelar', 'jelly-area-reservada' ); ?></a>
 			<button type="submit" class="jar-btn"><?php esc_html_e( 'Guardar documento', 'jelly-area-reservada' ); ?></button>
 		</footer>
 	</form>

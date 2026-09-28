@@ -266,6 +266,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.52.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.16.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **Escolher os eventos ao criar um documento.** O formulário Novo documento
+  ganha a lista dos eventos, com procura por título, data ou local: o
+  documento fica ligado aos escolhidos logo ao guardar. É opcional, e
+  continua a poder mudar-se depois no cartão Eventos do documento.
+- **Criar um documento a partir de um evento.** O cartão Documentos da
+  página do evento ganha o botão "Novo documento" (também quando ainda não há
+  documentos nenhuns). Abre o formulário com esse evento já escolhido; o
+  voltar e o cancelar levam ao evento, e, ao guardar, volta-se a ele com o
+  documento carregado e ligado.
+
 ## [0.51.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.15.1. O tema e a base de dados não mudam.
