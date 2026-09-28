@@ -43,9 +43,9 @@ $avisos  = [
 	'senha'     => __( 'Foi enviado o e-mail para definir uma palavra-passe nova. A atual continua a funcionar até ser trocada.', 'jelly-area-reservada' ),
 ];
 $erros   = [
-	'aprovado-sem-email' => __( 'Registo aprovado, mas o e-mail para definir a palavra-passe não saiu. Confirme o envio no WP Mail SMTP; a pessoa pode pedir outra ligação em "Esqueceu-se da palavra-passe?".', 'jelly-area-reservada' ),
+	'aprovado-sem-email' => __( 'Registo aprovado, mas o e-mail para definir a palavra-passe não saiu (o motivo está no aviso do envio, no topo); a pessoa pode pedir outra ligação em "Esqueceu-se da palavra-passe?".', 'jelly-area-reservada' ),
 	'decisao'            => __( 'Essa mudança não é possível a partir do estado atual.', 'jelly-area-reservada' ),
-	'senha-sem-email'    => __( 'O e-mail da palavra-passe nova não saiu. Confirme o envio no WP Mail SMTP.', 'jelly-area-reservada' ),
+	'senha-sem-email'    => __( 'O e-mail da palavra-passe nova não saiu. O motivo está no aviso do envio, no topo da página.', 'jelly-area-reservada' ),
 	'senha-estado'       => __( 'A palavra-passe nova só se envia a um acesso ativo.', 'jelly-area-reservada' ),
 	'apagar-admin'       => __( 'Esta conta é também de administrador e não se apaga a partir da Área Reservada.', 'jelly-area-reservada' ),
 ];

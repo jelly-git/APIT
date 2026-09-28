@@ -58,7 +58,13 @@ function jelly_ar_pedido_valido( $nonce ) {
 function jelly_ar_ligacao_senha( $user ) {
 	$chave = get_password_reset_key( $user );
 
+	// Sem chave não há e-mail: o motivo fica no último erro de envio, que o back-office mostra.
 	if ( is_wp_error( $chave ) ) {
+		jelly_ar_email_erro_guardar(
+			$user->user_email,
+			/* translators: %s: o erro do WordPress */
+			sprintf( __( 'O WordPress não criou a ligação para definir a palavra-passe, e o e-mail não chegou a ser enviado: %s', 'jelly-area-reservada' ), $chave->get_error_message() )
+		);
 		return '';
 	}
 

@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.60.3] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.24.3. O tema e a base de dados não mudam.
+
+### Alterado
+- Quando o e-mail para definir a palavra-passe não sai (nova palavra-passe,
+  aprovação, recuperação), o motivo fica no último erro de envio e aparece no
+  aviso do topo: o erro do servidor de correio ou, se o WordPress não chegou
+  a criar a ligação, o erro dele. Antes os dois casos davam a mesma mensagem,
+  "Confirme o envio no WP Mail SMTP", sem dizer porquê.
+
 ## [0.60.2] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.24.2. O tema e a base de dados não mudam.

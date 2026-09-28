@@ -177,17 +177,24 @@ function jelly_ar_email_falhou( $erro ) {
 		return;
 	}
 
+	jelly_ar_email_erro_guardar( $GLOBALS['jelly_ar_a_enviar'], $erro instanceof WP_Error ? $erro->get_error_message() : '' );
+}
+add_action( 'wp_mail_failed', 'jelly_ar_email_falhou' );
+
+/**
+ * Guarda o último erro de um e-mail da AR: a hora, para quem e porquê.
+ */
+function jelly_ar_email_erro_guardar( $para, $erro ) {
 	update_option(
 		'jelly_ar_email_erro',
 		[
 			'quando' => current_time( 'mysql' ),
-			'para'   => $GLOBALS['jelly_ar_a_enviar'],
-			'erro'   => $erro instanceof WP_Error ? $erro->get_error_message() : '',
+			'para'   => $para,
+			'erro'   => $erro,
 		],
 		false
 	);
 }
-add_action( 'wp_mail_failed', 'jelly_ar_email_falhou' );
 
 /**
  * O último erro de envio de um e-mail da AR, ou null.
@@ -354,6 +361,7 @@ function jelly_ar_emails_falhados() {
 function jelly_ar_email_nova_senha( $user, $perfil ) {
 	$ligacao = jelly_ar_ligacao_senha( $user );
 
+	// Sem ligação, nem se tenta enviar (o motivo fica guardado em jelly_ar_ligacao_senha()).
 	if ( ! $ligacao ) {
 		return false;
 	}
