@@ -557,8 +557,8 @@ if ( $evento ) :
 
 						<li><strong><?php echo (int) $mesas_resumo['mesas']; ?></strong> <?php echo esc_html( _n( 'mesa', 'mesas', $mesas_resumo['mesas'], 'jelly-area-reservada' ) ); ?></li>
 						<li><strong><?php echo (int) $mesas_resumo['dias']; ?></strong> <?php echo esc_html( _n( 'dia com horário', 'dias com horário', $mesas_resumo['dias'], 'jelly-area-reservada' ) ); ?></li>
-						<li><strong><?php echo (int) $mesas_resumo['lugares']; ?></strong> <?php esc_html_e( 'lugares para marcar', 'jelly-area-reservada' ); ?></li>
-						<li><strong><?php echo (int) ( $mesas_resumo['confirmadas'] + $mesas_resumo['pendentes'] ); ?></strong> <?php esc_html_e( 'ocupados', 'jelly-area-reservada' ); ?></li>
+						<li><strong><?php echo (int) $mesas_resumo['lugares']; ?></strong> <?php echo esc_html( JELLY_AR_LUGARES ? __( 'lugares para marcar', 'jelly-area-reservada' ) : __( 'horários para marcar', 'jelly-area-reservada' ) ); ?></li>
+						<li><strong><?php echo (int) ( $mesas_resumo['confirmadas'] + $mesas_resumo['pendentes'] ); ?></strong> <?php esc_html_e( 'marcações', 'jelly-area-reservada' ); ?></li>
 					</ul>
 				<?php endif; ?>
 			</section>

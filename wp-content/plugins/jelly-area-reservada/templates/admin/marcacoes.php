@@ -32,9 +32,9 @@ $sem_email = isset( $_GET['sem-email'] ) ? absint( $_GET['sem-email'] ) : 0; // 
 
 $avisos = [
 	/* translators: %d: número de pedidos */
-	'aprovada'  => sprintf( _n( '%d pedido aprovado. O associado foi avisado por e-mail, e a grelha já mostra o lugar confirmado.', '%d pedidos aprovados. Cada associado foi avisado por e-mail, e a grelha já mostra os lugares confirmados.', $n, 'jelly-area-reservada' ), $n ),
+	'aprovada'  => sprintf( _n( '%d pedido aprovado. O associado foi avisado por e-mail, e a grelha já mostra a marcação confirmada.', '%d pedidos aprovados. Cada associado foi avisado por e-mail, e a grelha já mostra as marcações confirmadas.', $n, 'jelly-area-reservada' ), $n ),
 	/* translators: %d: número de pedidos */
-	'rejeitada' => sprintf( _n( '%d pedido rejeitado. O associado foi avisado por e-mail, e o lugar voltou a ficar livre.', '%d pedidos rejeitados. Cada associado foi avisado por e-mail, e os lugares voltaram a ficar livres.', $n, 'jelly-area-reservada' ), $n ),
+	'rejeitada' => sprintf( _n( '%d pedido rejeitado. O associado foi avisado por e-mail, e o horário voltou a ficar livre.', '%d pedidos rejeitados. Cada associado foi avisado por e-mail, e os horários voltaram a ficar livres.', $n, 'jelly-area-reservada' ), $n ),
 ];
 
 $filtros = [
@@ -139,7 +139,7 @@ $quando = function ( $m ) {
 					data-jar-confirmar
 					data-jar-form="jar-aprovacoes"
 					data-titulo="<?php esc_attr_e( 'Rejeitar os pedidos escolhidos?', 'jelly-area-reservada' ); ?>"
-					data-texto="<?php esc_attr_e( 'Os lugares voltam a ficar livres na grelha, e cada associado recebe um e-mail a informar que o pedido não foi aprovado.', 'jelly-area-reservada' ); ?>"
+					data-texto="<?php esc_attr_e( 'Os horários voltam a ficar livres na grelha, e cada associado recebe um e-mail a informar que o pedido não foi aprovado.', 'jelly-area-reservada' ); ?>"
 					data-sim="<?php esc_attr_e( 'Rejeitar', 'jelly-area-reservada' ); ?>"
 					data-resultado=""
 				><i class="fa-solid fa-xmark" aria-hidden="true"></i> <?php esc_html_e( 'Rejeitar', 'jelly-area-reservada' ); ?></button>
@@ -230,7 +230,7 @@ $quando = function ( $m ) {
 										data-jar-form="jar-rejeitar-<?php echo (int) $m['id']; ?>"
 										<?php /* translators: %s: associado */ ?>
 										data-titulo="<?php echo esc_attr( sprintf( __( 'Rejeitar o pedido de %s?', 'jelly-area-reservada' ), $m['nome'] ) ); ?>"
-										data-texto="<?php esc_attr_e( 'O lugar volta a ficar livre na grelha, e o associado recebe um e-mail a informar que o pedido não foi aprovado.', 'jelly-area-reservada' ); ?>"
+										data-texto="<?php esc_attr_e( 'O horário volta a ficar livre na grelha, e o associado recebe um e-mail a informar que o pedido não foi aprovado.', 'jelly-area-reservada' ); ?>"
 										data-sim="<?php esc_attr_e( 'Rejeitar', 'jelly-area-reservada' ); ?>"
 										data-resultado=""
 										<?php /* translators: %s: associado */ ?>

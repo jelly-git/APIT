@@ -104,9 +104,11 @@ function jelly_ar_marcacao_dados() {
 
 	wp_send_json(
 		$base + [
-			'dias'  => jelly_ar_disponibilidade( $evento ),
+			'dias'    => jelly_ar_disponibilidade( $evento ),
+			// Sem lugares por mesa (JELLY_AR_LUGARES), cada mesa mostra-se livre ou marcada.
+			'lugares' => JELLY_AR_LUGARES,
 			// O nonce vem aqui, e não na página: a página pode estar numa cache.
-			'nonce' => wp_create_nonce( 'jelly_ar_marcar_' . $evento['id'] ),
+			'nonce'   => wp_create_nonce( 'jelly_ar_marcar_' . $evento['id'] ),
 		]
 	);
 }
@@ -148,7 +150,7 @@ function jelly_ar_marcacao_pedir() {
 			'marcacao-fechada' => __( 'Este evento já não aceita marcações.', 'jelly-area-reservada' ),
 			'marcacao-tem'     => __( 'Já existe uma marcação neste evento. Para a alterar, a APIT deve ser contactada.', 'jelly-area-reservada' ),
 			'marcacao-bloco'   => __( 'Esse horário já não está disponível. Escolha outro, por favor.', 'jelly-area-reservada' ),
-			'marcacao-cheia'   => __( 'Entretanto, os lugares dessa mesa a essa hora ficaram ocupados. Escolha outra mesa ou outra hora, por favor.', 'jelly-area-reservada' ),
+			'marcacao-cheia'   => __( 'Entretanto, essa mesa ficou marcada a essa hora. Escolha outra mesa ou outra hora, por favor.', 'jelly-area-reservada' ),
 			'marcacao-ocupado' => __( 'Há outro pedido a ser tratado para esse horário. Tente de novo dentro de momentos.', 'jelly-area-reservada' ),
 		];
 

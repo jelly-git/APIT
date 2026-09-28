@@ -2588,6 +2588,12 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	border-top: 1px solid var(--jar-linha);
 }
 
+/* Sem a parte de cima (um horário livre não tem marcação), a de baixo não leva a linha. */
+.jar-janela__parte[hidden] + .jar-janela__parte {
+	margin-top: 0;
+	border-top: 0;
+}
+
 .jar .jar-janela__titulo-parte {
 	display: flex;
 	align-items: center;

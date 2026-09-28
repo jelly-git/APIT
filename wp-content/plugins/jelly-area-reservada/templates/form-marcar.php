@@ -45,7 +45,7 @@ $ajax = wp_make_link_relative( admin_url( 'admin-ajax.php' ) );
 
 		<fieldset class="apit-ar__passo">
 			<legend><span class="apit-ar__passo-n" aria-hidden="true">3</span> <?php esc_html_e( 'Mesa', 'jelly-area-reservada' ); ?></legend>
-			<p class="apit-ar__vazio" data-ar-marcar-sem-hora><?php esc_html_e( 'Escolha uma hora para ver as mesas com lugar.', 'jelly-area-reservada' ); ?></p>
+			<p class="apit-ar__vazio" data-ar-marcar-sem-hora><?php esc_html_e( 'Escolha uma hora para ver as mesas livres.', 'jelly-area-reservada' ); ?></p>
 			<div class="apit-ar__mesas" data-ar-marcar-mesas></div>
 		</fieldset>
 

@@ -32,6 +32,16 @@ defined( 'ABSPATH' ) || exit;
 const JELLY_AR_INTERVALOS        = [ 30 ];
 const JELLY_AR_INTERVALO_OMISSAO = 30;
 
+/*
+ * Lugares por mesa. Por agora não há: cada horário de uma mesa leva uma
+ * marcação, de um associado. Com false, toda a mesa conta como um lugar
+ * (jelly_ar_mesas()), e os ecrãs falam de horários e marcações, sem campo de
+ * lugares. O resto — a grelha, os pedidos, as mudanças — já sabe contar
+ * lugares: para os voltar a ter, basta pôr true, e o número de cada mesa
+ * volta a ser o da coluna `lugares` da tabela, que continua lá.
+ */
+const JELLY_AR_LUGARES = false;
+
 /**
  * Os dias do evento, do início ao fim, em Y-m-d. Um evento de um dia só tem
  * um. Nunca mais de 31, para uma data de fim errada não desenhar um ano.
@@ -70,7 +80,8 @@ function jelly_ar_mesas( $evento_id ) {
 			'id'          => (int) $l->id,
 			'nome'        => $l->nome,
 			'localizacao' => $l->localizacao,
-			'lugares'     => (int) $l->lugares,
+			// Sem lugares por mesa (JELLY_AR_LUGARES), uma marcação por horário.
+			'lugares'     => JELLY_AR_LUGARES ? (int) $l->lugares : 1,
 			'marcacoes'   => (int) $l->marcacoes,
 		];
 	}, $linhas );

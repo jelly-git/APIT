@@ -709,7 +709,7 @@
 				'mesa',
 				m.id,
 				m.nome,
-				m.livres ? plural( m.livres, 'lugar livre', 'lugares livres' ) : 'Completa',
+				m.livres ? ( escolha.lugares ? plural( m.livres, 'lugar livre', 'lugares livres' ) : 'Livre' ) : ( escolha.lugares ? 'Completa' : 'Marcada' ),
 				! m.livres,
 				1 === bloco.mesas.filter( function ( x ) {
 					return x.livres;
@@ -744,6 +744,10 @@
 		var form = parte( 'form' );
 
 		escolha.dias = dados.dias || [];
+		// Sem lugares por mesa, cada mesa diz só se está livre (inc/marcacoes.php).
+		if ( undefined !== dados.lugares ) {
+			escolha.lugares = !! dados.lugares;
+		}
 		form.evento.value = dados.evento.id;
 		if ( dados.nonce ) {
 			form._wpnonce.value = dados.nonce;

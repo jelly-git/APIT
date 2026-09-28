@@ -606,7 +606,8 @@
 			mover.disabled = 0 === n || ! opcao || ! opcao.value || parseInt( opcao.getAttribute( 'data-livres' ), 10 ) < n;
 
 			Array.prototype.forEach.call( lista.querySelectorAll( 'li' ), function ( li ) {
-				li.classList.toggle( 'is-escolhido', li.querySelector( 'input' ).checked );
+				// Com uma marcação por horário, ela está sempre escolhida: não se destaca.
+				li.classList.toggle( 'is-escolhido', grelha.lugares && li.querySelector( 'input' ).checked );
 			} );
 		};
 
@@ -621,7 +622,8 @@
 			Array.prototype.forEach.call( associados, function ( a ) {
 				var caixa = a.querySelector( 'input' );
 
-				if ( ! a.hasAttribute( 'data-jar-ocupado' ) ) {
+				// Com lugares, as caixas fecham no limite; com uma marcação por horário é um radio, e troca-se à vontade.
+				if ( grelha.lugares && ! a.hasAttribute( 'data-jar-ocupado' ) ) {
 					caixa.disabled = ! caixa.checked && n >= livres;
 				}
 				a.classList.toggle( 'is-escolhido', caixa.checked );
@@ -630,7 +632,9 @@
 
 			if ( confirmar ) {
 				confirmar.disabled = 0 === n;
-				escolhidos.textContent = plural( n, 'escolhido', 'escolhidos' ) + ' de ' + plural( livres, 'lugar livre', 'lugares livres' );
+				escolhidos.textContent = grelha.lugares
+					? plural( n, 'escolhido', 'escolhidos' ) + ' de ' + plural( livres, 'lugar livre', 'lugares livres' )
+					: ( n ? 'Associado escolhido' : 'Escolha o associado a marcar.' );
 			}
 		};
 
@@ -652,19 +656,32 @@
 			local.querySelector( 'span' ).textContent = mesa.localizacao || '';
 			em( '[data-jar-bloco-icone]' ).className = 'jar-icone jar-icone--' + ( livres ? 'turquesa' : 'magenta' );
 
-			/* A ocupação: o número e um traço por lugar. */
-			em( '[data-jar-bloco-ocupados]' ).textContent = aqui.length + '/' + mesa.lugares;
-			em( '[data-jar-bloco-ocupados-texto]' ).textContent = livres
-				? ( 1 === mesa.lugares ? 'lugar ocupado' : 'lugares ocupados' ) + ' · ' + plural( livres, 'livre', 'livres' )
-				: 'lugares ocupados · bloco completo';
+			/*
+			 * A ocupação. Com lugares, o número e um traço por lugar; com uma
+			 * marcação por horário, só se o horário está livre ou marcado.
+			 */
 			lugares.textContent = '';
-			for ( var i = 0; i < mesa.lugares; i++ ) {
-				lugares.appendChild( elemento( 'span', 'jar-lugar jar-lugar--' + ( aqui[ i ] ? aqui[ i ].estado : 'livre' ) ) );
+			lugares.hidden = ! grelha.lugares;
+
+			if ( grelha.lugares ) {
+				em( '[data-jar-bloco-ocupados]' ).textContent = aqui.length + '/' + mesa.lugares;
+				em( '[data-jar-bloco-ocupados-texto]' ).textContent = livres
+					? ( 1 === mesa.lugares ? 'lugar ocupado' : 'lugares ocupados' ) + ' · ' + plural( livres, 'livre', 'livres' )
+					: 'lugares ocupados · bloco completo';
+				for ( var i = 0; i < mesa.lugares; i++ ) {
+					lugares.appendChild( elemento( 'span', 'jar-lugar jar-lugar--' + ( aqui[ i ] ? aqui[ i ].estado : 'livre' ) ) );
+				}
+			} else {
+				em( '[data-jar-bloco-ocupados]' ).textContent = aqui.length ? 'Horário marcado' : 'Horário livre';
+				em( '[data-jar-bloco-ocupados-texto]' ).textContent = aqui.length
+					? '· ' + ( grelha.estados[ aqui[ 0 ].estado ] || aqui[ 0 ].estado )
+					: '· disponível para marcar';
 			}
 
 			/* As marcações do bloco. */
 			partes.marcacoes.hidden = 0 === aqui.length;
 			em( '[data-jar-bloco-conta]' ).textContent = aqui.length;
+			em( '[data-jar-bloco-conta]' ).hidden = ! grelha.lugares;
 			lista.textContent = '';
 
 			aqui.forEach( function ( m ) {
@@ -676,6 +693,12 @@
 				caixa.type = 'checkbox';
 				caixa.name = 'marcacao[]';
 				caixa.value = m.id;
+
+				// Uma marcação por horário: é essa que se muda ou remove, sem ter de a escolher.
+				if ( ! grelha.lugares ) {
+					caixa.checked = true;
+					caixa.hidden = true;
+				}
 				texto.appendChild( elemento( 'strong', '', m.quem || '—' ) );
 				texto.appendChild( elemento( 'small', '', m.empresa || '' ) );
 
@@ -689,7 +712,7 @@
 
 			// Os blocos para onde se pode mudar: os outros, com lugares livres, dia a dia.
 			destino.textContent = '';
-			destino.appendChild( new Option( 'Mudar para outro bloco…', '' ) );
+			destino.appendChild( new Option( grelha.lugares ? 'Mudar para outro bloco…' : 'Mudar para outro horário…', '' ) );
 
 			Object.keys( grelha.dias ).forEach( function ( d ) {
 				var grupo = document.createElement( 'optgroup' );
@@ -705,7 +728,8 @@
 							return;
 						}
 
-						opcao = new Option( h + ' · ' + outra.nome + ' (' + plural( vagos, 'livre', 'livres' ) + ')', outra.id + '|' + d + '|' + h );
+						// Sem lugares, o destino é só a hora e a mesa: se aparece, está livre.
+						opcao = new Option( h + ' · ' + outra.nome + ( grelha.lugares ? ' (' + plural( vagos, 'livre', 'livres' ) + ')' : '' ), outra.id + '|' + d + '|' + h );
 						opcao.setAttribute( 'data-livres', vagos );
 						grupo.appendChild( opcao );
 					} );
@@ -722,10 +746,12 @@
 			partes.marcar.querySelector( '[name="mesa"]' ).value = mesa.id;
 			partes.marcar.querySelector( '[name="dia"]' ).value = dia;
 			partes.marcar.querySelector( '[name="hora"]' ).value = hora;
-			em( '[data-jar-bloco-livres]' ).textContent = livres ? plural( livres, 'lugar livre', 'lugares livres' ) : '';
+			em( '[data-jar-bloco-livres]' ).textContent = livres ? ( grelha.lugares ? plural( livres, 'lugar livre', 'lugares livres' ) : 'Livre' ) : '';
 			em( '[data-jar-bloco-livres]' ).hidden = ! livres;
 			em( '[data-jar-bloco-cheio]' ).hidden = livres > 0;
 			em( '[data-jar-bloco-escolha]' ).hidden = ! livres;
+			// Com uma marcação por horário, um horário marcado não tem mais nada a marcar: a parte sai (a faixa de cima já o diz).
+			partes.marcar.hidden = ! grelha.lugares && ! livres;
 
 			// Quem já está marcado a esta hora, nesta mesa ou noutra.
 			var nesta = aqui.map( function ( m ) {

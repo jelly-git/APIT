@@ -266,6 +266,31 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.48.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.12.0. O tema e o esquema da base de dados não
+mudam.
+
+### Alterado
+- **Uma marcação por horário, sem lugares.** Cada horário de uma mesa leva
+  uma marcação, de um associado. Os lugares por mesa saem dos ecrãs — o
+  campo nas mesas, a coluna, a contagem "2/4" nos blocos da grelha, o traço
+  por lugar na janela — e o vocabulário passa a ser o das marcações:
+  - na grelha, cada horário diz quem o marcou e o estado, ou "Disponível";
+  - a janela de um horário mostra "Horário livre" ou "Horário marcado"; a
+    marcação muda ou remove-se sem ter de a escolher; marcar é escolher um
+    associado (um só), e num horário marcado a parte de marcar não aparece;
+  - os cartões passam a "Horários para marcar" e "Marcações"; o badge da
+    lista, a "Disponível · N horários livres";
+  - no pop-up do site, cada mesa diz "Livre" ou "Marcada";
+  - nas Aprovações e nas mensagens, "o horário volta a ficar livre" em vez
+    de "o lugar".
+- O que já sabe contar lugares fica no código, atrás de `JELLY_AR_LUGARES`
+  (em `inc/mesas-dados.php`, desligado): para os voltar a ter, basta ligá-lo,
+  e a coluna `lugares` da tabela das mesas continua lá.
+- O badge de disponibilidade sai da cabeça da página de cada evento: os
+  cartões de cima já dizem o mesmo. Fica na lista de Mesas e horários.
+
 ## [0.47.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.11.1. O tema e a base de dados não mudam.
