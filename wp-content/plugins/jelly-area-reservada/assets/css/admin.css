@@ -2994,3 +2994,57 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 		white-space: normal;
 	}
 }
+
+/*
+ * Os separadores do que falta fazer (as mesas, os horários): a rosa, como os
+ * botões da página do evento enquanto não há nada associado. O atual fica
+ * escuro, como os outros, com o ponto de exclamação a lembrar.
+ */
+.jar .jar-separador.is-em-falta {
+	background: var(--jar-magenta);
+	color: #fff;
+}
+
+.jar .jar-separador.is-em-falta:hover {
+	background: #d80f7e;
+	color: #fff;
+}
+
+.jar .jar-separador.is-em-falta.is-atual {
+	background: var(--jar-preto);
+}
+
+.jar-separador.is-em-falta b {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+/* O caminho de uma marcação, na janela do horário: quem a fez, mudou ou aprovou. */
+.jar-janela__historico {
+	margin: 8px 0 0;
+	padding: 0 0 0 14px;
+	border-left: 2px solid var(--jar-linha);
+	list-style: none;
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+.jar-janela__historico li {
+	padding: 2px 0;
+}
+
+.jar-janela__historico strong {
+	font-weight: 500;
+	color: var(--jar-preto);
+}
+
+/* O separador Histórico: o ícone da ação à cor da marca. */
+.jar-historico__acao {
+	white-space: nowrap;
+}
+
+.jar-historico__acao i {
+	width: 18px;
+	margin-right: 4px;
+	color: var(--jar-magenta);
+	text-align: center;
+}

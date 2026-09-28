@@ -272,6 +272,8 @@ function jelly_ar_utilizador_estado() {
 		foreach ( [ 'acessos', 'descargas', 'marcacoes' ] as $t ) {
 			$wpdb->delete( jelly_ar_tabela( $t ), [ 'user_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
 		}
+		// O histórico das marcações dela também: leva o nome escrito no resumo.
+		$wpdb->delete( jelly_ar_tabela( 'registo' ), [ 'associado_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
 		$wpdb->delete( $tabela, [ 'user_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
 		wp_delete_user( $id );
 

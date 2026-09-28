@@ -707,6 +707,22 @@
 				rotulo.appendChild( texto );
 				rotulo.appendChild( elemento( 'span', 'jar-estado jar-estado--' + m.estado, grelha.estados[ m.estado ] || m.estado ) );
 				li.appendChild( rotulo );
+
+				// O caminho desta marcação: quem a fez, mudou ou aprovou, e quando (inc/historico.php).
+				var passos = ( grelha.historico || {} )[ m.id ] || [];
+				if ( passos.length ) {
+					var historico = elemento( 'ol', 'jar-janela__historico' );
+
+					passos.forEach( function ( p ) {
+						var linha = elemento( 'li' );
+
+						linha.appendChild( elemento( 'strong', '', p.rotulo ) );
+						linha.appendChild( document.createTextNode( ' · ' + p.autor + ' · ' + p.quando ) );
+						historico.appendChild( linha );
+					} );
+					li.appendChild( historico );
+				}
+
 				lista.appendChild( li );
 			} );
 

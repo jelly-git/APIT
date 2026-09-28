@@ -82,6 +82,8 @@ function jelly_ar_mesa_criar() {
 	// A nova vai para o fim.
 	$wpdb->insert( $tabela, $campos + [ 'evento_id' => $evento['id'], 'ordem' => $ordem + 1 ] ); // phpcs:ignore WordPress.DB
 
+	jelly_ar_historico_gravar( 'mesa-criada', [ 'evento_id' => $evento['id'], 'resumo' => $campos['nome'] . ( $campos['localizacao'] ? ' · ' . $campos['localizacao'] : '' ) ] );
+
 	$voltar( [ 'aviso' => 'mesa-criada' ] );
 }
 add_action( 'admin_post_jelly_ar_mesa_criar', 'jelly_ar_mesa_criar' );
@@ -119,6 +121,11 @@ function jelly_ar_mesa_editar() {
 
 	$wpdb->update( jelly_ar_tabela( 'mesas' ), $campos, [ 'id' => $mesa['id'] ] ); // phpcs:ignore WordPress.DB
 
+	// O que era e o que ficou, quando o nome ou a localização mudam.
+	$antes  = $mesa['nome'] . ( $mesa['localizacao'] ? ' · ' . $mesa['localizacao'] : '' );
+	$depois = $campos['nome'] . ( $campos['localizacao'] ? ' · ' . $campos['localizacao'] : '' );
+	jelly_ar_historico_gravar( 'mesa-alterada', [ 'evento_id' => $evento['id'], 'resumo' => $antes === $depois ? $depois : $antes . ' → ' . $depois ] );
+
 	$voltar( [ 'aviso' => 'mesa-atualizada' ] );
 }
 add_action( 'admin_post_jelly_ar_mesa_editar', 'jelly_ar_mesa_editar' );
@@ -136,6 +143,8 @@ function jelly_ar_mesa_apagar() {
 	}
 
 	$wpdb->delete( jelly_ar_tabela( 'mesas' ), [ 'id' => $mesa['id'] ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+
+	jelly_ar_historico_gravar( 'mesa-apagada', [ 'evento_id' => $evento['id'], 'resumo' => $mesa['nome'] . ( $mesa['localizacao'] ? ' · ' . $mesa['localizacao'] : '' ) ] );
 
 	$voltar( [ 'aviso' => 'mesa-apagada' ] );
 }
@@ -226,6 +235,14 @@ function jelly_ar_horarios_guardar() {
 			]
 		);
 	}
+
+	// Os horários que ficaram, dia a dia: "qua, 7 out 10:00–18:00 · qui, 8 out 09:00–12:30".
+	$resumo = [];
+	foreach ( $novos as $dia => $h ) {
+		$d        = DateTime::createFromFormat( '!Y-m-d', $dia );
+		$resumo[] = ( $d ? jelly_ar_data( 'D, j M', $d->getTimestamp() ) : $dia ) . ' ' . $h['inicio'] . '–' . $h['fim'];
+	}
+	jelly_ar_historico_gravar( 'horarios-gravados', [ 'evento_id' => $evento['id'], 'resumo' => implode( ' · ', $resumo ) ] );
 
 	$voltar( [ 'aviso' => 'horarios' ] );
 }

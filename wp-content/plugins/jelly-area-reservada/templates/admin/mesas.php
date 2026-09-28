@@ -246,8 +246,16 @@ $horarios  = jelly_ar_horarios( $evento['id'] );
 $dias      = jelly_ar_evento_dias( $evento );
 $ocupados  = jelly_ar_marcacoes_grelha( $evento['id'] );
 $resumo    = jelly_ar_mesas_resumo( $evento['id'] );
-$separador = isset( $_GET['separador'] ) ? sanitize_key( wp_unslash( $_GET['separador'] ) ) : 'mesas'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-$separador = in_array( $separador, [ 'mesas', 'horarios', 'grelha' ], true ) ? $separador : 'mesas';
+/*
+ * O separador por omissão é o que falta fazer: sem mesas, as Mesas; com mesas e
+ * sem horários, os Horários; com os dois, a Grelha — que é o que se vem ver
+ * depois de o evento estar montado.
+ */
+$omissao   = ! $mesas ? 'mesas' : ( ! $horarios ? 'horarios' : 'grelha' );
+$separador = isset( $_GET['separador'] ) ? sanitize_key( wp_unslash( $_GET['separador'] ) ) : $omissao; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+// O Histórico, que já foi separador, vive agora nos Horários.
+$separador = 'historico' === $separador ? 'horarios' : $separador;
+$separador = in_array( $separador, [ 'mesas', 'horarios', 'grelha' ], true ) ? $separador : $omissao;
 $intervalo = $horarios ? current( $horarios )['intervalo'] : JELLY_AR_INTERVALO_OMISSAO;
 
 // Horários de dias que já não são do evento (as datas mudaram depois).
@@ -305,13 +313,21 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 	<?php
 	foreach (
 		[
-			'mesas'    => [ __( 'Mesas', 'jelly-area-reservada' ), count( $mesas ) ],
-			'horarios' => [ __( 'Horários', 'jelly-area-reservada' ), count( $horarios ) ],
-			'grelha'   => [ __( 'Grelha', 'jelly-area-reservada' ), null ],
+			'mesas'     => [ __( 'Mesas', 'jelly-area-reservada' ), count( $mesas ), ! $mesas ],
+			'horarios'  => [ __( 'Horários', 'jelly-area-reservada' ), count( $horarios ), ! $horarios ],
+			'grelha'    => [ __( 'Grelha', 'jelly-area-reservada' ), null, false ],
 		] as $s => $rotulo
 	) :
+		/*
+		 * O que falta fazer vai a rosa, como os botões da página do evento: as
+		 * mesas enquanto não houver nenhuma, os horários enquanto não houver dias.
+		 */
+		$classes = 'jar-separador' . ( $s === $separador ? ' is-atual' : '' ) . ( $rotulo[2] ? ' is-em-falta' : '' );
 		?>
-		<a class="jar-separador<?php echo $s === $separador ? ' is-atual' : ''; ?>" href="<?php echo esc_url( jelly_ar_mesas_url( $evento['id'], [ 'separador' => $s ] ) ); ?>"<?php echo $s === $separador ? ' aria-current="page"' : ''; ?>>
+		<a class="<?php echo esc_attr( $classes ); ?>" href="<?php echo esc_url( jelly_ar_mesas_url( $evento['id'], [ 'separador' => $s ] ) ); ?>"<?php echo $s === $separador ? ' aria-current="page"' : ''; ?><?php echo $rotulo[2] ? ' title="' . esc_attr__( 'Em falta', 'jelly-area-reservada' ) . '"' : ''; ?>>
+			<?php if ( $rotulo[2] ) : ?>
+				<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+			<?php endif; ?>
 			<?php echo esc_html( $rotulo[0] ); ?>
 			<?php if ( null !== $rotulo[1] ) : ?>
 				<b><?php echo (int) $rotulo[1]; ?></b>
@@ -599,6 +615,57 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 		</form>
 	</section>
 
+	<?php // O histórico fica no fim dos Horários: o que se fez nas marcações, nas mesas e nos horários do evento. ?>
+	<?php
+	/* ---------------------------------------------------------- Histórico (nos Horários) */
+	// Quem fez o quê neste evento (inc/historico.php): as marcações, as mesas e os horários.
+	$historico = jelly_ar_historico_do_evento( $evento['id'] );
+	$icones    = [
+		'marcacao-criada'    => 'fa-calendar-plus',
+		'marcacao-pedida'    => 'fa-paper-plane',
+		'marcacao-mudada'    => 'fa-arrow-right-arrow-left',
+		'marcacao-removida'  => 'fa-trash-can',
+		'marcacao-aprovada'  => 'fa-circle-check',
+		'marcacao-rejeitada' => 'fa-circle-xmark',
+		'horarios-gravados'  => 'fa-clock',
+		'mesa-criada'        => 'fa-plus',
+		'mesa-alterada'      => 'fa-pen',
+		'mesa-apagada'       => 'fa-trash-can',
+	];
+	?>
+	<section class="jar-cartao jar-cartao--tabela jar-historico">
+		<header class="jar-cartao__cabeca">
+			<div>
+				<h2><?php esc_html_e( 'Histórico', 'jelly-area-reservada' ); ?></h2>
+				<span class="jar-cartao__meta"><?php esc_html_e( 'Quem marcou, mudou ou removeu marcações, e quem alterou as mesas e os horários deste evento. Os mais recentes primeiro.', 'jelly-area-reservada' ); ?></span>
+			</div>
+		</header>
+		<?php if ( ! $historico ) : ?>
+			<p class="jar-vazio"><?php esc_html_e( 'Ainda não há nada registado neste evento.', 'jelly-area-reservada' ); ?></p>
+		<?php else : ?>
+			<table class="jar-tabela">
+				<thead>
+					<tr>
+						<th class="jar-col--data"><?php esc_html_e( 'Data e hora', 'jelly-area-reservada' ); ?></th>
+						<th><?php esc_html_e( 'Ação', 'jelly-area-reservada' ); ?></th>
+						<th><?php esc_html_e( 'Detalhe', 'jelly-area-reservada' ); ?></th>
+						<th><?php esc_html_e( 'Por', 'jelly-area-reservada' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $historico as $h ) : ?>
+						<tr>
+							<td class="jar-tabela__num jar-col--data"><?php jelly_ar_data_hora( $h['quando'] ); ?></td>
+							<td class="jar-historico__acao"><i class="fa-solid <?php echo esc_attr( $icones[ $h['acao'] ] ?? 'fa-circle' ); ?>" aria-hidden="true"></i> <?php echo esc_html( $h['rotulo'] ); ?></td>
+							<td><?php echo esc_html( $h['resumo'] ); ?></td>
+							<td><?php echo esc_html( $h['autor'] ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php endif; ?>
+	</section>
+
 <?php else : ?>
 	<?php /* ---------------------------------------------------------- Grelha */ ?>
 	<?php if ( ! $mesas || ! $horarios ) : ?>
@@ -627,6 +694,8 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 			'mesas'   => [],
 			'dias'    => [],
 			'blocos'  => $ocupados,
+			// O caminho de cada marcação — quem a fez, mudou, aprovou —, para a janela (inc/historico.php).
+			'historico' => jelly_ar_historico_por_marcacao( $evento['id'] ),
 			// Sem lugares por mesa, a janela fala de uma marcação por horário (JELLY_AR_LUGARES).
 			'lugares' => JELLY_AR_LUGARES,
 			'estados' => [

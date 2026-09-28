@@ -337,6 +337,16 @@ function jelly_ar_marcar( $evento_id, $mesa_id, $dia, $hora, $users ) {
 				'notas'        => '',
 			]
 		);
+
+		jelly_ar_historico_gravar(
+			'marcacao-criada',
+			[
+				'evento_id'    => $evento_id,
+				'marcacao_id'  => $wpdb->insert_id,
+				'associado_id' => $u,
+				'resumo'       => jelly_ar_historico_marcacao( $u, $mesa, $dia, $hora ),
+			]
+		);
 	}
 
 	jelly_ar_bloco_soltar( $mesa['id'], $dia, $hora );
@@ -365,9 +375,28 @@ function jelly_ar_marcacoes_remover( $evento_id, $ids ) {
 			],
 			[ 'id' => $m['id'] ]
 		);
+
+		jelly_ar_historico_gravar(
+			'marcacao-removida',
+			[
+				'evento_id'    => $evento_id,
+				'marcacao_id'  => $m['id'],
+				'associado_id' => $m['user_id'],
+				'resumo'       => jelly_ar_historico_marcacao( $m['user_id'], jelly_ar_mesa_nome( $m['mesa_id'] ), $m['dia'], $m['hora'] ),
+			]
+		);
 	}
 
 	return $marcacoes;
+}
+
+/**
+ * O nome de uma mesa, pelo id — para o histórico, que o escreve por extenso.
+ */
+function jelly_ar_mesa_nome( $mesa_id ) {
+	global $wpdb;
+
+	return (string) $wpdb->get_var( $wpdb->prepare( 'SELECT nome FROM ' . jelly_ar_tabela( 'mesas' ) . ' WHERE id = %d', $mesa_id ) ); // phpcs:ignore WordPress.DB
 }
 
 /**
@@ -422,6 +451,18 @@ function jelly_ar_marcacoes_mover( $evento_id, $ids, $mesa_id, $dia, $hora ) {
 				'hora'    => $hora . ':00',
 			],
 			[ 'id' => $m['id'] ]
+		);
+
+		// "Ana Silva · Mesa 1 · qua, 7 out · 10:00 → Mesa 2 · qua, 7 out · 10:30": de onde e para onde.
+		$depois = jelly_ar_historico_marcacao( $m['user_id'], $mesa, $dia, $hora );
+		jelly_ar_historico_gravar(
+			'marcacao-mudada',
+			[
+				'evento_id'    => $evento_id,
+				'marcacao_id'  => $m['id'],
+				'associado_id' => $m['user_id'],
+				'resumo'       => jelly_ar_historico_marcacao( $m['user_id'], jelly_ar_mesa_nome( $m['mesa_id'] ), $m['dia'], $m['hora'] ) . ' → ' . substr( $depois, strpos( $depois, ' · ' ) + strlen( ' · ' ) ),
+			]
 		);
 	}
 
@@ -638,6 +679,19 @@ function jelly_ar_pedir( $evento, $user_id, $mesa_id, $dia, $hora ) {
 	$ok = (bool) $wpdb->insert_id;
 	jelly_ar_bloco_soltar( $mesa['id'], $dia, $hora );
 
+	if ( $ok ) {
+		// O autor é o próprio associado, que é quem tem a sessão.
+		jelly_ar_historico_gravar(
+			'marcacao-pedida',
+			[
+				'evento_id'    => $evento['id'],
+				'marcacao_id'  => $wpdb->insert_id,
+				'associado_id' => $user_id,
+				'resumo'       => jelly_ar_historico_marcacao( $user_id, $mesa, $dia, $hora ),
+			]
+		);
+	}
+
 	return $ok ? $mesa : new WP_Error( 'marcacao-cheia' );
 }
 
@@ -680,6 +734,16 @@ function jelly_ar_marcacoes_decidir( $ids, $decisao ) {
 				'decidido_por' => get_current_user_id(),
 			],
 			[ 'id' => $l->id ]
+		);
+
+		jelly_ar_historico_gravar(
+			'aprovada' === $decisao ? 'marcacao-aprovada' : 'marcacao-rejeitada',
+			[
+				'evento_id'    => (int) $l->evento_id,
+				'marcacao_id'  => (int) $l->id,
+				'associado_id' => (int) $l->user_id,
+				'resumo'       => jelly_ar_historico_marcacao( (int) $l->user_id, jelly_ar_mesa_nome( $l->mesa_id ), $l->dia, substr( $l->hora, 0, 5 ) ),
+			]
 		);
 	}
 

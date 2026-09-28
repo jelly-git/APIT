@@ -30,6 +30,7 @@
  *   jelly_ar_mesas             as mesas de um evento com marcações
  *   jelly_ar_evento_horarios   os dias e as horas de marcação de um evento
  *   jelly_ar_marcacoes         os pedidos de mesa dos associados
+ *   jelly_ar_registo           quem fez o quê nas marcações, mesas e horários
  *
  * Os estados guardam-se como texto (varchar) e não como ENUM: acrescentar um
  * estado não obriga a mudar o esquema, e os valores aceites são verificados no
@@ -42,7 +43,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Sobe quando o que jelly_ar_instalar() cria mudar, para ela voltar a correr.
-define( 'JELLY_AR_DB_VERSION', '9' );
+define( 'JELLY_AR_DB_VERSION', '10' );
 
 /**
  * O nome completo de uma tabela da AR: jelly_ar_tabela( 'eventos' ).
@@ -255,6 +256,28 @@ function jelly_ar_esquema() {
 			KEY evento_id (evento_id),
 			KEY user_id (user_id),
 			KEY estado (estado)
+		) {$c};",
+
+		/*
+		 * O registo do que se faz nas marcações, nas mesas e nos horários: uma
+		 * linha por ação, com quem a fez (autor_id: a equipa, ou o associado
+		 * que pediu) e a quem diz respeito (associado_id, nas marcações). O
+		 * resumo fica escrito no momento — "Ana Silva · Mesa 1 · 7 out 10:00" —
+		 * para se ler mesmo depois de a mesa ou o horário mudarem.
+		 */
+		"CREATE TABLE {$t( 'registo' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			criado_em datetime NOT NULL,
+			autor_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			acao varchar(40) NOT NULL,
+			evento_id bigint(20) unsigned DEFAULT NULL,
+			marcacao_id bigint(20) unsigned DEFAULT NULL,
+			associado_id bigint(20) unsigned DEFAULT NULL,
+			resumo text NOT NULL,
+			PRIMARY KEY  (id),
+			KEY evento_id (evento_id),
+			KEY marcacao_id (marcacao_id),
+			KEY associado_id (associado_id)
 		) {$c};",
 	];
 }

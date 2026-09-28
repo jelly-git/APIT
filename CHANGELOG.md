@@ -266,6 +266,34 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.49.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.13.0, com o esquema da base de dados 10. O
+tema não muda. O esquema atualiza-se sozinho na primeira visita ao wp-admin
+depois do deploy: não é preciso importar a base de dados.
+
+### Adicionado
+- **Histórico: quem fez o quê**, gravado na base de dados (tabela nova
+  `jelly_ar_registo`) em cada ação, com a data, a hora e quem a fez:
+  - nas marcações: feita pela equipa, pedida pelo associado, mudada (de onde
+    e para onde), removida, aprovada, rejeitada;
+  - nas mesas: criada, alterada (o que era e o que ficou), apagada;
+  - nos horários: gravados, com os dias e as horas que ficaram.
+  Grava-se dentro das funções que fazem cada ação, para nenhum caminho ficar
+  de fora — o back-office, o pop-up do site ou as Aprovações.
+- O histórico aparece em dois sítios: no fim do separador Horários de cada
+  evento, tudo o que se fez nele, do mais recente para o mais antigo; e na
+  janela de cada horário da grelha, o caminho daquela marcação.
+- Apagar um utilizador apaga também o histórico das marcações dele, que leva
+  o nome escrito.
+
+### Alterado
+- A página de um evento em Mesas e horários abre no separador do que falta
+  fazer: nas Mesas, sem mesas; nos Horários, sem horários; e na Grelha, com
+  os dois.
+- Os separadores do que falta (Mesas sem mesas, Horários sem dias) ficam a
+  rosa, com um ponto de exclamação, como os botões da página do evento.
+
 ## [0.48.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.12.0. O tema e o esquema da base de dados não
