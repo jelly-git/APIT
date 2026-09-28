@@ -467,6 +467,15 @@ location ^~ /wp-content/uploads/jelly-area-reservada/ { deny all; }
 > Ordem correcta, tanto na primeira subida como nas seguintes:
 > **Update from Remote** → **Deploy HEAD Commit**.
 
+> **Dados de demonstração nunca sobem — nem pelo código.** Os exemplos embutidos
+> no plugin da Área Reservada (`inc/admin-exemplo.php`: documentos, a
+> utilizadora e as descargas de exemplo) só se ligam onde
+> `WP_ENVIRONMENT_TYPE` é `local`, como no `wp-config.php` do Local
+> (`JELLY_AR_EXEMPLO`, em `jelly-area-reservada.php`). O `wp-config.php` de
+> produção não pode definir `WP_ENVIRONMENT_TYPE` como `local`. Qualquer outro
+> dado de demonstração (utilizadores, marcações, acessos, estatísticas) vive
+> só na base de dados local, que a exportação da secção 3 deixa de fora.
+
 Para confirmar que versão está no ar, ver o código-fonte do site: a folha de
 estilos do tema traz a versão no endereço, `style.css?ver=0.21.10`. Outro sinal,
 mais visível: nomes de shortcode em texto cru na página (`[apit_equipa]`,

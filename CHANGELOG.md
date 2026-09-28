@@ -266,6 +266,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.56.4] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.20.4. O tema e a base de dados não mudam.
+
+### Corrigido
+- **Os dados de exemplo da Área Reservada deixam de aparecer em produção.**
+  `JELLY_AR_EXEMPLO` era `true` no código, e por isso cada deploy levava para
+  o back-office de produção os documentos, a utilizadora e as descargas de
+  exemplo de `inc/admin-exemplo.php`. Passa a ligar-se só onde
+  `WP_ENVIRONMENT_TYPE` é `local`. Regra: dados de demonstração nunca sobem
+  a produção, por nenhum caminho (registada no `DEPLOY.md`, secção 5).
+
 ## [0.56.3] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.20.3. O tema e a base de dados não mudam.

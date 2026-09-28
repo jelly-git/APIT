@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Área Reservada APIT
  * Description: Área reservada dos associados da APIT — login, registo e, nas fases seguintes, documentos, encontros, marcações e calendário.
- * Version:     0.20.3
+ * Version:     0.20.4
  * Author:      Jelly
  * Author URI:  https://jelly.pt
  * Text Domain: jelly-area-reservada
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Acertar com o cabeçalho acima e com a entrada do CHANGELOG.md do repositório.
-define( 'JELLY_AR_VERSION', '0.20.3' );
+define( 'JELLY_AR_VERSION', '0.20.4' );
 define( 'JELLY_AR_DIR', plugin_dir_path( __FILE__ ) );
 define( 'JELLY_AR_URL', plugin_dir_url( __FILE__ ) );
 
@@ -20,10 +20,13 @@ define( 'JELLY_AR_URL', plugin_dir_url( __FILE__ ) );
  * Enquanto for true, o back-office e a exportação mostram, a seguir aos dados
  * reais, os de inc/admin-exemplo.php — para a apresentação não mostrar listas
  * vazias. Os de exemplo têm ids a partir de JELLY_AR_EXEMPLO_ID, para nunca
- * darem com uma conta ou um documento verdadeiro. Passa a false quando a área
- * tiver dados seus.
+ * darem com uma conta ou um documento verdadeiro.
+ *
+ * Só no ambiente local (WP_ENVIRONMENT_TYPE 'local', no wp-config.php do
+ * Local): dados de demonstração nunca chegam a produção, e este ficheiro sobe
+ * com cada deploy.
  */
-define( 'JELLY_AR_EXEMPLO', true );
+define( 'JELLY_AR_EXEMPLO', 'local' === wp_get_environment_type() );
 define( 'JELLY_AR_EXEMPLO_ID', 900000 );
 
 /*
