@@ -739,3 +739,31 @@ function jelly_ar_bloco_pedido( $dia, $hora ) {
 	];
 }
 
+
+/**
+ * Se um evento ainda tem onde marcar, para o badge de Mesas e horários: o que
+ * os associados veem no pop-up (jelly_ar_disponibilidade()), ou seja, os
+ * lugares livres nos blocos que ainda não passaram.
+ *
+ * @return array [ 'estado' => disponivel | completo | terminado | sem-grelha, 'livres' => int ]
+ */
+function jelly_ar_disponibilidade_estado( $evento ) {
+	$fim = $evento['fim'] ? $evento['fim'] : $evento['inicio'];
+
+	if ( $fim && $fim < current_time( 'Ymd' ) ) {
+		return [ 'estado' => 'terminado', 'livres' => 0 ];
+	}
+
+	if ( ! jelly_ar_mesas( $evento['id'] ) || ! jelly_ar_horarios( $evento['id'] ) ) {
+		return [ 'estado' => 'sem-grelha', 'livres' => 0 ];
+	}
+
+	$livres = 0;
+	foreach ( jelly_ar_disponibilidade( $evento ) as $d ) {
+		foreach ( $d['blocos'] as $b ) {
+			$livres += array_sum( wp_list_pluck( $b['mesas'], 'livres' ) );
+		}
+	}
+
+	return [ 'estado' => $livres ? 'disponivel' : 'completo', 'livres' => $livres ];
+}

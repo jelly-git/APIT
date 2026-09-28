@@ -266,6 +266,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.47.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.11.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- Em Mesas e horários, um badge com a disponibilidade de cada evento — na
+  lista, numa coluna nova, e ao lado do título na página do evento:
+  - **Com lugares · N livres**, a turquesa;
+  - **Completo**, a vermelho: os associados já não têm onde marcar;
+  - **Terminado**, a cinzento, depois do último dia;
+  - **Sem grelha**, a cinzento, enquanto faltarem as mesas ou os horários.
+  Conta o que os associados veem no pop-up de marcação: os lugares livres
+  nos blocos que ainda não passaram. Ao passar o rato, diz o porquê.
+
+### Alterado
+- A lista de Mesas e horários larga as colunas conforme o espaço — primeiro
+  as mesas, depois a ocupação —, e no telemóvel fica com o evento, o badge e
+  a seta. Antes, a tabela passava do cartão.
+
 ## [0.46.3] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.10.3. O tema e a base de dados não mudam.

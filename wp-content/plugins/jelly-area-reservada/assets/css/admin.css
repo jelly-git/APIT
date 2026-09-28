@@ -1199,6 +1199,7 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 }
 
 .jar-estado--ativo,
+.jar-estado--disponivel,
 .jar-estado--aprovada {
 	background: rgba(46, 198, 176, 0.14);
 	color: #13806f;
@@ -1210,12 +1211,15 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 }
 
 .jar-estado--suspenso,
+.jar-estado--terminado,
+.jar-estado--sem-grelha,
 .jar-estado--cancelada {
 	background: rgba(27, 42, 51, 0.08);
 	color: rgba(27, 42, 51, 0.7);
 }
 
 .jar-estado--rejeitado,
+.jar-estado--completo,
 .jar-estado--rejeitada {
 	background: rgba(196, 33, 59, 0.1);
 	color: var(--jar-erro);
@@ -2957,5 +2961,30 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	.jar-aprovacoes .jar-aprovacoes__movel {
 		display: block;
 		color: var(--jar-preto);
+	}
+}
+
+/*
+ * A lista de Mesas e horários: saem as mesas e a ocupação, e no telemóvel fica
+ * o evento, a disponibilidade e a seta — o badge diz o essencial. A capa sai
+ * também, e o badge pode partir em duas linhas.
+ */
+.jar-mesas-lista {
+	container-type: inline-size;
+}
+
+@container (max-width: 620px) {
+	.jar-mesas-lista .jar-col--n-mesas { display: none; }
+}
+
+@container (max-width: 520px) {
+	.jar-mesas-lista .jar-col--ocupacao { display: none; }
+}
+
+@container (max-width: 440px) {
+	.jar-mesas-lista .jar-evento-capa { display: none; }
+
+	.jar-mesas-lista .jar-estado {
+		white-space: normal;
 	}
 }
