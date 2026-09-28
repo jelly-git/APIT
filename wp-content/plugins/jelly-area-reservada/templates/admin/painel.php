@@ -2,9 +2,10 @@
 /**
  * Painel: a entrada do back-office (inc/painel.php).
  *
- * De cima para baixo, pela ordem em que se age: os números do que pede
- * atenção; os alertas; o que está por decidir e a agenda da semana; e, ao
- * lado, os próximos eventos, a atividade recente e os números do mês.
+ * De cima para baixo: os números do que pede atenção e os alertas; e, em
+ * filas com os cartões à mesma altura, os últimos 30 dias ao lado dos
+ * próximos eventos, o que está por decidir ao lado da semana, e a atividade
+ * recente a toda a largura.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -99,8 +100,163 @@ if ( JELLY_AR_EXEMPLO ) {
 	</section>
 <?php endif; ?>
 
+
+<?php
+/*
+ * Em filas, cada uma com os cartões à mesma altura: a atividade do mês ao
+ * lado dos próximos eventos; o que está por decidir ao lado da semana; e a
+ * atividade recente a toda a largura.
+ */
+?>
 <div class="jar-painel">
-	<div class="jar-painel__principal">
+	<div class="jar-painel__fila jar-painel__fila--2-1">
+		<?php
+		/* ---------- Os últimos 30 dias: o gráfico e os números ---------- */
+
+		/*
+		 * O gráfico em SVG, desenhado aqui: 30 dias, uma linha para os pedidos
+		 * de marcação e outra para os acessos, na mesma escala.
+		 */
+		$serie   = $p['atividade30']['dias'];
+		$maximo  = max( 1, max( array_map( 'max', array_map( 'array_values', $serie ) ) ) );
+		$largura = 300;
+		$altura  = 110;
+		$pontos  = function ( $chave ) use ( $serie, $maximo, $largura, $altura ) {
+			$r = [];
+			$i = 0;
+			$n = count( $serie ) - 1;
+			foreach ( $serie as $v ) {
+				$r[] = round( $i * $largura / $n, 1 ) . ',' . round( $altura - 6 - ( $v[ $chave ] / $maximo ) * ( $altura - 16 ), 1 );
+				$i++;
+			}
+
+			return $r;
+		};
+		$linha_marcacoes = $pontos( 'marcacoes' );
+		$linha_acessos   = $pontos( 'acessos' );
+		$dias_serie      = array_keys( $serie );
+
+		// "▲ 20%" contra os 30 dias anteriores; "novo" quando antes não havia nenhum.
+		$comparar = function ( $agora, $antes ) {
+			if ( $agora === $antes ) {
+				return [ 'igual', __( 'igual ao mês anterior', 'jelly-area-reservada' ) ];
+			}
+			if ( ! $antes ) {
+				return [ 'sobe', __( 'novo este mês', 'jelly-area-reservada' ) ];
+			}
+			$pct = (int) round( 100 * ( $agora - $antes ) / $antes );
+
+			/* translators: %d: percentagem */
+			return [ $pct > 0 ? 'sobe' : 'desce', sprintf( __( '%d%% face ao mês anterior', 'jelly-area-reservada' ), abs( $pct ) ) ];
+		};
+		$antes    = $p['atividade30']['anterior'];
+		$numeros  = [
+			[ __( 'Pedidos de marcação', 'jelly-area-reservada' ), $p['numeros']['marcacoes'], $antes['marcacoes'] ],
+			[ __( 'Acessos dos associados', 'jelly-area-reservada' ), $p['numeros']['acessos'], $antes['acessos'] ],
+			[ __( 'Registos novos', 'jelly-area-reservada' ), $p['numeros']['registos'], $antes['registos'] ],
+			[ __( 'Descargas de documentos', 'jelly-area-reservada' ), $p['numeros']['descargas'], $antes['descargas'] ],
+		];
+		?>
+		<section class="jar-cartao">
+			<header class="jar-cartao__cabeca">
+				<div>
+					<h2><?php esc_html_e( 'Últimos 30 dias', 'jelly-area-reservada' ); ?></h2>
+					<span class="jar-cartao__meta"><?php esc_html_e( 'Comparado com os 30 dias anteriores', 'jelly-area-reservada' ); ?></span>
+				</div>
+			</header>
+
+			<div class="jar-painel__trinta">
+			<figure class="jar-painel__grafico">
+				<svg viewBox="0 0 <?php echo (int) $largura; ?> <?php echo (int) $altura; ?>" preserveAspectRatio="none" role="img" aria-label="<?php esc_attr_e( 'Pedidos de marcação e acessos dos associados, por dia, nos últimos 30 dias', 'jelly-area-reservada' ); ?>">
+					<defs>
+						<linearGradient id="jar-grafico-area" x1="0" y1="0" x2="0" y2="1">
+							<stop offset="0" stop-color="#f41892" stop-opacity="0.22"></stop>
+							<stop offset="1" stop-color="#f41892" stop-opacity="0"></stop>
+						</linearGradient>
+					</defs>
+					<?php foreach ( [ 0.25, 0.5, 0.75 ] as $g ) : ?>
+						<line class="jar-painel__grelha-linha" x1="0" x2="<?php echo (int) $largura; ?>" y1="<?php echo esc_attr( round( 6 + $g * ( $altura - 16 ), 1 ) ); ?>" y2="<?php echo esc_attr( round( 6 + $g * ( $altura - 16 ), 1 ) ); ?>"></line>
+					<?php endforeach; ?>
+					<polygon fill="url(#jar-grafico-area)" points="<?php echo esc_attr( '0,' . ( $altura - 6 ) . ' ' . implode( ' ', $linha_marcacoes ) . ' ' . $largura . ',' . ( $altura - 6 ) ); ?>"></polygon>
+					<polyline class="jar-painel__serie jar-painel__serie--acessos" points="<?php echo esc_attr( implode( ' ', $linha_acessos ) ); ?>"></polyline>
+					<polyline class="jar-painel__serie jar-painel__serie--marcacoes" points="<?php echo esc_attr( implode( ' ', $linha_marcacoes ) ); ?>"></polyline>
+				</svg>
+				<figcaption class="jar-painel__eixo">
+					<span><?php echo esc_html( $dia_curto( $dias_serie[0] ) ); ?></span>
+					<span><?php echo esc_html( $dia_curto( $dias_serie[14] ) ); ?></span>
+					<span><?php esc_html_e( 'Hoje', 'jelly-area-reservada' ); ?></span>
+				</figcaption>
+				<ul class="jar-painel__legenda">
+					<li><span class="jar-painel__ponto jar-painel__ponto--marcacoes"></span> <?php esc_html_e( 'Pedidos de marcação', 'jelly-area-reservada' ); ?></li>
+					<li><span class="jar-painel__ponto jar-painel__ponto--acessos"></span> <?php esc_html_e( 'Acessos', 'jelly-area-reservada' ); ?></li>
+				</ul>
+			</figure>
+
+			<dl class="jar-painel__numeros">
+				<?php foreach ( $numeros as $n ) : ?>
+					<?php $c = $comparar( (int) $n[1], (int) $n[2] ); ?>
+					<div>
+						<dt><?php echo esc_html( $n[0] ); ?></dt>
+						<dd><?php echo (int) $n[1]; ?></dd>
+						<dd class="jar-painel__variacao jar-painel__variacao--<?php echo esc_attr( $c[0] ); ?>">
+							<i class="fa-solid <?php echo esc_attr( 'sobe' === $c[0] ? 'fa-arrow-trend-up' : ( 'desce' === $c[0] ? 'fa-arrow-trend-down' : 'fa-minus' ) ); ?>" aria-hidden="true"></i>
+							<?php echo esc_html( $c[1] ); ?>
+						</dd>
+					</div>
+				<?php endforeach; ?>
+			</dl>
+			</div>
+		</section>
+		<?php /* ---------- Próximos eventos ---------- */ ?>
+		<section class="jar-cartao jar-cartao--tabela">
+			<header class="jar-cartao__cabeca">
+				<div>
+					<h2><?php esc_html_e( 'Próximos eventos', 'jelly-area-reservada' ); ?></h2>
+					<span class="jar-cartao__meta"><?php esc_html_e( 'Com marcações de mesa', 'jelly-area-reservada' ); ?></span>
+				</div>
+			</header>
+			<?php if ( ! $p['proximos'] ) : ?>
+				<p class="jar-vazio"><?php esc_html_e( 'Nenhum evento por vir aceita marcações.', 'jelly-area-reservada' ); ?></p>
+			<?php else : ?>
+				<ul class="jar-painel__eventos">
+					<?php foreach ( $p['proximos'] as $x ) : ?>
+						<?php
+						$e     = $x['evento'];
+						$total = (int) $x['resumo']['lugares'];
+						$feito = (int) ( $x['resumo']['confirmadas'] + $x['resumo']['pendentes'] );
+						$pct   = $total ? min( 100, (int) round( 100 * $feito / $total ) ) : 0;
+						$textos = [
+							/* translators: %d: horários livres */
+							'disponivel' => sprintf( _n( '%d horário livre', '%d horários livres', $x['estado']['livres'], 'jelly-area-reservada' ), $x['estado']['livres'] ),
+							'completo'   => __( 'Completo', 'jelly-area-reservada' ),
+							'terminado'  => __( 'Terminado', 'jelly-area-reservada' ),
+							'sem-grelha' => __( 'Sem grelha', 'jelly-area-reservada' ),
+						];
+						?>
+						<li>
+							<a href="<?php echo esc_url( jelly_ar_admin_url( 'mesas', [ 'evento' => $e['id'] ] ) ); ?>">
+								<span class="jar-evento-capa" style="--jar-cat-inicio: <?php echo esc_attr( $e['cores']['inicio'] ); ?>; --jar-cat-fim: <?php echo esc_attr( $e['cores']['fim'] ); ?>;" aria-hidden="true"></span>
+								<span class="jar-painel__texto">
+									<strong><?php echo esc_html( $e['titulo'] ); ?></strong>
+									<small><?php echo esc_html( jelly_ar_intervalo_datas( $e['inicio'], $e['fim'] ) . ( $e['local'] ? ' · ' . $e['local'] : '' ) ); ?></small>
+									<?php // A disponibilidade e a ocupação por baixo do nome, para o nome não se cortar num cartão estreito. ?>
+									<span class="jar-painel__ocupacao">
+										<span class="jar-estado jar-estado--<?php echo esc_attr( $x['estado']['estado'] ); ?>"><?php echo esc_html( $textos[ $x['estado']['estado'] ] ); ?></span>
+										<?php if ( $total ) : ?>
+											<?php /* translators: 1: marcações, 2: horários no total */ ?>
+											<span class="jar-painel__barra" role="img" aria-label="<?php echo esc_attr( sprintf( __( '%1$d de %2$d horários marcados', 'jelly-area-reservada' ), $feito, $total ) ); ?>"><span style="width: <?php echo (int) $pct; ?>%"></span></span>
+										<?php endif; ?>
+									</span>
+								</span>
+							</a>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+		</section>
+	</div>
+
+	<div class="jar-painel__fila jar-painel__fila--1-1">
 		<?php /* ---------- Por decidir ---------- */ ?>
 		<section class="jar-cartao jar-cartao--tabela">
 			<header class="jar-cartao__cabeca">
@@ -199,172 +355,39 @@ if ( JELLY_AR_EXEMPLO ) {
 		</section>
 	</div>
 
-	<aside class="jar-painel__lado">
-		<?php /* ---------- Próximos eventos ---------- */ ?>
-		<section class="jar-cartao jar-cartao--tabela">
-			<header class="jar-cartao__cabeca">
-				<div>
-					<h2><?php esc_html_e( 'Próximos eventos', 'jelly-area-reservada' ); ?></h2>
-					<span class="jar-cartao__meta"><?php esc_html_e( 'Com marcações de mesa', 'jelly-area-reservada' ); ?></span>
-				</div>
-			</header>
-			<?php if ( ! $p['proximos'] ) : ?>
-				<p class="jar-vazio"><?php esc_html_e( 'Nenhum evento por vir aceita marcações.', 'jelly-area-reservada' ); ?></p>
-			<?php else : ?>
-				<ul class="jar-painel__eventos">
-					<?php foreach ( $p['proximos'] as $x ) : ?>
-						<?php
-						$e     = $x['evento'];
-						$total = (int) $x['resumo']['lugares'];
-						$feito = (int) ( $x['resumo']['confirmadas'] + $x['resumo']['pendentes'] );
-						$pct   = $total ? min( 100, (int) round( 100 * $feito / $total ) ) : 0;
-						$textos = [
-							/* translators: %d: horários livres */
-							'disponivel' => sprintf( _n( '%d horário livre', '%d horários livres', $x['estado']['livres'], 'jelly-area-reservada' ), $x['estado']['livres'] ),
-							'completo'   => __( 'Completo', 'jelly-area-reservada' ),
-							'terminado'  => __( 'Terminado', 'jelly-area-reservada' ),
-							'sem-grelha' => __( 'Sem grelha', 'jelly-area-reservada' ),
-						];
-						?>
-						<li>
-							<a href="<?php echo esc_url( jelly_ar_admin_url( 'mesas', [ 'evento' => $e['id'] ] ) ); ?>">
-								<span class="jar-evento-capa" style="--jar-cat-inicio: <?php echo esc_attr( $e['cores']['inicio'] ); ?>; --jar-cat-fim: <?php echo esc_attr( $e['cores']['fim'] ); ?>;" aria-hidden="true"></span>
-								<span class="jar-painel__texto">
-									<strong><?php echo esc_html( $e['titulo'] ); ?></strong>
-									<small><?php echo esc_html( jelly_ar_intervalo_datas( $e['inicio'], $e['fim'] ) . ( $e['local'] ? ' · ' . $e['local'] : '' ) ); ?></small>
-									<?php if ( $total ) : ?>
-										<?php /* translators: 1: marcações, 2: horários no total */ ?>
-										<span class="jar-painel__barra" role="img" aria-label="<?php echo esc_attr( sprintf( __( '%1$d de %2$d horários marcados', 'jelly-area-reservada' ), $feito, $total ) ); ?>"><span style="width: <?php echo (int) $pct; ?>%"></span></span>
-									<?php endif; ?>
-								</span>
-								<span class="jar-estado jar-estado--<?php echo esc_attr( $x['estado']['estado'] ); ?>"><?php echo esc_html( $textos[ $x['estado']['estado'] ] ); ?></span>
-							</a>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-			<?php endif; ?>
-		</section>
-
-		<?php
-		/* ---------- Os últimos 30 dias: o gráfico e os números ---------- */
-
-		/*
-		 * O gráfico em SVG, desenhado aqui: 30 dias, uma linha para os pedidos
-		 * de marcação e outra para os acessos, na mesma escala.
-		 */
-		$serie   = $p['atividade30']['dias'];
-		$maximo  = max( 1, max( array_map( 'max', array_map( 'array_values', $serie ) ) ) );
-		$largura = 300;
-		$altura  = 110;
-		$pontos  = function ( $chave ) use ( $serie, $maximo, $largura, $altura ) {
-			$r = [];
-			$i = 0;
-			$n = count( $serie ) - 1;
-			foreach ( $serie as $v ) {
-				$r[] = round( $i * $largura / $n, 1 ) . ',' . round( $altura - 6 - ( $v[ $chave ] / $maximo ) * ( $altura - 16 ), 1 );
-				$i++;
-			}
-
-			return $r;
-		};
-		$linha_marcacoes = $pontos( 'marcacoes' );
-		$linha_acessos   = $pontos( 'acessos' );
-		$dias_serie      = array_keys( $serie );
-
-		// "▲ 20%" contra os 30 dias anteriores; "novo" quando antes não havia nenhum.
-		$comparar = function ( $agora, $antes ) {
-			if ( $agora === $antes ) {
-				return [ 'igual', __( 'igual ao mês anterior', 'jelly-area-reservada' ) ];
-			}
-			if ( ! $antes ) {
-				return [ 'sobe', __( 'novo este mês', 'jelly-area-reservada' ) ];
-			}
-			$pct = (int) round( 100 * ( $agora - $antes ) / $antes );
-
-			/* translators: %d: percentagem */
-			return [ $pct > 0 ? 'sobe' : 'desce', sprintf( __( '%d%% face ao mês anterior', 'jelly-area-reservada' ), abs( $pct ) ) ];
-		};
-		$antes    = $p['atividade30']['anterior'];
-		$numeros  = [
-			[ __( 'Pedidos de marcação', 'jelly-area-reservada' ), $p['numeros']['marcacoes'], $antes['marcacoes'] ],
-			[ __( 'Acessos dos associados', 'jelly-area-reservada' ), $p['numeros']['acessos'], $antes['acessos'] ],
-			[ __( 'Registos novos', 'jelly-area-reservada' ), $p['numeros']['registos'], $antes['registos'] ],
-			[ __( 'Descargas de documentos', 'jelly-area-reservada' ), $p['numeros']['descargas'], $antes['descargas'] ],
-		];
-		?>
-		<section class="jar-cartao">
-			<header class="jar-cartao__cabeca">
-				<div>
-					<h2><?php esc_html_e( 'Últimos 30 dias', 'jelly-area-reservada' ); ?></h2>
-					<span class="jar-cartao__meta"><?php esc_html_e( 'Comparado com os 30 dias anteriores', 'jelly-area-reservada' ); ?></span>
-				</div>
-			</header>
-
-			<figure class="jar-painel__grafico">
-				<svg viewBox="0 0 <?php echo (int) $largura; ?> <?php echo (int) $altura; ?>" preserveAspectRatio="none" role="img" aria-label="<?php esc_attr_e( 'Pedidos de marcação e acessos dos associados, por dia, nos últimos 30 dias', 'jelly-area-reservada' ); ?>">
-					<defs>
-						<linearGradient id="jar-grafico-area" x1="0" y1="0" x2="0" y2="1">
-							<stop offset="0" stop-color="#f41892" stop-opacity="0.22"></stop>
-							<stop offset="1" stop-color="#f41892" stop-opacity="0"></stop>
-						</linearGradient>
-					</defs>
-					<?php foreach ( [ 0.25, 0.5, 0.75 ] as $g ) : ?>
-						<line class="jar-painel__grelha-linha" x1="0" x2="<?php echo (int) $largura; ?>" y1="<?php echo esc_attr( round( 6 + $g * ( $altura - 16 ), 1 ) ); ?>" y2="<?php echo esc_attr( round( 6 + $g * ( $altura - 16 ), 1 ) ); ?>"></line>
-					<?php endforeach; ?>
-					<polygon fill="url(#jar-grafico-area)" points="<?php echo esc_attr( '0,' . ( $altura - 6 ) . ' ' . implode( ' ', $linha_marcacoes ) . ' ' . $largura . ',' . ( $altura - 6 ) ); ?>"></polygon>
-					<polyline class="jar-painel__serie jar-painel__serie--acessos" points="<?php echo esc_attr( implode( ' ', $linha_acessos ) ); ?>"></polyline>
-					<polyline class="jar-painel__serie jar-painel__serie--marcacoes" points="<?php echo esc_attr( implode( ' ', $linha_marcacoes ) ); ?>"></polyline>
-				</svg>
-				<figcaption class="jar-painel__eixo">
-					<span><?php echo esc_html( $dia_curto( $dias_serie[0] ) ); ?></span>
-					<span><?php echo esc_html( $dia_curto( $dias_serie[14] ) ); ?></span>
-					<span><?php esc_html_e( 'Hoje', 'jelly-area-reservada' ); ?></span>
-				</figcaption>
-				<ul class="jar-painel__legenda">
-					<li><span class="jar-painel__ponto jar-painel__ponto--marcacoes"></span> <?php esc_html_e( 'Pedidos de marcação', 'jelly-area-reservada' ); ?></li>
-					<li><span class="jar-painel__ponto jar-painel__ponto--acessos"></span> <?php esc_html_e( 'Acessos', 'jelly-area-reservada' ); ?></li>
-				</ul>
-			</figure>
-
-			<dl class="jar-painel__numeros">
-				<?php foreach ( $numeros as $n ) : ?>
-					<?php $c = $comparar( (int) $n[1], (int) $n[2] ); ?>
-					<div>
-						<dt><?php echo esc_html( $n[0] ); ?></dt>
-						<dd><?php echo (int) $n[1]; ?></dd>
-						<dd class="jar-painel__variacao jar-painel__variacao--<?php echo esc_attr( $c[0] ); ?>">
-							<i class="fa-solid <?php echo esc_attr( 'sobe' === $c[0] ? 'fa-arrow-trend-up' : ( 'desce' === $c[0] ? 'fa-arrow-trend-down' : 'fa-minus' ) ); ?>" aria-hidden="true"></i>
-							<?php echo esc_html( $c[1] ); ?>
-						</dd>
-					</div>
-				<?php endforeach; ?>
-			</dl>
-		</section>
-
-		<?php /* ---------- Atividade recente ---------- */ ?>
-		<section class="jar-cartao jar-cartao--tabela">
-			<header class="jar-cartao__cabeca">
-				<div>
-					<h2><?php esc_html_e( 'Atividade recente', 'jelly-area-reservada' ); ?></h2>
-					<span class="jar-cartao__meta"><?php esc_html_e( 'Marcações, mesas e horários', 'jelly-area-reservada' ); ?></span>
-				</div>
-			</header>
-			<?php if ( ! $p['atividade'] ) : ?>
-				<p class="jar-vazio"><?php esc_html_e( 'Ainda não há atividade registada.', 'jelly-area-reservada' ); ?></p>
-			<?php else : ?>
-				<ol class="jar-painel__atividade">
+	<?php /* ---------- Atividade recente: a toda a largura, em tabela ---------- */ ?>
+	<section class="jar-cartao jar-cartao--tabela jar-painel__atividade-cartao">
+		<header class="jar-cartao__cabeca">
+			<div>
+				<h2><?php esc_html_e( 'Atividade recente', 'jelly-area-reservada' ); ?></h2>
+				<span class="jar-cartao__meta"><?php esc_html_e( 'As últimas ações nas marcações, nas mesas e nos horários de todos os eventos.', 'jelly-area-reservada' ); ?></span>
+			</div>
+		</header>
+		<?php if ( ! $p['atividade'] ) : ?>
+			<p class="jar-vazio"><?php esc_html_e( 'Ainda não há atividade registada.', 'jelly-area-reservada' ); ?></p>
+		<?php else : ?>
+			<table class="jar-tabela">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Ação', 'jelly-area-reservada' ); ?></th>
+						<th><?php esc_html_e( 'Detalhe', 'jelly-area-reservada' ); ?></th>
+						<th class="jar-col--evento"><?php esc_html_e( 'Evento', 'jelly-area-reservada' ); ?></th>
+						<th class="jar-col--por"><?php esc_html_e( 'Por', 'jelly-area-reservada' ); ?></th>
+						<th class="jar-col--data"><?php esc_html_e( 'Quando', 'jelly-area-reservada' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
 					<?php foreach ( $p['atividade'] as $h ) : ?>
-						<li>
-							<span class="jar-painel__icone"><i class="fa-solid <?php echo esc_attr( $icones[ $h['acao'] ] ?? 'fa-circle' ); ?>" aria-hidden="true"></i></span>
-							<span class="jar-painel__texto">
-								<strong><?php echo esc_html( $h['rotulo'] ); ?></strong>
-								<small><?php echo esc_html( $h['resumo'] ); ?></small>
-								<small class="jar-painel__autor"><?php echo esc_html( $h['autor'] . ' · ' . $h['quando'] . ( $h['evento'] ? ' · ' . $h['evento'] : '' ) ); ?></small>
-							</span>
-						</li>
+						<tr>
+							<td class="jar-painel__acao"><span class="jar-painel__icone"><i class="fa-solid <?php echo esc_attr( $icones[ $h['acao'] ] ?? 'fa-circle' ); ?>" aria-hidden="true"></i></span> <?php echo esc_html( $h['rotulo'] ); ?></td>
+							<td><?php echo esc_html( $h['resumo'] ); ?></td>
+							<td class="jar-col--evento"><?php echo esc_html( $h['evento'] ? $h['evento'] : '—' ); ?></td>
+							<td class="jar-col--por"><?php echo esc_html( $h['autor'] ); ?></td>
+							<td class="jar-tabela__num jar-col--data"><?php jelly_ar_data_hora( $h['quando'] ); ?></td>
+						</tr>
 					<?php endforeach; ?>
-				</ol>
-			<?php endif; ?>
-		</section>
-	</aside>
+				</tbody>
+			</table>
+		<?php endif; ?>
+	</section>
 </div>

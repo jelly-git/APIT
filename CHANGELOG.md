@@ -266,6 +266,26 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.54.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.18.1. O tema e a base de dados não mudam.
+
+### Alterado
+- O Painel arruma-se em filas, e não em duas colunas soltas — a da direita
+  ficava muito mais comprida e deixava vazios à esquerda. Em cada fila, os
+  cartões têm a mesma altura:
+  - os últimos 30 dias (o gráfico e os quatro números) ao lado dos próximos
+    eventos;
+  - o que está por decidir ao lado dos próximos 7 dias, em metades iguais;
+  - a atividade recente a toda a largura, em tabela (ação, detalhe, evento,
+    quem e quando).
+- As filas partem pela largura do Painel: num portátil, o gráfico fica por
+  cima e os números numa linha por baixo, para os próximos eventos caberem ao
+  lado; no estreito, um cartão por linha, e a tabela larga as colunas que
+  menos falta fazem.
+- Nos próximos eventos, a disponibilidade e a barra da ocupação passam para
+  baixo do nome, que deixa de se cortar.
+
 ## [0.54.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.18.0. O tema e a base de dados não mudam.

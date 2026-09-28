@@ -3489,20 +3489,98 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	flex: none;
 }
 
-/* Duas colunas: o que se faz (larga) e o contexto (estreita). */
+/*
+ * Em filas, e não em colunas soltas: em cada fila os cartões ficam à mesma
+ * altura, e nenhum lado fica mais comprido do que o outro. As filas partem
+ * pela largura do Painel (container), com ou sem a navegação ao lado.
+ */
 .jar-painel {
-	display: grid;
-	grid-template-columns: minmax(0, 3fr) minmax(300px, 2fr);
-	gap: 24px;
-	align-items: start;
-}
-
-.jar-painel__principal,
-.jar-painel__lado {
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
+	container-type: inline-size;
+}
+
+.jar-painel__fila {
+	display: grid;
+	gap: 24px;
+	align-items: stretch;
+}
+
+.jar-painel__fila--2-1 {
+	grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+}
+
+.jar-painel__fila--1-1 {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.jar-painel__fila > .jar-cartao {
 	min-width: 0;
+}
+
+/* Os últimos 30 dias: o gráfico à esquerda e os quatro números à direita. */
+.jar-painel__trinta {
+	display: grid;
+	grid-template-columns: minmax(0, 3fr) minmax(220px, 2fr);
+	gap: 28px;
+	align-items: center;
+}
+
+.jar .jar-painel__trinta .jar-painel__grafico {
+	margin: 0;
+}
+
+.jar-painel__trinta .jar-painel__numeros {
+	gap: 20px 16px;
+}
+
+/* A atividade recente, em tabela: a ação com o ícone, e as colunas que saem no estreito. */
+.jar-painel__acao {
+	white-space: nowrap;
+}
+
+.jar-painel__acao .jar-painel__icone {
+	margin-right: 6px;
+	vertical-align: middle;
+}
+
+@container (max-width: 1100px) {
+	.jar-painel__trinta {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 20px;
+	}
+
+	.jar-painel__trinta .jar-painel__numeros {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+
+@container (max-width: 860px) {
+	.jar-painel__fila--2-1 {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@container (max-width: 820px) {
+	.jar-painel__fila--1-1 {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.jar-painel__atividade-cartao .jar-col--evento {
+		display: none;
+	}
+}
+
+@container (max-width: 620px) {
+	.jar-painel__trinta .jar-painel__numeros {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.jar-painel__atividade-cartao .jar-col--por,
+	.jar-painel__atividade-cartao .jar-col--data {
+		display: none;
+	}
 }
 
 /* Nada por decidir. */
@@ -3703,10 +3781,22 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	flex: none;
 }
 
+/* Por baixo do nome: o badge da disponibilidade e, ao lado, a barra da ocupação. */
+.jar-painel__ocupacao {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 6px;
+}
+
+.jar-painel__ocupacao .jar-estado {
+	flex: none;
+}
+
 .jar-painel__barra {
 	display: block;
+	flex: 1 1 auto;
 	height: 4px;
-	margin-top: 6px;
 	border-radius: 4px;
 	background: rgba(27, 42, 51, 0.08);
 	overflow: hidden;
@@ -3775,12 +3865,6 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 .jar-painel__autor {
 	margin-top: 2px;
 	font-size: 12px !important;
-}
-
-@media (max-width: 1100px) {
-	.jar-painel {
-		grid-template-columns: minmax(0, 1fr);
-	}
 }
 
 @media (max-width: 560px) {
