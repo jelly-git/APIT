@@ -3527,12 +3527,12 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	align-items: center;
 }
 
-.jar .jar-painel__trinta .jar-painel__grafico {
+.jar .jar-painel__trinta .jar-grafico {
 	margin: 0;
 }
 
-.jar-painel__trinta .jar-painel__numeros {
-	gap: 20px 16px;
+.jar-painel__trinta .jar-painel__totais {
+	gap: 12px;
 }
 
 /* A atividade recente, em tabela: a ação com o ícone, e as colunas que saem no estreito. */
@@ -3551,7 +3551,7 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 		gap: 20px;
 	}
 
-	.jar-painel__trinta .jar-painel__numeros {
+	.jar-painel__trinta .jar-painel__totais {
 		grid-template-columns: repeat(4, minmax(0, 1fr));
 	}
 }
@@ -3573,7 +3573,7 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 }
 
 @container (max-width: 620px) {
-	.jar-painel__trinta .jar-painel__numeros {
+	.jar-painel__trinta .jar-painel__totais {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
@@ -3802,28 +3802,6 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	background: var(--jar-magenta);
 }
 
-/* Os números do mês, em duas colunas. */
-.jar-painel__numeros {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 16px;
-	margin: 0;
-}
-
-.jar-painel__numeros dt {
-	font-size: 12px;
-	letter-spacing: 0.4px;
-	text-transform: uppercase;
-	color: var(--jar-suave);
-}
-
-.jar-painel__numeros dd {
-	margin: 2px 0 0;
-	font-weight: 500;
-	font-size: 26px;
-	font-variant-numeric: tabular-nums;
-}
-
 /* A atividade recente: uma linha do tempo. */
 .jar-painel__atividade {
 	margin: 0;
@@ -3866,94 +3844,185 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	}
 }
 
-/* O gráfico dos últimos 30 dias. */
-.jar-painel__grafico {
-	margin: 0 0 20px;
+/*
+ * O gráfico da atividade do mês (assets/js/admin.js, data-jar-grafico): a
+ * legenda que liga e desliga cada série, a área onde o SVG se desenha, e a
+ * dica com os valores do dia apontado.
+ */
+.jar-grafico {
+	margin: 0;
+	min-width: 0;
 }
 
-.jar-painel__grafico svg {
-	display: block;
-	width: 100%;
-	height: 130px;
-}
-
-.jar-painel__grelha-linha {
-	stroke: rgba(27, 42, 51, 0.08);
-	stroke-width: 1;
-	vector-effect: non-scaling-stroke;
-}
-
-.jar-painel__serie {
-	fill: none;
-	stroke-width: 2;
-	stroke-linejoin: round;
-	stroke-linecap: round;
-	vector-effect: non-scaling-stroke;
-}
-
-.jar-painel__serie--marcacoes {
-	stroke: var(--jar-magenta);
-}
-
-.jar-painel__serie--acessos {
-	stroke: var(--jar-roxo);
-	stroke-dasharray: 4 3;
-}
-
-.jar-painel__eixo {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 4px;
-	font-size: 12px;
-	color: var(--jar-suave);
-}
-
-.jar-painel__legenda {
+.jar-grafico__legenda {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 4px 16px;
-	margin: 10px 0 0;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.jar .jar-grafico__serie {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 12px;
+	border: 1px solid var(--jar-linha);
+	border-radius: 200px;
+	background: #fff;
+	font: inherit;
+	font-weight: 500;
+	font-size: 13px;
+	color: var(--jar-preto);
+	cursor: pointer;
+	transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.jar .jar-grafico__serie:hover {
+	border-color: var(--jar-serie);
+}
+
+.jar-grafico__serie span {
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: var(--jar-serie);
+}
+
+/* Desligada: esbatida, com a bola vazia. */
+.jar .jar-grafico__serie[aria-pressed="false"] {
+	color: var(--jar-suave);
+	opacity: 0.7;
+}
+
+.jar-grafico__serie[aria-pressed="false"] span {
+	background: transparent;
+	box-shadow: inset 0 0 0 2px var(--jar-serie);
+}
+
+.jar-grafico__area {
+	position: relative;
+	height: 190px;
+	border-radius: 3px;
+	cursor: crosshair;
+	outline: none;
+}
+
+.jar-grafico__area:focus-visible {
+	box-shadow: 0 0 0 2px var(--jar-magenta);
+}
+
+.jar-grafico__area svg {
+	display: block;
+	overflow: visible;
+}
+
+.jar-grafico__grelha {
+	stroke: rgba(27, 42, 51, 0.07);
+	stroke-width: 1;
+}
+
+.jar-grafico__eixo {
+	font-size: 11px;
+	fill: var(--jar-suave);
+	font-variant-numeric: tabular-nums;
+}
+
+.jar-grafico__linha {
+	fill: none;
+	stroke-width: 2.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.jar-grafico__guia {
+	stroke: rgba(27, 42, 51, 0.25);
+	stroke-width: 1;
+	stroke-dasharray: 3 3;
+}
+
+/* A dica: escura, ao lado da linha do dia. */
+.jar-grafico__dica {
+	position: absolute;
+	top: 8px;
+	z-index: 2;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 170px;
+	padding: 10px 12px;
+	border-radius: 3px;
+	background: var(--jar-preto);
+	box-shadow: 0 8px 20px rgba(27, 42, 51, 0.2);
+	font-size: 13px;
+	color: #fff;
+	pointer-events: none;
+}
+
+.jar-grafico__dica strong {
+	margin-bottom: 2px;
+	font-weight: 500;
+}
+
+.jar-grafico__dica span {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: rgba(255, 255, 255, 0.8);
+}
+
+.jar-grafico__dica i {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+}
+
+.jar-grafico__dica b {
+	margin-left: auto;
+	padding-left: 12px;
+	font-weight: 500;
+	color: #fff;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Os totais do mês, ao lado do gráfico: o ícone, o número e o que é. */
+.jar-painel__totais {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 12px;
+	margin: 0;
 	padding: 0;
 	list-style: none;
-	font-size: 13px;
-	color: var(--jar-suave);
 }
 
-.jar-painel__ponto {
-	display: inline-block;
-	width: 14px;
-	height: 3px;
-	margin-right: 4px;
-	border-radius: 2px;
-	vertical-align: middle;
+.jar-painel__totais li {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 14px;
+	border: 1px solid var(--jar-linha);
+	border-radius: 3px;
 }
 
-.jar-painel__ponto--marcacoes {
-	background: var(--jar-magenta);
+.jar-painel__totais .jar-icone {
+	flex: none;
+	width: 38px;
+	height: 38px;
+	font-size: 15px;
 }
 
-.jar-painel__ponto--acessos {
-	background: var(--jar-roxo);
+.jar-painel__totais strong {
+	display: block;
+	font-weight: 500;
+	font-size: 22px;
+	line-height: 1.1;
+	font-variant-numeric: tabular-nums;
 }
 
-/* A comparação com o mês anterior, por baixo de cada número. */
-.jar .jar-painel__variacao {
-	margin: 2px 0 0;
-	font-weight: 400;
+.jar-painel__totais small {
+	display: block;
 	font-size: 12px;
+	line-height: 1.3;
 	color: var(--jar-suave);
-}
-
-.jar-painel__variacao i {
-	margin-right: 3px;
-}
-
-.jar .jar-painel__variacao--sobe {
-	color: #13806f;
-}
-
-.jar .jar-painel__variacao--desce {
-	color: var(--jar-erro);
 }
 
 /*
@@ -3991,4 +4060,23 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 /* Com três linhas, o ícone e as ações ficam no alto, junto do nome. */
 .jar-painel__lista li {
 	align-items: flex-start;
+}
+
+/* Hoje, no gráfico do mês corrente: uma linha discreta, a partir da qual o mês ainda não aconteceu. */
+.jar-grafico__hoje {
+	stroke: rgba(244, 24, 146, 0.35);
+	stroke-width: 1;
+	stroke-dasharray: 2 4;
+}
+
+/* As setas para o mês anterior e o seguinte, na cabeça do cartão. */
+.jar-painel__meses {
+	display: inline-flex;
+	flex: none;
+	gap: 6px;
+}
+
+.jar .jar-painel__meses [aria-disabled="true"] {
+	opacity: 0.35;
+	cursor: default;
 }

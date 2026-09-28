@@ -266,6 +266,29 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.55.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.19.0. O tema e a base de dados não mudam.
+
+### Alterado
+- O gráfico do Painel passa a ser **o mês**, do dia 1 ao último, em vez dos
+  últimos 30 dias: "Atividade de setembro de 2026". A linha vai até hoje; os
+  dias que ainda não chegaram ficam no eixo, vazios, com uma marca discreta
+  em hoje. As setas na cabeça do cartão levam aos meses anteriores e de volta
+  ao atual.
+- O gráfico é **interativo**: ao passar o rato ou ao tocar, uma linha marca o
+  dia e uma dica mostra a data e os valores desse dia; com o teclado, as
+  setas percorrem os dias. A legenda mostra ou esconde cada linha. Desenha-se
+  ao tamanho do cartão, com curvas suaves, a escala à esquerda e as datas por
+  baixo, sem o dia da semana ("1 set, 8 set…").
+- Os quatro totais ao lado (pedidos de marcação, acessos, registos novos,
+  descargas) são os do mês do gráfico.
+
+### Removido
+- Toda a comparação com o mês anterior — as setas, as percentagens e o
+  "Comparado com os 30 dias anteriores": há meses sem eventos, e a diferença
+  não dizia nada.
+
 ## [0.54.2] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.18.2. O tema e a base de dados não mudam.

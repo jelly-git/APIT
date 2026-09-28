@@ -111,100 +111,91 @@ if ( JELLY_AR_EXEMPLO ) {
 <div class="jar-painel">
 	<div class="jar-painel__fila jar-painel__fila--2-1">
 		<?php
-		/* ---------- Os últimos 30 dias: o gráfico e os números ---------- */
-
 		/*
-		 * O gráfico em SVG, desenhado aqui: 30 dias, uma linha para os pedidos
-		 * de marcação e outra para os acessos, na mesma escala.
+		 * ---------- Os últimos 30 dias: o gráfico e os totais ----------
+		 *
+		 * O gráfico desenha-se no browser (assets/js/admin.js,
+		 * data-jar-grafico), ao tamanho do cartão, com os valores de cada dia
+		 * ao passar o rato ou com as setas do teclado; a legenda mostra ou
+		 * esconde cada linha. Os dados vão aqui, dia a dia.
 		 */
-		$serie   = $p['atividade30']['dias'];
-		$maximo  = max( 1, max( array_map( 'max', array_map( 'array_values', $serie ) ) ) );
-		$largura = 300;
-		$altura  = 110;
-		$pontos  = function ( $chave ) use ( $serie, $maximo, $largura, $altura ) {
-			$r = [];
-			$i = 0;
-			$n = count( $serie ) - 1;
-			foreach ( $serie as $v ) {
-				$r[] = round( $i * $largura / $n, 1 ) . ',' . round( $altura - 6 - ( $v[ $chave ] / $maximo ) * ( $altura - 16 ), 1 );
-				$i++;
-			}
+		$grafico = [
+			'series' => [
+				[ 'chave' => 'marcacoes', 'nome' => __( 'Pedidos de marcação', 'jelly-area-reservada' ), 'cor' => '#f41892' ],
+				[ 'chave' => 'acessos', 'nome' => __( 'Acessos', 'jelly-area-reservada' ), 'cor' => '#8048a6' ],
+			],
+			'dias'   => [],
+		];
+		foreach ( $p['mes']['dias'] as $dia => $v ) {
+			$ts                = strtotime( $dia );
+			$grafico['dias'][] = [
+				// Por baixo do gráfico "1 set"; na dica "Ter, 1 set".
+				'curto'     => jelly_ar_data( 'j M', $ts ),
+				'rotulo'    => $dia_curto( $dia ),
+				'hoje'      => current_time( 'Y-m-d' ) === $dia,
+				'futuro'    => $v['futuro'],
+				'marcacoes' => $v['marcacoes'],
+				'acessos'   => $v['acessos'],
+			];
+		}
 
-			return $r;
-		};
-		$linha_marcacoes = $pontos( 'marcacoes' );
-		$linha_acessos   = $pontos( 'acessos' );
-		$dias_serie      = array_keys( $serie );
+		// O mês do gráfico, e os vizinhos para as setas (o seguinte só até ao de hoje).
+		$mes_ts   = strtotime( $p['mes']['mes'] . '-01' );
+		$anterior = gmdate( 'Y-m', strtotime( '-1 month', $mes_ts ) );
+		$seguinte = gmdate( 'Y-m', strtotime( '+1 month', $mes_ts ) );
+		$ha_mais  = $seguinte <= current_time( 'Y-m' );
 
-		// "▲ 20%" contra os 30 dias anteriores; "novo" quando antes não havia nenhum.
-		$comparar = function ( $agora, $antes ) {
-			if ( $agora === $antes ) {
-				return [ 'igual', __( 'igual ao mês anterior', 'jelly-area-reservada' ) ];
-			}
-			if ( ! $antes ) {
-				return [ 'sobe', __( 'novo este mês', 'jelly-area-reservada' ) ];
-			}
-			$pct = (int) round( 100 * ( $agora - $antes ) / $antes );
-
-			/* translators: %d: percentagem */
-			return [ $pct > 0 ? 'sobe' : 'desce', sprintf( __( '%d%% face ao mês anterior', 'jelly-area-reservada' ), abs( $pct ) ) ];
-		};
-		$antes    = $p['atividade30']['anterior'];
-		$numeros  = [
-			[ __( 'Pedidos de marcação', 'jelly-area-reservada' ), $p['numeros']['marcacoes'], $antes['marcacoes'] ],
-			[ __( 'Acessos dos associados', 'jelly-area-reservada' ), $p['numeros']['acessos'], $antes['acessos'] ],
-			[ __( 'Registos novos', 'jelly-area-reservada' ), $p['numeros']['registos'], $antes['registos'] ],
-			[ __( 'Descargas de documentos', 'jelly-area-reservada' ), $p['numeros']['descargas'], $antes['descargas'] ],
+		$t      = $p['mes']['totais'];
+		$totais = [
+			[ __( 'Pedidos de marcação', 'jelly-area-reservada' ), $t['marcacoes'], 'fa-calendar-check', 'magenta' ],
+			[ __( 'Acessos dos associados', 'jelly-area-reservada' ), $t['acessos'], 'fa-right-to-bracket', 'roxo' ],
+			[ __( 'Registos novos', 'jelly-area-reservada' ), $t['registos'], 'fa-user-plus', 'azul' ],
+			[ __( 'Descargas de documentos', 'jelly-area-reservada' ), $t['descargas'], 'fa-download', 'turquesa' ],
 		];
 		?>
-		<section class="jar-cartao">
-			<header class="jar-cartao__cabeca">
+		<section class="jar-cartao" id="jar-painel-mes">
+			<header class="jar-cartao__cabeca jar-cartao__cabeca--acao">
 				<div>
-					<h2><?php esc_html_e( 'Últimos 30 dias', 'jelly-area-reservada' ); ?></h2>
-					<span class="jar-cartao__meta"><?php esc_html_e( 'Comparado com os 30 dias anteriores', 'jelly-area-reservada' ); ?></span>
+					<h2><?php echo esc_html( sprintf( /* translators: %s: mês e ano */ __( 'Atividade de %s', 'jelly-area-reservada' ), jelly_ar_data( 'F \d\e Y', $mes_ts ) ) ); ?></h2>
+					<span class="jar-cartao__meta"><?php esc_html_e( 'Do dia 1 ao fim do mês. Passe o rato no gráfico para ver cada dia.', 'jelly-area-reservada' ); ?></span>
 				</div>
+				<span class="jar-painel__meses">
+					<a class="jar-acao" href="<?php echo esc_url( jelly_ar_admin_url( 'painel', [ 'mes' => $anterior ] ) . '#jar-painel-mes' ); ?>" aria-label="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+					<?php if ( $ha_mais ) : ?>
+						<a class="jar-acao" href="<?php echo esc_url( jelly_ar_admin_url( 'painel', $seguinte === current_time( 'Y-m' ) ? [] : [ 'mes' => $seguinte ] ) . '#jar-painel-mes' ); ?>" aria-label="<?php esc_attr_e( 'Mês seguinte', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês seguinte', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+					<?php else : ?>
+						<span class="jar-acao" aria-disabled="true" title="<?php esc_attr_e( 'Já é o mês atual', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
+					<?php endif; ?>
+				</span>
 			</header>
 
 			<div class="jar-painel__trinta">
-			<figure class="jar-painel__grafico">
-				<svg viewBox="0 0 <?php echo (int) $largura; ?> <?php echo (int) $altura; ?>" preserveAspectRatio="none" role="img" aria-label="<?php esc_attr_e( 'Pedidos de marcação e acessos dos associados, por dia, nos últimos 30 dias', 'jelly-area-reservada' ); ?>">
-					<defs>
-						<linearGradient id="jar-grafico-area" x1="0" y1="0" x2="0" y2="1">
-							<stop offset="0" stop-color="#f41892" stop-opacity="0.22"></stop>
-							<stop offset="1" stop-color="#f41892" stop-opacity="0"></stop>
-						</linearGradient>
-					</defs>
-					<?php foreach ( [ 0.25, 0.5, 0.75 ] as $g ) : ?>
-						<line class="jar-painel__grelha-linha" x1="0" x2="<?php echo (int) $largura; ?>" y1="<?php echo esc_attr( round( 6 + $g * ( $altura - 16 ), 1 ) ); ?>" y2="<?php echo esc_attr( round( 6 + $g * ( $altura - 16 ), 1 ) ); ?>"></line>
-					<?php endforeach; ?>
-					<polygon fill="url(#jar-grafico-area)" points="<?php echo esc_attr( '0,' . ( $altura - 6 ) . ' ' . implode( ' ', $linha_marcacoes ) . ' ' . $largura . ',' . ( $altura - 6 ) ); ?>"></polygon>
-					<polyline class="jar-painel__serie jar-painel__serie--acessos" points="<?php echo esc_attr( implode( ' ', $linha_acessos ) ); ?>"></polyline>
-					<polyline class="jar-painel__serie jar-painel__serie--marcacoes" points="<?php echo esc_attr( implode( ' ', $linha_marcacoes ) ); ?>"></polyline>
-				</svg>
-				<figcaption class="jar-painel__eixo">
-					<span><?php echo esc_html( $dia_curto( $dias_serie[0] ) ); ?></span>
-					<span><?php echo esc_html( $dia_curto( $dias_serie[14] ) ); ?></span>
-					<span><?php esc_html_e( 'Hoje', 'jelly-area-reservada' ); ?></span>
-				</figcaption>
-				<ul class="jar-painel__legenda">
-					<li><span class="jar-painel__ponto jar-painel__ponto--marcacoes"></span> <?php esc_html_e( 'Pedidos de marcação', 'jelly-area-reservada' ); ?></li>
-					<li><span class="jar-painel__ponto jar-painel__ponto--acessos"></span> <?php esc_html_e( 'Acessos', 'jelly-area-reservada' ); ?></li>
-				</ul>
-			</figure>
-
-			<dl class="jar-painel__numeros">
-				<?php foreach ( $numeros as $n ) : ?>
-					<?php $c = $comparar( (int) $n[1], (int) $n[2] ); ?>
-					<div>
-						<dt><?php echo esc_html( $n[0] ); ?></dt>
-						<dd><?php echo (int) $n[1]; ?></dd>
-						<dd class="jar-painel__variacao jar-painel__variacao--<?php echo esc_attr( $c[0] ); ?>">
-							<i class="fa-solid <?php echo esc_attr( 'sobe' === $c[0] ? 'fa-arrow-trend-up' : ( 'desce' === $c[0] ? 'fa-arrow-trend-down' : 'fa-minus' ) ); ?>" aria-hidden="true"></i>
-							<?php echo esc_html( $c[1] ); ?>
-						</dd>
+				<figure class="jar-grafico" data-jar-grafico>
+					<?php // A legenda é também o interruptor de cada linha. ?>
+					<div class="jar-grafico__legenda" role="group" aria-label="<?php esc_attr_e( 'Mostrar ou esconder', 'jelly-area-reservada' ); ?>">
+						<?php foreach ( $grafico['series'] as $s ) : ?>
+							<button type="button" class="jar-grafico__serie" data-jar-grafico-serie="<?php echo esc_attr( $s['chave'] ); ?>" aria-pressed="true" style="--jar-serie: <?php echo esc_attr( $s['cor'] ); ?>;">
+								<span aria-hidden="true"></span> <?php echo esc_html( $s['nome'] ); ?>
+							</button>
+						<?php endforeach; ?>
 					</div>
-				<?php endforeach; ?>
-			</dl>
+					<div class="jar-grafico__area" data-jar-grafico-area tabindex="0" role="img" aria-label="<?php esc_attr_e( 'Pedidos de marcação e acessos dos associados, por dia, neste mês. Use as setas para percorrer os dias.', 'jelly-area-reservada' ); ?>">
+						<div class="jar-grafico__dica" data-jar-grafico-dica hidden></div>
+					</div>
+					<script type="application/json" data-jar-grafico-dados><?php echo wp_json_encode( $grafico, JSON_HEX_TAG | JSON_HEX_AMP ); ?></script>
+				</figure>
+
+				<ul class="jar-painel__totais">
+					<?php foreach ( $totais as $t ) : ?>
+						<li>
+							<span class="jar-icone jar-icone--<?php echo esc_attr( $t[3] ); ?>"><i class="fa-solid <?php echo esc_attr( $t[2] ); ?>" aria-hidden="true"></i></span>
+							<span>
+								<strong><?php echo (int) $t[1]; ?></strong>
+								<small><?php echo esc_html( $t[0] ); ?></small>
+							</span>
+						</li>
+					<?php endforeach; ?>
+				</ul>
 			</div>
 		</section>
 		<?php /* ---------- Próximos eventos ---------- */ ?>

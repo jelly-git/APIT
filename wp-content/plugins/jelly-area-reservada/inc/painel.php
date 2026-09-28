@@ -7,7 +7,7 @@
  * - a agenda: as marcações dos próximos 7 dias;
  * - os próximos eventos com marcações, com a ocupação e a disponibilidade;
  * - a atividade recente (o histórico de todos os eventos);
- * - os números dos associados e dos documentos, nos últimos 30 dias;
+ * - a atividade do mês (do dia 1 ao fim), num gráfico, e os totais dele;
  * - os alertas: o e-mail que não sai autenticado, eventos com marcações sem
  *   mesas ou sem horários, e os dados de exemplo ainda ligados.
  */
@@ -49,7 +49,6 @@ function jelly_ar_painel_dados() {
 
 	$hoje    = current_time( 'Y-m-d' );
 	$semana  = gmdate( 'Y-m-d', strtotime( $hoje . ' +6 days' ) );
-	$ha30    = gmdate( 'Y-m-d H:i:s', time() - 30 * DAY_IN_SECONDS );
 	$pedidos = array_values( array_filter( jelly_ar_marcacoes_todas(), function ( $m ) {
 		return 'pendente' === $m['estado'];
 	} ) );
@@ -86,10 +85,6 @@ function jelly_ar_painel_dados() {
 		}
 	}
 
-	$acessos   = jelly_ar_tabela( 'acessos' );
-	$descargas = jelly_ar_tabela( 'descargas' );
-	$assoc     = jelly_ar_tabela( 'associados' );
-
 	return [
 		'pedidos'    => $pedidos,
 		'registos'   => $registos,
@@ -98,36 +93,37 @@ function jelly_ar_painel_dados() {
 		'sem_grelha' => $sem_grelha,
 		'atividade'  => jelly_ar_historico_recente( 8 ),
 		'numeros'    => [
-			'ativos'    => count( array_filter( $todos, function ( $u ) {
+			'ativos' => count( array_filter( $todos, function ( $u ) {
 				return 'ativo' === $u['estado'];
 			} ) ),
-			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-			'registos'  => (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$assoc} WHERE registado_em >= %s", $ha30 ) ),
-			'acessos'   => (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$acessos} WHERE criado_em >= %s", $ha30 ) ),
-			'descargas' => (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$descargas} WHERE criado_em >= %s", $ha30 ) ),
-			'publicados' => (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . jelly_ar_tabela( 'documentos' ) . " WHERE estado = 'publicado'" ),
-			'marcacoes'  => (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jelly_ar_tabela( 'marcacoes' ) . ' WHERE pedido_em >= %s', $ha30 ) ),
-			// phpcs:enable
 		],
-		'atividade30' => jelly_ar_painel_atividade(),
+		// O mês do gráfico e os totais dele; o mês vem no endereço (mes=2026-09), e por omissão é o de hoje.
+		'mes'        => jelly_ar_painel_atividade( isset( $_GET['mes'] ) ? sanitize_text_field( wp_unslash( $_GET['mes'] ) ) : '' ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		'smtp'       => function_exists( 'jelly_ar_envio_autenticado' ) ? jelly_ar_envio_autenticado() : null,
 	];
 }
 
 /**
- * A atividade dos últimos 30 dias, dia a dia, para o gráfico do Painel: os
+ * A atividade de um mês, do dia 1 ao último, para o gráfico do Painel: os
  * pedidos de marcação que entraram (feitos pela equipa ou pedidos pelos
- * associados) e os acessos dos associados. E, para cada número do mês, o dos
- * 30 dias anteriores, para a comparação.
+ * associados) e os acessos dos associados, por dia. Os dias que ainda não
+ * chegaram vêm com `futuro`, para o gráfico os deixar vazios. E os totais do
+ * mês: pedidos, acessos, registos novos e descargas. Sem comparação com o mês
+ * anterior: há meses sem eventos, e a diferença não diria nada.
+ *
+ * @param string $mes Y-m; por omissão, o mês de hoje. Um mês por vir volta ao de hoje.
  */
-function jelly_ar_painel_atividade() {
+function jelly_ar_painel_atividade( $mes = '' ) {
 	global $wpdb;
 
-	$agora = time();
-	$de    = gmdate( 'Y-m-d', $agora - 29 * DAY_IN_SECONDS );
-	$dias  = [];
-	for ( $i = 29; $i >= 0; $i-- ) {
-		$dias[ gmdate( 'Y-m-d', $agora - $i * DAY_IN_SECONDS ) ] = [ 'marcacoes' => 0, 'acessos' => 0 ];
+	$hoje = current_time( 'Y-m-d' );
+	$mes  = preg_match( '/^\d{4}-\d{2}$/', (string) $mes ) && $mes <= substr( $hoje, 0, 7 ) ? $mes : substr( $hoje, 0, 7 );
+	$de   = $mes . '-01';
+	$fim  = gmdate( 'Y-m-t', strtotime( $de ) );
+	$dias = [];
+	for ( $d = strtotime( $de ); $d <= strtotime( $fim ); $d += DAY_IN_SECONDS ) {
+		$dia          = gmdate( 'Y-m-d', $d );
+		$dias[ $dia ] = [ 'marcacoes' => 0, 'acessos' => 0, 'futuro' => $dia > $hoje ];
 	}
 
 	$series = [
@@ -137,7 +133,7 @@ function jelly_ar_painel_atividade() {
 
 	foreach ( $series as $chave => $s ) {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$linhas = $wpdb->get_results( $wpdb->prepare( "SELECT DATE({$s[1]}) AS dia, COUNT(*) AS n FROM {$s[0]} WHERE {$s[1]} >= %s GROUP BY DATE({$s[1]})", $de . ' 00:00:00' ) );
+		$linhas = $wpdb->get_results( $wpdb->prepare( "SELECT DATE({$s[1]}) AS dia, COUNT(*) AS n FROM {$s[0]} WHERE {$s[1]} BETWEEN %s AND %s GROUP BY DATE({$s[1]})", $de . ' 00:00:00', $fim . ' 23:59:59' ) );
 		foreach ( $linhas as $l ) {
 			if ( isset( $dias[ $l->dia ] ) ) {
 				$dias[ $l->dia ][ $chave ] = (int) $l->n;
@@ -145,20 +141,19 @@ function jelly_ar_painel_atividade() {
 		}
 	}
 
-	// O mesmo número nos 30 dias antes destes, para a seta de subida ou descida.
-	$antes_de  = gmdate( 'Y-m-d H:i:s', $agora - 60 * DAY_IN_SECONDS );
-	$antes_ate = gmdate( 'Y-m-d H:i:s', $agora - 30 * DAY_IN_SECONDS );
-	$contar    = function ( $tabela, $coluna ) use ( $wpdb, $antes_de, $antes_ate ) {
-		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$tabela} WHERE {$coluna} >= %s AND {$coluna} < %s", $antes_de, $antes_ate ) ); // phpcs:ignore WordPress.DB
+	// Os totais do mês.
+	$contar = function ( $tabela, $coluna ) use ( $wpdb, $de, $fim ) {
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$tabela} WHERE {$coluna} BETWEEN %s AND %s", $de . ' 00:00:00', $fim . ' 23:59:59' ) ); // phpcs:ignore WordPress.DB
 	};
 
 	return [
-		'dias'     => $dias,
-		'anterior' => [
-			'registos'  => $contar( jelly_ar_tabela( 'associados' ), 'registado_em' ),
-			'acessos'   => $contar( jelly_ar_tabela( 'acessos' ), 'criado_em' ),
-			'descargas' => $contar( jelly_ar_tabela( 'descargas' ), 'criado_em' ),
+		'mes'    => $mes,
+		'dias'   => $dias,
+		'totais' => [
 			'marcacoes' => $contar( jelly_ar_tabela( 'marcacoes' ), 'pedido_em' ),
+			'acessos'   => $contar( jelly_ar_tabela( 'acessos' ), 'criado_em' ),
+			'registos'  => $contar( jelly_ar_tabela( 'associados' ), 'registado_em' ),
+			'descargas' => $contar( jelly_ar_tabela( 'descargas' ), 'criado_em' ),
 		],
 	];
 }

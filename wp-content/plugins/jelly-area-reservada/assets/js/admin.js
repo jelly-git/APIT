@@ -992,6 +992,308 @@
 		contar();
 	} );
 
+	/* ---------- O gráfico do Painel ---------- */
+
+	/*
+	 * A atividade do mês (templates/admin/painel.php, data-jar-grafico): uma
+	 * linha por série, desenhada em SVG ao tamanho do cartão — e outra vez
+	 * quando ele muda de tamanho. Ao passar o rato, ao tocar ou com as setas,
+	 * uma linha vertical marca o dia e a dica mostra os valores dele; a legenda
+	 * mostra ou esconde cada série.
+	 */
+	var SVG = 'http://www.w3.org/2000/svg';
+
+	function no( tag, atributos ) {
+		var e = document.createElementNS( SVG, tag );
+
+		Object.keys( atributos || {} ).forEach( function ( a ) {
+			e.setAttribute( a, atributos[ a ] );
+		} );
+
+		return e;
+	}
+
+	/*
+	 * Uma curva suave que passa por todos os pontos sem os ultrapassar
+	 * (interpolação monótona): não inventa picos nem desce abaixo de zero
+	 * entre dois dias sem nada.
+	 */
+	function curva( p ) {
+		var n = p.length;
+		var d = [];
+		var m = [];
+		var i;
+
+		if ( n < 2 ) {
+			return '';
+		}
+
+		for ( i = 0; i < n - 1; i++ ) {
+			d[ i ] = ( p[ i + 1 ][ 1 ] - p[ i ][ 1 ] ) / ( p[ i + 1 ][ 0 ] - p[ i ][ 0 ] );
+		}
+		m[ 0 ] = d[ 0 ];
+		m[ n - 1 ] = d[ n - 2 ];
+		for ( i = 1; i < n - 1; i++ ) {
+			m[ i ] = d[ i - 1 ] * d[ i ] <= 0 ? 0 : ( d[ i - 1 ] + d[ i ] ) / 2;
+		}
+		for ( i = 0; i < n - 1; i++ ) {
+			if ( 0 === d[ i ] ) {
+				m[ i ] = 0;
+				m[ i + 1 ] = 0;
+			}
+		}
+
+		var caminho = 'M' + p[ 0 ][ 0 ] + ',' + p[ 0 ][ 1 ];
+		for ( i = 0; i < n - 1; i++ ) {
+			var h = ( p[ i + 1 ][ 0 ] - p[ i ][ 0 ] ) / 3;
+			caminho += ' C' + ( p[ i ][ 0 ] + h ) + ',' + ( p[ i ][ 1 ] + m[ i ] * h ) + ' ' + ( p[ i + 1 ][ 0 ] - h ) + ',' + ( p[ i + 1 ][ 1 ] - m[ i + 1 ] * h ) + ' ' + p[ i + 1 ][ 0 ] + ',' + p[ i + 1 ][ 1 ];
+		}
+
+		return caminho;
+	}
+
+	Array.prototype.forEach.call( raiz.querySelectorAll( '[data-jar-grafico]' ), function ( figura ) {
+		var dados = JSON.parse( figura.querySelector( '[data-jar-grafico-dados]' ).textContent );
+		var area = figura.querySelector( '[data-jar-grafico-area]' );
+		var dica = figura.querySelector( '[data-jar-grafico-dica]' );
+		var visiveis = {};
+		var atual = null;
+		var geo = null;
+
+		/*
+		 * O mês vai do dia 1 ao último; os dias que ainda não chegaram (futuro)
+		 * ficam no eixo mas sem linha, e não se apontam. `ultimo` é o último dia
+		 * com dados — hoje, no mês corrente.
+		 */
+		var ultimo = dados.dias.length - 1;
+		while ( ultimo > 0 && dados.dias[ ultimo ].futuro ) {
+			ultimo--;
+		}
+
+		dados.series.forEach( function ( s ) {
+			visiveis[ s.chave ] = true;
+		} );
+
+		function desenhar() {
+			var largura = area.clientWidth;
+			var altura = 190;
+			var margem = { cima: 12, direita: 8, baixo: 26, esquerda: 30 };
+			var dias = dados.dias;
+			var ativas = dados.series.filter( function ( s ) {
+				return visiveis[ s.chave ];
+			} );
+
+			// A escala: o maior valor das séries à vista, arredondado para cima a um número redondo.
+			var maior = 1;
+			ativas.forEach( function ( s ) {
+				dias.forEach( function ( d ) {
+					maior = Math.max( maior, d[ s.chave ] );
+				} );
+			} );
+			var passo = maior <= 4 ? 1 : Math.ceil( maior / 4 );
+			var topo = passo * Math.ceil( maior / passo );
+
+			var x = function ( i ) {
+				return margem.esquerda + i * ( largura - margem.esquerda - margem.direita ) / ( dias.length - 1 );
+			};
+			var y = function ( v ) {
+				return margem.cima + ( 1 - v / topo ) * ( altura - margem.cima - margem.baixo );
+			};
+
+			var svg = no( 'svg', { width: largura, height: altura, viewBox: '0 0 ' + largura + ' ' + altura, 'aria-hidden': 'true' } );
+			var defs = no( 'defs' );
+
+			// A escala à esquerda, com as linhas de fundo.
+			for ( var v = 0; v <= topo; v += passo ) {
+				svg.appendChild( no( 'line', { class: 'jar-grafico__grelha', x1: margem.esquerda, x2: largura - margem.direita, y1: y( v ), y2: y( v ) } ) );
+				var numero = no( 'text', { class: 'jar-grafico__eixo', x: margem.esquerda - 8, y: y( v ) + 4, 'text-anchor': 'end' } );
+				numero.textContent = v;
+				svg.appendChild( numero );
+			}
+
+			// As datas por baixo: o dia 1 e de semana a semana (8, 15, 22, 29), e o último dia do mês.
+			dias.forEach( function ( d, i ) {
+				var fimDoMes = i === dias.length - 1;
+
+				if ( 0 === i % 7 && dias.length - 1 - i >= 3 || fimDoMes ) {
+					var data = no( 'text', { class: 'jar-grafico__eixo', x: x( i ), y: altura - 6, 'text-anchor': fimDoMes ? 'end' : ( 0 === i ? 'start' : 'middle' ) } );
+					data.textContent = d.curto;
+					svg.appendChild( data );
+				}
+			} );
+
+			// Hoje, se for deste mês: uma marca discreta no eixo.
+			dias.forEach( function ( d, i ) {
+				if ( d.hoje && i < dias.length - 1 ) {
+					svg.appendChild( no( 'line', { class: 'jar-grafico__hoje', x1: x( i ), x2: x( i ), y1: margem.cima, y2: altura - margem.baixo } ) );
+				}
+			} );
+
+			// Cada série: a área (esbatida) e a linha, do dia 1 até ao último dia com dados.
+			ativas.forEach( function ( s, n ) {
+				var pontos = dias.slice( 0, ultimo + 1 ).map( function ( d, i ) {
+					return [ x( i ), y( d[ s.chave ] ) ];
+				} );
+				var linha = curva( pontos );
+				var id = 'jar-grafico-grad-' + s.chave;
+				var grad = no( 'linearGradient', { id: id, x1: 0, y1: 0, x2: 0, y2: 1 } );
+
+				grad.appendChild( no( 'stop', { offset: 0, 'stop-color': s.cor, 'stop-opacity': 0 === n ? 0.2 : 0.1 } ) );
+				grad.appendChild( no( 'stop', { offset: 1, 'stop-color': s.cor, 'stop-opacity': 0 } ) );
+				defs.appendChild( grad );
+
+				svg.appendChild( no( 'path', { d: linha + ' L' + x( ultimo ) + ',' + y( 0 ) + ' L' + x( 0 ) + ',' + y( 0 ) + ' Z', fill: 'url(#' + id + ')' } ) );
+				svg.appendChild( no( 'path', { d: linha, class: 'jar-grafico__linha', stroke: s.cor } ) );
+			} );
+			svg.insertBefore( defs, svg.firstChild );
+
+			// A marca do dia apontado: a linha vertical e um ponto por série.
+			var guia = no( 'line', { class: 'jar-grafico__guia', y1: margem.cima, y2: altura - margem.baixo, visibility: 'hidden' } );
+			svg.appendChild( guia );
+			var pontos = ativas.map( function ( s ) {
+				var c = no( 'circle', { r: 5, fill: '#fff', stroke: s.cor, 'stroke-width': 2.5, visibility: 'hidden' } );
+				svg.appendChild( c );
+
+				return { serie: s, circulo: c };
+			} );
+
+			var antigo = area.querySelector( 'svg' );
+			if ( antigo ) {
+				area.removeChild( antigo );
+			}
+			area.insertBefore( svg, dica );
+
+			geo = { x: x, y: y, guia: guia, pontos: pontos, margem: margem, largura: largura };
+
+			if ( null !== atual ) {
+				mostrar( atual );
+			}
+		}
+
+		function mostrar( i ) {
+			var d = dados.dias[ i ];
+
+			atual = i;
+			geo.guia.setAttribute( 'x1', geo.x( i ) );
+			geo.guia.setAttribute( 'x2', geo.x( i ) );
+			geo.guia.setAttribute( 'visibility', 'visible' );
+
+			geo.pontos.forEach( function ( p ) {
+				p.circulo.setAttribute( 'cx', geo.x( i ) );
+				p.circulo.setAttribute( 'cy', geo.y( d[ p.serie.chave ] ) );
+				p.circulo.setAttribute( 'visibility', 'visible' );
+			} );
+
+			// A dica: o dia e o valor de cada série à vista.
+			dica.textContent = '';
+			var titulo = document.createElement( 'strong' );
+			titulo.textContent = d.hoje ? 'Hoje · ' + d.rotulo : d.rotulo;
+			dica.appendChild( titulo );
+			geo.pontos.forEach( function ( p ) {
+				var linha = document.createElement( 'span' );
+				var cor = document.createElement( 'i' );
+
+				cor.style.background = p.serie.cor;
+				linha.appendChild( cor );
+				linha.appendChild( document.createTextNode( p.serie.nome + ': ' ) );
+				var valor = document.createElement( 'b' );
+				valor.textContent = d[ p.serie.chave ];
+				linha.appendChild( valor );
+				dica.appendChild( linha );
+			} );
+			dica.hidden = false;
+
+			// Ao lado da linha, e do lado de dentro do cartão.
+			var esquerda = geo.x( i ) + 14;
+			if ( esquerda + dica.offsetWidth > geo.largura ) {
+				esquerda = geo.x( i ) - 14 - dica.offsetWidth;
+			}
+			dica.style.left = Math.max( 0, esquerda ) + 'px';
+		}
+
+		function esconder() {
+			atual = null;
+			dica.hidden = true;
+			if ( geo ) {
+				geo.guia.setAttribute( 'visibility', 'hidden' );
+				geo.pontos.forEach( function ( p ) {
+					p.circulo.setAttribute( 'visibility', 'hidden' );
+				} );
+			}
+		}
+
+		// O dia mais perto do rato ou do dedo.
+		function diaEm( clientX ) {
+			var r = area.getBoundingClientRect();
+			var util = geo.largura - geo.margem.esquerda - geo.margem.direita;
+			var i = Math.round( ( clientX - r.left - geo.margem.esquerda ) / util * ( dados.dias.length - 1 ) );
+
+			return Math.max( 0, Math.min( ultimo, i ) );
+		}
+
+		area.addEventListener( 'mousemove', function ( e ) {
+			mostrar( diaEm( e.clientX ) );
+		} );
+		area.addEventListener( 'mouseleave', esconder );
+		area.addEventListener( 'touchstart', function ( e ) {
+			mostrar( diaEm( e.touches[ 0 ].clientX ) );
+		}, { passive: true } );
+		area.addEventListener( 'touchmove', function ( e ) {
+			mostrar( diaEm( e.touches[ 0 ].clientX ) );
+		}, { passive: true } );
+
+		// As setas percorrem os dias; Home e End vão ao primeiro e a hoje.
+		area.addEventListener( 'keydown', function ( e ) {
+			var fim = ultimo;
+			var i = null === atual ? fim : atual;
+
+			if ( 'ArrowLeft' === e.key ) {
+				i = Math.max( 0, i - 1 );
+			} else if ( 'ArrowRight' === e.key ) {
+				i = Math.min( fim, i + 1 );
+			} else if ( 'Home' === e.key ) {
+				i = 0;
+			} else if ( 'End' === e.key ) {
+				i = fim;
+			} else {
+				return;
+			}
+			e.preventDefault();
+			mostrar( i );
+		} );
+		area.addEventListener( 'focus', function () {
+			mostrar( null === atual ? ultimo : atual );
+		} );
+		area.addEventListener( 'blur', esconder );
+
+		// A legenda: mostrar ou esconder cada série (fica sempre pelo menos uma).
+		Array.prototype.forEach.call( figura.querySelectorAll( '[data-jar-grafico-serie]' ), function ( b ) {
+			b.addEventListener( 'click', function () {
+				var chave = b.getAttribute( 'data-jar-grafico-serie' );
+				var outras = Object.keys( visiveis ).filter( function ( k ) {
+					return k !== chave && visiveis[ k ];
+				} );
+
+				if ( visiveis[ chave ] && ! outras.length ) {
+					return;
+				}
+				visiveis[ chave ] = ! visiveis[ chave ];
+				b.setAttribute( 'aria-pressed', visiveis[ chave ] ? 'true' : 'false' );
+				desenhar();
+			} );
+		} );
+
+		desenhar();
+
+		if ( window.ResizeObserver ) {
+			new window.ResizeObserver( function () {
+				if ( geo && area.clientWidth !== geo.largura ) {
+					desenhar();
+				}
+			} ).observe( area );
+		}
+	} );
+
 	/* ---------- Menu lateral no telemóvel ---------- */
 
 	var abrir = raiz.querySelector( '[data-jar-menu]' );
