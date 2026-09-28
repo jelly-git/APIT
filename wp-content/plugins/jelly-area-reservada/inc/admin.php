@@ -30,7 +30,7 @@ function jelly_ar_admin_paginas() {
 	 * (jelly_ar_admin_grupos()); o Painel fica sozinho, no topo.
 	 */
 	return [
-		'painel'       => [ 'titulo' => __( 'Painel', 'jelly-area-reservada' ), 'icone' => 'fa-gauge-high', 'pronta' => false, 'grupo' => '' ],
+		'painel'       => [ 'titulo' => __( 'Painel', 'jelly-area-reservada' ), 'icone' => 'fa-gauge-high', 'pronta' => true, 'grupo' => '' ],
 		'marcacoes'    => [ 'titulo' => __( 'Aprovações', 'jelly-area-reservada' ), 'icone' => 'fa-circle-check', 'pronta' => true, 'grupo' => 'gestao' ],
 		'calendario'   => [ 'titulo' => __( 'Calendário', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'pronta' => true, 'grupo' => 'gestao' ],
 		'utilizadores' => [ 'titulo' => __( 'Utilizadores', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'pronta' => true, 'grupo' => 'gestao' ],
@@ -84,7 +84,7 @@ add_action( 'admin_init', 'jelly_ar_admin_enderecos_antigos', 2 );
 
 /**
  * O `page=` de cada área. A entrada principal do menu leva à primeira área
- * pronta — hoje as Aprovações; quando houver Painel, passa a ser ele.
+ * pronta — o Painel.
  */
 function jelly_ar_admin_slug( $chave ) {
 	foreach ( jelly_ar_admin_paginas() as $c => $p ) {

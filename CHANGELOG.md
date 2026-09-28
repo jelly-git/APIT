@@ -266,6 +266,36 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.53.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.17.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **Painel**, a entrada do back-office (deixa de estar "em breve"). Pela
+  ordem em que se age:
+  - a data, a saudação e quatro números, cada um a levar à sua lista:
+    marcações por aprovar, registos por aprovar, marcações nos próximos 7
+    dias e associados ativos;
+  - os alertas: o e-mail que não sai autenticado, eventos dos próximos 90
+    dias que aceitam marcações mas ainda não têm mesas ou horários, e os
+    dados de exemplo ainda ligados — cada um com o botão para o resolver;
+  - **Por decidir**: os pedidos de marcação e os registos à espera, os mais
+    antigos primeiro, com Decidir e Analisar;
+  - **Próximos 7 dias**: as marcações dia a dia, com a hora, o associado, a
+    mesa e o evento, e as por aprovar assinaladas;
+  - ao lado, **Próximos eventos** com marcações, com a ocupação numa barra e
+    a disponibilidade; os **últimos 30 dias** (registos novos, acessos,
+    descargas, documentos publicados); e a **Atividade recente** do
+    histórico de todos os eventos.
+
+### Alterado
+- Com o Painel pronto, é ele a entrada (`page=jelly-ar`); as Aprovações
+  voltam a `page=jelly-ar-marcacoes`, o endereço que tinham antes da 0.51.0.
+
+### Corrigido
+- Nos Documentos, o cartão "Descargas (30 dias)" mostrava sempre 318, um
+  número de exemplo; passa a contar as descargas reais.
+
 ## [0.52.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.16.1. O tema e a base de dados não mudam.

@@ -660,7 +660,7 @@ $resumo  = [
 	[ __( 'Documentos', 'jelly-area-reservada' ), count( $documentos ), 'fa-file-lines', 'azul', '' ],
 	[ __( 'Publicados', 'jelly-area-reservada' ), $todos['publicado'] ?? 0, 'fa-eye', 'turquesa', 'publicado' ],
 	[ __( 'Rascunhos', 'jelly-area-reservada' ), $todos['rascunho'] ?? 0, 'fa-eye-slash', 'roxo', 'rascunho' ],
-	[ __( 'Descargas (30 dias)', 'jelly-area-reservada' ), 318, 'fa-download', 'magenta', null ],
+	[ __( 'Descargas (30 dias)', 'jelly-area-reservada' ), jelly_ar_descargas_30_dias(), 'fa-download', 'magenta', null ],
 ];
 ?>
 <div class="jar-cabeca">

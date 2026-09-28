@@ -3429,3 +3429,372 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 .jar-novo-eventos__nota.tem-escolhidos i {
 	color: var(--jar-magenta);
 }
+
+/* ---------- Painel ---------- */
+
+.jar-painel__data {
+	margin: 0 0 4px;
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 0.8px;
+	text-transform: uppercase;
+	color: var(--jar-magenta);
+}
+
+/* Os cartões de cima são ligações: o número leva à lista dele. */
+.jar a.jar-numero {
+	color: inherit;
+	transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.jar a.jar-numero:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 6px 18px rgba(27, 42, 51, 0.08);
+}
+
+/* Os alertas: uma linha cada, com a ação à direita. */
+.jar-painel__alertas {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 24px;
+	padding: 0;
+	border-left: 3px solid var(--jar-magenta);
+}
+
+.jar-painel__alerta {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 14px 20px;
+}
+
+.jar-painel__alerta + .jar-painel__alerta {
+	border-top: 1px solid var(--jar-linha);
+}
+
+.jar-painel__alerta > i {
+	flex: none;
+	width: 20px;
+	color: var(--jar-magenta);
+	text-align: center;
+}
+
+.jar .jar-painel__alerta p {
+	flex: 1 1 auto;
+	margin: 0;
+	font-size: 14px;
+}
+
+.jar-painel__alerta .jar-btn {
+	flex: none;
+}
+
+/* Duas colunas: o que se faz (larga) e o contexto (estreita). */
+.jar-painel {
+	display: grid;
+	grid-template-columns: minmax(0, 3fr) minmax(300px, 2fr);
+	gap: 24px;
+	align-items: start;
+}
+
+.jar-painel__principal,
+.jar-painel__lado {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	min-width: 0;
+}
+
+/* Nada por decidir. */
+.jar-painel__vazio {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 4px 24px 24px;
+}
+
+.jar-painel__vazio .jar-icone {
+	flex: none;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+}
+
+.jar .jar-painel__vazio p {
+	margin: 0;
+	color: var(--jar-suave);
+}
+
+.jar-painel__vazio strong {
+	display: block;
+	font-weight: 500;
+	color: var(--jar-preto);
+}
+
+/* As linhas comuns: um ícone ou uma hora, o texto e o que fazer. */
+.jar-painel__texto {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.jar-painel__texto strong,
+.jar-painel__texto small {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.jar-painel__texto strong {
+	font-weight: 500;
+}
+
+.jar-painel__texto small {
+	font-size: 13px;
+	color: var(--jar-suave);
+}
+
+/* Por decidir. */
+.jar-painel__lista {
+	margin: 0;
+	padding: 0 24px 8px;
+	list-style: none;
+}
+
+.jar-painel__lista li {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 12px 0;
+	border-top: 1px solid var(--jar-linha);
+}
+
+.jar-painel__tipo {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	font-size: 14px;
+}
+
+.jar-painel__tipo--marcacao {
+	background: rgba(128, 72, 166, 0.12);
+	color: var(--jar-roxo);
+}
+
+.jar-painel__tipo--registo {
+	background: rgba(244, 24, 146, 0.1);
+	color: var(--jar-magenta);
+}
+
+.jar-painel__quando {
+	flex: none;
+	font-size: 13px;
+	color: var(--jar-suave);
+	font-variant-numeric: tabular-nums;
+}
+
+.jar-painel__mais {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 20px;
+	padding: 12px 24px 18px;
+	border-top: 1px solid var(--jar-linha);
+	font-size: 14px;
+}
+
+/* Os próximos 7 dias, dia a dia. */
+.jar-painel__agenda {
+	padding: 0 24px 16px;
+}
+
+.jar-painel__dia + .jar-painel__dia {
+	margin-top: 8px;
+}
+
+.jar .jar-painel__dia h3 {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	padding: 12px 0 6px;
+	border-top: 1px solid var(--jar-linha);
+	font-weight: 500;
+	font-size: 13px;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+	color: var(--jar-suave);
+}
+
+.jar-painel__dia h3 b {
+	padding: 1px 8px;
+	border-radius: 200px;
+	background: rgba(27, 42, 51, 0.06);
+	font-size: 12px;
+	letter-spacing: 0;
+	color: var(--jar-preto);
+}
+
+.jar-painel__dia ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.jar-painel__dia li {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 6px 0 6px 12px;
+	border-left: 3px solid var(--jar-magenta);
+}
+
+.jar-painel__dia li + li {
+	margin-top: 4px;
+}
+
+.jar-painel__dia li.jar-painel__marcacao--pendente {
+	border-left-color: var(--jar-roxo);
+}
+
+.jar-painel__dia li.jar-painel__resto {
+	border-left-color: transparent;
+	font-size: 14px;
+}
+
+.jar-painel__hora {
+	flex: none;
+	width: 44px;
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+}
+
+/* Os próximos eventos: a capa, o nome, a ocupação numa barra e o badge. */
+.jar-painel__eventos {
+	margin: 0;
+	padding: 0 24px 12px;
+	list-style: none;
+}
+
+.jar-painel__eventos li + li {
+	border-top: 1px solid var(--jar-linha);
+}
+
+.jar .jar-painel__eventos a {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px 0;
+	color: inherit;
+}
+
+.jar .jar-painel__eventos a:hover strong {
+	color: var(--jar-magenta);
+}
+
+.jar-painel__eventos .jar-evento-capa {
+	flex: none;
+}
+
+.jar-painel__eventos .jar-estado {
+	flex: none;
+}
+
+.jar-painel__barra {
+	display: block;
+	height: 4px;
+	margin-top: 6px;
+	border-radius: 4px;
+	background: rgba(27, 42, 51, 0.08);
+	overflow: hidden;
+}
+
+.jar-painel__barra span {
+	display: block;
+	height: 100%;
+	border-radius: 4px;
+	background: var(--jar-magenta);
+}
+
+/* Os números do mês, em duas colunas. */
+.jar-painel__numeros {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16px;
+	margin: 0;
+}
+
+.jar-painel__numeros dt {
+	font-size: 12px;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+	color: var(--jar-suave);
+}
+
+.jar-painel__numeros dd {
+	margin: 2px 0 0;
+	font-weight: 500;
+	font-size: 26px;
+	font-variant-numeric: tabular-nums;
+}
+
+/* A atividade recente: uma linha do tempo. */
+.jar-painel__atividade {
+	margin: 0;
+	padding: 0 24px 16px;
+	list-style: none;
+}
+
+.jar-painel__atividade li {
+	display: flex;
+	gap: 12px;
+	padding: 10px 0;
+	border-top: 1px solid var(--jar-linha);
+}
+
+.jar-painel__icone {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	background: rgba(244, 24, 146, 0.08);
+	font-size: 12px;
+	color: var(--jar-magenta);
+}
+
+.jar-painel__atividade .jar-painel__texto small {
+	white-space: normal;
+}
+
+.jar-painel__autor {
+	margin-top: 2px;
+	font-size: 12px !important;
+}
+
+@media (max-width: 1100px) {
+	.jar-painel {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 560px) {
+	.jar-painel__lista li {
+		flex-wrap: wrap;
+	}
+
+	.jar-painel__quando {
+		order: 3;
+		width: 100%;
+		padding-left: 50px;
+	}
+
+	.jar-painel__alerta {
+		flex-wrap: wrap;
+	}
+}
