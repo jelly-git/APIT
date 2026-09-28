@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.58.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.22.1. O tema e a base de dados não mudam.
+
+### Alterado
+- Na ARU, o hero, a capa do evento em destaque e o cartão das oportunidades
+  ficam só com os degradés: saem os aros brancos decorativos que tinham por
+  cima.
+
 ## [0.58.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.22.0. O tema e a base de dados não mudam.
