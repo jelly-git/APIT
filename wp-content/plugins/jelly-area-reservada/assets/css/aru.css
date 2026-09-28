@@ -1334,6 +1334,125 @@ a.aru-evento:focus-visible {
 	grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
 }
 
+/* ---------- Os meus dados ---------- */
+
+a.aru-pessoa {
+	color: var(--aru-preto);
+	text-decoration: none;
+}
+
+a.aru-pessoa:hover .aru-pessoa__texto strong,
+a.aru-pessoa:focus-visible .aru-pessoa__texto strong {
+	color: var(--aru-magenta);
+}
+
+.aru-perfil {
+	display: grid;
+	grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+	gap: 24px;
+	align-items: start;
+}
+
+.aru-form {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 18px 20px;
+}
+
+.aru-form--coluna {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.aru-form__inteira,
+.aru-form__acoes {
+	grid-column: 1 / -1;
+}
+
+.aru-form__acoes {
+	display: flex;
+	justify-content: flex-end;
+	padding-top: 4px;
+}
+
+.aru-campo {
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+	min-width: 0;
+}
+
+.aru-campo label {
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.4px;
+	color: var(--aru-preto);
+}
+
+.aru-campo input {
+	width: 100%;
+	height: 50px;
+	padding: 0 16px;
+	border: 1px solid rgba(27, 42, 51, 0.16);
+	border-radius: 12px;
+	background: #fff;
+	font-family: inherit;
+	font-size: 16px;
+	color: var(--aru-preto);
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.aru-campo input:focus {
+	border-color: var(--aru-magenta);
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(244, 24, 146, 0.14);
+}
+
+.aru-campo input[readonly] {
+	border-color: transparent;
+	background: rgba(27, 42, 51, 0.04);
+	color: var(--aru-suave);
+	cursor: default;
+}
+
+.aru-campo input[readonly]:focus {
+	box-shadow: none;
+}
+
+.aru-campo small {
+	font-size: 12px;
+	color: var(--aru-suave);
+}
+
+.aru-form .aru-nota {
+	margin: -6px 0 4px;
+	font-size: 13px;
+}
+
+.aru-form .aru-nota i {
+	margin-right: 4px;
+}
+
+.aru-aviso {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0 0 18px;
+	padding: 12px 16px;
+	border-radius: 12px;
+	font-size: 14px;
+	line-height: 1.45;
+}
+
+.aru-aviso--sucesso {
+	background: rgba(46, 198, 176, 0.12);
+	color: #168a79;
+}
+
+.aru-aviso--erro {
+	background: rgba(196, 33, 59, 0.08);
+	color: #c4213b;
+}
+
 /* ---------- Ecrãs mais pequenos ---------- */
 
 @media (max-width: 1280px) {
@@ -1342,7 +1461,8 @@ a.aru-evento:focus-visible {
 	}
 
 	.aru-grelha,
-	.aru-evento-grelha {
+	.aru-evento-grelha,
+	.aru-perfil {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
@@ -1474,6 +1594,14 @@ a.aru-evento:focus-visible {
 
 	.aru-titulo h1 {
 		font-size: 28px;
+	}
+
+	.aru-form {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.aru-form__acoes .aru-botao {
+		width: 100%;
 	}
 
 	.aru-evento-topo {

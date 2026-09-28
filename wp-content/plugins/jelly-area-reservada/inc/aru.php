@@ -11,6 +11,7 @@
  *   /area-reservada/eventos/<id>/  um evento: as datas, a marcação, os documentos
  *   /area-reservada/marcacoes/     as marcações de mesa do associado
  *   /area-reservada/documentos/    os documentos publicados, para descarregar
+ *   /area-reservada/perfil/        os meus dados: o telefone, a empresa e a palavra-passe
  *
  * Os eventos são os publicados para a Área Reservada: os "só Área reservada"
  * e os "Site e Área reservada". Os "só site" não aparecem aqui, e nada na ARU
@@ -74,6 +75,7 @@ function jelly_ar_aru_menu() {
 		'eventos'    => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'url' => jelly_ar_area_url( 'eventos' ) ],
 		'marcacoes'  => [ 'titulo' => __( 'Marcações', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-check', 'url' => jelly_ar_area_url( 'marcacoes' ) ],
 		'documentos' => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'url' => jelly_ar_area_url( 'documentos' ) ],
+		'perfil'     => [ 'titulo' => __( 'Os meus dados', 'jelly-area-reservada' ), 'icone' => 'fa-user', 'url' => jelly_ar_area_url( 'perfil' ) ],
 		'encontros'  => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'url' => '' ],
 	];
 }
@@ -82,7 +84,7 @@ function jelly_ar_aru_menu() {
 
 function jelly_ar_area_regra() {
 	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '/eventos/([0-9]+)/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=eventos&jelly_ar_aru_evento=$matches[1]', 'top' );
-	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '(?:/(eventos|marcacoes|documentos))?/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=$matches[1]', 'top' );
+	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '(?:/(eventos|marcacoes|documentos|perfil))?/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=$matches[1]', 'top' );
 
 	// Uma regra nova só vale depois de as regras se refazerem: uma vez por versão do plugin.
 	if ( get_option( 'jelly_ar_regras' ) !== JELLY_AR_VERSION ) {
@@ -106,12 +108,12 @@ function jelly_ar_e_area() {
 }
 
 /**
- * A secção da ARU pedida (a do menu): inicio, eventos, marcacoes ou documentos.
+ * A secção da ARU pedida (a do menu): inicio, eventos, marcacoes, documentos ou perfil.
  */
 function jelly_ar_aru_secao() {
 	$secao = (string) get_query_var( 'jelly_ar_aru' );
 
-	return in_array( $secao, [ 'eventos', 'marcacoes', 'documentos' ], true ) ? $secao : 'inicio';
+	return in_array( $secao, [ 'eventos', 'marcacoes', 'documentos', 'perfil' ], true ) ? $secao : 'inicio';
 }
 
 /**

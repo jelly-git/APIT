@@ -79,7 +79,7 @@ $item = function ( $chave, $m, $classe ) use ( $secao ) {
 				</a>
 			<?php endif; ?>
 
-			<div class="aru-pessoa">
+			<a class="aru-pessoa" href="<?php echo esc_url( jelly_ar_area_url( 'perfil' ) ); ?>" title="<?php esc_attr_e( 'Os meus dados', 'jelly-area-reservada' ); ?>">
 				<span class="aru-pessoa__texto">
 					<strong><?php echo esc_html( $pessoa['nome'] ); ?></strong>
 					<?php if ( $pessoa['empresa'] ) : ?>
@@ -87,7 +87,7 @@ $item = function ( $chave, $m, $classe ) use ( $secao ) {
 					<?php endif; ?>
 				</span>
 				<span class="aru-pessoa__foto" aria-hidden="true"><?php echo esc_html( $pessoa['iniciais'] ); ?></span>
-			</div>
+			</a>
 
 			<a class="aru-topo__sair" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>">
 				<i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>

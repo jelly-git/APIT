@@ -266,6 +266,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.60.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.24.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **Os meus dados, na ARU** (`/area-reservada/perfil/`), no menu e no nome do
+  topo:
+  - **Dados pessoais**: o nome e o e-mail só para ler (identificam a conta, e
+    só a APIT os muda); o **telefone** e a **empresa** para alterar. O telefone
+    segue a regra do registo e grava-se normalizado (`+351 912345678`).
+  - **Palavra-passe**: a atual, a nova e a confirmação, com as regras de
+    quando se define (pelo menos 10 caracteres, não pode ser o e-mail). A
+    sessão continua aberta, as outras fecham, e sai o e-mail da AR a avisar
+    da mudança — não o do WordPress. Dez tentativas por hora.
+  - Os formulários vão ao `admin-post.php` (`inc/aru-perfil.php`) e voltam à
+    página com o aviso no cartão a que dizem respeito. Mexem sempre na conta
+    com sessão.
+
 ## [0.59.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.23.0. O tema e a base de dados não mudam.
