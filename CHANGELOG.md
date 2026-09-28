@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.60.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.24.1. O tema e a base de dados não mudam.
+
+### Corrigido
+- Depois de uma versão nova com um endereço novo na ARU, o primeiro pedido a
+  esse endereço dava 404: as regras refaziam-se no `init`, a meio do próprio
+  pedido. Passam a refazer-se no `wp_loaded`, com as regras de todos já
+  registadas.
+
 ## [0.60.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.24.0. O tema e a base de dados não mudam.

@@ -86,13 +86,21 @@ function jelly_ar_area_regra() {
 	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '/eventos/([0-9]+)/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=eventos&jelly_ar_aru_evento=$matches[1]', 'top' );
 	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '(?:/(eventos|marcacoes|documentos|perfil))?/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=$matches[1]', 'top' );
 
-	// Uma regra nova só vale depois de as regras se refazerem: uma vez por versão do plugin.
+}
+add_action( 'init', 'jelly_ar_area_regra' );
+
+/*
+ * Uma regra nova só vale depois de as regras se refazerem: uma vez por versão
+ * do plugin. No wp_loaded, e não no init, para já estarem registadas as regras
+ * de todos — refeitas no init, o próprio pedido que as refazia dava 404.
+ */
+function jelly_ar_area_regras_refazer() {
 	if ( get_option( 'jelly_ar_regras' ) !== JELLY_AR_VERSION ) {
 		flush_rewrite_rules( false );
 		update_option( 'jelly_ar_regras', JELLY_AR_VERSION, true );
 	}
 }
-add_action( 'init', 'jelly_ar_area_regra' );
+add_action( 'wp_loaded', 'jelly_ar_area_regras_refazer' );
 
 function jelly_ar_area_query_vars( $vars ) {
 	$vars[] = 'jelly_ar_area';
