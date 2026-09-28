@@ -429,7 +429,7 @@
 		botao.setAttribute( 'aria-busy', 'true' );
 		botao.disabled = true;
 		if ( rotulo ) {
-			rotulo.textContent = 'A enviar…';
+			rotulo.textContent = 'Por favor aguarde';
 		}
 		avisar( form, '', false );
 
@@ -860,7 +860,7 @@
 
 			botao.setAttribute( 'aria-busy', 'true' );
 			botao.disabled = true;
-			rotulo.textContent = 'A enviar…';
+			rotulo.textContent = 'Por favor aguarde';
 
 			function terminar() {
 				botao.removeAttribute( 'aria-busy' );

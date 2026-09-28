@@ -154,7 +154,7 @@ function jelly_ar_registar() {
 	$existente = get_user_by( 'email', $campos['email'] );
 
 	if ( $existente ) {
-		jelly_ar_registo_avisar_existente( $existente );
+		jelly_ar_email_depois( 'jelly_ar_registo_avisar_existente', [ $existente ] );
 		jelly_ar_registo_responder( [ 'sucesso' => true ] );
 	}
 
@@ -196,8 +196,13 @@ function jelly_ar_registar() {
 		jelly_ar_registo_responder( [ 'mensagem' => __( 'Não foi possível enviar o pedido. Tente de novo daqui a pouco.', 'jelly-area-reservada' ) ], 500 );
 	}
 
-	jelly_ar_registo_avisar_equipa( $user_id, $campos );
-	jelly_ar_registo_confirmar( $campos );
+	/*
+	 * Os dois e-mails saem depois da resposta (inc/emails.php): cada envio
+	 * espera pelo servidor de e-mail, e quem pediu o registo não tem de esperar
+	 * com ele.
+	 */
+	jelly_ar_email_depois( 'jelly_ar_registo_avisar_equipa', [ $user_id, $campos ] );
+	jelly_ar_email_depois( 'jelly_ar_registo_confirmar', [ $campos ] );
 
 	jelly_ar_registo_responder( [ 'sucesso' => true ] );
 }

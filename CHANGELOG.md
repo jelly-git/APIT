@@ -266,6 +266,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.57.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.21.1. O tema e a base de dados não mudam.
+
+### Alterado
+- **Criar conta demorava**: o pedido de registo enviava dois e-mails (o aviso
+  à equipa e a confirmação ao associado) antes de responder, e cada envio
+  espera pelo servidor de e-mail — até 10 s cada quando ele não responde. Os
+  dois, e o aviso a quem já tem conta, passam para a fila que sai depois da
+  resposta (`jelly_ar_email_depois()`), como nas marcações. Onde o PHP deixa
+  fechar a ligação antes do fim (PHP-FPM, LiteSpeed) a espera desaparece;
+  no Local (CGI) continua a ver-se.
+- Enquanto um formulário do pop-up (entrar, criar conta, recuperar, definir
+  a palavra-passe, marcar) vai a caminho, o botão diz **"Por favor aguarde"**
+  e a seta dá lugar a uma roda a girar.
+
 ## [0.57.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.21.0. O tema e a base de dados não mudam.

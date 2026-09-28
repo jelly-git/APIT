@@ -393,10 +393,35 @@ body.apit-ar-aberto {
 	color: var(--ar-erro);
 }
 
-/* Enquanto o pedido vai a caminho: o botão não aceita outro clique. */
+/*
+ * Enquanto o pedido vai a caminho: o botão não aceita outro clique, diz
+ * "Por favor aguarde" (assets/js/area-reservada.js) e a seta dá lugar a uma
+ * roda, para se ver que alguma coisa está a acontecer.
+ */
 .apit-ar .apit-ar__submeter[aria-busy="true"] {
-	opacity: 0.7;
+	opacity: 0.85;
 	cursor: progress;
+}
+
+.apit-ar .apit-ar__submeter[aria-busy="true"] > i {
+	display: none;
+}
+
+.apit-ar .apit-ar__submeter[aria-busy="true"]::after {
+	content: "";
+	flex: none;
+	width: 16px;
+	height: 16px;
+	border: 2px solid rgba(255, 255, 255, 0.35);
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: apit-ar-rodar 0.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.apit-ar .apit-ar__submeter[aria-busy="true"]::after {
+		animation-duration: 2.4s;
+	}
 }
 
 /*
