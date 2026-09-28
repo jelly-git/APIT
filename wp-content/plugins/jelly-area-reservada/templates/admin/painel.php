@@ -43,7 +43,7 @@ $icones = [
 // Os alertas: o que está mal configurado e impede a área de funcionar como devia.
 $alertas = [];
 if ( false === $p['smtp'] ) {
-	$alertas[] = [ 'fa-envelope-circle-check', __( 'Os e-mails da Área Reservada não saem autenticados: podem ir para o spam ou não chegar.', 'jelly-area-reservada' ), admin_url( 'admin.php?page=wp-mail-smtp' ), __( 'Configurar o SMTP', 'jelly-area-reservada' ) ];
+	$alertas[] = [ 'fa-envelope-circle-check', ( 'mail' === jelly_ar_email_mailer() ? __( 'Os e-mails da Área Reservada saem pelo PHP, sem SMTP autenticado: podem ir para o spam ou ser recusados.', 'jelly-area-reservada' ) : __( 'Os e-mails da Área Reservada não saem autenticados: podem ir para o spam ou não chegar.', 'jelly-area-reservada' ) ), admin_url( 'admin.php?page=wp-mail-smtp' ), __( 'Ver o envio', 'jelly-area-reservada' ) ];
 }
 foreach ( $p['sem_grelha'] as $s ) {
 	$alertas[] = [

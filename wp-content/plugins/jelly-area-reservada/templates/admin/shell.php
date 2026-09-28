@@ -122,27 +122,78 @@ $contadores = [
 		<main class="jar__conteudo">
 			<?php
 			/*
-			 * Os e-mails da AR (pedidos de registo, aprovações) saem pelo plugin
-			 * de SMTP. Enquanto o envio não for autenticado, avisa-se em todas as
-			 * áreas: os e-mails podem não chegar, ou chegar ao spam.
+			 * O envio dos e-mails da AR (pedidos de registo, aprovações,
+			 * marcações), em todas as áreas, enquanto houver alguma coisa a
+			 * dizer: o envio não é autenticado (o PHP), o último e-mail da AR
+			 * falhou (jelly_ar_email_ultimo_erro()), ou acabou de se fazer um
+			 * teste (jelly_ar_email_teste()). Com o botão para enviar um e-mail da
+			 * AR de teste, para se ver o caminho que os associados recebem.
 			 */
+			$envio_ok  = jelly_ar_envio_autenticado();
+			$envio_err = jelly_ar_email_ultimo_erro();
+			$teste     = isset( $_GET['email_teste'] ) ? jelly_ar_email_teste_resultado() : null; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$smtp_url  = admin_url( 'admin.php?page=wp-mail-smtp' );
 			?>
-			<?php if ( false === jelly_ar_envio_autenticado() ) : ?>
-				<div class="jar-aviso jar-aviso--pendente" role="status">
+			<?php if ( false === $envio_ok || $envio_err || $teste ) : ?>
+				<div class="jar-aviso jar-aviso--pendente jar-envio" role="status">
 					<i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i>
-					<p>
-						<?php
-						if ( function_exists( 'wp_mail_smtp' ) ) {
-							printf(
-								/* translators: %s: ligação às definições do WP Mail SMTP */
-								esc_html__( 'Os e-mails da área reservada ainda não saem autenticados: o WP Mail SMTP está no envio "Default (none)". Para ficarem autenticados, é preciso escolher um envio por SMTP e as credenciais em %s.', 'jelly-area-reservada' ),
-								'<a class="jar-link" href="' . esc_url( admin_url( 'admin.php?page=wp-mail-smtp' ) ) . '">' . esc_html__( 'WP Mail SMTP → Definições', 'jelly-area-reservada' ) . '</a>'
-							);
-						} else {
-							esc_html_e( 'Os e-mails da área reservada ainda não saem autenticados: não há nenhum plugin de SMTP ativo.', 'jelly-area-reservada' );
-						}
-						?>
-					</p>
+					<div>
+						<?php if ( $teste ) : ?>
+							<p><strong>
+								<?php
+								if ( 'ok' === $teste['resultado'] ) {
+									/* translators: %s: endereço de e-mail */
+									echo esc_html( sprintf( __( 'O e-mail de teste foi entregue ao servidor de correio para %s. Se não chegar em alguns minutos (veja também o spam), o problema está na entrega: o remetente e o domínio.', 'jelly-area-reservada' ), $teste['para'] ) );
+								} elseif ( 'email' === $teste['resultado'] ) {
+									esc_html_e( 'Escreva um endereço de e-mail válido para o teste.', 'jelly-area-reservada' );
+								} else {
+									/* translators: %s: endereço de e-mail */
+									echo esc_html( sprintf( __( 'O e-mail de teste para %s não saiu. O erro está abaixo.', 'jelly-area-reservada' ), $teste['para'] ) );
+								}
+								?>
+							</strong></p>
+						<?php endif; ?>
+
+						<?php if ( $envio_err ) : ?>
+							<p>
+								<?php
+								/* translators: 1: data e hora, 2: destinatário, 3: erro */
+								echo esc_html( sprintf( __( 'O último e-mail da área reservada que falhou: %1$s, para %2$s — %3$s', 'jelly-area-reservada' ), $envio_err['quando'], $envio_err['para'], $envio_err['erro'] ? $envio_err['erro'] : __( 'sem mensagem de erro', 'jelly-area-reservada' ) ) );
+								?>
+							</p>
+						<?php endif; ?>
+
+						<?php if ( false === $envio_ok ) : ?>
+							<p>
+								<?php
+								if ( 'mail' === jelly_ar_email_mailer() ) {
+									printf(
+										/* translators: %s: ligação às definições do WP Mail SMTP */
+										esc_html__( 'Os e-mails saem pelo PHP (o envio "Default (none)" do WP Mail SMTP), sem SMTP autenticado. Saem, mas podem ser recusados ou ir para o spam se o domínio do remetente (From Email) não autorizar este servidor. Remetente e envio em %s.', 'jelly-area-reservada' ),
+										'<a class="jar-link" href="' . esc_url( $smtp_url ) . '">' . esc_html__( 'WP Mail SMTP → Definições', 'jelly-area-reservada' ) . '</a>'
+									);
+								} elseif ( function_exists( 'wp_mail_smtp' ) ) {
+									printf(
+										/* translators: %s: ligação às definições do WP Mail SMTP */
+										esc_html__( 'O envio por SMTP está sem autenticação. Credenciais em %s.', 'jelly-area-reservada' ),
+										'<a class="jar-link" href="' . esc_url( $smtp_url ) . '">' . esc_html__( 'WP Mail SMTP → Definições', 'jelly-area-reservada' ) . '</a>'
+									);
+								} else {
+									esc_html_e( 'Os e-mails saem pela função mail() do PHP: não há nenhum plugin de SMTP ativo.', 'jelly-area-reservada' );
+								}
+								?>
+							</p>
+						<?php endif; ?>
+
+						<form class="jar-envio__teste" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+							<input type="hidden" name="action" value="jelly_ar_email_teste">
+							<input type="hidden" name="voltar" value="<?php echo esc_url( remove_query_arg( 'email_teste' ) ); ?>">
+							<?php wp_nonce_field( 'jelly_ar_email_teste' ); ?>
+							<label class="screen-reader-text" for="jar-envio-para"><?php esc_html_e( 'Endereço para o teste', 'jelly-area-reservada' ); ?></label>
+							<input type="email" id="jar-envio-para" name="para" value="<?php echo esc_attr( $eu->user_email ); ?>" required>
+							<button type="submit" class="jar-btn jar-btn--pequeno jar-btn--contorno"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i> <?php esc_html_e( 'Enviar e-mail de teste da AR', 'jelly-area-reservada' ); ?></button>
+						</form>
+					</div>
 				</div>
 			<?php endif; ?>
 

@@ -4146,3 +4146,38 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	pointer-events: none;
 	transition: opacity 0.15s ease;
 }
+
+/*
+ * O aviso do envio de e-mail (templates/admin/shell.php): as linhas do que se
+ * passa e, por baixo, o endereço e o botão do e-mail de teste da AR.
+ */
+.jar-envio > div {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+}
+
+.jar-envio p {
+	margin: 0;
+}
+
+.jar-envio__teste {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin-top: 4px;
+}
+
+.jar-envio__teste input[type="email"] {
+	flex: 0 1 280px;
+	min-width: 0;
+	height: 36px;
+	padding: 0 12px;
+	border: 1px solid var(--jar-linha);
+	border-radius: 8px;
+	background: #fff;
+	font: inherit;
+	font-size: 14px;
+}

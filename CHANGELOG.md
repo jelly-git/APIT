@@ -266,6 +266,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.60.2] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.24.2. O tema e a base de dados não mudam.
+
+### Adicionado
+- **E-mail de teste da AR**, no aviso do envio do back-office: envia um
+  e-mail da Área Reservada a sério — o mesmo desenho (HTML, com o logótipo
+  embutido) e o mesmo caminho dos que vão para os associados — para o
+  endereço escolhido, na hora, e diz se saiu. O teste do WP Mail SMTP é texto
+  simples para o administrador, e não prova este caminho.
+- **O último erro de envio de um e-mail da AR fica guardado** (a hora, o
+  destinatário e o que o servidor de correio disse) e aparece no aviso.
+  Muitos envios saem depois de a página responder, e o erro perdia-se. O
+  envio seguinte que corra bem apaga-o.
+
+### Alterado
+- Com o envio pelo PHP ("Default (none)"), o aviso deixa de dizer que o SMTP
+  está mal configurado: diz que os e-mails saem pelo PHP, sem autenticação, e
+  que podem ser recusados ou ir para o spam se o domínio do remetente não
+  autorizar o servidor.
+
 ## [0.60.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.24.1. O tema e a base de dados não mudam.

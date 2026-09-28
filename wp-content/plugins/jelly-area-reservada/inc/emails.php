@@ -141,13 +141,135 @@ function jelly_ar_enviar_email( $para, $assunto, $args ) {
 	// Depois do SMTP (que também se pendura aqui), para o tempo limite ficar o nosso.
 	add_action( 'phpmailer_init', $alternativa, 999 );
 
+	// Para jelly_ar_email_falhou() saber que o erro é de um e-mail da AR, e para quem.
+	$GLOBALS['jelly_ar_a_enviar'] = implode( ', ', (array) $para );
+
 	$enviado = wp_mail( $para, $assunto, $html, [ 'Content-Type: text/html; charset=UTF-8' ] );
+
+	unset( $GLOBALS['jelly_ar_a_enviar'] );
 
 	// Só para este e-mail: os outros do site não mudam.
 	remove_filter( 'wp_mail_from_name', $nome );
 	remove_action( 'phpmailer_init', $alternativa, 999 );
 
+	// Um envio que corre bem apaga o último erro: o aviso do back-office sai.
+	if ( $enviado ) {
+		delete_option( 'jelly_ar_email_erro' );
+	}
+
 	return $enviado;
+}
+
+/* ---------- O último erro de envio ---------- */
+
+/*
+ * Quando o wp_mail() falha a meio de um e-mail da AR, o erro do servidor de
+ * correio (o que o PHPMailer disse) fica guardado, com a hora e o
+ * destinatário, e o back-office mostra-o (templates/admin/shell.php). Muitos
+ * envios saem depois de a página responder (jelly_ar_email_depois()), e sem
+ * isto o erro perdia-se. O envio seguinte que corra bem apaga-o.
+ *
+ * Com o envio pelo PHP (mail()), o servidor aceita quase sempre a mensagem:
+ * um e-mail recusado depois disso (SPF, spam) já não volta aqui.
+ */
+function jelly_ar_email_falhou( $erro ) {
+	if ( empty( $GLOBALS['jelly_ar_a_enviar'] ) ) {
+		return;
+	}
+
+	update_option(
+		'jelly_ar_email_erro',
+		[
+			'quando' => current_time( 'mysql' ),
+			'para'   => $GLOBALS['jelly_ar_a_enviar'],
+			'erro'   => $erro instanceof WP_Error ? $erro->get_error_message() : '',
+		],
+		false
+	);
+}
+add_action( 'wp_mail_failed', 'jelly_ar_email_falhou' );
+
+/**
+ * O último erro de envio de um e-mail da AR, ou null.
+ */
+function jelly_ar_email_ultimo_erro() {
+	$erro = get_option( 'jelly_ar_email_erro' );
+
+	return is_array( $erro ) && ! empty( $erro['quando'] ) ? $erro : null;
+}
+
+/* ---------- O e-mail de teste da AR ---------- */
+
+/*
+ * O teste do WP Mail SMTP envia texto simples ao administrador; os e-mails da
+ * AR são HTML, com o logótipo embutido, e vão para os associados. Este envia
+ * um e-mail da AR a sério — o mesmo desenho, pelo mesmo jelly_ar_enviar_email()
+ * —, na hora e não na fila, para o endereço que a equipa escolher, e diz o
+ * resultado e o erro, se houver (templates/admin/shell.php).
+ */
+function jelly_ar_email_teste() {
+	if ( ! jelly_ar_e_administrador() ) {
+		wp_die( esc_html__( 'Esta área é só para administradores.', 'jelly-area-reservada' ), '', [ 'response' => 403 ] );
+	}
+
+	check_admin_referer( 'jelly_ar_email_teste' );
+
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verificado acima
+	$para   = isset( $_POST['para'] ) ? sanitize_email( wp_unslash( $_POST['para'] ) ) : '';
+	$voltar = isset( $_POST['voltar'] ) ? esc_url_raw( wp_unslash( $_POST['voltar'] ) ) : '';
+	// phpcs:enable
+
+	$voltar = $voltar && 0 === strpos( $voltar, admin_url() ) ? $voltar : admin_url( 'admin.php?page=jelly-ar' );
+	$voltar = remove_query_arg( 'email_teste', $voltar );
+
+	// O resultado fica do lado do servidor, por uns minutos: o endereço não vai no URL.
+	$chave = 'jelly_ar_email_teste_' . get_current_user_id();
+
+	if ( ! is_email( $para ) ) {
+		set_transient( $chave, [ 'resultado' => 'email', 'para' => '' ], 5 * MINUTE_IN_SECONDS );
+		wp_safe_redirect( add_query_arg( 'email_teste', 1, $voltar ) );
+		exit;
+	}
+
+	$enviado = jelly_ar_enviar_email(
+		$para,
+		__( 'E-mail de teste — Área Reservada APIT', 'jelly-area-reservada' ),
+		[
+			'titulo'     => __( 'E-mail de teste', 'jelly-area-reservada' ),
+			'previa'     => __( 'Um e-mail de teste da Área Reservada da APIT.', 'jelly-area-reservada' ),
+			'paragrafos' => [
+				esc_html__( 'Este é um e-mail de teste da Área Reservada da APIT, enviado a partir do back-office.', 'jelly-area-reservada' ),
+				esc_html__( 'Tem o mesmo desenho e sai pelo mesmo caminho que os e-mails enviados aos associados: se chegou, esses também chegam a este endereço.', 'jelly-area-reservada' ),
+			],
+		]
+	);
+
+	set_transient( $chave, [ 'resultado' => $enviado ? 'ok' : 'falhou', 'para' => $para ], 5 * MINUTE_IN_SECONDS );
+	wp_safe_redirect( add_query_arg( 'email_teste', 1, $voltar ) );
+	exit;
+}
+add_action( 'admin_post_jelly_ar_email_teste', 'jelly_ar_email_teste' );
+
+/**
+ * O resultado do último teste de quem tem a sessão (resultado: ok, falhou ou
+ * email; para), uma vez: lê-se e apaga-se.
+ */
+function jelly_ar_email_teste_resultado() {
+	$chave = 'jelly_ar_email_teste_' . get_current_user_id();
+	$r     = get_transient( $chave );
+
+	if ( $r ) {
+		delete_transient( $chave );
+	}
+
+	return is_array( $r ) ? $r : null;
+}
+
+/**
+ * O envio configurado no WP Mail SMTP ('mail' é o PHP), ou '' sem ele.
+ */
+function jelly_ar_email_mailer() {
+	return class_exists( '\WPMailSMTP\Options' ) ? (string) \WPMailSMTP\Options::init()->get( 'mail', 'mailer' ) : '';
 }
 
 /* ---------- Enviar depois de responder ---------- */
