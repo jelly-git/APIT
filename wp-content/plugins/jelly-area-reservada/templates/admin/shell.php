@@ -146,6 +146,22 @@ $contadores = [
 				</div>
 			<?php endif; ?>
 
+			<?php
+			/*
+			 * Os e-mails das marcações saem depois de a página responder
+			 * (jelly_ar_email_depois()); os que falharam avisam-se aqui, na
+			 * página seguinte, uma vez.
+			 */
+			$falhados = jelly_ar_emails_falhados();
+			?>
+			<?php if ( $falhados ) : ?>
+				<div class="jar-aviso jar-aviso--pendente" role="alert">
+					<i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i>
+					<?php /* translators: %d: número de e-mails */ ?>
+					<p><?php echo esc_html( sprintf( _n( '%d e-mail de uma marcação não foi enviado: a alteração está gravada, mas o associado não foi avisado. Convém confirmar a configuração do SMTP.', '%d e-mails de marcações não foram enviados: as alterações estão gravadas, mas esses associados não foram avisados. Convém confirmar a configuração do SMTP.', $falhados, 'jelly-area-reservada' ), $falhados ) ); ?></p>
+				</div>
+			<?php endif; ?>
+
 			<?php jelly_ar_template( 'admin/' . $chave ); ?>
 		</main>
 	</div>

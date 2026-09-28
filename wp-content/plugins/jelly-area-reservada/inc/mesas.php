@@ -278,13 +278,12 @@ function jelly_ar_marcacao_criar() {
 	}
 
 	$mesa   = jelly_ar_bloco_valido( $evento['id'], $mesa_id, $dia, $hora );
-	$falhou = 0;
 
 	foreach ( $marcados as $u ) {
-		$falhou += jelly_ar_email_marcacao( $u, 'marcada', $evento, $mesa, $dia, $hora ) ? 0 : 1;
+		jelly_ar_email_depois( 'jelly_ar_email_marcacao', [ $u, 'marcada', $evento, $mesa, $dia, $hora ] );
 	}
 
-	$voltar( [ 'aviso' => 'marcacao-criada', 'n' => count( $marcados ), 'sem-email' => $falhou, 'dia' => $dia ] );
+	$voltar( [ 'aviso' => 'marcacao-criada', 'n' => count( $marcados ), 'dia' => $dia ] );
 }
 add_action( 'admin_post_jelly_ar_marcacao_criar', 'jelly_ar_marcacao_criar' );
 
@@ -306,7 +305,6 @@ function jelly_ar_marcacoes_alterar() {
 		$mesas[ $m['id'] ] = $m;
 	}
 
-	$falhou = 0;
 
 	if ( 'remover' === $operacao ) {
 		$removidas = jelly_ar_marcacoes_remover( $evento['id'], $ids );
@@ -316,10 +314,10 @@ function jelly_ar_marcacoes_alterar() {
 		}
 
 		foreach ( $removidas as $r ) {
-			$falhou += jelly_ar_email_marcacao( $r['user_id'], 'cancelada', $evento, $mesas[ $r['mesa_id'] ], $r['dia'], $r['hora'] ) ? 0 : 1;
+			jelly_ar_email_depois( 'jelly_ar_email_marcacao', [ $r['user_id'], 'cancelada', $evento, $mesas[ $r['mesa_id'] ], $r['dia'], $r['hora'] ] );
 		}
 
-		$voltar( [ 'aviso' => 'marcacao-removida', 'n' => count( $removidas ), 'sem-email' => $falhou, 'dia' => $removidas[0]['dia'] ] );
+		$voltar( [ 'aviso' => 'marcacao-removida', 'n' => count( $removidas ), 'dia' => $removidas[0]['dia'] ] );
 	}
 
 	if ( 'mover' !== $operacao || 3 !== count( $destino ) ) {
@@ -337,9 +335,9 @@ function jelly_ar_marcacoes_alterar() {
 
 	foreach ( $mudadas as $m ) {
 		$antes   = [ 'mesa' => $mesas[ $m['mesa_id'] ], 'dia' => $m['dia'], 'hora' => $m['hora'] ];
-		$falhou += jelly_ar_email_marcacao( $m['user_id'], 'mudada', $evento, $mesas[ $mesa_id ], $dia, $hora, $antes ) ? 0 : 1;
+		jelly_ar_email_depois( 'jelly_ar_email_marcacao', [ $m['user_id'], 'mudada', $evento, $mesas[ $mesa_id ], $dia, $hora, $antes ] );
 	}
 
-	$voltar( [ 'aviso' => 'marcacao-mudada', 'n' => count( $mudadas ), 'sem-email' => $falhou, 'dia' => $dia ] );
+	$voltar( [ 'aviso' => 'marcacao-mudada', 'n' => count( $mudadas ), 'dia' => $dia ] );
 }
 add_action( 'admin_post_jelly_ar_marcacoes_alterar', 'jelly_ar_marcacoes_alterar' );

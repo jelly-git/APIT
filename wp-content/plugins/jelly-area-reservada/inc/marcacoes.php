@@ -163,8 +163,9 @@ function jelly_ar_marcacao_pedir() {
 		);
 	}
 
-	jelly_ar_email_marcacao( $user_id, 'pedida', $evento, $mesa, $dia, $hora );
-	jelly_ar_email_marcacao_equipa( $user_id, $evento, $mesa, $dia, $hora );
+	// Os dois e-mails saem depois da resposta (jelly_ar_email_depois()): o pop-up confirma logo.
+	jelly_ar_email_depois( 'jelly_ar_email_marcacao', [ $user_id, 'pedida', $evento, $mesa, $dia, $hora ] );
+	jelly_ar_email_depois( 'jelly_ar_email_marcacao_equipa', [ $user_id, $evento, $mesa, $dia, $hora ] );
 
 	wp_send_json(
 		[

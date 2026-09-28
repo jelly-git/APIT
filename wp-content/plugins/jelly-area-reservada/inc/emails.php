@@ -132,18 +132,93 @@ function jelly_ar_enviar_email( $para, $assunto, $args ) {
 		if ( $ficheiro ) {
 			$phpmailer->addEmbeddedImage( $ficheiro, 'apit-logo', 'apit.png', 'base64', 'image/png' );
 		}
+
+		// Um servidor de e-mail que não responde desiste-se ao fim de 10 s, e não dos 5 minutos do PHPMailer.
+		$phpmailer->Timeout = 10; // phpcs:ignore WordPress.NamingConventions.ValidVariableName
 	};
 
 	add_filter( 'wp_mail_from_name', $nome );
-	add_action( 'phpmailer_init', $alternativa );
+	// Depois do SMTP (que também se pendura aqui), para o tempo limite ficar o nosso.
+	add_action( 'phpmailer_init', $alternativa, 999 );
 
 	$enviado = wp_mail( $para, $assunto, $html, [ 'Content-Type: text/html; charset=UTF-8' ] );
 
 	// Só para este e-mail: os outros do site não mudam.
 	remove_filter( 'wp_mail_from_name', $nome );
-	remove_action( 'phpmailer_init', $alternativa );
+	remove_action( 'phpmailer_init', $alternativa, 999 );
 
 	return $enviado;
+}
+
+/* ---------- Enviar depois de responder ---------- */
+
+/*
+ * Os e-mails das marcações saem depois de a página responder: quem muda uma
+ * marcação vê logo o resultado, e o envio — que depende de um servidor de
+ * e-mail, às vezes lento — corre a seguir. Onde o PHP deixa fechar a ligação
+ * antes do fim (PHP-FPM, LiteSpeed), a espera deixa de se ver; onde não
+ * deixa, fica como antes.
+ *
+ * Um e-mail que falhe já não pode ser avisado na página que respondeu: fica
+ * contado para quem fez a ação, e a página seguinte do back-office avisa
+ * (templates/admin/shell.php).
+ */
+
+/**
+ * Põe um envio na fila: $funcao( ...$args ), que devolve se o e-mail saiu.
+ */
+function jelly_ar_email_depois( $funcao, $args ) {
+	global $jelly_ar_fila_emails;
+
+	if ( null === $jelly_ar_fila_emails ) {
+		$jelly_ar_fila_emails = [];
+		add_action( 'shutdown', 'jelly_ar_emails_da_fila', 1 );
+	}
+
+	$jelly_ar_fila_emails[] = [ $funcao, $args, get_current_user_id() ];
+}
+
+function jelly_ar_emails_da_fila() {
+	global $jelly_ar_fila_emails;
+
+	if ( ! $jelly_ar_fila_emails ) {
+		return;
+	}
+
+	// A resposta segue já para o browser; o resto corre sem ele à espera.
+	ignore_user_abort( true );
+	if ( function_exists( 'fastcgi_finish_request' ) ) {
+		fastcgi_finish_request();
+	} elseif ( function_exists( 'litespeed_finish_request' ) ) {
+		litespeed_finish_request();
+	}
+
+	$falhados = [];
+	foreach ( $jelly_ar_fila_emails as $e ) {
+		if ( ! call_user_func_array( $e[0], $e[1] ) && $e[2] ) {
+			$falhados[ $e[2] ] = ( $falhados[ $e[2] ] ?? 0 ) + 1;
+		}
+	}
+	$jelly_ar_fila_emails = [];
+
+	foreach ( $falhados as $user_id => $n ) {
+		set_transient( 'jelly_ar_emails_falhados_' . $user_id, (int) get_transient( 'jelly_ar_emails_falhados_' . $user_id ) + $n, DAY_IN_SECONDS );
+	}
+}
+
+/**
+ * Quantos e-mails falharam desde o último aviso, para quem tem a sessão — e
+ * limpa a conta, para o aviso aparecer uma vez.
+ */
+function jelly_ar_emails_falhados() {
+	$chave = 'jelly_ar_emails_falhados_' . get_current_user_id();
+	$n     = (int) get_transient( $chave );
+
+	if ( $n ) {
+		delete_transient( $chave );
+	}
+
+	return $n;
 }
 
 /* ---------- A decisão sobre um pedido ---------- */

@@ -266,6 +266,23 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.51.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.15.1. O tema e a base de dados não mudam.
+
+### Corrigido
+- **Mudar, marcar, remover, aprovar ou rejeitar uma marcação demorava muito.**
+  A gravação leva milissegundos; o tempo ia todo no e-mail ao associado, que
+  esperava pelo servidor de e-mail antes de a página responder — e um
+  servidor que não responde fazia esperar até 5 minutos (o limite do
+  PHPMailer). Agora:
+  - os e-mails das marcações saem depois de a página responder, onde o
+    servidor o permite (PHP-FPM, LiteSpeed): a mudança vê-se logo;
+  - um servidor de e-mail que não responde desiste-se ao fim de 10 segundos;
+  - um e-mail que falhe avisa-se na página seguinte do back-office, uma vez,
+    em vez de na página que respondeu.
+  O pedido de marcação dos associados, no pop-up do site, beneficia do mesmo.
+
 ## [0.51.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.15.0. O tema e a base de dados não mudam.

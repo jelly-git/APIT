@@ -33,9 +33,8 @@ $dia_curto = function ( $ymd ) {
 	return $d ? ucfirst( jelly_ar_data( 'D, j M', $d->getTimestamp() ) ) : $ymd;
 };
 
-// Quantas marcações fez o pedido, e quantos e-mails não saíram.
+// Quantas marcações fez o pedido.
 $n         = isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-$sem_email = isset( $_GET['sem-email'] ) ? absint( $_GET['sem-email'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 $avisos = [
 	'mesa-criada'       => __( 'Mesa criada.', 'jelly-area-reservada' ),
@@ -71,13 +70,9 @@ $erros  = [
 	'horario-marcacoes' => sprintf( __( 'Em %s há marcações que ficariam fora dos blocos novos. Nada foi gravado: o horário desse dia tem de continuar a incluí-las.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
 ];
 
-$mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros, $sem_email ) {
+$mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros ) {
 	if ( isset( $avisos[ $aviso ] ) ) {
 		printf( '<div class="jar-aviso jar-aviso--sucesso" role="status"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><p>%s</p></div>', esc_html( $avisos[ $aviso ] ) );
-	}
-	if ( isset( $avisos[ $aviso ] ) && $sem_email ) {
-		/* translators: %d: número de e-mails */
-		printf( '<div class="jar-aviso jar-aviso--pendente" role="alert"><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i><p>%s</p></div>', esc_html( sprintf( _n( '%d e-mail não foi enviado: a alteração está gravada, mas o associado não foi avisado. Convém confirmar a configuração do SMTP.', '%d e-mails não foram enviados: as alterações estão gravadas, mas esses associados não foram avisados. Convém confirmar a configuração do SMTP.', $sem_email, 'jelly-area-reservada' ), $sem_email ) ) );
 	}
 	if ( isset( $erros[ $erro ] ) ) {
 		printf( '<div class="jar-aviso jar-aviso--suspenso" role="alert"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><p>%s</p></div>', esc_html( $erros[ $erro ] ) );

@@ -28,7 +28,6 @@ asort( $eventos );
 
 $aviso     = isset( $_GET['aviso'] ) ? sanitize_key( wp_unslash( $_GET['aviso'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $n         = isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-$sem_email = isset( $_GET['sem-email'] ) ? absint( $_GET['sem-email'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 $avisos = [
 	/* translators: %d: número de pedidos */
@@ -71,10 +70,6 @@ $quando = function ( $m ) {
 
 <?php if ( isset( $avisos[ $aviso ] ) ) : ?>
 	<div class="jar-aviso jar-aviso--sucesso" role="status"><i class="fa-solid fa-circle-check" aria-hidden="true"></i><p><?php echo esc_html( $avisos[ $aviso ] ); ?></p></div>
-	<?php if ( $sem_email ) : ?>
-		<?php /* translators: %d: número de e-mails */ ?>
-		<div class="jar-aviso jar-aviso--pendente" role="alert"><i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i><p><?php echo esc_html( sprintf( _n( '%d e-mail não foi enviado: a decisão está gravada, mas o associado não foi avisado. Convém confirmar a configuração do SMTP.', '%d e-mails não foram enviados: as decisões estão gravadas, mas esses associados não foram avisados. Convém confirmar a configuração do SMTP.', $sem_email, 'jelly-area-reservada' ), $sem_email ) ); ?></p></div>
-	<?php endif; ?>
 <?php elseif ( 'nenhuma' === $aviso ) : ?>
 	<div class="jar-aviso jar-aviso--suspenso" role="alert"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i><p><?php esc_html_e( 'Nenhum pedido por aprovar estava escolhido, por isso nada mudou.', 'jelly-area-reservada' ); ?></p></div>
 <?php endif; ?>

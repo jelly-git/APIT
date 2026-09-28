@@ -108,7 +108,6 @@ function jelly_ar_aprovacoes_decidir() {
 
 	$decisao   = '' !== $aprovar ? 'aprovada' : 'rejeitada';
 	$decididas = jelly_ar_marcacoes_decidir( $ids, $decisao );
-	$falhou    = 0;
 	$eventos   = [];
 
 	foreach ( $decididas as $d ) {
@@ -122,7 +121,7 @@ function jelly_ar_aprovacoes_decidir() {
 		list( $evento, $mesas ) = $eventos[ $d['evento_id'] ];
 
 		if ( $evento && isset( $mesas[ $d['mesa_id'] ] ) ) {
-			$falhou += jelly_ar_email_marcacao( $d['user_id'], $decisao, $evento, $mesas[ $d['mesa_id'] ], $d['dia'], $d['hora'] ) ? 0 : 1;
+			jelly_ar_email_depois( 'jelly_ar_email_marcacao', [ $d['user_id'], $decisao, $evento, $mesas[ $d['mesa_id'] ], $d['dia'], $d['hora'] ] );
 		}
 	}
 
@@ -133,7 +132,7 @@ function jelly_ar_aprovacoes_decidir() {
 	wp_safe_redirect(
 		add_query_arg(
 			$decididas
-				? [ 'aviso' => $decisao, 'n' => count( $decididas ), 'sem-email' => $falhou ]
+				? [ 'aviso' => $decisao, 'n' => count( $decididas ) ]
 				: [ 'aviso' => 'nenhuma' ],
 			$destino
 		)
