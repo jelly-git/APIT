@@ -1,0 +1,1222 @@
+/*
+ * A ARU — a Área Reservada do Utilizador (inc/aru.php, templates/aru/).
+ *
+ * Um desenho próprio, fora do cabeçalho e do rodapé do site: a barra de topo
+ * branca, o menu à esquerda num painel com o degradé da marca, e as páginas
+ * em cartões brancos sobre um fundo claro. Os tokens --apit-* e a letra vêm do
+ * tema; os valores a seguir a cada var() são o que vale sem ele.
+ */
+
+.aru-corpo {
+	--aru-preto: var(--apit-black, #1b2a33);
+	--aru-magenta: var(--apit-magenta, #f41892);
+	--aru-roxo: #8048a6;
+	--aru-azul: #4a85c8;
+	--aru-turquesa: #2ec6b0;
+	--aru-fundo: #f3f6fb;
+	--aru-linha: rgba(27, 42, 51, 0.08);
+	--aru-suave: rgba(27, 42, 51, 0.62);
+	--aru-sombra: 0 1px 2px rgba(27, 42, 51, 0.05), 0 8px 24px rgba(27, 42, 51, 0.06);
+	--aru-raio: 18px;
+	--aru-degrade: linear-gradient(160deg, #f41892 0%, #b23aa8 34%, #6a5acd 66%, #3fa1d8 100%);
+
+	margin: 0;
+	background:
+		radial-gradient(900px 500px at 0% 0%, rgba(244, 24, 146, 0.07), transparent 60%),
+		radial-gradient(900px 600px at 100% 0%, rgba(74, 133, 200, 0.08), transparent 60%),
+		var(--aru-fundo);
+	font-family: var(--apit-font, "omnes-pro", -apple-system, "Segoe UI", sans-serif);
+	color: var(--aru-preto);
+}
+
+.aru-corpo *,
+.aru-corpo *::before,
+.aru-corpo *::after {
+	box-sizing: border-box;
+}
+
+/* ---------- A moldura ---------- */
+
+.aru {
+	display: grid;
+	grid-template-columns: 250px minmax(0, 1fr);
+	grid-template-areas:
+		"topo topo"
+		"lado principal"
+		"lado rodape";
+	gap: 24px;
+	max-width: 1560px;
+	min-height: 100vh;
+	margin: 0 auto;
+	padding: 24px;
+}
+
+.aru-topo {
+	grid-area: topo;
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	padding: 14px 28px;
+	border-radius: var(--aru-raio);
+	background: #fff;
+	box-shadow: var(--aru-sombra);
+}
+
+.aru-topo__logo img {
+	display: block;
+	width: auto;
+	height: 44px;
+}
+
+.aru-topo__area {
+	padding-left: 24px;
+	border-left: 1px solid var(--aru-linha);
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 1.2px;
+	text-transform: uppercase;
+	color: var(--aru-magenta);
+}
+
+.aru-topo__direita {
+	display: flex;
+	align-items: center;
+	gap: 22px;
+	margin-left: auto;
+}
+
+.aru-topo__site,
+.aru-topo__sair {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--aru-suave);
+	text-decoration: none;
+	transition: color 0.15s ease;
+}
+
+.aru-topo__site:hover,
+.aru-topo__sair:hover,
+.aru-topo__site:focus-visible,
+.aru-topo__sair:focus-visible {
+	color: var(--aru-magenta);
+}
+
+.aru-topo__sair {
+	padding-left: 22px;
+	border-left: 1px solid var(--aru-linha);
+	color: var(--aru-preto);
+}
+
+.aru-pessoa {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.aru-pessoa__texto {
+	text-align: right;
+	line-height: 1.25;
+}
+
+.aru-pessoa__texto strong {
+	display: block;
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.aru-pessoa__texto small {
+	font-size: 12px;
+	color: var(--aru-suave);
+}
+
+.aru-pessoa__foto {
+	display: grid;
+	place-items: center;
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	background: var(--aru-degrade);
+	font-size: 15px;
+	font-weight: 600;
+	color: #fff;
+}
+
+/* O menu, num painel com o degradé da marca. */
+.aru-lado {
+	grid-area: lado;
+	position: sticky;
+	top: 24px;
+	display: flex;
+	flex-direction: column;
+	align-self: start;
+	min-height: calc(100vh - 140px);
+	padding: 18px 14px 28px;
+	overflow: hidden;
+	border-radius: var(--aru-raio);
+	background: var(--aru-degrade);
+	box-shadow: var(--aru-sombra);
+	color: #fff;
+}
+
+/* A luz por cima do degradé, como na imagem do hero. */
+.aru-lado::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background:
+		radial-gradient(260px 220px at 90% 8%, rgba(255, 255, 255, 0.28), transparent 70%),
+		radial-gradient(300px 260px at 0% 100%, rgba(46, 198, 176, 0.45), transparent 70%);
+	pointer-events: none;
+}
+
+.aru-menu {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+
+.aru-menu__item {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 14px 16px;
+	border-radius: 12px;
+	font-size: 16px;
+	font-weight: 500;
+	color: rgba(255, 255, 255, 0.92);
+	text-decoration: none;
+	transition: background 0.15s ease;
+}
+
+.aru-menu__item > i:first-child {
+	width: 20px;
+	font-size: 17px;
+	text-align: center;
+}
+
+.aru-menu__item:hover,
+.aru-menu__item:focus-visible {
+	background: rgba(255, 255, 255, 0.14);
+	color: #fff;
+}
+
+.aru-menu__item.is-atual {
+	background: rgba(255, 255, 255, 0.24);
+	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+	color: #fff;
+}
+
+.aru-menu__fora {
+	margin-left: auto;
+	font-size: 11px;
+	opacity: 0.7;
+}
+
+.aru-menu__item.is-em-breve {
+	cursor: default;
+	opacity: 0.65;
+}
+
+.aru-menu__item.is-em-breve:hover {
+	background: none;
+}
+
+.aru-menu__item em {
+	margin-left: auto;
+	padding: 2px 8px;
+	border-radius: 20px;
+	background: rgba(255, 255, 255, 0.2);
+	font-size: 10px;
+	font-style: normal;
+	font-weight: 600;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+}
+
+.aru-lado__frase {
+	position: relative;
+	margin: auto 0 0;
+	padding: 40px 16px 0;
+	font-size: 21px;
+	font-weight: 500;
+	line-height: 1.35;
+}
+
+.aru-principal {
+	grid-area: principal;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	min-width: 0;
+}
+
+.aru-rodape {
+	grid-area: rodape;
+	display: flex;
+	justify-content: flex-end;
+	gap: 12px;
+	font-size: 12px;
+	color: var(--aru-suave);
+}
+
+.aru-rodape span + span::before {
+	content: "|";
+	margin-right: 12px;
+	opacity: 0.5;
+}
+
+/* ---------- Peças comuns ---------- */
+
+.aru-cartao {
+	padding: 24px 28px;
+	border-radius: var(--aru-raio);
+	background: #fff;
+	box-shadow: var(--aru-sombra);
+}
+
+.aru-cartao__cabeca {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 18px;
+}
+
+.aru-cartao__cabeca h2 {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+	line-height: 1.25;
+	color: var(--aru-preto);
+}
+
+.aru-cartao__cabeca h2 > i {
+	font-size: 18px;
+	color: var(--aru-magenta);
+}
+
+.aru-cartao__meta {
+	margin: 4px 0 0;
+	font-size: 14px;
+	color: var(--aru-suave);
+}
+
+.aru-conta {
+	padding: 1px 9px;
+	border-radius: 20px;
+	background: rgba(27, 42, 51, 0.06);
+	font-size: 13px;
+	font-weight: 600;
+}
+
+.aru-etiqueta {
+	display: inline-block;
+	margin-bottom: 8px;
+	padding: 3px 10px;
+	border-radius: 20px;
+	background: rgba(244, 24, 146, 0.1);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.8px;
+	text-transform: uppercase;
+	color: var(--aru-magenta);
+}
+
+.aru-ligacao {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--aru-azul);
+	text-decoration: none;
+}
+
+.aru-ligacao:hover,
+.aru-ligacao:focus-visible {
+	color: var(--aru-magenta);
+}
+
+/*
+ * Os botões são os do pop-up da Área Reservada (.apit-ar__submeter,
+ * area-reservada.css): a pílula magenta, em maiúsculas, com a seta, e preta ao
+ * passar. Os templates juntam-lhes o .btn do tema, de onde vem a letra.
+ */
+.aru-botao {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 14px;
+	padding: 15px 28px 13px;
+	border: 2px solid var(--aru-magenta);
+	border-radius: 200px;
+	background: var(--aru-magenta);
+	font-family: var(--apit-font, inherit);
+	font-size: 15px;
+	font-weight: 500;
+	line-height: 1.4;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: #fff;
+	text-decoration: none;
+	transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.aru-botao:hover,
+.aru-botao:focus-visible {
+	border-color: var(--aru-preto);
+	background: var(--aru-preto);
+	color: #fff;
+	outline: none;
+}
+
+.aru-botao--pequeno {
+	flex: none;
+	gap: 10px;
+	padding: 10px 20px 9px;
+	font-size: 13px;
+}
+
+/* Sobre um fundo de cor (as oportunidades): branco, e preto ao passar. */
+.aru-botao--branco {
+	border-color: #fff;
+	background: #fff;
+	color: var(--aru-magenta);
+}
+
+.aru-botao--branco:hover,
+.aru-botao--branco:focus-visible {
+	border-color: var(--aru-preto);
+	background: var(--aru-preto);
+	color: #fff;
+}
+.aru-icone {
+	display: grid;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	border-radius: 14px;
+	font-size: 20px;
+}
+
+.aru-icone--roxo { background: rgba(128, 72, 166, 0.12); color: var(--aru-roxo); }
+.aru-icone--turquesa { background: rgba(46, 198, 176, 0.14); color: #1e9e8c; }
+.aru-icone--magenta { background: rgba(244, 24, 146, 0.1); color: var(--aru-magenta); }
+.aru-icone--azul { background: rgba(74, 133, 200, 0.12); color: var(--aru-azul); }
+
+/* A data num quadrado com a cor do evento: o dia e o mês. */
+.aru-data {
+	flex: none;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 58px;
+	height: 58px;
+	border-radius: 14px;
+	background: linear-gradient(135deg, var(--aru-cor-a, #f41892), var(--aru-cor-b, #8048a6));
+	color: #fff;
+	line-height: 1;
+	text-shadow: 0 1px 2px rgba(27, 42, 51, 0.25);
+}
+
+.aru-data strong {
+	font-size: 22px;
+	font-weight: 600;
+}
+
+.aru-data small {
+	margin-top: 3px;
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.6px;
+	text-transform: uppercase;
+}
+
+.aru-estado {
+	flex: none;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 11px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.aru-estado::before {
+	content: "";
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: currentColor;
+}
+
+.aru-estado--pendente { background: rgba(245, 158, 11, 0.14); color: #b86e00; }
+.aru-estado--aprovada { background: rgba(46, 198, 176, 0.14); color: #168a79; }
+.aru-estado--rejeitada { background: rgba(196, 33, 59, 0.1); color: #c4213b; }
+.aru-estado--cancelada { background: rgba(27, 42, 51, 0.07); color: var(--aru-suave); }
+
+.aru-vazio {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 22px;
+	border-radius: 14px;
+	background: rgba(27, 42, 51, 0.03);
+}
+
+.aru-vazio i {
+	font-size: 22px;
+	color: var(--aru-magenta);
+}
+
+.aru-vazio p {
+	margin: 0;
+	font-size: 15px;
+	color: var(--aru-suave);
+}
+
+.aru-titulo h1 {
+	margin: 8px 0 6px;
+	font-size: 34px;
+	font-weight: 500;
+	color: var(--aru-preto);
+}
+
+.aru-titulo p {
+	max-width: 720px;
+	margin: 0;
+	font-size: 16px;
+	color: var(--aru-suave);
+}
+
+/* ---------- Início ---------- */
+
+.aru-ola {
+	position: relative;
+	display: flex;
+	align-items: center;
+	min-height: 180px;
+	padding: 34px 40px;
+	overflow: hidden;
+	border-radius: var(--aru-raio);
+	background: #fff;
+	box-shadow: var(--aru-sombra);
+}
+
+.aru-ola__texto {
+	position: relative;
+	z-index: 1;
+	max-width: 560px;
+}
+
+.aru-ola h1 {
+	margin: 0;
+	font-size: 42px;
+	font-weight: 500;
+	line-height: 1.1;
+	color: #1f2d6b;
+}
+
+.aru-ola__sub {
+	margin: 6px 0 14px !important;
+	font-size: 21px !important;
+	color: #2a3a7a !important;
+}
+
+.aru-ola p {
+	margin: 0;
+	font-size: 16px;
+	line-height: 1.6;
+	color: var(--aru-suave);
+}
+
+/* A arte do lado direito: o degradé da marca, em manchas, a sair do cartão. */
+.aru-ola__arte {
+	position: absolute;
+	inset: 0 0 0 38%;
+	background:
+		radial-gradient(40% 70% at 70% 40%, rgba(244, 24, 146, 0.55), transparent 70%),
+		radial-gradient(35% 60% at 95% 80%, rgba(46, 198, 176, 0.5), transparent 70%),
+		radial-gradient(40% 80% at 45% 90%, rgba(74, 133, 200, 0.45), transparent 70%),
+		radial-gradient(30% 60% at 100% 10%, rgba(128, 72, 166, 0.6), transparent 70%);
+	-webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 45%);
+	mask-image: linear-gradient(90deg, transparent 0%, #000 45%);
+	pointer-events: none;
+}
+
+.aru-ola__arte::after {
+	content: "";
+	position: absolute;
+	right: -40px;
+	bottom: -60px;
+	width: 320px;
+	height: 320px;
+	border: 38px solid rgba(255, 255, 255, 0.35);
+	border-radius: 50%;
+}
+
+.aru-numeros {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 20px;
+}
+
+.aru-numero {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	padding: 22px 24px;
+	border-radius: var(--aru-raio);
+	background: #fff;
+	box-shadow: var(--aru-sombra);
+	color: var(--aru-preto);
+	text-decoration: none;
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+a.aru-numero:hover,
+a.aru-numero:focus-visible {
+	transform: translateY(-2px);
+	box-shadow: 0 2px 4px rgba(27, 42, 51, 0.05), 0 14px 30px rgba(27, 42, 51, 0.09);
+	color: var(--aru-preto);
+}
+
+.aru-numero .aru-icone {
+	margin-bottom: 16px;
+}
+
+.aru-numero__rotulo {
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.aru-numero__valor {
+	margin: 4px 0 2px;
+	font-size: 34px;
+	font-weight: 600;
+	line-height: 1.1;
+	color: #1f2d6b;
+}
+
+.aru-numero__nota {
+	font-size: 14px;
+	color: var(--aru-suave);
+}
+
+.aru-numero__seta {
+	position: absolute;
+	right: 22px;
+	bottom: 24px;
+	display: grid;
+	place-items: center;
+	width: 34px;
+	height: 34px;
+	border-radius: 50%;
+	background: rgba(74, 133, 200, 0.1);
+	font-size: 13px;
+	color: var(--aru-azul);
+}
+
+.aru-numero.is-em-breve .aru-numero__valor {
+	color: rgba(27, 42, 51, 0.3);
+}
+
+.aru-grelha {
+	display: grid;
+	grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+	gap: 24px;
+	align-items: start;
+}
+
+/* O destaque. */
+.aru-destaque__corpo {
+	display: grid;
+	grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+	gap: 24px;
+	align-items: center;
+}
+
+.aru-destaque__capa {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	min-height: 190px;
+	padding: 22px;
+	overflow: hidden;
+	border-radius: 16px;
+	background:
+		radial-gradient(60% 80% at 90% 10%, rgba(255, 255, 255, 0.3), transparent 60%),
+		linear-gradient(135deg, var(--aru-cor-a, #f41892), var(--aru-cor-b, #8048a6));
+	color: #fff;
+}
+
+.aru-destaque__capa::after {
+	content: "";
+	position: absolute;
+	top: -50px;
+	right: -50px;
+	width: 200px;
+	height: 200px;
+	border: 28px solid rgba(255, 255, 255, 0.18);
+	border-radius: 50%;
+}
+
+.aru-destaque__dia {
+	font-size: 56px;
+	font-weight: 600;
+	line-height: 1;
+}
+
+.aru-destaque__mes {
+	font-size: 15px;
+	font-weight: 600;
+	letter-spacing: 1.2px;
+	text-transform: uppercase;
+}
+
+.aru-destaque__nome {
+	margin-top: 12px;
+	font-size: 20px;
+	font-weight: 500;
+}
+
+.aru-factos {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin: 0 0 20px;
+	padding: 0;
+	list-style: none;
+	font-size: 15px;
+	color: var(--aru-suave);
+}
+
+.aru-factos li {
+	display: flex;
+	gap: 12px;
+}
+
+.aru-factos i {
+	width: 18px;
+	margin-top: 3px;
+	color: var(--aru-azul);
+	text-align: center;
+}
+
+.aru-factos strong {
+	display: block;
+	font-size: 16px;
+	color: var(--aru-preto);
+}
+
+.aru-destaque__minha {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 18px;
+	font-size: 14px;
+}
+
+/* Os horários do primeiro dia, lado a lado. */
+.aru-horarios {
+	margin-top: 22px;
+	padding: 18px;
+	border: 1px solid var(--aru-linha);
+	border-radius: 16px;
+}
+
+.aru-horarios__cabeca {
+	display: flex;
+	gap: 12px;
+	margin-bottom: 14px;
+}
+
+.aru-horarios__cabeca > i {
+	margin-top: 3px;
+	font-size: 18px;
+	color: var(--aru-preto);
+}
+
+.aru-horarios__cabeca strong {
+	display: block;
+	font-size: 15px;
+}
+
+.aru-horarios__cabeca span {
+	font-size: 13px;
+	color: var(--aru-suave);
+}
+
+.aru-horarios__lista {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+	gap: 10px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.aru-hora,
+.aru-hora a {
+	display: flex;
+	flex-direction: column;
+	padding: 11px 14px;
+	border-radius: 12px;
+	font-size: 12px;
+	text-decoration: none;
+}
+
+.aru-hora strong {
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--aru-preto);
+}
+
+.aru-hora--livre { background: rgba(46, 198, 176, 0.12); color: #168a79; }
+.aru-hora--ocupado { background: rgba(27, 42, 51, 0.05); color: var(--aru-suave); }
+.aru-hora--minha { background: rgba(128, 72, 166, 0.12); color: var(--aru-roxo); }
+.aru-hora--mais { padding: 0; background: rgba(74, 133, 200, 0.1); }
+.aru-hora--mais a { color: var(--aru-azul); }
+
+/* As listas: as minhas marcações e os eventos. */
+.aru-lista,
+.aru-eventos {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.aru-lista li + li,
+.aru-eventos li + li {
+	border-top: 1px solid var(--aru-linha);
+}
+
+.aru-marcacao,
+.aru-evento {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 14px 6px;
+	border-radius: 12px;
+	color: var(--aru-preto);
+	text-decoration: none;
+	transition: background 0.15s ease;
+}
+
+a.aru-marcacao:hover,
+a.aru-evento:hover,
+a.aru-marcacao:focus-visible,
+a.aru-evento:focus-visible {
+	background: rgba(74, 133, 200, 0.05);
+	color: var(--aru-preto);
+}
+
+.aru-marcacao.is-passada {
+	opacity: 0.65;
+}
+
+.aru-marcacao__texto,
+.aru-evento__texto {
+	flex: 1 1 auto;
+	min-width: 0;
+	line-height: 1.35;
+}
+
+.aru-marcacao__texto strong,
+.aru-evento__texto strong {
+	display: block;
+	overflow: hidden;
+	font-size: 15px;
+	font-weight: 600;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.aru-marcacao__texto small,
+.aru-evento__texto small {
+	display: block;
+	font-size: 13px;
+	color: var(--aru-suave);
+}
+
+.aru-marcacao__mesa i {
+	margin-right: 3px;
+	font-size: 11px;
+	color: var(--aru-magenta);
+}
+
+.aru-evento__texto em {
+	display: inline-block;
+	margin-top: 4px;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: 600;
+	color: var(--aru-magenta);
+}
+
+.aru-marcacao__seta,
+.aru-evento > .fa-chevron-right {
+	flex: none;
+	font-size: 12px;
+	color: var(--aru-suave);
+}
+
+/* Os próximos eventos, lado a lado por baixo do destaque. */
+.aru-proximos .aru-eventos {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.aru-proximos .aru-eventos li + li {
+	border-top: 0;
+}
+
+.aru-proximos .aru-evento {
+	position: relative;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+	height: 100%;
+	padding: 16px;
+	border: 1px solid var(--aru-linha);
+}
+
+.aru-proximos .aru-evento__texto {
+	width: 100%;
+}
+
+.aru-proximos .aru-evento__texto strong {
+	white-space: normal;
+}
+
+.aru-proximos .aru-evento > .fa-chevron-right {
+	position: absolute;
+	top: 20px;
+	right: 16px;
+}
+
+.aru-eventos--linha .aru-evento {
+	padding: 14px 6px;
+}
+
+/* O cartão das oportunidades. */
+.aru-oportunidades {
+	position: relative;
+	padding: 30px 28px;
+	overflow: hidden;
+	border-radius: var(--aru-raio);
+	background:
+		radial-gradient(70% 90% at 100% 0%, rgba(244, 24, 146, 0.55), transparent 65%),
+		linear-gradient(135deg, #14a7b5 0%, #3c6fd8 55%, #6a3fb0 100%);
+	box-shadow: var(--aru-sombra);
+	color: #fff;
+}
+
+.aru-oportunidades::after {
+	content: "";
+	position: absolute;
+	right: -60px;
+	bottom: -80px;
+	width: 240px;
+	height: 240px;
+	border: 32px solid rgba(255, 255, 255, 0.14);
+	border-radius: 50%;
+}
+
+.aru-oportunidades h2 {
+	position: relative;
+	max-width: 280px;
+	margin: 0 0 10px;
+	font-size: 22px;
+	font-weight: 600;
+	line-height: 1.25;
+	color: #fff;
+}
+
+.aru-oportunidades p {
+	position: relative;
+	max-width: 300px;
+	margin: 0 0 20px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: rgba(255, 255, 255, 0.9);
+}
+
+.aru-oportunidades .aru-botao {
+	position: relative;
+}
+
+/* ---------- Documentos ---------- */
+
+.aru-filtros {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 18px;
+}
+
+.aru-filtro {
+	padding: 7px 14px;
+	border-radius: 20px;
+	background: rgba(27, 42, 51, 0.05);
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--aru-preto);
+	text-decoration: none;
+}
+
+.aru-filtro b {
+	margin-left: 4px;
+	font-weight: 600;
+	opacity: 0.6;
+}
+
+.aru-filtro:hover,
+.aru-filtro:focus-visible {
+	background: rgba(244, 24, 146, 0.08);
+	color: var(--aru-magenta);
+}
+
+.aru-filtro.is-atual {
+	background: var(--aru-preto);
+	color: #fff;
+}
+
+.aru-documentos {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.aru-documento {
+	display: flex;
+	align-items: center;
+	gap: 18px;
+	padding: 16px 6px;
+}
+
+.aru-documento + .aru-documento {
+	border-top: 1px solid var(--aru-linha);
+}
+
+.aru-documento__icone {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	border-radius: 12px;
+	background: rgba(74, 133, 200, 0.1);
+	font-size: 20px;
+	color: var(--aru-azul);
+}
+
+.aru-tipo--pdf { background: rgba(196, 33, 59, 0.09); color: #c4213b; }
+.aru-tipo--docx,
+.aru-tipo--doc { background: rgba(74, 133, 200, 0.12); color: #2f65b0; }
+.aru-tipo--xlsx,
+.aru-tipo--xls { background: rgba(46, 198, 176, 0.14); color: #168a79; }
+.aru-tipo--pptx,
+.aru-tipo--ppt { background: rgba(245, 128, 11, 0.12); color: #c25d00; }
+.aru-tipo--zip { background: rgba(128, 72, 166, 0.12); color: var(--aru-roxo); }
+
+.aru-documento__texto {
+	flex: 1 1 auto;
+	min-width: 0;
+	line-height: 1.4;
+}
+
+.aru-documento__texto strong {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.aru-documento__texto > span {
+	display: block;
+	margin-top: 2px;
+	font-size: 14px;
+	color: var(--aru-suave);
+}
+
+.aru-documento__texto small {
+	display: block;
+	margin-top: 4px;
+	font-size: 12px;
+	color: var(--aru-suave);
+}
+
+.aru-novo {
+	padding: 2px 8px;
+	border-radius: 20px;
+	background: rgba(244, 24, 146, 0.1);
+	font-size: 11px;
+	font-style: normal;
+	font-weight: 700;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+	color: var(--aru-magenta);
+}
+
+/* ---------- Ecrãs mais pequenos ---------- */
+
+@media (max-width: 1280px) {
+	.aru-numeros {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.aru-grelha {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.aru-proximos .aru-eventos {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/* O menu passa para uma fila por baixo do topo. */
+@media (max-width: 960px) {
+	.aru {
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-areas:
+			"topo"
+			"lado"
+			"principal"
+			"rodape";
+		gap: 16px;
+		padding: 16px;
+	}
+
+	.aru-lado {
+		position: static;
+		min-height: 0;
+		padding: 8px;
+	}
+
+	.aru-menu {
+		flex-direction: row;
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+
+	.aru-menu__item {
+		flex: none;
+		padding: 10px 14px;
+		font-size: 15px;
+	}
+
+	.aru-menu__fora {
+		display: none;
+	}
+
+	.aru-lado__frase,
+	.aru-topo__area,
+	.aru-topo__site span {
+		display: none;
+	}
+
+	.aru-destaque__corpo {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 640px) {
+	.aru-topo {
+		gap: 12px;
+		padding: 12px 16px;
+	}
+
+	.aru-topo__logo img {
+		height: 34px;
+	}
+
+	.aru-topo__direita {
+		gap: 14px;
+	}
+
+	.aru-pessoa__texto,
+	.aru-topo__sair span {
+		display: none;
+	}
+
+	.aru-topo__sair {
+		padding-left: 14px;
+	}
+
+	.aru-ola {
+		padding: 26px 22px;
+	}
+
+	.aru-ola h1 {
+		font-size: 32px;
+	}
+
+	.aru-ola__sub {
+		font-size: 18px !important;
+	}
+
+	.aru-numeros {
+		gap: 12px;
+	}
+
+	.aru-numero {
+		padding: 18px;
+	}
+
+	.aru-numero__valor {
+		font-size: 28px;
+	}
+
+	.aru-numero__seta {
+		display: none;
+	}
+
+	.aru-cartao {
+		padding: 20px 18px;
+	}
+
+	.aru-cartao__cabeca {
+		flex-wrap: wrap;
+	}
+
+	.aru-marcacao {
+		flex-wrap: wrap;
+	}
+
+	.aru-marcacao .aru-estado {
+		margin-left: 74px;
+	}
+
+	.aru-documento {
+		flex-wrap: wrap;
+	}
+
+	.aru-documento .aru-botao {
+		margin-left: 66px;
+	}
+
+	.aru-titulo h1 {
+		font-size: 28px;
+	}
+}

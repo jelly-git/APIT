@@ -266,6 +266,40 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.58.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.22.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **A ARU — Área Reservada do Utilizador — com desenho próprio**, fora do
+  cabeçalho e do rodapé do site (a página simples da 0.57.0 sai):
+  - **Moldura**: barra de topo branca com o logótipo, "Área Reservada", Voltar
+    ao site, o nome, a empresa e as iniciais de quem tem sessão, e Terminar
+    sessão (a equipa tem também o Back-office); à esquerda, o menu num painel
+    com o degradé da marca — Início, Documentos, Marcações, Calendário (a
+    página do site) e Encontros ("Em breve").
+  - **Início** (`/area-reservada/`): a saudação; quatro números (documentos e
+    os novos dos últimos 30 dias, marcações por vir e as por aprovar,
+    próximos eventos e os com marcação de mesa, Encontros em breve); o evento
+    em destaque — o próximo com marcação de mesas — com as datas, o local, os
+    horários livres, a marcação do associado se já a tiver, os horários do
+    primeiro dia (disponível, ocupado, a sua) e o botão que abre o pop-up da
+    marcação; as minhas marcações; os próximos eventos; e as oportunidades de
+    internacionalização.
+  - **Documentos** (`/area-reservada/documentos/`): os publicados, do mais
+    recente, com filtro por categoria, a etiqueta "Novo" e o botão para
+    descarregar.
+  - **Marcações** (`/area-reservada/marcacoes/`): os eventos onde ainda pode
+    marcar mesa, as próximas marcações e o histórico (as que passaram e as
+    canceladas ou não aprovadas). As que vêm abrem o pop-up da marcação.
+  - Os botões são os do pop-up da Área Reservada: a pílula magenta em
+    maiúsculas, com ícone, preta ao passar.
+  - Em ecrãs estreitos o menu passa para uma fila por baixo do topo, e os
+    cartões para uma coluna.
+- Tudo se lê da conta com sessão; os eventos incluem os só da Área
+  Reservada. O código está em `inc/aru.php` e `templates/aru/`, e o desenho
+  em `assets/css/aru.css`, que só carrega na ARU.
+
 ## [0.57.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.21.1. O tema e a base de dados não mudam.
