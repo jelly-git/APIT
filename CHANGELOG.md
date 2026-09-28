@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.56.2] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.20.2. O tema e a base de dados não mudam.
+
+### Alterado
+- O aviso depois de apagar documentos passa a "1 documento apagado, **assim
+  como** o ficheiro e o histórico de descargas." (e o mesmo no plural e ao
+  apagar a partir da página do documento).
+
 ## [0.56.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.20.1. O tema e a base de dados não mudam.

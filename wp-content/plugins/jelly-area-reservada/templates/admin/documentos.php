@@ -38,9 +38,9 @@ $avisos  = [
 	'atualizado'           => __( 'Dados do documento guardados.', 'jelly-area-reservada' ),
 	'substituido'          => __( 'Dados guardados e ficheiro substituído. O anterior foi apagado.', 'jelly-area-reservada' ),
 	'eventos'              => __( 'Eventos do documento guardados.', 'jelly-area-reservada' ),
-	'apagado'              => __( 'Documento apagado, com o ficheiro e o histórico de descargas.', 'jelly-area-reservada' ),
+	'apagado'              => __( 'Documento apagado, assim como o ficheiro e o histórico de descargas.', 'jelly-area-reservada' ),
 	/* translators: %d: número de documentos */
-	'apagados'             => sprintf( _n( '%d documento apagado, com o ficheiro e o histórico de descargas.', '%d documentos apagados, com os ficheiros e o histórico de descargas.', max( 1, isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 1 ), 'jelly-area-reservada' ), max( 1, isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 1 ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	'apagados'             => sprintf( _n( '%d documento apagado, assim como o ficheiro e o histórico de descargas.', '%d documentos apagados, assim como os ficheiros e o histórico de descargas.', max( 1, isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 1 ), 'jelly-area-reservada' ), max( 1, isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 1 ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	'categoria-criada'     => __( 'Categoria criada.', 'jelly-area-reservada' ),
 	'categoria-atualizada' => __( 'Nome da categoria mudado.', 'jelly-area-reservada' ),
 	'categoria-apagada'    => __( 'Categoria apagada.', 'jelly-area-reservada' ),
