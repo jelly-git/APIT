@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.55.2] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.19.2. O tema e a base de dados não mudam.
+
+### Alterado
+- No mês de hoje, o gráfico do Painel vai do dia 1 até hoje, e a última data
+  do eixo diz **"Hoje"** — antes ia até ao fim do mês ("30 set"), com os dias
+  por vir vazios. Os meses que já acabaram vão até ao último dia.
+
 ## [0.55.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.19.1. O tema e a base de dados não mudam.

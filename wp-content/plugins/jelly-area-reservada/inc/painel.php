@@ -183,6 +183,11 @@ function jelly_ar_painel_mes( $mes = '' ) {
 	$dias   = [];
 
 	foreach ( $a['dias'] as $dia => $v ) {
+		// No mês de hoje, o gráfico acaba em hoje: os dias que ainda não chegaram não entram.
+		if ( $v['futuro'] ) {
+			continue;
+		}
+
 		$ts     = strtotime( $dia );
 		$dias[] = [
 			// Por baixo do gráfico "1 set"; na dica "Ter, 1 set".

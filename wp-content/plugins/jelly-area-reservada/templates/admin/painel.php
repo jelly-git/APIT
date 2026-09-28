@@ -135,7 +135,7 @@ if ( JELLY_AR_EXEMPLO ) {
 			<header class="jar-cartao__cabeca jar-cartao__cabeca--acao">
 				<div>
 					<h2 data-jar-painel-mes-titulo><?php echo esc_html( $c['titulo'] ); ?></h2>
-					<span class="jar-cartao__meta"><?php esc_html_e( 'Do dia 1 ao fim do mês. Passe o rato no gráfico para ver cada dia.', 'jelly-area-reservada' ); ?></span>
+					<span class="jar-cartao__meta"><?php esc_html_e( 'Do dia 1 até hoje, ou ao fim do mês. Passe o rato no gráfico para ver cada dia.', 'jelly-area-reservada' ); ?></span>
 				</div>
 				<span class="jar-painel__meses">
 					<a class="jar-acao" href="<?php echo esc_url( $url_mes( $c['anterior'] ) ); ?>" data-jar-painel-ir="<?php echo esc_attr( $c['anterior'] ); ?>" data-jar-painel-seta="anterior" aria-label="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>

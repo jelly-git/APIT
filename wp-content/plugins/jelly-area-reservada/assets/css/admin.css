@@ -4062,13 +4062,6 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	align-items: flex-start;
 }
 
-/* Hoje, no gráfico do mês corrente: uma linha discreta, a partir da qual o mês ainda não aconteceu. */
-.jar-grafico__hoje {
-	stroke: rgba(244, 24, 146, 0.35);
-	stroke-width: 1;
-	stroke-dasharray: 2 4;
-}
-
 /* As setas para o mês anterior e o seguinte, na cabeça do cartão. */
 .jar-painel__meses {
 	display: inline-flex;

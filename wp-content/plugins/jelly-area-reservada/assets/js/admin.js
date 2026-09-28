@@ -1116,21 +1116,14 @@
 				svg.appendChild( numero );
 			}
 
-			// As datas por baixo: o dia 1 e de semana a semana (8, 15, 22, 29), e o último dia do mês.
+			// As datas por baixo: o dia 1 e de semana a semana (8, 15, 22, 29), e o último dia — "Hoje", no mês de hoje.
 			dias.forEach( function ( d, i ) {
 				var fimDoMes = i === dias.length - 1;
 
 				if ( 0 === i % 7 && dias.length - 1 - i >= 3 || fimDoMes ) {
 					var data = no( 'text', { class: 'jar-grafico__eixo', x: x( i ), y: altura - 6, 'text-anchor': fimDoMes ? 'end' : ( 0 === i ? 'start' : 'middle' ) } );
-					data.textContent = d.curto;
+					data.textContent = d.hoje ? 'Hoje' : d.curto;
 					svg.appendChild( data );
-				}
-			} );
-
-			// Hoje, se for deste mês: uma marca discreta no eixo.
-			dias.forEach( function ( d, i ) {
-				if ( d.hoje && i < dias.length - 1 ) {
-					svg.appendChild( no( 'line', { class: 'jar-grafico__hoje', x1: x( i ), x2: x( i ), y1: margem.cima, y2: altura - margem.baixo } ) );
 				}
 			} );
 
