@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.50.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.14.1. O tema e a base de dados não mudam.
+
+### Alterado
+- No Calendário, cada marcação do dia lê-se em três linhas: o nome; a
+  empresa, a mais discreta; e a mesa, entre as duas, com o ícone. O evento
+  sai da linha (está no filtro de cima) e fica ao passar o rato na mesa.
+- Sai a legenda por baixo da grelha do mês; o que cada número de um dia quer
+  dizer ("2 confirmadas", "1 por aprovar") aparece ao passar o rato.
+
 ## [0.50.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.14.0. O tema e o esquema da base de dados não

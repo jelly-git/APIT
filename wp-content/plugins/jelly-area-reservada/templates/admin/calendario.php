@@ -156,12 +156,15 @@ $rotulo_dia = function ( $ymd, $formato ) {
 						<button type="button" class="<?php echo esc_attr( $classe ); ?>" role="gridcell" data-jar-calendario-dia="<?php echo esc_attr( $ymd ); ?>" aria-label="<?php echo esc_attr( $rotulo ); ?>" aria-pressed="<?php echo $ymd === $aberto ? 'true' : 'false'; ?>">
 							<span class="jar-calendario__numero"><?php echo (int) $dia->format( 'j' ); ?></span>
 							<?php if ( $lista ) : ?>
-								<span class="jar-calendario__marcas" aria-hidden="true">
+								<?php // O que cada número quer dizer diz-se ao passar o rato; o leitor de ecrã lê-o no aria-label do dia. ?>
+								<span class="jar-calendario__marcas">
 									<?php if ( ! empty( $contas['aprovada'] ) ) : ?>
-										<span class="jar-calendario__marca jar-calendario__marca--aprovada"><?php echo (int) $contas['aprovada']; ?></span>
+										<?php /* translators: %d: marcações confirmadas */ ?>
+										<span class="jar-calendario__marca jar-calendario__marca--aprovada" title="<?php echo esc_attr( sprintf( _n( '%d confirmada', '%d confirmadas', $contas['aprovada'], 'jelly-area-reservada' ), $contas['aprovada'] ) ); ?>"><?php echo (int) $contas['aprovada']; ?></span>
 									<?php endif; ?>
 									<?php if ( ! empty( $contas['pendente'] ) ) : ?>
-										<span class="jar-calendario__marca jar-calendario__marca--pendente"><?php echo (int) $contas['pendente']; ?></span>
+										<?php /* translators: %d: marcações por aprovar */ ?>
+										<span class="jar-calendario__marca jar-calendario__marca--pendente" title="<?php echo esc_attr( sprintf( _n( '%d por aprovar', '%d por aprovar', $contas['pendente'], 'jelly-area-reservada' ), $contas['pendente'] ) ); ?>"><?php echo (int) $contas['pendente']; ?></span>
 									<?php endif; ?>
 								</span>
 							<?php endif; ?>
@@ -171,10 +174,6 @@ $rotulo_dia = function ( $ymd, $formato ) {
 			<?php endfor; ?>
 		</div>
 
-		<ul class="jar-legenda jar-calendario__legenda">
-			<li><span class="jar-calendario__marca jar-calendario__marca--aprovada" aria-hidden="true">2</span> <?php esc_html_e( 'Confirmadas', 'jelly-area-reservada' ); ?></li>
-			<li><span class="jar-calendario__marca jar-calendario__marca--pendente" aria-hidden="true">1</span> <?php esc_html_e( 'Por aprovar', 'jelly-area-reservada' ); ?></li>
-		</ul>
 	</section>
 
 	<?php
@@ -222,7 +221,11 @@ $rotulo_dia = function ( $ymd, $formato ) {
 									<?php if ( $pendente ) : ?>
 										<em class="jar-calendario__estado"><?php esc_html_e( 'Por aprovar', 'jelly-area-reservada' ); ?></em>
 									<?php endif; ?>
-									<small><?php echo esc_html( implode( ' · ', array_filter( [ $m['empresa'], $m['mesa'], $m['evento'] ] ) ) ); ?></small>
+									<?php // Três linhas: o nome, a empresa e a mesa — esta mais marcada do que a empresa, menos do que o nome. O evento fica no filtro de cima e no title. ?>
+									<?php if ( $m['empresa'] ) : ?>
+										<small><?php echo esc_html( $m['empresa'] ); ?></small>
+									<?php endif; ?>
+									<span class="jar-calendario__mesa" title="<?php echo esc_attr( $m['evento'] ); ?>"><i class="fa-solid fa-chair" aria-hidden="true"></i> <?php echo esc_html( $m['mesa'] ); ?></span>
 								</span>
 								<span class="jar-calendario__acoes">
 									<?php if ( $pendente ) : ?>

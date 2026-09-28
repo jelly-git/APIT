@@ -3204,10 +3204,6 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	color: #6a3790;
 }
 
-.jar-calendario__legenda {
-	margin: 16px 0 0;
-}
-
 /* As marcações do dia, pela hora. */
 .jar-calendario__dias {
 	position: sticky;
@@ -3266,12 +3262,27 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	white-space: nowrap;
 }
 
-/* A empresa, a mesa e o evento podem partir em duas linhas. */
+/* Por baixo do nome, a empresa (a mais discreta) e a mesa (entre as duas). */
 .jar-calendario__quem small {
 	display: block;
 	font-size: 13px;
 	line-height: 1.35;
 	color: var(--jar-suave);
+}
+
+.jar-calendario__mesa {
+	display: block;
+	margin-top: 2px;
+	font-weight: 500;
+	font-size: 13px;
+	line-height: 1.35;
+	color: rgba(27, 42, 51, 0.85);
+}
+
+.jar-calendario__mesa i {
+	margin-right: 3px;
+	font-size: 11px;
+	color: var(--jar-magenta);
 }
 
 .jar-calendario__estado {
