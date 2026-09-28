@@ -266,6 +266,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.46.3] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.10.3. O tema e a base de dados não mudam.
+
+### Corrigido
+- No histórico de acessos do perfil, o dispositivo mostrava o texto em bruto
+  que o browser envia ("Mozilla/5.0 (Windows NT 10.0; Win64; x64)
+  AppleWebKit/537.36 … Chrome/154.0.0.0 Safari/537.36"). Passa a ler-se
+  "Chrome · Windows", "Safari · iPhone", "Edge · Windows"… O texto completo
+  continua guardado: aparece ao passar o rato, e a exportação leva-o numa
+  coluna própria. A tradução é feita ao mostrar, por isso vale também para os
+  acessos antigos.
+- As marcações de mesa do perfil de um associado real eram as de exemplo;
+  passam a ser as dele, de todos os estados. "Ver em Aprovações" deixou de
+  estar "em breve": abre as Aprovações com as marcações dessa pessoa.
+
+### Alterado
+- No perfil, as Marcações de mesas passam para cima do Histórico de acessos.
+
 ## [0.46.2] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.10.2. O tema e a base de dados não mudam.

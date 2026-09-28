@@ -120,7 +120,7 @@ endif;
 
 if ( $u ) :
 	$completo  = $u['nome'] . ' ' . $u['apelido'];
-	$marcacoes = jelly_ar_exemplo_marcacoes_de( $u['id'] );
+	$marcacoes = ! empty( $u['real'] ) ? jelly_ar_marcacoes_de_utilizador( $u['id'] ) : jelly_ar_exemplo_marcacoes_de( $u['id'] );
 	$acessos   = jelly_ar_acessos_de( $u );
 
 	/*
@@ -326,6 +326,30 @@ if ( $u ) :
 
 			<section class="jar-cartao jar-cartao--tabela">
 				<header class="jar-cartao__cabeca">
+					<h2><?php esc_html_e( 'Marcações de mesas', 'jelly-area-reservada' ); ?></h2>
+					<?php if ( $marcacoes && ! empty( $u['real'] ) ) : ?>
+						<?php // As Aprovações, com todas as marcações desta pessoa: pesquisa pelo e-mail, em todos os estados. ?>
+						<a class="jar-btn jar-btn--pequeno jar-btn--contorno" href="<?php echo esc_url( jelly_ar_admin_url( 'marcacoes', [ 'estado' => '', 'q' => $u['email'] ] ) ); ?>">
+							<i class="fa-solid fa-circle-check" aria-hidden="true"></i> <?php esc_html_e( 'Ver em Aprovações', 'jelly-area-reservada' ); ?>
+						</a>
+					<?php endif; ?>
+				</header>
+				<?php if ( ! $marcacoes ) : ?>
+					<p class="jar-vazio"><?php esc_html_e( 'Sem marcações.', 'jelly-area-reservada' ); ?></p>
+				<?php else : ?>
+					<table class="jar-tabela">
+						<thead><tr><th><?php esc_html_e( 'Evento', 'jelly-area-reservada' ); ?></th><th><?php esc_html_e( 'Mesa', 'jelly-area-reservada' ); ?></th><th><?php esc_html_e( 'Data e hora', 'jelly-area-reservada' ); ?></th><th><?php esc_html_e( 'Estado', 'jelly-area-reservada' ); ?></th></tr></thead>
+						<tbody>
+							<?php foreach ( $marcacoes as $m ) : ?>
+								<tr><td><?php echo esc_html( $m['evento'] ); ?></td><td><?php echo esc_html( $m['mesa'] ); ?></td><td class="jar-tabela__num"><?php echo esc_html( $m['quando'] ); ?></td><td><?php jelly_ar_estado( $m['estado'] ); ?></td></tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				<?php endif; ?>
+			</section>
+
+			<section class="jar-cartao jar-cartao--tabela">
+				<header class="jar-cartao__cabeca">
 					<div>
 						<h2><?php esc_html_e( 'Histórico de acessos', 'jelly-area-reservada' ); ?></h2>
 						<?php if ( $u['acessos'] ) : ?>
@@ -350,26 +374,7 @@ if ( $u ) :
 						<thead><tr><th><?php esc_html_e( 'Data e hora', 'jelly-area-reservada' ); ?></th><th><?php esc_html_e( 'IP', 'jelly-area-reservada' ); ?></th><th><?php esc_html_e( 'Dispositivo', 'jelly-area-reservada' ); ?></th></tr></thead>
 						<tbody>
 							<?php foreach ( array_slice( $acessos, 0, 5 ) as $a ) : ?>
-								<tr><td class="jar-tabela__num"><?php echo esc_html( $a['quando'] ); ?></td><td class="jar-tabela__num"><?php echo esc_html( $a['ip'] ); ?></td><td><?php echo esc_html( $a['dispositivo'] ); ?></td></tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>
-				<?php endif; ?>
-			</section>
-
-			<section class="jar-cartao jar-cartao--tabela">
-				<header class="jar-cartao__cabeca">
-					<h2><?php esc_html_e( 'Marcações de mesas', 'jelly-area-reservada' ); ?></h2>
-					<span class="jar-link is-em-breve" title="<?php esc_attr_e( 'Chega com a área das Aprovações', 'jelly-area-reservada' ); ?>"><?php esc_html_e( 'Ver em Aprovações', 'jelly-area-reservada' ); ?> <em><?php esc_html_e( 'em breve', 'jelly-area-reservada' ); ?></em></span>
-				</header>
-				<?php if ( ! $marcacoes ) : ?>
-					<p class="jar-vazio"><?php esc_html_e( 'Sem marcações.', 'jelly-area-reservada' ); ?></p>
-				<?php else : ?>
-					<table class="jar-tabela">
-						<thead><tr><th><?php esc_html_e( 'Evento', 'jelly-area-reservada' ); ?></th><th><?php esc_html_e( 'Mesa', 'jelly-area-reservada' ); ?></th><th><?php esc_html_e( 'Data e hora', 'jelly-area-reservada' ); ?></th><th><?php esc_html_e( 'Estado', 'jelly-area-reservada' ); ?></th></tr></thead>
-						<tbody>
-							<?php foreach ( $marcacoes as $m ) : ?>
-								<tr><td><?php echo esc_html( $m['evento'] ); ?></td><td><?php echo esc_html( $m['mesa'] ); ?></td><td class="jar-tabela__num"><?php echo esc_html( $m['quando'] ); ?></td><td><?php jelly_ar_estado( $m['estado'] ); ?></td></tr>
+								<tr><td class="jar-tabela__num"><?php echo esc_html( $a['quando'] ); ?></td><td class="jar-tabela__num"><?php echo esc_html( $a['ip'] ); ?></td><td<?php echo ! empty( $a['user_agent'] ) ? ' title="' . esc_attr( $a['user_agent'] ) . '"' : ''; ?>><?php echo esc_html( $a['dispositivo'] ); ?></td></tr>
 							<?php endforeach; ?>
 						</tbody>
 					</table>

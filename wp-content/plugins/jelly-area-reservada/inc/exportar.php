@@ -167,7 +167,9 @@ function jelly_ar_acessos_reais( $utilizador = 0 ) {
 			'nome'        => $l->display_name,
 			'email'       => $l->user_email,
 			'ip'          => $l->ip,
-			'dispositivo' => $l->user_agent,
+			'dispositivo' => jelly_ar_dispositivo( $l->user_agent ),
+			// O texto inteiro do browser: no perfil ao passar o rato, e na exportação.
+			'user_agent'  => $l->user_agent,
 		];
 	}, $linhas );
 }
@@ -179,11 +181,11 @@ function jelly_ar_exportar_acessos() {
 	$utilizador = isset( $_GET['utilizador'] ) ? absint( $_GET['utilizador'] ) : 0;
 	$saida      = jelly_ar_csv_comecar(
 		'acessos-area-reservada' . ( $utilizador ? '-' . $utilizador : '' ),
-		[ 'Data e hora', 'Nome', 'E-mail', 'IP', 'Dispositivo' ]
+		[ 'Data e hora', 'Nome', 'E-mail', 'IP', 'Dispositivo', 'Browser (texto completo)' ]
 	);
 
 	foreach ( jelly_ar_obter_acessos( $utilizador ) as $a ) {
-		fputcsv( $saida, [ $a['quando'], $a['nome'], $a['email'], $a['ip'], $a['dispositivo'] ], ';' );
+		fputcsv( $saida, [ $a['quando'], $a['nome'], $a['email'], $a['ip'], $a['dispositivo'], $a['user_agent'] ?? '' ], ';' );
 	}
 
 	fclose( $saida );

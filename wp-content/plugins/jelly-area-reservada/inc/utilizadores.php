@@ -147,6 +147,27 @@ function jelly_ar_utilizadores_todos() {
  * Os acessos de um utilizador, do mais recente para o mais antigo: da tabela,
  * se for real; dos exemplos, se não.
  */
+/**
+ * As marcações de mesa de um associado, para o perfil: as vivas e as do
+ * histórico, as mais recentes primeiro (jelly_ar_marcacoes_todas()).
+ */
+function jelly_ar_marcacoes_de_utilizador( $id ) {
+	$suas = array_filter( jelly_ar_marcacoes_todas(), function ( $m ) use ( $id ) {
+		return $m['user_id'] === (int) $id;
+	} );
+
+	return array_values( array_map( function ( $m ) {
+		$d = DateTime::createFromFormat( '!Y-m-d', $m['dia'] );
+
+		return [
+			'evento' => $m['evento'],
+			'mesa'   => $m['mesa'],
+			'quando' => ( $d ? $d->format( 'd/m/Y' ) : $m['dia'] ) . ' ' . $m['hora'],
+			'estado' => $m['estado'],
+		];
+	}, $suas ) );
+}
+
 function jelly_ar_acessos_de( $u, $limite = 0 ) {
 	$linhas = jelly_ar_obter_acessos( $u['id'] );
 

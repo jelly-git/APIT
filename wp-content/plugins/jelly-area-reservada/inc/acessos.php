@@ -58,6 +58,68 @@ function jelly_ar_registar_acesso( $login, $user ) {
 add_action( 'wp_login', 'jelly_ar_registar_acesso', 10, 2 );
 
 /**
+ * O dispositivo de um acesso, para ler: "Chrome · Windows", "Safari · iPhone".
+ *
+ * O browser anuncia-se num texto comprido (o user agent) em que quase todos se
+ * dizem "Mozilla" e "Safari" por compatibilidade, e por isso a ordem conta:
+ * o Edge e o Opera dizem também "Chrome", e o Chrome diz também "Safari".
+ * Guarda-se o texto inteiro (jelly_ar_registar_acesso()) e traduz-se só ao
+ * mostrar, para uma regra melhor valer também para os acessos antigos.
+ *
+ * O Windows 11 anuncia-se como "Windows NT 10.0", tal como o 10: não se
+ * distinguem, e fica só "Windows".
+ */
+function jelly_ar_dispositivo( $ua ) {
+	$ua = (string) $ua;
+
+	// Um texto que não é um user agent (os dados de exemplo) fica como está.
+	if ( '' === $ua || false === stripos( $ua, 'mozilla/' ) && false === stripos( $ua, 'opera/' ) ) {
+		return '' === $ua ? '—' : $ua;
+	}
+
+	$browsers = [
+		'Edg/'            => 'Edge',
+		'EdgiOS/'         => 'Edge',
+		'EdgA/'           => 'Edge',
+		'OPR/'            => 'Opera',
+		'Opera'           => 'Opera',
+		'SamsungBrowser/' => 'Samsung Internet',
+		'Firefox/'        => 'Firefox',
+		'FxiOS/'          => 'Firefox',
+		'CriOS/'          => 'Chrome',
+		'Chrome/'         => 'Chrome',
+		'Version/'        => 'Safari',
+	];
+	$browser  = __( 'Browser', 'jelly-area-reservada' );
+	foreach ( $browsers as $marca => $nome ) {
+		if ( false !== strpos( $ua, $marca ) ) {
+			$browser = $nome;
+			break;
+		}
+	}
+
+	// O iPad recente diz-se "Macintosh"; só o toque o distingue, e esse não vem no texto.
+	$sistemas = [
+		'iPhone'    => 'iPhone',
+		'iPad'      => 'iPad',
+		'Android'   => 'Android',
+		'CrOS'      => 'ChromeOS',
+		'Windows'   => 'Windows',
+		'Macintosh' => 'macOS',
+		'Linux'     => 'Linux',
+	];
+	$sistema  = '';
+	foreach ( $sistemas as $marca => $nome ) {
+		if ( false !== strpos( $ua, $marca ) ) {
+			$sistema = $nome;
+			break;
+		}
+	}
+
+	return $sistema ? $browser . ' · ' . $sistema : $browser;
+}
+
+/**
  * O telefone como fica guardado e mostrado: indicativo, um espaço, e o número
  * seguido — "+351 912345678". Sem indicativo, assume-se o português.
  */
