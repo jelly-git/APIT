@@ -266,6 +266,20 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.55.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.19.1. O tema e a base de dados não mudam.
+
+### Alterado
+- No Painel, as setas do mês trazem o mês pedido **por Ajax**, sem
+  recarregar a página: o título, os totais, as setas e o gráfico mudam no
+  lugar, e o endereço fica com o mês (`mes=2026-08`), para se poder
+  recarregar ou partilhar. Sem JavaScript, as setas continuam a ser ligações.
+  O mês é montado numa só função (`jelly_ar_painel_mes()`), para a página e o
+  pedido Ajax darem o mesmo.
+- Em "Por decidir", o botão dos pedidos de marcação passa de "Decidir" a
+  **"Ver pedido"**.
+
 ## [0.55.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.19.0. O tema e a base de dados não mudam.

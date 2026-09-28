@@ -4080,3 +4080,13 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	opacity: 0.35;
 	cursor: default;
 }
+
+/* O cartão do mês enquanto chega outro mês: o gráfico esbate-se, e as setas não respondem. */
+.jar [data-jar-painel-mes].is-a-carregar .jar-painel__trinta {
+	opacity: 0.5;
+	transition: opacity 0.15s ease;
+}
+
+.jar [data-jar-painel-mes].is-a-carregar .jar-painel__meses {
+	pointer-events: none;
+}

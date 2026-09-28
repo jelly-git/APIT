@@ -1065,10 +1065,15 @@
 		 * ficam no eixo mas sem linha, e não se apontam. `ultimo` é o último dia
 		 * com dados — hoje, no mês corrente.
 		 */
-		var ultimo = dados.dias.length - 1;
-		while ( ultimo > 0 && dados.dias[ ultimo ].futuro ) {
-			ultimo--;
+		var ultimo = 0;
+
+		function acertarUltimo() {
+			ultimo = dados.dias.length - 1;
+			while ( ultimo > 0 && dados.dias[ ultimo ].futuro ) {
+				ultimo--;
+			}
 		}
+		acertarUltimo();
 
 		dados.series.forEach( function ( s ) {
 			visiveis[ s.chave ] = true;
@@ -1285,6 +1290,14 @@
 
 		desenhar();
 
+		// Outro mês (as setas do Painel): os dados novos, o mesmo gráfico redesenhado.
+		figura.jarGraficoMudar = function ( novos ) {
+			dados = novos;
+			acertarUltimo();
+			esconder();
+			desenhar();
+		};
+
 		if ( window.ResizeObserver ) {
 			new window.ResizeObserver( function () {
 				if ( geo && area.clientWidth !== geo.largura ) {
@@ -1292,6 +1305,99 @@
 				}
 			} ).observe( area );
 		}
+	} );
+
+	/* ---------- O mês do Painel, por Ajax ---------- */
+
+	/*
+	 * As setas do cartão do mês (data-jar-painel-mes) trazem o mês pedido do
+	 * servidor (jelly_ar_painel_mes_ajax(), inc/painel.php) sem recarregar a
+	 * página: mudam o título, os totais, as setas e o gráfico, e o endereço
+	 * fica com o mês, para se poder recarregar ou partilhar. Sem JavaScript,
+	 * as setas são ligações normais.
+	 */
+	Array.prototype.forEach.call( raiz.querySelectorAll( '[data-jar-painel-mes]' ), function ( cartao ) {
+		var figura = cartao.querySelector( '[data-jar-grafico]' );
+		var titulo = cartao.querySelector( '[data-jar-painel-mes-titulo]' );
+		var ocupado = false;
+
+		function acertarSeta( seta, mes, rotulo ) {
+			seta.setAttribute( 'data-jar-painel-ir', mes );
+			seta.title = mes ? rotulo : 'Já é o mês atual';
+			if ( mes ) {
+				seta.removeAttribute( 'aria-disabled' );
+			} else {
+				seta.setAttribute( 'aria-disabled', 'true' );
+			}
+		}
+
+		function mudar( mes, seta ) {
+			if ( ocupado || ! mes ) {
+				return;
+			}
+			ocupado = true;
+			cartao.classList.add( 'is-a-carregar' );
+
+			var url = cartao.getAttribute( 'data-ajax' ) + '?action=jelly_ar_painel_mes&_ajax_nonce=' + encodeURIComponent( cartao.getAttribute( 'data-nonce' ) ) + '&mes=' + encodeURIComponent( mes );
+
+			fetch( url, { credentials: 'same-origin' } )
+				.then( function ( r ) {
+					return r.json();
+				} )
+				.then( function ( resposta ) {
+					if ( ! resposta || ! resposta.success ) {
+						throw new Error( 'resposta inesperada' );
+					}
+
+					var c = resposta.data;
+
+					titulo.textContent = c.titulo;
+					Object.keys( c.totais ).forEach( function ( k ) {
+						var n = cartao.querySelector( '[data-jar-painel-total="' + k + '"]' );
+						if ( n ) {
+							n.textContent = c.totais[ k ];
+						}
+					} );
+					acertarSeta( cartao.querySelector( '[data-jar-painel-seta="anterior"]' ), c.anterior, 'Mês anterior' );
+					acertarSeta( cartao.querySelector( '[data-jar-painel-seta="seguinte"]' ), c.seguinte, 'Mês seguinte' );
+
+					if ( figura && figura.jarGraficoMudar ) {
+						figura.jarGraficoMudar( c.grafico );
+					}
+
+					// O endereço com o mês, sem o mês quando é o de hoje.
+					var endereco = new window.URL( window.location.href );
+					if ( c.mes === c.atual ) {
+						endereco.searchParams.delete( 'mes' );
+					} else {
+						endereco.searchParams.set( 'mes', c.mes );
+					}
+					endereco.hash = '';
+					window.history.replaceState( window.history.state, '', endereco.toString() );
+
+					if ( seta && ! seta.hasAttribute( 'aria-disabled' ) ) {
+						seta.focus();
+					}
+				} )
+				.catch( function ( erro ) {
+					// Sem resposta: vai-se pela ligação, como sem JavaScript.
+					window.console.error( 'Painel: o mês não carregou', erro );
+					if ( seta && seta.href ) {
+						window.location.assign( seta.href );
+					}
+				} )
+				.then( function () {
+					ocupado = false;
+					cartao.classList.remove( 'is-a-carregar' );
+				} );
+		}
+
+		Array.prototype.forEach.call( cartao.querySelectorAll( '[data-jar-painel-seta]' ), function ( seta ) {
+			seta.addEventListener( 'click', function ( e ) {
+				e.preventDefault();
+				mudar( seta.getAttribute( 'data-jar-painel-ir' ), seta );
+			} );
+		} );
 	} );
 
 	/* ---------- Menu lateral no telemóvel ---------- */

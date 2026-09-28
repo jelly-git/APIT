@@ -98,7 +98,7 @@ function jelly_ar_painel_dados() {
 			} ) ),
 		],
 		// O mês do gráfico e os totais dele; o mês vem no endereço (mes=2026-09), e por omissão é o de hoje.
-		'mes'        => jelly_ar_painel_atividade( isset( $_GET['mes'] ) ? sanitize_text_field( wp_unslash( $_GET['mes'] ) ) : '' ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		'mes'        => jelly_ar_painel_mes( isset( $_GET['mes'] ) ? sanitize_text_field( wp_unslash( $_GET['mes'] ) ) : '' ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		'smtp'       => function_exists( 'jelly_ar_envio_autenticado' ) ? jelly_ar_envio_autenticado() : null,
 	];
 }
@@ -167,3 +167,65 @@ function jelly_ar_descargas_30_dias() {
 
 	return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jelly_ar_tabela( 'descargas' ) . ' WHERE criado_em >= %s', gmdate( 'Y-m-d H:i:s', time() - 30 * DAY_IN_SECONDS ) ) ); // phpcs:ignore WordPress.DB
 }
+
+/**
+ * O cartão do mês do Painel, pronto a mostrar: o título, os meses vizinhos
+ * para as setas, os dados do gráfico e os totais. Serve a página e o pedido
+ * Ajax das setas (jelly_ar_painel_mes_ajax()), para os dois darem o mesmo.
+ *
+ * @param string $mes Y-m; por omissão, o de hoje.
+ */
+function jelly_ar_painel_mes( $mes = '' ) {
+	$a      = jelly_ar_painel_atividade( $mes );
+	$mes_ts = strtotime( $a['mes'] . '-01' );
+	$atual  = current_time( 'Y-m' );
+	$hoje   = current_time( 'Y-m-d' );
+	$dias   = [];
+
+	foreach ( $a['dias'] as $dia => $v ) {
+		$ts     = strtotime( $dia );
+		$dias[] = [
+			// Por baixo do gráfico "1 set"; na dica "Ter, 1 set".
+			'curto'     => jelly_ar_data( 'j M', $ts ),
+			'rotulo'    => ucfirst( jelly_ar_data( 'D, j M', $ts ) ),
+			'hoje'      => $hoje === $dia,
+			'futuro'    => $v['futuro'],
+			'marcacoes' => $v['marcacoes'],
+			'acessos'   => $v['acessos'],
+		];
+	}
+
+	$seguinte = gmdate( 'Y-m', strtotime( '+1 month', $mes_ts ) );
+
+	return [
+		'mes'      => $a['mes'],
+		/* translators: %s: mês e ano */
+		'titulo'   => sprintf( __( 'Atividade de %s', 'jelly-area-reservada' ), jelly_ar_data( 'F \d\e Y', $mes_ts ) ),
+		'anterior' => gmdate( 'Y-m', strtotime( '-1 month', $mes_ts ) ),
+		// O seguinte só até ao mês de hoje.
+		'seguinte' => $seguinte <= $atual ? $seguinte : '',
+		'atual'    => $atual,
+		'grafico'  => [
+			'series' => [
+				[ 'chave' => 'marcacoes', 'nome' => __( 'Pedidos de marcação', 'jelly-area-reservada' ), 'cor' => '#f41892' ],
+				[ 'chave' => 'acessos', 'nome' => __( 'Acessos', 'jelly-area-reservada' ), 'cor' => '#8048a6' ],
+			],
+			'dias'   => $dias,
+		],
+		'totais'   => $a['totais'],
+	];
+}
+
+/**
+ * As setas do cartão do mês: o mês pedido, em JSON, sem recarregar a página.
+ */
+function jelly_ar_painel_mes_ajax() {
+	if ( ! jelly_ar_e_administrador() ) {
+		wp_send_json_error( null, 403 );
+	}
+
+	check_ajax_referer( 'jelly_ar_painel_mes' );
+
+	wp_send_json_success( jelly_ar_painel_mes( isset( $_GET['mes'] ) ? sanitize_text_field( wp_unslash( $_GET['mes'] ) ) : '' ) );
+}
+add_action( 'wp_ajax_jelly_ar_painel_mes', 'jelly_ar_painel_mes_ajax' );

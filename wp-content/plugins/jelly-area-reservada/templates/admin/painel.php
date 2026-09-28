@@ -112,60 +112,35 @@ if ( JELLY_AR_EXEMPLO ) {
 	<div class="jar-painel__fila jar-painel__fila--2-1">
 		<?php
 		/*
-		 * ---------- Os últimos 30 dias: o gráfico e os totais ----------
+		 * ---------- A atividade do mês: o gráfico e os totais ----------
 		 *
-		 * O gráfico desenha-se no browser (assets/js/admin.js,
-		 * data-jar-grafico), ao tamanho do cartão, com os valores de cada dia
-		 * ao passar o rato ou com as setas do teclado; a legenda mostra ou
-		 * esconde cada linha. Os dados vão aqui, dia a dia.
+		 * Tudo vem de jelly_ar_painel_mes() (inc/painel.php). O gráfico
+		 * desenha-se no browser (assets/js/admin.js, data-jar-grafico), e as
+		 * setas trazem outro mês por Ajax (data-jar-painel-mes), sem recarregar
+		 * a página: o título, os totais, as setas e o gráfico mudam no lugar.
+		 * Sem JavaScript, as setas são ligações normais.
 		 */
-		$grafico = [
-			'series' => [
-				[ 'chave' => 'marcacoes', 'nome' => __( 'Pedidos de marcação', 'jelly-area-reservada' ), 'cor' => '#f41892' ],
-				[ 'chave' => 'acessos', 'nome' => __( 'Acessos', 'jelly-area-reservada' ), 'cor' => '#8048a6' ],
-			],
-			'dias'   => [],
-		];
-		foreach ( $p['mes']['dias'] as $dia => $v ) {
-			$ts                = strtotime( $dia );
-			$grafico['dias'][] = [
-				// Por baixo do gráfico "1 set"; na dica "Ter, 1 set".
-				'curto'     => jelly_ar_data( 'j M', $ts ),
-				'rotulo'    => $dia_curto( $dia ),
-				'hoje'      => current_time( 'Y-m-d' ) === $dia,
-				'futuro'    => $v['futuro'],
-				'marcacoes' => $v['marcacoes'],
-				'acessos'   => $v['acessos'],
-			];
-		}
-
-		// O mês do gráfico, e os vizinhos para as setas (o seguinte só até ao de hoje).
-		$mes_ts   = strtotime( $p['mes']['mes'] . '-01' );
-		$anterior = gmdate( 'Y-m', strtotime( '-1 month', $mes_ts ) );
-		$seguinte = gmdate( 'Y-m', strtotime( '+1 month', $mes_ts ) );
-		$ha_mais  = $seguinte <= current_time( 'Y-m' );
-
-		$t      = $p['mes']['totais'];
+		$c        = $p['mes'];
+		$url_mes  = function ( $mes ) use ( $c ) {
+			return jelly_ar_admin_url( 'painel', $mes && $mes !== $c['atual'] ? [ 'mes' => $mes ] : [] ) . '#jar-painel-mes';
+		};
 		$totais = [
-			[ __( 'Pedidos de marcação', 'jelly-area-reservada' ), $t['marcacoes'], 'fa-calendar-check', 'magenta' ],
-			[ __( 'Acessos dos associados', 'jelly-area-reservada' ), $t['acessos'], 'fa-right-to-bracket', 'roxo' ],
-			[ __( 'Registos novos', 'jelly-area-reservada' ), $t['registos'], 'fa-user-plus', 'azul' ],
-			[ __( 'Descargas de documentos', 'jelly-area-reservada' ), $t['descargas'], 'fa-download', 'turquesa' ],
+			[ 'marcacoes', __( 'Pedidos de marcação', 'jelly-area-reservada' ), 'fa-calendar-check', 'magenta' ],
+			[ 'acessos', __( 'Acessos dos associados', 'jelly-area-reservada' ), 'fa-right-to-bracket', 'roxo' ],
+			[ 'registos', __( 'Registos novos', 'jelly-area-reservada' ), 'fa-user-plus', 'azul' ],
+			[ 'descargas', __( 'Descargas de documentos', 'jelly-area-reservada' ), 'fa-download', 'turquesa' ],
 		];
 		?>
-		<section class="jar-cartao" id="jar-painel-mes">
+		<section class="jar-cartao" id="jar-painel-mes" data-jar-painel-mes data-ajax="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'jelly_ar_painel_mes' ) ); ?>">
 			<header class="jar-cartao__cabeca jar-cartao__cabeca--acao">
 				<div>
-					<h2><?php echo esc_html( sprintf( /* translators: %s: mês e ano */ __( 'Atividade de %s', 'jelly-area-reservada' ), jelly_ar_data( 'F \d\e Y', $mes_ts ) ) ); ?></h2>
+					<h2 data-jar-painel-mes-titulo><?php echo esc_html( $c['titulo'] ); ?></h2>
 					<span class="jar-cartao__meta"><?php esc_html_e( 'Do dia 1 ao fim do mês. Passe o rato no gráfico para ver cada dia.', 'jelly-area-reservada' ); ?></span>
 				</div>
 				<span class="jar-painel__meses">
-					<a class="jar-acao" href="<?php echo esc_url( jelly_ar_admin_url( 'painel', [ 'mes' => $anterior ] ) . '#jar-painel-mes' ); ?>" aria-label="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
-					<?php if ( $ha_mais ) : ?>
-						<a class="jar-acao" href="<?php echo esc_url( jelly_ar_admin_url( 'painel', $seguinte === current_time( 'Y-m' ) ? [] : [ 'mes' => $seguinte ] ) . '#jar-painel-mes' ); ?>" aria-label="<?php esc_attr_e( 'Mês seguinte', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês seguinte', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
-					<?php else : ?>
-						<span class="jar-acao" aria-disabled="true" title="<?php esc_attr_e( 'Já é o mês atual', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></span>
-					<?php endif; ?>
+					<a class="jar-acao" href="<?php echo esc_url( $url_mes( $c['anterior'] ) ); ?>" data-jar-painel-ir="<?php echo esc_attr( $c['anterior'] ); ?>" data-jar-painel-seta="anterior" aria-label="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+					<?php // O seguinte só até ao mês de hoje; no mês de hoje fica desligado. ?>
+					<a class="jar-acao" href="<?php echo esc_url( $c['seguinte'] ? $url_mes( $c['seguinte'] ) : '#jar-painel-mes' ); ?>" data-jar-painel-ir="<?php echo esc_attr( $c['seguinte'] ); ?>" data-jar-painel-seta="seguinte" <?php echo $c['seguinte'] ? '' : 'aria-disabled="true"'; ?> aria-label="<?php esc_attr_e( 'Mês seguinte', 'jelly-area-reservada' ); ?>" title="<?php echo esc_attr( $c['seguinte'] ? __( 'Mês seguinte', 'jelly-area-reservada' ) : __( 'Já é o mês atual', 'jelly-area-reservada' ) ); ?>"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
 				</span>
 			</header>
 
@@ -173,7 +148,7 @@ if ( JELLY_AR_EXEMPLO ) {
 				<figure class="jar-grafico" data-jar-grafico>
 					<?php // A legenda é também o interruptor de cada linha. ?>
 					<div class="jar-grafico__legenda" role="group" aria-label="<?php esc_attr_e( 'Mostrar ou esconder', 'jelly-area-reservada' ); ?>">
-						<?php foreach ( $grafico['series'] as $s ) : ?>
+						<?php foreach ( $c['grafico']['series'] as $s ) : ?>
 							<button type="button" class="jar-grafico__serie" data-jar-grafico-serie="<?php echo esc_attr( $s['chave'] ); ?>" aria-pressed="true" style="--jar-serie: <?php echo esc_attr( $s['cor'] ); ?>;">
 								<span aria-hidden="true"></span> <?php echo esc_html( $s['nome'] ); ?>
 							</button>
@@ -182,7 +157,7 @@ if ( JELLY_AR_EXEMPLO ) {
 					<div class="jar-grafico__area" data-jar-grafico-area tabindex="0" role="img" aria-label="<?php esc_attr_e( 'Pedidos de marcação e acessos dos associados, por dia, neste mês. Use as setas para percorrer os dias.', 'jelly-area-reservada' ); ?>">
 						<div class="jar-grafico__dica" data-jar-grafico-dica hidden></div>
 					</div>
-					<script type="application/json" data-jar-grafico-dados><?php echo wp_json_encode( $grafico, JSON_HEX_TAG | JSON_HEX_AMP ); ?></script>
+					<script type="application/json" data-jar-grafico-dados><?php echo wp_json_encode( $c['grafico'], JSON_HEX_TAG | JSON_HEX_AMP ); ?></script>
 				</figure>
 
 				<ul class="jar-painel__totais">
@@ -190,8 +165,8 @@ if ( JELLY_AR_EXEMPLO ) {
 						<li>
 							<span class="jar-icone jar-icone--<?php echo esc_attr( $t[3] ); ?>"><i class="fa-solid <?php echo esc_attr( $t[2] ); ?>" aria-hidden="true"></i></span>
 							<span>
-								<strong><?php echo (int) $t[1]; ?></strong>
-								<small><?php echo esc_html( $t[0] ); ?></small>
+								<strong data-jar-painel-total="<?php echo esc_attr( $t[0] ); ?>"><?php echo (int) $c['totais'][ $t[0] ]; ?></strong>
+								<small><?php echo esc_html( $t[1] ); ?></small>
 							</span>
 						</li>
 					<?php endforeach; ?>
@@ -281,7 +256,7 @@ if ( JELLY_AR_EXEMPLO ) {
 								<?php /* translators: 1: evento, 2: dia, 3: hora, 4: data do pedido */ ?>
 								<small class="jar-painel__detalhe"><?php echo esc_html( sprintf( __( '%1$s · %2$s, %3$s · pedido a %4$s', 'jelly-area-reservada' ), $m['evento'], $dia_curto( $m['dia'] ), $m['hora'], $m['pedido'] ) ); ?></small>
 							</span>
-							<a class="jar-btn jar-btn--pequeno" href="<?php echo esc_url( jelly_ar_admin_url( 'marcacoes', [ 'evento' => $m['evento_id'] ] ) ); ?>"><?php esc_html_e( 'Decidir', 'jelly-area-reservada' ); ?></a>
+							<a class="jar-btn jar-btn--pequeno" href="<?php echo esc_url( jelly_ar_admin_url( 'marcacoes', [ 'evento' => $m['evento_id'] ] ) ); ?>"><?php esc_html_e( 'Ver pedido', 'jelly-area-reservada' ); ?></a>
 						</li>
 					<?php endforeach; ?>
 					<?php foreach ( array_slice( $p['registos'], 0, 5 ) as $u ) : ?>
