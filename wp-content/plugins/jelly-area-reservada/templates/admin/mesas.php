@@ -125,7 +125,7 @@ $badge = function ( $e ) {
 	$d      = jelly_ar_disponibilidade_estado( $e );
 	$textos = [
 		/* translators: %d: lugares livres */
-		'disponivel' => sprintf( _n( 'Com lugares · %d livre', 'Com lugares · %d livres', $d['livres'], 'jelly-area-reservada' ), $d['livres'] ),
+		'disponivel' => sprintf( _n( 'Disponível · %d lugar livre', 'Disponível · %d lugares livres', $d['livres'], 'jelly-area-reservada' ), $d['livres'] ),
 		'completo'   => __( 'Completo', 'jelly-area-reservada' ),
 		'terminado'  => __( 'Terminado', 'jelly-area-reservada' ),
 		'sem-grelha' => __( 'Sem grelha', 'jelly-area-reservada' ),

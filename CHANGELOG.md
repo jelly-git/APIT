@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.47.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.11.1. O tema e a base de dados não mudam.
+
+### Alterado
+- O badge de disponibilidade passa de "Com lugares · 204 livres" a
+  **"Disponível · 204 lugares livres"**: "Disponível" é o contrário de
+  "Completo", e o número diz o que conta.
+
 ## [0.47.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.11.0. O tema e a base de dados não mudam.
