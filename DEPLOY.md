@@ -281,71 +281,106 @@ wp eval 'global $wpdb;
 
 ### 3.2 Exportar
 
+> **Os dados da Área Reservada nunca vão para produção, e o ficheiro nunca os
+> altera lá.** Associados, pedidos de registo, marcações, eventos, mesas,
+> horários, documentos, acessos, descargas e o registo de ações vivem em
+> produção e são geridos no back-office de produção. O que existe aqui no local
+> é de teste e de demonstração (utilizadores `demo-*`, marcações "demo gráfico",
+> acessos de `192.0.2.x`) e fica aqui.
+>
+> Até à v0.38.0 a exportação levava as tabelas `wp_jelly_ar_*` com
+> `DROP TABLE IF EXISTS`: importá-la apagava tudo o que estivesse na AR em
+> produção e punha no lugar o que estivesse no local. Desde 28 de setembro
+> ficam de fora, e o mesmo para os utilizadores.
+
+O que fica fora do ficheiro, e porquê:
+
+| Fica fora | Porquê |
+|---|---|
+| as tabelas `wp_jelly_ar_*` | são a Área Reservada |
+| `wp_users`, `wp_usermeta` | os associados são utilizadores; e os administradores de produção são os de produção |
+| `wp_gf_entry*`, `wp_gf_draft_submissions` | as respostas aos formulários (Media Kit) recebidas em produção |
+| `wp_wpmailsmtp_debug_events` | falhas de envio desta máquina |
+| as opções `jelly_ar_*` e os transientes da AR | a `wp_options` é substituída inteira; estas são guardadas antes e repostas depois, com o valor que tinham no servidor |
+| os termos `jelly_ar_doc_categoria` | restos órfãos de uma versão antiga do plugin |
+
+Quando as tabelas da AR ainda não existem no servidor, o plugin cria-as vazias
+no primeiro acesso ao wp-admin (`jelly_ar_verificar_instalacao`). A instalação
+pode correr quantas vezes for: o `dbDelta` só acrescenta o que falta, as
+migrações só correm se a coluna antiga lá estiver, e as categorias iniciais só
+se não houver nenhuma. **Os eventos do calendário público vêm dessas tabelas**:
+são criados no back-office de produção, não vão daqui.
+
 ```bash
 cd "C:\Users\faust\Local Sites\apit"
+
+# As tabelas a exportar: todas as do prefixo menos as da tabela acima. Lista
+# explícita e não --all-tables, que levava a AR. O --all-tables-with-prefix
+# continua preciso: sem ele o WP-CLI só aceita as tabelas que o WordPress
+# conhece, e as do Gravity Forms caíam em silêncio — o formulário do Media Kit
+# ficava fora sem aviso nenhum.
+TABELAS=$(wp db tables --all-tables-with-prefix --format=csv | tr ',' '\n' | tr -d '\r' \
+  | grep -v -E '^wp_(jelly_ar_.*|users|usermeta|wpmailsmtp_debug_events|gf_entry|gf_entry_meta|gf_entry_notes|gf_draft_submissions)$')
 
 # troca os URLs e escreve o ficheiro, sem tocar na base de dados local.
 # --precise porque os dados do Elementor estão serializados.
 wp search-replace "http://apit.local" "https://dev.jellycode.agency/apit" \
-    --all-tables --precise --export=bd-sem-cabecalho.sql
+    $TABELAS --all-tables-with-prefix --precise --export=bd-sem-cabecalho.sql
 
-# O comando acima NÃO apanha os endereços guardados dentro do _elementor_data.
-# Esse campo é JSON, o JSON escapa as barras e o dump escapa depois as barras
-# invertidas, pelo que o ficheiro leva `http:\\/\\/apit.local\\/...`. A 22 de
-# setembro foram assim os dois botões da ficha de inscrição, que teriam ido para
-# produção a apontar para a máquina local. Feito em PHP e não em sed: o padrão é
-# feito de barras invertidas e passá-lo por uma shell intacto já falhou três
-# vezes neste projecto, num caso parecido no acf_site_health.
-php -r '$f="bd-sem-cabecalho.sql"; $b=chr(92).chr(92)."/";
-  $s=file_get_contents($f);
-  $s=str_replace("http:".$b.$b."apit.local", "https:".$b.$b."dev.jellycode.agency".$b."apit", $s);
-  file_put_contents($f,$s);
-  echo substr_count($s,"apit.local")." apit.local que restam\n";'
-
-# as tabelas do WordPress declaram datas 0000-00-00 por omissão, que um MySQL
-# em modo estrito recusa com "Invalid default value for 'comment_date'".
-# O ficheiro exportado não traz a instrução que desliga esse modo.
-{
-  echo "SET @OLD_SQL_MODE = @@SQL_MODE;"
-  echo "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';"
-  echo "SET NAMES utf8mb4;"
-  echo "SET FOREIGN_KEY_CHECKS = 0;"
-  cat bd-sem-cabecalho.sql
-  echo "SET FOREIGN_KEY_CHECKS = 1;"
-  echo "SET SQL_MODE = @OLD_SQL_MODE;"
-} > apit-bd-para-servidor.sql
-
+# O resto é texto: os endereços escapados dentro do JSON do Elementor, que o
+# comando acima não apanha; as linhas da AR que estão em tabelas partilhadas;
+# o diagnóstico do SMTP; e o cabeçalho (SQL_MODE, e guardar/repor as opções da
+# AR que estiverem no servidor). O porquê de cada um está no próprio script.
+php app/public/tools/exportacao-servidor.php bd-sem-cabecalho.sql apit-bd-para-servidor.sql
 rm bd-sem-cabecalho.sql
 
-# Se a limpeza avisou de um diagnóstico do SMTP, é ele o "apit.local" que resta
-# (a conversa com o servidor diz "EHLO apit.local"). Sai só do ficheiro: a linha
-# da wp_options, com a vírgula que a separa da seguinte. A 26 de setembro era a
-# option_id 6227; confirmar o id no ficheiro antes de tirar.
-grep -o "('[0-9]*', 'wp_mail_smtp_email_sending_debug'" apit-bd-para-servidor.sql
-
 # confirmar antes de subir
-grep -c "apit.local" apit-bd-para-servidor.sql     # 0
-grep -c "autosave-v1" apit-bd-para-servidor.sql    # 0
-grep -c "email_sending_debug" apit-bd-para-servidor.sql  # 0
-grep -c "CREATE TABLE" apit-bd-para-servidor.sql   # 38: 21 do WordPress e plugins, 11 da Área Reservada, 6 do WP Mail SMTP
-grep -c "'_elementor_css'" apit-bd-para-servidor.sql  # 0
+F=apit-bd-para-servidor.sql
+grep -c "apit.local" $F                                    # 0
+grep -c "autosave-v1" $F                                   # 0
+grep -c "email_sending_debug" $F                           # 0
+grep -c "'_elementor_css'" $F                              # 0
+grep -v apit_ar_opcoes $F | grep -c "jelly_ar"             # 0
+grep -c -E 'TABLE[^`]*`wp_(jelly_ar_|users|usermeta)' $F   # 0
+grep -c -E "demo-|example\.test|192\.0\.2\." $F            # 0
+grep -c "CREATE TABLE" $F                                  # 20
 
 # arquivar a cópia versionada, com a versão lida do próprio tema
 VERSAO=$(sed -n 's/^Version: //p' app/public/wp-content/themes/hello-elementor-child/style.css | tr -d '\r')
-cp apit-bd-para-servidor.sql "bd/apit-bd-v$VERSAO-$(date +%F).sql"
+cp $F "bd/apit-bd-v$VERSAO-$(date +%F).sql"
 ```
 
-Referência da exportação verificada a 22 de setembro de 2026: 13 tabelas,
-1415 linhas, 510 KB, 228 endereços do servidor e nenhum local. Foi importada
-numa base de dados de teste e reproduziu as 1415 linhas tabela a tabela, sem uma
-única opção ou post a diferir do local. Um ficheiro muito menor é sinal de
-exportação incompleta; um muito maior é sinal de que os caches do WordPress.org
-voltaram — em 22 de setembro eram 894 KB dos 1,47 MB iniciais.
+As 20 tabelas: 11 do WordPress, 4 do Gravity Forms (o formulário), 4 do Action
+Scheduler, a `wp_e_events` do Elementor e a `wp_wpmailsmtp_tasks_meta`.
 
-A prova que fecha a exportação é decodificar o `_elementor_data` de cada página
-já dentro da base de dados importada. Se a passagem pelos URLs escapados tivesse
-partido uma string, é aqui que se vê. O `#33` dá erro de JSON porque tem o campo
-vazio — está assim também no local, não é da exportação.
+### 3.3 Provar por importação
+
+A prova é importar o ficheiro numa base de dados temporária que faça de
+produção — com as tabelas da AR e os utilizadores já lá dentro — e ver que
+saem da importação exactamente como entraram:
+
+1. criar `apit_prova` e copiar para lá, da BD local, as tabelas `wp_jelly_ar_*`,
+   `wp_users`, `wp_usermeta`, `wp_gf_entry*` e `wp_wpmailsmtp_debug_events`;
+   criar a `wp_options` com uma `jelly_ar_db_version` de valor **diferente** do
+   local (por exemplo `9`), para se ver qual sobrevive;
+2. tirar `CHECKSUM TABLE` e a contagem de cada uma;
+3. importar `apit-bd-para-servidor.sql`;
+4. repetir o `CHECKSUM TABLE`: **zero diferenças**, e a `jelly_ar_db_version`
+   continua `9`;
+5. contagens de `wp_posts`, `wp_postmeta`, `wp_options` e `wp_gf_form` iguais às
+   do local, e nenhum `post_content` a diferir fora da troca de URLs;
+6. decodificar o `_elementor_data` de cada página já importado, lendo por
+   `mysqli` e não pela saída do cliente `mysql`, que escapa as barras e faz
+   falhar JSON que está bom. Os que falham têm de ser os mesmos que falham no
+   local, e hoje são só os que estão vazios;
+7. apagar `apit_prova`.
+
+Referência de 28 de setembro de 2026 (v0.55.2): 20 tabelas, 2357 linhas,
+1,12 MB, 349 endereços do servidor e nenhum local; 17 tabelas protegidas sem
+uma diferença. Um ficheiro muito menor é sinal de exportação incompleta — foi
+assim que se deu pelas tabelas do Gravity Forms em falta; um muito maior é
+sinal de que os caches do WordPress.org voltaram (em 22 de setembro eram 894 KB
+dos 1,47 MB iniciais).
 
 ### Onde ficam os ficheiros
 
@@ -357,34 +392,31 @@ com o `LEIA-ME.md` dessa pasta a dizer o estado de cada uma. Base de dados e
 código sobem em par: os dados do Elementor gravados na base de dados dependem
 das classes CSS que o tema dessa versão define.
 
-As exportações antigas que lá estão não servem para subir. As da **v0.17.0** não
-têm a página Sobre a APIT, a equipa, os órgãos sociais nem as categorias de
-eventos, e a que tem os URLs trocados não traz o cabeçalho `SQL_MODE`; a da
-**v0.22.10** não tem a Internacionalização, as Notícias, os documentos nem a
-banda dos Associados.
+**As exportações até à v0.38.0 não servem para subir**: levam as tabelas da
+Área Reservada e os utilizadores, e importá-las apagava os de produção.
 
-Nada disto entra no git: os ficheiros contêm a tabela `wp_users`, e com ela o
-*hash* da palavra-passe do administrador.
+Nada disto entra no git. As exportações antigas contêm a `wp_users`, e com ela
+o *hash* da palavra-passe do administrador; as novas levam a configuração do
+WP Mail SMTP, com a palavra-passe do correio cifrada.
 
-> **Substitui tudo** o que estiver em `agencydevjellyc_apit`, incluindo os
-> utilizadores. Depois da importação o acesso ao wp-admin passa a ser o do site
-> local: utilizador `Jelly-APIT`, com a palavra-passe definida no Local — não a
-> que usa hoje no servidor.
+> **Substitui** o conteúdo do site em `agencydevjellyc_apit` — páginas,
+> notícias, multimédia, menus, opções, o formulário — **e mais nada**. A Área
+> Reservada, os utilizadores e as respostas aos formulários ficam como estão
+> em produção. O acesso ao wp-admin continua a ser o de produção.
+>
+> Os posts levam o autor com o id do local (`1`, o `Jelly-APIT`). Se em
+> produção esse id não existir, as páginas aparecem sem autor no wp-admin —
+> não partem.
 
 1. phpMyAdmin > base de dados `agencydevjellyc_apit`
 2. **Importar** > carregar `apit-bd-para-servidor.sql` > **Executar**
 
-O ficheiro traz `DROP TABLE IF EXISTS` em cada tabela, pelo que não é preciso
-esvaziar a base de dados antes.
+O ficheiro traz `DROP TABLE IF EXISTS` nas 20 tabelas que leva, pelo que não é
+preciso esvaziar nada antes — e não se deve: esvaziar a base de dados levava a
+AR com ela.
 
-Em alternativa, exportar com os URLs locais (`wp db export`) e trocá-los já no
-servidor, depois de importar. Dá o mesmo resultado, mas deixa o site com os
-endereços errados no intervalo entre a importação e a troca:
-
-```bash
-cd ~/public_html/apit
-wp search-replace http://apit.local https://dev.jellycode.agency/apit --all-tables --precise
-```
+**Não usar `wp db export` nem `--all-tables`** como alternativa: levam as tabelas
+da AR e os utilizadores.
 
 ---
 
@@ -464,8 +496,10 @@ cd ~/repositories/APIT && git pull && /usr/local/cpanel/scripts/cpanel_deploy
 
 - A pasta do tema é reconstruída de raiz em cada deploy, para que ficheiros
   apagados no git também desapareçam do servidor.
-- Se o site local mudar de conteúdo (páginas, eventos, notícias) esse conteúdo
-  **não** viaja no git. Repetir o passo 3 substituiria o que estiver no servidor.
+- Se o site local mudar de conteúdo (páginas, notícias) esse conteúdo **não**
+  viaja no git. Repetir o passo 3 substituiria o conteúdo do servidor — mas
+  nunca a Área Reservada, os eventos do calendário, que vivem nela, nem os
+  utilizadores (ver 3.2).
 - O `wp-config.php` no servidor está com permissões **0666** (escrita para
   todos). Deve ser `0644`, ou `0600` se o PHP correr como o dono da conta:
   `chmod 644 ~/public_html/apit/wp-config.php`
