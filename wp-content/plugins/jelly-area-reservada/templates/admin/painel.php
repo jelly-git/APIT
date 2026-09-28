@@ -312,9 +312,22 @@ if ( JELLY_AR_EXEMPLO ) {
 								<?php foreach ( array_slice( $lista, 0, 6 ) as $m ) : ?>
 									<li class="jar-painel__marcacao--<?php echo esc_attr( $m['estado'] ); ?>">
 										<span class="jar-painel__hora"><?php echo esc_html( $m['hora'] ); ?></span>
-										<span class="jar-painel__texto">
+										<?php // Como em Por decidir: o nome, a empresa, a mesa e, numa linha própria, o evento. ?>
+										<span class="jar-painel__texto jar-painel__pessoa">
 											<strong><?php echo esc_html( $m['quem'] ? $m['quem'] : __( 'Associado removido', 'jelly-area-reservada' ) ); ?></strong>
-											<small><?php echo esc_html( implode( ' · ', array_filter( [ $m['mesa'], $m['evento'] ] ) ) ); ?></small>
+											<?php if ( $m['empresa'] ) : ?>
+												<small><?php echo esc_html( $m['empresa'] ); ?></small>
+											<?php endif; ?>
+											<?php if ( $m['mesa'] ) : ?>
+												<span class="jar-painel__mesa">
+													<i class="fa-solid fa-chair" aria-hidden="true"></i>
+													<?php echo esc_html( $m['mesa'] ); ?>
+												</span>
+											<?php endif; ?>
+											<a class="jar-painel__detalhe jar-painel__evento" href="<?php echo esc_url( jelly_ar_admin_url( 'eventos', [ 'evento' => $m['evento_id'] ] ) ); ?>">
+												<i class="fa-regular fa-calendar" aria-hidden="true"></i>
+												<?php echo esc_html( $m['evento'] ); ?>
+											</a>
 										</span>
 										<?php if ( 'pendente' === $m['estado'] ) : ?>
 											<span class="jar-estado jar-estado--pendente"><?php esc_html_e( 'Por aprovar', 'jelly-area-reservada' ); ?></span>

@@ -598,7 +598,7 @@ if ( $evento ) :
 						 * Novo documento abre com ele escolhido e, ao guardar, volta aqui.
 						 */
 						?>
-						<a class="jar-btn jar-btn--pequeno jar-btn--contorno" href="<?php echo esc_url( jelly_ar_admin_url( 'documentos', [ 'novo' => 1, 'evento' => $evento['id'] ] ) ); ?>">
+						<a class="jar-btn jar-btn--pequeno jar-btn--discreto jar-btn--criar" href="<?php echo esc_url( jelly_ar_admin_url( 'documentos', [ 'novo' => 1, 'evento' => $evento['id'] ] ) ); ?>">
 							<i class="fa-solid fa-plus" aria-hidden="true"></i> <?php esc_html_e( 'Novo documento', 'jelly-area-reservada' ); ?>
 						</a>
 						<?php if ( $docs_todos ) : ?>

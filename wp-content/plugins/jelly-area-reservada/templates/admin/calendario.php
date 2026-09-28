@@ -7,9 +7,11 @@
  * do dia escolhido, pela hora: o associado, o evento e a mesa, com o caminho
  * para a grelha do evento e, nas pendentes, para as Aprovações.
  *
- * O mês e o evento vêm no endereço (`mes=2026-10`, `evento=<id>`); o dia
- * escolhe-se no ecrã (assets/js/admin.js, data-jar-calendario), sem
- * recarregar. Só as marcações vivas: as rejeitadas e as canceladas não
+ * O mês e o evento vêm no endereço (`mes=2026-10`, `evento=<id>`). As setas,
+ * o Hoje e o filtro do evento trazem o mês por Ajax (jelly_ar_calendario_ajax(),
+ * inc/calendario.php, que devolve esta mesma página e se usa só a zona
+ * data-jar-calendario-zona); o dia escolhe-se no ecrã (assets/js/admin.js,
+ * data-jar-calendario). Nenhum dos dois recarrega a página. Só as marcações vivas: as rejeitadas e as canceladas não
  * ocupam o dia.
  */
 
@@ -81,6 +83,7 @@ $rotulo_dia = function ( $ymd, $formato ) {
 	</div>
 </div>
 
+<div data-jar-calendario-zona data-ajax="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" data-nonce="<?php echo esc_attr( wp_create_nonce( 'jelly_ar_calendario' ) ); ?>">
 <div class="jar-numeros">
 	<?php
 	foreach (
@@ -106,16 +109,16 @@ $rotulo_dia = function ( $ymd, $formato ) {
 	<section class="jar-cartao jar-calendario__mes">
 		<header class="jar-calendario__barra">
 			<div class="jar-calendario__navegar">
-				<a class="jar-acao" href="<?php echo esc_url( $url( [ 'mes' => $anterior ] ) ); ?>" aria-label="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
+				<a class="jar-acao" href="<?php echo esc_url( $url( [ 'mes' => $anterior ] ) ); ?>" data-jar-calendario-ir="<?php echo esc_attr( $anterior ); ?>" aria-label="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês anterior', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-left" aria-hidden="true"></i></a>
 				<h2><?php echo esc_html( ucfirst( jelly_ar_data( 'F Y', $inicio->getTimestamp() ) ) ); ?></h2>
-				<a class="jar-acao" href="<?php echo esc_url( $url( [ 'mes' => $seguinte ] ) ); ?>" aria-label="<?php esc_attr_e( 'Mês seguinte', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês seguinte', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+				<a class="jar-acao" href="<?php echo esc_url( $url( [ 'mes' => $seguinte ] ) ); ?>" data-jar-calendario-ir="<?php echo esc_attr( $seguinte ); ?>" aria-label="<?php esc_attr_e( 'Mês seguinte', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Mês seguinte', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
 				<?php if ( substr( $hoje, 0, 7 ) !== $inicio->format( 'Y-m' ) ) : ?>
-					<a class="jar-btn jar-btn--pequeno" href="<?php echo esc_url( $url( [] ) ); ?>"><?php esc_html_e( 'Hoje', 'jelly-area-reservada' ); ?></a>
+					<a class="jar-btn jar-btn--pequeno" href="<?php echo esc_url( $url( [] ) ); ?>" data-jar-calendario-ir="<?php echo esc_attr( substr( $hoje, 0, 7 ) ); ?>"><?php esc_html_e( 'Hoje', 'jelly-area-reservada' ); ?></a>
 				<?php endif; ?>
 			</div>
 
 			<?php if ( $eventos ) : ?>
-				<form class="jar-escolha" method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" data-jar-auto>
+				<form class="jar-escolha" method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" data-jar-calendario-filtro>
 					<input type="hidden" name="page" value="<?php echo esc_attr( jelly_ar_admin_slug( 'calendario' ) ); ?>">
 					<input type="hidden" name="mes" value="<?php echo esc_attr( $inicio->format( 'Y-m' ) ); ?>">
 					<label class="screen-reader-text" for="jar-calendario-evento"><?php esc_html_e( 'Evento', 'jelly-area-reservada' ); ?></label>
@@ -240,4 +243,5 @@ $rotulo_dia = function ( $ymd, $formato ) {
 			</div>
 		<?php endfor; ?>
 	</section>
+</div>
 </div>

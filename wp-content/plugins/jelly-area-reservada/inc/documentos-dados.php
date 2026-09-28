@@ -434,27 +434,99 @@ function jelly_ar_apagar_documento() {
 
 	check_admin_referer( 'jelly_ar_apagar_documento_' . $id );
 
+	if ( jelly_ar_documento_exemplo_apagar( $id ) ) {
+		wp_safe_redirect( jelly_ar_admin_url( 'documentos', [ 'aviso' => 'apagado' ] ) );
+		exit;
+	}
+
 	$doc = jelly_ar_documento_real( $id );
 
 	if ( ! $doc ) {
 		wp_die( esc_html__( 'Esse documento não existe.', 'jelly-area-reservada' ), '', [ 'response' => 404 ] );
 	}
 
-	// O ficheiro, o histórico de descargas e o documento — nada fica para trás.
+	jelly_ar_documento_apagar( $doc );
+
+	wp_safe_redirect( jelly_ar_admin_url( 'documentos', [ 'aviso' => 'apagado' ] ) );
+	exit;
+}
+add_action( 'admin_post_jelly_ar_apagar_documento', 'jelly_ar_apagar_documento' );
+
+/**
+ * Apaga um documento: o ficheiro, o histórico de descargas, as ligações aos
+ * eventos e o documento — nada fica para trás.
+ */
+function jelly_ar_documento_apagar( $doc ) {
+	global $wpdb;
+
 	$pasta = jelly_ar_pasta_documentos();
 
 	if ( '' !== $doc['guardado'] && '' !== $pasta ) {
 		wp_delete_file( $pasta . '/' . basename( $doc['guardado'] ) );
 	}
 
-	$wpdb->delete( jelly_ar_tabela( 'descargas' ), [ 'documento_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
-	$wpdb->delete( jelly_ar_tabela( 'evento_documentos' ), [ 'documento_id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
-	$wpdb->delete( jelly_ar_tabela( 'documentos' ), [ 'id' => $id ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+	$wpdb->delete( jelly_ar_tabela( 'descargas' ), [ 'documento_id' => $doc['id'] ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+	$wpdb->delete( jelly_ar_tabela( 'evento_documentos' ), [ 'documento_id' => $doc['id'] ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+	$wpdb->delete( jelly_ar_tabela( 'documentos' ), [ 'id' => $doc['id'] ], [ '%d' ] ); // phpcs:ignore WordPress.DB
+}
 
-	wp_safe_redirect( jelly_ar_admin_url( 'documentos', [ 'aviso' => 'apagado' ] ) );
+/**
+ * Apagar um documento de exemplo: não tem ficheiro nem linha na base de dados,
+ * por isso o id fica numa opção e o documento deixa de aparecer
+ * (jelly_ar_exemplo_documentos()). Devolve false se o id não for de exemplo.
+ */
+function jelly_ar_documento_exemplo_apagar( $id ) {
+	if ( ! JELLY_AR_EXEMPLO || $id < JELLY_AR_EXEMPLO_ID ) {
+		return false;
+	}
+
+	$fora = array_map( 'intval', (array) get_option( 'jelly_ar_exemplo_documentos_apagados', [] ) );
+
+	if ( ! in_array( $id, $fora, true ) ) {
+		$fora[] = $id;
+		update_option( 'jelly_ar_exemplo_documentos_apagados', $fora, false );
+	}
+
+	return true;
+}
+
+/**
+ * Apagar vários documentos de uma vez, os escolhidos na lista (documento[]):
+ * os da AR e os de exemplo. Um id que não exista ignora-se.
+ */
+function jelly_ar_apagar_documentos() {
+	if ( ! jelly_ar_e_administrador() ) {
+		wp_die( esc_html__( 'Esta área é só para administradores.', 'jelly-area-reservada' ), '', [ 'response' => 403 ] );
+	}
+
+	check_admin_referer( 'jelly_ar_apagar_documentos' );
+
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verificado acima
+	$ids    = isset( $_POST['documento'] ) ? array_unique( array_map( 'absint', (array) wp_unslash( $_POST['documento'] ) ) ) : [];
+	$voltar = isset( $_POST['voltar'] ) ? esc_url_raw( wp_unslash( $_POST['voltar'] ) ) : '';
+	// phpcs:enable
+
+	$n = 0;
+	foreach ( $ids as $id ) {
+		if ( jelly_ar_documento_exemplo_apagar( $id ) ) {
+			$n++;
+			continue;
+		}
+
+		$doc = jelly_ar_documento_real( $id );
+		if ( $doc ) {
+			jelly_ar_documento_apagar( $doc );
+			$n++;
+		}
+	}
+
+	// De volta à lista como estava — o separador, a categoria, a pesquisa.
+	$destino = $voltar && 0 === strpos( $voltar, admin_url() ) ? $voltar : jelly_ar_admin_url( 'documentos' );
+
+	wp_safe_redirect( add_query_arg( $n ? [ 'aviso' => 'apagados', 'n' => $n ] : [ 'aviso' => 'nenhum' ], remove_query_arg( [ 'aviso', 'n' ], $destino ) ) );
 	exit;
 }
-add_action( 'admin_post_jelly_ar_apagar_documento', 'jelly_ar_apagar_documento' );
+add_action( 'admin_post_jelly_ar_apagar_documentos', 'jelly_ar_apagar_documentos' );
 
 /* ---------- Descarregar ---------- */
 

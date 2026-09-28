@@ -39,6 +39,8 @@ $avisos  = [
 	'substituido'          => __( 'Dados guardados e ficheiro substituído. O anterior foi apagado.', 'jelly-area-reservada' ),
 	'eventos'              => __( 'Eventos do documento guardados.', 'jelly-area-reservada' ),
 	'apagado'              => __( 'Documento apagado, com o ficheiro e o histórico de descargas.', 'jelly-area-reservada' ),
+	/* translators: %d: número de documentos */
+	'apagados'             => sprintf( _n( '%d documento apagado, com o ficheiro e o histórico de descargas.', '%d documentos apagados, com os ficheiros e o histórico de descargas.', max( 1, isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 1 ), 'jelly-area-reservada' ), max( 1, isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 1 ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	'categoria-criada'     => __( 'Categoria criada.', 'jelly-area-reservada' ),
 	'categoria-atualizada' => __( 'Nome da categoria mudado.', 'jelly-area-reservada' ),
 	'categoria-apagada'    => __( 'Categoria apagada.', 'jelly-area-reservada' ),
@@ -56,6 +58,12 @@ $erros   = [
 	'categoria-em-uso' => __( 'Essa categoria tem documentos. Mude-os primeiro para outra categoria.', 'jelly-area-reservada' ),
 	'categoria-falhou' => __( 'A categoria não foi guardada. Tente outra vez.', 'jelly-area-reservada' ),
 ];
+
+// "Nenhum apagado" chega como aviso (o handler de vários não distingue erros), mas mostra-se como erro.
+if ( 'nenhum' === $aviso ) {
+	$erro          = 'nenhum';
+	$erros['nenhum'] = __( 'Nenhum documento foi apagado. Escolha pelo menos um da lista.', 'jelly-area-reservada' );
+}
 
 $mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros ) {
 	if ( isset( $avisos[ $aviso ] ) ) {
@@ -351,17 +359,15 @@ if ( $doc ) :
 				data-texto="<?php esc_attr_e( 'O ficheiro e o histórico de descargas são apagados de vez, e os associados deixam de o ver.', 'jelly-area-reservada' ); ?>"
 				data-sim="<?php esc_attr_e( 'Apagar documento', 'jelly-area-reservada' ); ?>"
 				data-resultado=""
-				<?php echo $real ? 'data-jar-form="jar-apagar"' : ''; ?>
+				data-jar-form="jar-apagar"
 			><i class="fa-regular fa-trash-can" aria-hidden="true"></i> <?php esc_html_e( 'Apagar', 'jelly-area-reservada' ); ?></button>
 
-			<?php if ( $real ) : ?>
-				<?php // Enviado pela confirmação; vai para jelly_ar_apagar_documento(). ?>
+			<?php // Enviado pela confirmação; vai para jelly_ar_apagar_documento() — também os de exemplo. ?>
 				<form id="jar-apagar" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" hidden>
 					<input type="hidden" name="action" value="jelly_ar_apagar_documento">
 					<input type="hidden" name="documento" value="<?php echo (int) $doc['id']; ?>">
 					<?php wp_nonce_field( 'jelly_ar_apagar_documento_' . $doc['id'] ); ?>
 				</form>
-			<?php endif; ?>
 
 			<?php if ( $publicado ) : ?>
 				<button
@@ -723,9 +729,33 @@ $resumo  = [
 		</div>
 	</div>
 
+	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" id="jar-documentos-apagar" data-jar-escolhas data-jar-escolhas-um="<?php esc_attr_e( 'documento escolhido', 'jelly-area-reservada' ); ?>" data-jar-escolhas-varios="<?php esc_attr_e( 'documentos escolhidos', 'jelly-area-reservada' ); ?>">
+		<input type="hidden" name="action" value="jelly_ar_apagar_documentos">
+		<input type="hidden" name="voltar" value="<?php echo esc_url( $tabela->url( [ 'pagina' => $tabela->get( 'pagina' ) ] ) ); ?>">
+		<?php wp_nonce_field( 'jelly_ar_apagar_documentos' ); ?>
+
+		<?php if ( $lista ) : ?>
+			<div class="jar-escolhas-barra" data-jar-escolhas-barra>
+				<span data-jar-escolhas-conta><?php esc_html_e( 'Escolha os documentos para os apagar de uma vez.', 'jelly-area-reservada' ); ?></span>
+				<button type="button" class="jar-btn jar-btn--pequeno jar-btn--perigo" data-jar-precisa-escolha disabled
+					data-jar-confirmar
+					data-jar-form="jar-documentos-apagar"
+					data-titulo="<?php esc_attr_e( 'Apagar os documentos escolhidos?', 'jelly-area-reservada' ); ?>"
+					data-texto="<?php esc_attr_e( 'Os ficheiros são apagados do servidor, com o histórico de descargas, e os documentos saem dos eventos onde estão. Não é possível desfazer.', 'jelly-area-reservada' ); ?>"
+					data-sim="<?php esc_attr_e( 'Apagar', 'jelly-area-reservada' ); ?>"
+					data-resultado=""
+				><i class="fa-solid fa-trash-can" aria-hidden="true"></i> <?php esc_html_e( 'Apagar', 'jelly-area-reservada' ); ?></button>
+			</div>
+		<?php endif; ?>
+
 	<table class="jar-tabela">
 		<thead>
 			<tr>
+				<th class="jar-tabela__escolha">
+					<?php if ( $lista ) : ?>
+						<label class="jar-caixa"><input type="checkbox" data-jar-escolhas-todas><span class="screen-reader-text"><?php esc_html_e( 'Escolher todos os documentos desta página', 'jelly-area-reservada' ); ?></span></label>
+					<?php endif; ?>
+				</th>
 				<?php
 				$tabela->coluna( 'titulo', __( 'Documento', 'jelly-area-reservada' ) );
 				$tabela->coluna( 'categoria', __( 'Categoria', 'jelly-area-reservada' ), 'jar-col--categoria' );
@@ -742,7 +772,7 @@ $resumo  = [
 		<tbody>
 			<?php if ( ! $lista ) : ?>
 				<tr>
-					<td colspan="7" class="jar-vazio">
+					<td colspan="8" class="jar-vazio">
 						<?php
 						if ( '' !== $pesquisa ) {
 							/* translators: %s: o que se pesquisou */
@@ -757,6 +787,10 @@ $resumo  = [
 			<?php foreach ( $lista as $d ) : ?>
 				<?php $abrir = jelly_ar_admin_url( 'documentos', [ 'documento' => $d['id'] ] ); ?>
 				<tr data-jar-linha>
+					<td class="jar-tabela__escolha">
+						<?php /* translators: %s: título do documento */ ?>
+						<label class="jar-caixa"><input type="checkbox" name="documento[]" value="<?php echo (int) $d['id']; ?>" data-jar-escolha><span class="screen-reader-text"><?php echo esc_html( sprintf( __( 'Escolher %s', 'jelly-area-reservada' ), $d['titulo'] ) ); ?></span></label>
+					</td>
 					<td>
 						<a class="jar-ficheiro" href="<?php echo esc_url( $abrir ); ?>">
 							<span class="jar-ficheiro__icone jar-tipo--<?php echo esc_attr( $d['tipo'] ); ?>"><i class="fa-solid <?php echo esc_attr( jelly_ar_icone_ficheiro( $d['tipo'] ) ); ?>" aria-hidden="true"></i></span>
@@ -787,6 +821,7 @@ $resumo  = [
 			<?php endforeach; ?>
 		</tbody>
 	</table>
+	</form>
 
 	<?php $tabela->paginacao(); ?>
 </section>

@@ -487,6 +487,14 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	color: var(--jar-erro);
 }
 
+/* O discreto que cria (Novo documento): o mesmo peso, mas a cor da marca e não a do erro. */
+.jar .jar-btn--discreto.jar-btn--criar:hover,
+.jar .jar-btn--discreto.jar-btn--criar:focus-visible {
+	border-color: rgba(244, 24, 146, 0.3);
+	background: rgba(244, 24, 146, 0.06);
+	color: var(--jar-magenta);
+}
+
 .jar .jar-btn--perigo {
 	border-color: var(--jar-erro);
 	background: var(--jar-erro);
@@ -2927,7 +2935,8 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
  * A barra dos escolhidos, por cima da tabela: diz quantos estão escolhidos e
  * leva os botões para os decidir de uma vez. Ganha cor quando há escolhidos.
  */
-.jar-aprovacoes__barra {
+.jar-aprovacoes__barra,
+.jar-escolhas-barra {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -2940,11 +2949,13 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	transition: background 0.15s ease;
 }
 
-.jar-aprovacoes__barra > span {
+.jar-aprovacoes__barra > span,
+.jar-escolhas-barra > span {
 	flex: 1 1 auto;
 }
 
-.jar-aprovacoes__barra.is-ativa {
+.jar-aprovacoes__barra.is-ativa,
+.jar-escolhas-barra.is-ativa {
 	background: rgba(244, 24, 146, 0.05);
 	color: var(--jar-preto);
 }
@@ -4058,8 +4069,25 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 }
 
 /* Com três linhas, o ícone e as ações ficam no alto, junto do nome. */
-.jar-painel__lista li {
+.jar-painel__lista li,
+.jar-painel__dia li:not(.jar-painel__resto) {
 	align-items: flex-start;
+}
+
+/* Nos Próximos 7 dias, o evento numa linha própria, que leva ao evento. */
+.jar .jar-painel__pessoa a.jar-painel__evento {
+	display: block;
+	text-decoration: none;
+}
+
+.jar .jar-painel__pessoa a.jar-painel__evento:hover,
+.jar .jar-painel__pessoa a.jar-painel__evento:focus-visible {
+	color: var(--jar-magenta);
+}
+
+.jar-painel__evento i {
+	margin-right: 3px;
+	font-size: 11px;
 }
 
 /* As setas para o mês anterior e o seguinte, na cabeça do cartão. */
@@ -4082,4 +4110,12 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 
 .jar [data-jar-painel-mes].is-a-carregar .jar-painel__meses {
 	pointer-events: none;
+}
+
+/* O Calendário enquanto o mês pedido chega por Ajax: esbatido e sem cliques. */
+.jar [data-jar-calendario-zona].is-a-carregar .jar-numeros,
+.jar [data-jar-calendario-zona].is-a-carregar .jar-calendario {
+	opacity: 0.55;
+	pointer-events: none;
+	transition: opacity 0.15s ease;
 }

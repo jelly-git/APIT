@@ -266,6 +266,35 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.56.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.20.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **Apagar vários documentos de uma vez.** A lista dos Documentos ganha uma
+  caixa em cada linha e outra no cabeçalho para escolher todos os da página,
+  e uma barra que diz quantos estão escolhidos, com o botão Apagar e a
+  confirmação. Volta-se à lista como estava (separador, categoria, pesquisa),
+  com o aviso de quantos se apagaram.
+- Também os **documentos de exemplo** se apagam, na lista e na página de
+  cada um. Não têm ficheiro nem linha na base de dados: o id fica na opção
+  `jelly_ar_exemplo_documentos_apagados` e o documento deixa de aparecer.
+- O **Calendário** muda de mês **por Ajax**: as setas, o Hoje e o filtro do
+  evento trazem o mês sem recarregar a página, e o endereço fica com o mês e
+  o evento. O pedido (`jelly_ar_calendario`, `inc/calendario.php`) devolve a
+  própria página do Calendário, e troca-se só a zona dos números e da grelha;
+  o Calendário continua a desenhar-se num sítio só. Se o pedido falhar, vai-se
+  pela ligação, como sem JavaScript.
+
+### Alterado
+- Em "Próximos 7 dias", no Painel, cada marcação mostra o nome, a empresa, a
+  mesa e, numa linha própria, o **evento**, que leva à página dele — antes o
+  evento ia a seguir à mesa e ficava cortado.
+- No cartão Documentos do evento, o botão **"Novo documento"** passa ao estilo
+  discreto do Apagar (com a cor da marca ao passar, e não a do erro).
+- A contagem dos escolhidos (`data-jar-escolhas`) aceita o nome do que se
+  escolhe (`data-jar-escolhas-um`/`-varios`); por omissão, pedidos.
+
 ## [0.55.2] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.19.2. O tema e a base de dados não mudam.

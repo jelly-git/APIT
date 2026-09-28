@@ -878,6 +878,9 @@
 		var conta = form.querySelector( '[data-jar-escolhas-conta]' );
 		var barra = form.querySelector( '[data-jar-escolhas-barra]' );
 		var inicial = conta ? conta.textContent : '';
+		// O que se escolhe, no singular e no plural: por omissão, pedidos (as Aprovações).
+		var um = form.getAttribute( 'data-jar-escolhas-um' ) || 'pedido escolhido';
+		var varios = form.getAttribute( 'data-jar-escolhas-varios' ) || 'pedidos escolhidos';
 
 		function acertar() {
 			var n = form.querySelectorAll( '[data-jar-escolha]:checked' ).length;
@@ -896,7 +899,7 @@
 			}
 
 			if ( conta ) {
-				conta.textContent = n ? n + ( 1 === n ? ' pedido escolhido' : ' pedidos escolhidos' ) : inicial;
+				conta.textContent = n ? n + ' ' + ( 1 === n ? um : varios ) : inicial;
 			}
 
 			if ( barra ) {
@@ -929,16 +932,18 @@
 	 * marcações desse dia, que já vêm todas na página
 	 * (templates/admin/calendario.php).
 	 */
-	var calendario = raiz.querySelector( '[data-jar-calendario]' );
+	var zona = raiz.querySelector( '[data-jar-calendario-zona]' );
 
-	if ( calendario ) {
-		calendario.addEventListener( 'click', function ( e ) {
+	if ( zona ) {
+		// Na zona e não no calendário: o calendário é trocado a cada mês (ver abaixo).
+		zona.addEventListener( 'click', function ( e ) {
 			var botao = e.target.closest( '[data-jar-calendario-dia]' );
 
 			if ( ! botao ) {
 				return;
 			}
 
+			var calendario = botao.closest( '[data-jar-calendario]' );
 			var dia = botao.getAttribute( 'data-jar-calendario-dia' );
 
 			Array.prototype.forEach.call( calendario.querySelectorAll( '[data-jar-calendario-dia]' ), function ( b ) {
@@ -956,6 +961,104 @@
 			if ( window.matchMedia( '(max-width: 900px)' ).matches ) {
 				calendario.querySelector( '[data-jar-calendario-lista="' + dia + '"]' ).scrollIntoView( { behavior: 'smooth', block: 'start' } );
 			}
+		} );
+
+		/*
+		 * As setas, o Hoje e o filtro do evento: o mês vem do servidor
+		 * (jelly_ar_calendario_ajax(), inc/calendario.php), que devolve a página
+		 * inteira do Calendário; troca-se só esta zona, e o endereço fica com o
+		 * mês e o evento, para se poder recarregar ou partilhar. Se falhar,
+		 * vai-se pela ligação ou pelo formulário, como sem JavaScript.
+		 */
+		var aCarregar = false;
+
+		var irMes = function ( mes, evento, recurso, foco ) {
+			if ( aCarregar ) {
+				return;
+			}
+			aCarregar = true;
+			zona.classList.add( 'is-a-carregar' );
+
+			var url = zona.getAttribute( 'data-ajax' ) + '?action=jelly_ar_calendario&_ajax_nonce=' + encodeURIComponent( zona.getAttribute( 'data-nonce' ) ) + '&mes=' + encodeURIComponent( mes ) + '&evento=' + encodeURIComponent( evento || '' );
+
+			fetch( url, { credentials: 'same-origin' } )
+				.then( function ( r ) {
+					return r.json();
+				} )
+				.then( function ( resposta ) {
+					if ( ! resposta || ! resposta.success ) {
+						throw new Error( 'resposta inesperada' );
+					}
+
+					var pagina = new window.DOMParser().parseFromString( resposta.data.html, 'text/html' );
+					var nova = pagina.querySelector( '[data-jar-calendario-zona]' );
+
+					if ( ! nova ) {
+						throw new Error( 'sem calendário' );
+					}
+
+					zona.innerHTML = nova.innerHTML;
+					zona.setAttribute( 'data-nonce', nova.getAttribute( 'data-nonce' ) );
+
+					var endereco = new window.URL( window.location.href );
+					endereco.searchParams.set( 'mes', mes );
+					if ( evento ) {
+						endereco.searchParams.set( 'evento', evento );
+					} else {
+						endereco.searchParams.delete( 'evento' );
+					}
+					endereco.hash = '';
+					window.history.replaceState( window.history.state, '', endereco.toString() );
+
+					// O foco volta ao mesmo comando, para se poder continuar pelo teclado.
+					var alvo = foco ? zona.querySelector( foco ) : null;
+					if ( alvo ) {
+						alvo.focus();
+					}
+				} )
+				.catch( function ( erro ) {
+					window.console.error( 'Calendário: o mês não carregou', erro );
+					recurso();
+				} )
+				.then( function () {
+					aCarregar = false;
+					zona.classList.remove( 'is-a-carregar' );
+				} );
+		};
+
+		var eventoEscolhido = function () {
+			var select = zona.querySelector( '[data-jar-calendario-filtro] select' );
+
+			return select ? select.value : '';
+		};
+
+		zona.addEventListener( 'click', function ( e ) {
+			var ligacao = e.target.closest( '[data-jar-calendario-ir]' );
+
+			if ( ! ligacao || e.ctrlKey || e.metaKey || e.shiftKey ) {
+				return;
+			}
+
+			e.preventDefault();
+
+			var setas = Array.prototype.slice.call( zona.querySelectorAll( '.jar-calendario__navegar .jar-acao' ) );
+			var posicao = setas.indexOf( ligacao );
+
+			irMes( ligacao.getAttribute( 'data-jar-calendario-ir' ), eventoEscolhido(), function () {
+				window.location.assign( ligacao.href );
+			}, posicao >= 0 ? '.jar-calendario__navegar .jar-acao:nth-of-type(' + ( posicao + 1 ) + ')' : '.jar-calendario__navegar .jar-acao' );
+		} );
+
+		zona.addEventListener( 'change', function ( e ) {
+			var form = e.target.closest( '[data-jar-calendario-filtro]' );
+
+			if ( ! form ) {
+				return;
+			}
+
+			irMes( form.querySelector( '[name="mes"]' ).value, e.target.value, function () {
+				form.submit();
+			}, '[data-jar-calendario-filtro] select' );
 		} );
 	}
 

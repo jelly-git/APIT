@@ -120,6 +120,12 @@ function jelly_ar_exemplo_documentos() {
 		$lista[] = jelly_ar_exemplo_documento( $i, 'Guia de mercado — ' . $pais, 'mercados', 'pdf', 'Compradores, canais e oportunidades de coprodução: ' . $pais . '.', $autores[ $i % 2 ] );
 	}
 
+	// Os que se apagaram no back-office (jelly_ar_documento_exemplo_apagar()) já não aparecem.
+	$fora  = array_map( 'intval', (array) get_option( 'jelly_ar_exemplo_documentos_apagados', [] ) );
+	$lista = array_values( array_filter( $lista, function ( $d ) use ( $fora ) {
+		return ! in_array( $d['id'], $fora, true );
+	} ) );
+
 	return $lista;
 }
 
