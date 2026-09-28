@@ -3315,6 +3315,26 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	color: var(--jar-magenta);
 }
 
+/* O evento, a última linha: discreta, e leva à página do evento. */
+.jar .jar-calendario__evento {
+	display: block;
+	margin-top: 3px;
+	font-size: 12px;
+	line-height: 1.35;
+	color: var(--jar-suave);
+	text-decoration: none;
+}
+
+.jar .jar-calendario__evento:hover,
+.jar .jar-calendario__evento:focus-visible {
+	color: var(--jar-magenta);
+}
+
+.jar-calendario__evento i {
+	margin-right: 3px;
+	font-size: 11px;
+}
+
 .jar-calendario__estado {
 	display: inline-block;
 	margin: 2px 0;

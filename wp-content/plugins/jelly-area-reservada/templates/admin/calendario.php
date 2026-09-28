@@ -224,11 +224,12 @@ $rotulo_dia = function ( $ymd, $formato ) {
 									<?php if ( $pendente ) : ?>
 										<em class="jar-calendario__estado"><?php esc_html_e( 'Por aprovar', 'jelly-area-reservada' ); ?></em>
 									<?php endif; ?>
-									<?php // Três linhas: o nome, a empresa e a mesa — esta mais marcada do que a empresa, menos do que o nome. O evento fica no filtro de cima e no title. ?>
+									<?php // O nome, a empresa e a mesa — esta mais marcada do que a empresa, menos do que o nome — e, por baixo, o evento, que leva à página dele. ?>
 									<?php if ( $m['empresa'] ) : ?>
 										<small><?php echo esc_html( $m['empresa'] ); ?></small>
 									<?php endif; ?>
-									<span class="jar-calendario__mesa" title="<?php echo esc_attr( $m['evento'] ); ?>"><i class="fa-solid fa-chair" aria-hidden="true"></i> <?php echo esc_html( $m['mesa'] ); ?></span>
+									<span class="jar-calendario__mesa"><i class="fa-solid fa-chair" aria-hidden="true"></i> <?php echo esc_html( $m['mesa'] ); ?></span>
+									<a class="jar-calendario__evento" href="<?php echo esc_url( jelly_ar_admin_url( 'eventos', [ 'evento' => $m['evento_id'] ] ) ); ?>"><i class="fa-regular fa-calendar" aria-hidden="true"></i> <?php echo esc_html( $m['evento'] ); ?></a>
 								</span>
 								<span class="jar-calendario__acoes">
 									<?php if ( $pendente ) : ?>

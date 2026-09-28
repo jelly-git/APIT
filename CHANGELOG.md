@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.56.3] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.20.3. O tema e a base de dados não mudam.
+
+### Alterado
+- No Calendário, cada marcação da lista do dia mostra o **evento** numa
+  última linha, discreta, que leva à página do evento — antes só aparecia ao
+  passar o rato na mesa, e com "Todos os eventos" não se sabia de qual era.
+
 ## [0.56.2] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.20.2. O tema e a base de dados não mudam.
