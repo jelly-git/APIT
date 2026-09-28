@@ -3402,3 +3402,30 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 .jar-novo-eventos__lista .jar-caixa {
 	margin-top: 8px;
 }
+
+/* A nota dos eventos escolhidos, entre a lista e a Publicação. */
+.jar-novo-eventos__nota {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	margin: 12px 0 0;
+	padding: 10px 14px;
+	border-left: 3px solid var(--jar-linha);
+	background: rgba(27, 42, 51, 0.03);
+	font-size: 14px;
+	color: var(--jar-suave);
+}
+
+.jar-novo-eventos__nota i {
+	margin-top: 3px;
+}
+
+.jar-novo-eventos__nota.tem-escolhidos {
+	border-left-color: var(--jar-magenta);
+	background: rgba(244, 24, 146, 0.05);
+	color: var(--jar-preto);
+}
+
+.jar-novo-eventos__nota.tem-escolhidos i {
+	color: var(--jar-magenta);
+}

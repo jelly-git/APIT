@@ -282,6 +282,28 @@ if ( $novo ) :
 					<?php endforeach; ?>
 					<p class="jar-evento-docs__nada" data-jar-filtrar-nada hidden><?php esc_html_e( 'Nenhum evento corresponde à procura.', 'jelly-area-reservada' ); ?></p>
 				</fieldset>
+
+				<?php
+				/*
+				 * Quantos eventos estão escolhidos, e quais — também os que a procura
+				 * esconde. Escrito já para o que vem marcado; o assets/js/admin.js
+				 * (data-jar-contar) acompanha as mudanças.
+				 */
+				$ja = $origem ? [ $origem['titulo'] ] : [];
+				?>
+				<p class="jar-novo-eventos__nota" data-jar-contar="jar-novo-eventos-lista" aria-live="polite">
+					<i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+					<span data-jar-contar-texto>
+						<?php
+						echo esc_html(
+							$ja
+								/* translators: %s: título do evento */
+								? sprintf( __( '1 evento escolhido: %s', 'jelly-area-reservada' ), $ja[0] )
+								: __( 'Nenhum evento escolhido: o documento fica só na lista de Documentos.', 'jelly-area-reservada' )
+						);
+						?>
+					</span>
+				</p>
 			</div>
 		<?php endif; ?>
 

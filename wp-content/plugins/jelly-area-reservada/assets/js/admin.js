@@ -959,6 +959,39 @@
 		} );
 	}
 
+	/* ---------- Contar os escolhidos de uma lista ---------- */
+
+	/*
+	 * Uma nota data-jar-contar="<id da lista>" diz quantas caixas da lista
+	 * estão marcadas, e quais — também as que a procura esconde (o Novo
+	 * documento, com os eventos).
+	 */
+	Array.prototype.forEach.call( raiz.querySelectorAll( '[data-jar-contar]' ), function ( nota ) {
+		var lista = document.getElementById( nota.getAttribute( 'data-jar-contar' ) );
+		var texto = nota.querySelector( '[data-jar-contar-texto]' );
+
+		if ( ! lista || ! texto ) {
+			return;
+		}
+
+		function contar() {
+			var nomes = Array.prototype.map.call( lista.querySelectorAll( 'input:checked' ), function ( c ) {
+				var rotulo = c.closest( 'label' ).querySelector( 'span' );
+
+				// Só o título, sem as datas por baixo.
+				return rotulo ? rotulo.firstChild.textContent.trim() : '';
+			} );
+
+			texto.textContent = ! nomes.length
+				? 'Nenhum evento escolhido: o documento fica só na lista de Documentos.'
+				: ( 1 === nomes.length ? '1 evento escolhido: ' : nomes.length + ' eventos escolhidos: ' ) + nomes.join( ', ' );
+			nota.classList.toggle( 'tem-escolhidos', nomes.length > 0 );
+		}
+
+		lista.addEventListener( 'change', contar );
+		contar();
+	} );
+
 	/* ---------- Menu lateral no telemóvel ---------- */
 
 	var abrir = raiz.querySelector( '[data-jar-menu]' );

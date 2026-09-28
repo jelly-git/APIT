@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.52.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.16.1. O tema e a base de dados não mudam.
+
+### Adicionado
+- No Novo documento, entre a lista dos eventos e a Publicação, uma nota com
+  quantos eventos estão escolhidos e quais ("2 eventos escolhidos: Conecta
+  2026, MIPCOM 2026"), também os que a procura esconde. Acompanha cada
+  escolha, e fica a rosa quando há algum; sem nenhum, diz que o documento
+  fica só na lista de Documentos.
+
 ## [0.52.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.16.0. O tema e a base de dados não mudam.
