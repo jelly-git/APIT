@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.56.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.20.1. O tema e a base de dados não mudam.
+
+### Corrigido
+- No Calendário, os números do mês e a grelha estavam colados: a zona que o
+  Ajax troca (0.56.0) envolvia os dois e tirava-lhes o espaço entre blocos da
+  página. A zona passa a ter o mesmo espaçamento.
+
 ## [0.56.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.20.0. O tema e a base de dados não mudam.

@@ -4112,6 +4112,13 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	pointer-events: none;
 }
 
+/* A zona que o Ajax troca (os números e o Calendário) guarda o espaço entre blocos de .jar__conteudo. */
+.jar [data-jar-calendario-zona] {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+
 /* O Calendário enquanto o mês pedido chega por Ajax: esbatido e sem cliques. */
 .jar [data-jar-calendario-zona].is-a-carregar .jar-numeros,
 .jar [data-jar-calendario-zona].is-a-carregar .jar-calendario {
