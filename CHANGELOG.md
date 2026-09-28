@@ -266,6 +266,31 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.59.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.23.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **Eventos na ARU.** O menu Calendário, que levava ao calendário do site,
+  passa a **Eventos**, dentro da ARU:
+  - `/area-reservada/eventos/`: os próximos eventos e os últimos 12 que já
+    passaram, em cartões com a data no degradé da categoria, as datas, o
+    local, a marcação do associado (ou "Marcação de mesa", se a houver) e
+    quantos documentos tem.
+  - `/area-reservada/eventos/<id>/`: a página do evento — as datas, o local e
+    o resumo; **os documentos do evento**, os publicados, para descarregar; e
+    a marcação de mesa: a do associado, o botão que abre o pop-up e os
+    horários de cada dia (disponível, ocupado, a sua).
+  - Só aparecem os eventos publicados **para a Área Reservada** — os "só Área
+    reservada" e os "Site e Área reservada". Os "só site" ficam de fora, e um
+    endereço de um deles (ou de um que não existe) dá 404 dentro da ARU.
+
+### Alterado
+- Nada na ARU leva ao calendário do site: o destaque, os próximos eventos e
+  o número dos eventos do Início passam a abrir as páginas dos eventos na ARU.
+- Os eventos do Início (o destaque, os próximos, o número) passam a ser
+  também só os da Área Reservada.
+
 ## [0.58.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.22.1. O tema e a base de dados não mudam.

@@ -1046,6 +1046,294 @@ a.aru-evento:focus-visible {
 	color: var(--aru-magenta);
 }
 
+/* ---------- Eventos ---------- */
+
+.aru-voltar {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	align-self: flex-start;
+	font-size: 14px;
+	font-weight: 500;
+	color: var(--aru-suave);
+	text-decoration: none;
+}
+
+.aru-voltar:hover,
+.aru-voltar:focus-visible {
+	color: var(--aru-magenta);
+}
+
+.aru-cartoes-eventos {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	gap: 18px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.aru-cartao-evento {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+	border: 1px solid var(--aru-linha);
+	border-radius: 16px;
+	background: #fff;
+	color: var(--aru-preto);
+	text-decoration: none;
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.aru-cartao-evento:hover,
+.aru-cartao-evento:focus-visible {
+	transform: translateY(-2px);
+	box-shadow: 0 2px 4px rgba(27, 42, 51, 0.05), 0 14px 30px rgba(27, 42, 51, 0.09);
+	color: var(--aru-preto);
+}
+
+.aru-cartao-evento.is-passado {
+	opacity: 0.7;
+}
+
+/* A capa: o degradé da categoria do evento, com a data. */
+.aru-cartao-evento__capa {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	min-height: 118px;
+	padding: 18px 20px;
+	background: linear-gradient(135deg, var(--aru-cor-a, #f41892), var(--aru-cor-b, #8048a6));
+	color: #fff;
+	text-shadow: 0 1px 2px rgba(27, 42, 51, 0.2);
+}
+
+.aru-cartao-evento__dia {
+	font-size: 38px;
+	font-weight: 600;
+	line-height: 1;
+}
+
+.aru-cartao-evento__mes {
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.aru-cartao-evento__cat {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	padding: 3px 10px;
+	border-radius: 20px;
+	background: rgba(255, 255, 255, 0.25);
+	font-size: 11px;
+	font-weight: 600;
+	text-shadow: none;
+}
+
+.aru-cartao-evento__corpo {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 4px;
+	padding: 16px 20px 18px;
+}
+
+.aru-cartao-evento__corpo strong {
+	margin-bottom: 4px;
+	font-size: 17px;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.aru-cartao-evento__corpo small {
+	font-size: 13px;
+	color: var(--aru-suave);
+}
+
+.aru-cartao-evento__corpo small i {
+	width: 14px;
+	margin-right: 4px;
+	color: var(--aru-azul);
+	text-align: center;
+}
+
+.aru-cartao-evento__marcas {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-top: auto;
+	padding-top: 12px;
+}
+
+.aru-marca {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 4px 10px;
+	border-radius: 20px;
+	background: rgba(74, 133, 200, 0.1);
+	font-size: 12px;
+	font-weight: 600;
+	color: #2f65b0;
+}
+
+/* O topo da página de um evento: o degradé da categoria, a data e os factos. */
+.aru-evento-topo {
+	display: flex;
+	align-items: center;
+	gap: 28px;
+	padding: 32px 36px;
+	border-radius: var(--aru-raio);
+	background:
+		radial-gradient(60% 120% at 100% 0%, rgba(255, 255, 255, 0.22), transparent 60%),
+		linear-gradient(120deg, var(--aru-cor-a, #f41892), var(--aru-cor-b, #8048a6));
+	box-shadow: var(--aru-sombra);
+	color: #fff;
+}
+
+.aru-evento-topo__data {
+	flex: none;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 96px;
+	height: 96px;
+	border-radius: 20px;
+	background: rgba(255, 255, 255, 0.2);
+	line-height: 1;
+}
+
+.aru-evento-topo__data strong {
+	font-size: 40px;
+	font-weight: 600;
+}
+
+.aru-evento-topo__data small {
+	margin-top: 4px;
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.aru-evento-topo__cat {
+	display: inline-block;
+	margin-bottom: 8px;
+	padding: 3px 11px;
+	border-radius: 20px;
+	background: rgba(255, 255, 255, 0.25);
+	font-size: 12px;
+	font-weight: 600;
+}
+
+.aru-evento-topo h1 {
+	margin: 0 0 12px;
+	font-size: 34px;
+	font-weight: 500;
+	line-height: 1.15;
+	color: #fff;
+}
+
+.aru-evento-topo__factos {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 22px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 15px;
+}
+
+.aru-evento-topo__factos i {
+	margin-right: 6px;
+	opacity: 0.85;
+}
+
+.aru-evento-grelha {
+	display: grid;
+	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+	gap: 24px;
+	align-items: start;
+}
+
+.aru-evento-grelha__principal {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	min-width: 0;
+}
+
+.aru-texto {
+	font-size: 16px;
+	line-height: 1.65;
+	color: rgba(27, 42, 51, 0.85);
+}
+
+.aru-texto p {
+	margin: 0 0 12px;
+}
+
+.aru-texto p:last-child {
+	margin-bottom: 0;
+}
+
+.aru-nota {
+	margin: 0 0 16px;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--aru-suave);
+}
+
+.aru-evento-marcacao__minha {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 6px;
+	margin-bottom: 18px;
+	padding: 16px 18px;
+	border-radius: 14px;
+	background: rgba(128, 72, 166, 0.06);
+}
+
+.aru-evento-marcacao__minha strong {
+	font-size: 16px;
+}
+
+.aru-evento-marcacao__minha small {
+	font-size: 13px;
+	color: var(--aru-suave);
+}
+
+.aru-evento-marcacao__minha small i {
+	margin-right: 3px;
+	color: var(--aru-magenta);
+}
+
+.aru-evento-marcacao__botao {
+	width: 100%;
+	margin-bottom: 8px;
+}
+
+.aru-evento-marcacao__dia {
+	margin-top: 18px;
+}
+
+.aru-evento-marcacao__dia h3 {
+	margin: 0 0 10px;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--aru-preto);
+}
+
+.aru-evento-marcacao .aru-horarios__lista {
+	grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+}
+
 /* ---------- Ecrãs mais pequenos ---------- */
 
 @media (max-width: 1280px) {
@@ -1053,7 +1341,8 @@ a.aru-evento:focus-visible {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 
-	.aru-grelha {
+	.aru-grelha,
+	.aru-evento-grelha {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
@@ -1185,5 +1474,25 @@ a.aru-evento:focus-visible {
 
 	.aru-titulo h1 {
 		font-size: 28px;
+	}
+
+	.aru-evento-topo {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 18px;
+		padding: 24px 22px;
+	}
+
+	.aru-evento-topo__data {
+		width: 72px;
+		height: 72px;
+	}
+
+	.aru-evento-topo__data strong {
+		font-size: 30px;
+	}
+
+	.aru-evento-topo h1 {
+		font-size: 26px;
 	}
 }

@@ -6,9 +6,15 @@
  * Vive em endereços do plugin, e não em páginas do WordPress, para não
  * depender de nada na base de dados e subir com o código:
  *
- *   /area-reservada/             Início
- *   /area-reservada/documentos/  os documentos publicados, para descarregar
- *   /area-reservada/marcacoes/   as marcações de mesa do associado
+ *   /area-reservada/               Início
+ *   /area-reservada/eventos/       os eventos da Área Reservada
+ *   /area-reservada/eventos/<id>/  um evento: as datas, a marcação, os documentos
+ *   /area-reservada/marcacoes/     as marcações de mesa do associado
+ *   /area-reservada/documentos/    os documentos publicados, para descarregar
+ *
+ * Os eventos são os publicados para a Área Reservada: os "só Área reservada"
+ * e os "Site e Área reservada". Os "só site" não aparecem aqui, e nada na ARU
+ * leva ao calendário do site.
  *
  * Tem o seu próprio desenho (templates/aru/, assets/css/aru.css), sem o
  * cabeçalho e o rodapé do site, mas com o wp_head() e o wp_footer(): as
@@ -65,9 +71,9 @@ function jelly_ar_area_tem_acesso( $user = null ) {
 function jelly_ar_aru_menu() {
 	return [
 		'inicio'     => [ 'titulo' => __( 'Início', 'jelly-area-reservada' ), 'icone' => 'fa-house', 'url' => jelly_ar_area_url() ],
-		'documentos' => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'url' => jelly_ar_area_url( 'documentos' ) ],
+		'eventos'    => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'url' => jelly_ar_area_url( 'eventos' ) ],
 		'marcacoes'  => [ 'titulo' => __( 'Marcações', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-check', 'url' => jelly_ar_area_url( 'marcacoes' ) ],
-		'calendario' => [ 'titulo' => __( 'Calendário', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'url' => home_url( '/calendario/' ), 'fora' => true ],
+		'documentos' => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'url' => jelly_ar_area_url( 'documentos' ) ],
 		'encontros'  => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'url' => '' ],
 	];
 }
@@ -75,7 +81,8 @@ function jelly_ar_aru_menu() {
 /* ---------- Os endereços ---------- */
 
 function jelly_ar_area_regra() {
-	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '(?:/(documentos|marcacoes))?/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=$matches[1]', 'top' );
+	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '/eventos/([0-9]+)/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=eventos&jelly_ar_aru_evento=$matches[1]', 'top' );
+	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '(?:/(eventos|marcacoes|documentos))?/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=$matches[1]', 'top' );
 
 	// Uma regra nova só vale depois de as regras se refazerem: uma vez por versão do plugin.
 	if ( get_option( 'jelly_ar_regras' ) !== JELLY_AR_VERSION ) {
@@ -88,6 +95,7 @@ add_action( 'init', 'jelly_ar_area_regra' );
 function jelly_ar_area_query_vars( $vars ) {
 	$vars[] = 'jelly_ar_area';
 	$vars[] = 'jelly_ar_aru';
+	$vars[] = 'jelly_ar_aru_evento';
 
 	return $vars;
 }
@@ -98,12 +106,29 @@ function jelly_ar_e_area() {
 }
 
 /**
- * A página da ARU pedida: inicio, documentos ou marcacoes.
+ * A secção da ARU pedida (a do menu): inicio, eventos, marcacoes ou documentos.
  */
 function jelly_ar_aru_secao() {
 	$secao = (string) get_query_var( 'jelly_ar_aru' );
 
-	return in_array( $secao, [ 'documentos', 'marcacoes' ], true ) ? $secao : 'inicio';
+	return in_array( $secao, [ 'eventos', 'marcacoes', 'documentos' ], true ) ? $secao : 'inicio';
+}
+
+/**
+ * O evento pedido no endereço (/area-reservada/eventos/<id>/), se for da Área
+ * Reservada; null se não houver id ou se o evento não for de lá.
+ */
+function jelly_ar_aru_evento_pedido() {
+	$id = absint( get_query_var( 'jelly_ar_aru_evento' ) );
+
+	return $id ? jelly_ar_aru_evento( $id ) : null;
+}
+
+/**
+ * O endereço da página de um evento na ARU.
+ */
+function jelly_ar_aru_evento_url( $id ) {
+	return jelly_ar_area_url( 'eventos' ) . (int) $id . '/';
 }
 
 /* ---------- A página ---------- */
@@ -128,9 +153,22 @@ function jelly_ar_area_mostrar() {
 	status_header( 200 );
 
 	$aru = [
-		'secao' => jelly_ar_aru_secao(),
-		'user'  => wp_get_current_user(),
+		'secao'  => jelly_ar_aru_secao(),
+		'user'   => wp_get_current_user(),
+		'evento' => null,
 	];
+	// O template da página: o da secção, ou o de um evento.
+	$aru['pagina'] = $aru['secao'];
+
+	// A página de um evento: só os da Área Reservada; os outros, e os que não existem, dão 404.
+	if ( absint( get_query_var( 'jelly_ar_aru_evento' ) ) ) {
+		$aru['evento'] = jelly_ar_aru_evento_pedido();
+		$aru['pagina'] = $aru['evento'] ? 'evento' : 'nao-existe';
+
+		if ( ! $aru['evento'] ) {
+			status_header( 404 );
+		}
+	}
 
 	include JELLY_AR_DIR . 'templates/aru/shell.php';
 	exit;
@@ -145,10 +183,11 @@ function jelly_ar_area_titulo( $partes ) {
 	if ( jelly_ar_e_area() ) {
 		$menu            = jelly_ar_aru_menu();
 		$secao           = jelly_ar_aru_secao();
+		$evento          = jelly_ar_aru_evento_pedido();
 		$partes['title'] = 'inicio' === $secao
 			? __( 'Área Reservada', 'jelly-area-reservada' )
-			/* translators: %s: página da Área Reservada */
-			: sprintf( __( '%s · Área Reservada', 'jelly-area-reservada' ), $menu[ $secao ]['titulo'] );
+			/* translators: %s: página da Área Reservada, ou o título do evento */
+			: sprintf( __( '%s · Área Reservada', 'jelly-area-reservada' ), $evento ? $evento['titulo'] : $menu[ $secao ]['titulo'] );
 	}
 
 	return $partes;
@@ -265,30 +304,74 @@ function jelly_ar_aru_marcacoes( $user_id ) {
 	return $lista;
 }
 
+// Os eventos que a ARU mostra: publicados, e para a Área Reservada (só AR, ou site e AR).
+const JELLY_AR_ARU_ONDE = "e.estado = 'publicado' AND e.onde IN ('reservada', 'ambos')";
+
 /**
- * Os eventos publicados que ainda não acabaram, do mais próximo — os do site
- * e os só da Área Reservada.
+ * Os eventos da Área Reservada que ainda não acabaram, do mais próximo. Com
+ * $passados, os que já acabaram, do mais recente, até $limite.
  */
-function jelly_ar_aru_eventos() {
+function jelly_ar_aru_eventos( $passados = false, $limite = 0 ) {
 	global $wpdb;
 
-	$linhas = jelly_ar_eventos_consulta(
-		$wpdb->prepare(
-			"WHERE e.estado = 'publicado' AND COALESCE(e.fim, e.inicio) >= %s ORDER BY e.inicio, e.id",
-			current_time( 'Y-m-d' )
-		)
-	);
+	$sql = $passados
+		? 'WHERE ' . JELLY_AR_ARU_ONDE . ' AND COALESCE(e.fim, e.inicio) < %s ORDER BY e.inicio DESC, e.id DESC'
+		: 'WHERE ' . JELLY_AR_ARU_ONDE . ' AND COALESCE(e.fim, e.inicio) >= %s ORDER BY e.inicio, e.id';
 
-	return array_map( function ( $l ) {
-		$e  = jelly_ar_evento_da_linha( $l );
-		$ts = strtotime( $e['inicio'] );
+	$linhas = jelly_ar_eventos_consulta( $wpdb->prepare( $sql, current_time( 'Y-m-d' ) ) . ( $limite ? ' LIMIT ' . (int) $limite : '' ) );
 
-		return $e + [
-			'datas' => jelly_ar_intervalo_datas( $e['inicio'], $e['fim'] ),
-			'dia_n' => (int) gmdate( 'j', $ts ),
-			'mes'   => jelly_ar_data( 'M', $ts ),
+	return array_map( 'jelly_ar_aru_evento_da_linha', $linhas );
+}
+
+/**
+ * Um evento da Área Reservada pelo id, ou null: não existe, não está
+ * publicado, ou é só do site.
+ */
+function jelly_ar_aru_evento( $id ) {
+	global $wpdb;
+
+	$linhas = jelly_ar_eventos_consulta( $wpdb->prepare( 'WHERE e.id = %d AND ' . JELLY_AR_ARU_ONDE, $id ) );
+
+	return $linhas ? jelly_ar_aru_evento_da_linha( $linhas[0] ) : null;
+}
+
+/**
+ * Um evento na forma que a ARU mostra: o de sempre, mais as datas por
+ * extenso, o dia e o mês do quadrado, se já acabou, e o endereço na ARU.
+ */
+function jelly_ar_aru_evento_da_linha( $l ) {
+	$e  = jelly_ar_evento_da_linha( $l );
+	$ts = strtotime( $e['inicio'] );
+
+	return $e + [
+		'datas'     => jelly_ar_intervalo_datas( $e['inicio'], $e['fim'] ),
+		'dia_n'     => (int) gmdate( 'j', $ts ),
+		'mes'       => jelly_ar_data( 'M', $ts ),
+		'terminado' => ( $e['fim'] ? $e['fim'] : $e['inicio'] ) < current_time( 'Ymd' ),
+		'url'       => jelly_ar_aru_evento_url( $e['id'] ),
+	];
+}
+
+/**
+ * Os horários de um evento, dia a dia, e o que cada um é para este
+ * associado: livre, ocupado, ou a marcação dele. Só os que ainda não
+ * passaram (jelly_ar_disponibilidade()).
+ */
+function jelly_ar_aru_horarios( $evento, $minha ) {
+	return array_map( function ( $d ) use ( $minha ) {
+		return [
+			'dia'   => $d['dia'],
+			'nome'  => ucfirst( jelly_ar_data( 'l, j \d\e F', strtotime( $d['dia'] ) ) ),
+			'horas' => array_map( function ( $b ) use ( $d, $minha ) {
+				$e_minha = $minha && $minha['dia'] === $d['dia'] && $minha['hora'] === $b['hora'];
+
+				return [
+					'hora'   => $b['hora'],
+					'estado' => $e_minha ? 'minha' : ( array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ? 'livre' : 'ocupado' ),
+				];
+			}, $d['blocos'] ),
 		];
-	}, $linhas );
+	}, jelly_ar_disponibilidade( $evento ) );
 }
 
 /**
@@ -361,18 +444,9 @@ function jelly_ar_aru_destaque( $eventos, $user_id ) {
 			}
 		}
 
-		$horas = [];
-		$dia   = $dias[0] ?? null;
-
-		if ( $dia ) {
-			foreach ( array_slice( $dia['blocos'], 0, 6 ) as $b ) {
-				$e_minha = $minha && $minha['dia'] === $dia['dia'] && $minha['hora'] === $b['hora'];
-				$horas[] = [
-					'hora'   => $b['hora'],
-					'estado' => $e_minha ? 'minha' : ( array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ? 'livre' : 'ocupado' ),
-				];
-			}
-		}
+		// Os horários do primeiro dia que ainda os tem.
+		$horarios = jelly_ar_aru_horarios( $e, $minha );
+		$dia      = $horarios[0] ?? null;
 
 		return [
 			'evento' => $e,
@@ -380,9 +454,9 @@ function jelly_ar_aru_destaque( $eventos, $user_id ) {
 			'total'  => $total,
 			'livres' => $livres,
 			'minha'  => $minha,
-			'dia'    => $dia ? ucfirst( jelly_ar_data( 'l, j \d\e F', strtotime( $dia['dia'] ) ) ) : '',
-			'horas'  => $horas,
-			'mais'   => $dia ? max( 0, count( $dia['blocos'] ) - 6 ) : 0,
+			'dia'    => $dia ? $dia['nome'] : '',
+			'horas'  => $dia ? array_slice( $dia['horas'], 0, 6 ) : [],
+			'mais'   => $dia ? max( 0, count( $dia['horas'] ) - 6 ) : 0,
 		];
 	}
 

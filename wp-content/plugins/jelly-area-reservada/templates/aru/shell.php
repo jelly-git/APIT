@@ -107,7 +107,7 @@ $item = function ( $chave, $m, $classe ) use ( $secao ) {
 	</aside>
 
 	<main class="aru-principal" id="conteudo">
-		<?php include JELLY_AR_DIR . 'templates/aru/' . $secao . '.php'; ?>
+		<?php include JELLY_AR_DIR . 'templates/aru/' . $aru['pagina'] . '.php'; ?>
 	</main>
 
 	<footer class="aru-rodape">

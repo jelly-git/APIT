@@ -95,7 +95,7 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 		$com_marcacao ? sprintf( _n( '%d com marcação de mesa', '%d com marcação de mesa', $com_marcacao, 'jelly-area-reservada' ), $com_marcacao ) : __( 'no calendário', 'jelly-area-reservada' ),
 		'fa-star',
 		'magenta',
-		home_url( '/calendario/' )
+		jelly_ar_area_url( 'eventos' )
 	);
 	$numero( __( 'Encontros', 'jelly-area-reservada' ), '—', __( 'Em breve', 'jelly-area-reservada' ), 'fa-user-group', 'azul', '' );
 	?>
@@ -128,7 +128,7 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 						<p class="aru-cartao__meta"><?php echo esc_html( $e['categoria_nome'] ); ?></p>
 					<?php endif; ?>
 				</div>
-				<a class="aru-ligacao" href="<?php echo esc_url( home_url( '/calendario/' ) ); ?>"><?php esc_html_e( 'Ver o calendário', 'jelly-area-reservada' ); ?> <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+				<a class="aru-ligacao" href="<?php echo esc_url( $e['url'] ); ?>"><?php esc_html_e( 'Ver o evento', 'jelly-area-reservada' ); ?> <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
 			</header>
 
 			<div class="aru-destaque__corpo">
@@ -233,7 +233,7 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 	<section class="aru-cartao aru-proximos">
 		<header class="aru-cartao__cabeca">
 			<h2><i class="fa-regular fa-calendar" aria-hidden="true"></i> <?php esc_html_e( 'Próximos eventos', 'jelly-area-reservada' ); ?></h2>
-			<a class="aru-ligacao" href="<?php echo esc_url( home_url( '/calendario/' ) ); ?>"><?php esc_html_e( 'Ver todos', 'jelly-area-reservada' ); ?> <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+			<a class="aru-ligacao" href="<?php echo esc_url( jelly_ar_area_url( 'eventos' ) ); ?>"><?php esc_html_e( 'Ver todos', 'jelly-area-reservada' ); ?> <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
 		</header>
 
 		<?php if ( ! $outros ) : ?>
@@ -245,7 +245,7 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 			<ul class="aru-eventos">
 				<?php foreach ( array_slice( $outros, 0, 3 ) as $e ) : ?>
 					<li>
-						<a class="aru-evento" href="<?php echo esc_url( $e['marcacoes'] ? jelly_ar_url_marcacao( $e['id'] ) : home_url( '/calendario/' ) ); ?>">
+						<a class="aru-evento" href="<?php echo esc_url( $e['url'] ); ?>">
 							<span class="aru-data" style="--aru-cor-a: <?php echo esc_attr( $e['cores']['inicio'] ); ?>; --aru-cor-b: <?php echo esc_attr( $e['cores']['fim'] ); ?>;">
 								<strong><?php echo (int) $e['dia_n']; ?></strong>
 								<small><?php echo esc_html( $e['mes'] ); ?></small>
