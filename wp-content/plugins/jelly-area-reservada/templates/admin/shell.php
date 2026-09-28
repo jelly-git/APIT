@@ -12,10 +12,24 @@ $eu      = wp_get_current_user();
 $logo    = jelly_ar_logo_url();
 $nome    = $eu->first_name ? trim( $eu->first_name . ' ' . $eu->last_name ) : $eu->display_name;
 
-// Os registos à espera, para o contador ao lado de Utilizadores.
-$por_aprovar = count( array_filter( jelly_ar_utilizadores_todos(), function ( $u ) {
-	return 'pendente' === $u['estado'];
-} ) );
+/*
+ * O que está à espera de decisão, para o contador ao lado de cada área: os
+ * registos por aprovar nos Utilizadores, e os pedidos de marcação por aprovar
+ * nas Aprovações.
+ */
+global $wpdb;
+$contadores = [
+	'utilizadores' => [
+		count( array_filter( jelly_ar_utilizadores_todos(), function ( $u ) {
+			return 'pendente' === $u['estado'];
+		} ) ),
+		__( 'Registos por aprovar', 'jelly-area-reservada' ),
+	],
+	'marcacoes'    => [
+		(int) $wpdb->get_var( "SELECT COUNT(*) FROM " . jelly_ar_tabela( 'marcacoes' ) . " WHERE estado = 'pendente' AND ocupa = 1" ), // phpcs:ignore WordPress.DB
+		__( 'Pedidos de marcação por aprovar', 'jelly-area-reservada' ),
+	],
+];
 ?>
 <div class="jar" data-jar>
 	<aside class="jar__lado">
@@ -36,8 +50,8 @@ $por_aprovar = count( array_filter( jelly_ar_utilizadores_todos(), function ( $u
 					>
 						<i class="fa-solid <?php echo esc_attr( $p['icone'] ); ?>" aria-hidden="true"></i>
 						<span><?php echo esc_html( $p['titulo'] ); ?></span>
-						<?php if ( 'utilizadores' === $c && $por_aprovar ) : ?>
-							<b class="jar__contador" title="<?php esc_attr_e( 'Registos por aprovar', 'jelly-area-reservada' ); ?>"><?php echo (int) $por_aprovar; ?></b>
+						<?php if ( ! empty( $contadores[ $c ][0] ) ) : ?>
+							<b class="jar__contador" title="<?php echo esc_attr( $contadores[ $c ][1] ); ?>"><?php echo (int) $contadores[ $c ][0]; ?></b>
 						<?php endif; ?>
 					</a>
 				<?php else : ?>

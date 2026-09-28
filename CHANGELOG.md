@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.49.1] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.13.1. O tema e a base de dados não mudam.
+
+### Adicionado
+- Na navegação da esquerda, as Aprovações passam a ter o contador dos
+  pedidos de marcação por aprovar, como os Utilizadores têm o dos registos.
+  Só aparece quando há algum.
+
 ## [0.49.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.13.0, com o esquema da base de dados 10. O
