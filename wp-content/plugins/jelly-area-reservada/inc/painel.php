@@ -106,9 +106,60 @@ function jelly_ar_painel_dados() {
 			'acessos'   => (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$acessos} WHERE criado_em >= %s", $ha30 ) ),
 			'descargas' => (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$descargas} WHERE criado_em >= %s", $ha30 ) ),
 			'publicados' => (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . jelly_ar_tabela( 'documentos' ) . " WHERE estado = 'publicado'" ),
+			'marcacoes'  => (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . jelly_ar_tabela( 'marcacoes' ) . ' WHERE pedido_em >= %s', $ha30 ) ),
 			// phpcs:enable
 		],
+		'atividade30' => jelly_ar_painel_atividade(),
 		'smtp'       => function_exists( 'jelly_ar_envio_autenticado' ) ? jelly_ar_envio_autenticado() : null,
+	];
+}
+
+/**
+ * A atividade dos últimos 30 dias, dia a dia, para o gráfico do Painel: os
+ * pedidos de marcação que entraram (feitos pela equipa ou pedidos pelos
+ * associados) e os acessos dos associados. E, para cada número do mês, o dos
+ * 30 dias anteriores, para a comparação.
+ */
+function jelly_ar_painel_atividade() {
+	global $wpdb;
+
+	$agora = time();
+	$de    = gmdate( 'Y-m-d', $agora - 29 * DAY_IN_SECONDS );
+	$dias  = [];
+	for ( $i = 29; $i >= 0; $i-- ) {
+		$dias[ gmdate( 'Y-m-d', $agora - $i * DAY_IN_SECONDS ) ] = [ 'marcacoes' => 0, 'acessos' => 0 ];
+	}
+
+	$series = [
+		'marcacoes' => [ jelly_ar_tabela( 'marcacoes' ), 'pedido_em' ],
+		'acessos'   => [ jelly_ar_tabela( 'acessos' ), 'criado_em' ],
+	];
+
+	foreach ( $series as $chave => $s ) {
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+		$linhas = $wpdb->get_results( $wpdb->prepare( "SELECT DATE({$s[1]}) AS dia, COUNT(*) AS n FROM {$s[0]} WHERE {$s[1]} >= %s GROUP BY DATE({$s[1]})", $de . ' 00:00:00' ) );
+		foreach ( $linhas as $l ) {
+			if ( isset( $dias[ $l->dia ] ) ) {
+				$dias[ $l->dia ][ $chave ] = (int) $l->n;
+			}
+		}
+	}
+
+	// O mesmo número nos 30 dias antes destes, para a seta de subida ou descida.
+	$antes_de  = gmdate( 'Y-m-d H:i:s', $agora - 60 * DAY_IN_SECONDS );
+	$antes_ate = gmdate( 'Y-m-d H:i:s', $agora - 30 * DAY_IN_SECONDS );
+	$contar    = function ( $tabela, $coluna ) use ( $wpdb, $antes_de, $antes_ate ) {
+		return (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$tabela} WHERE {$coluna} >= %s AND {$coluna} < %s", $antes_de, $antes_ate ) ); // phpcs:ignore WordPress.DB
+	};
+
+	return [
+		'dias'     => $dias,
+		'anterior' => [
+			'registos'  => $contar( jelly_ar_tabela( 'associados' ), 'registado_em' ),
+			'acessos'   => $contar( jelly_ar_tabela( 'acessos' ), 'criado_em' ),
+			'descargas' => $contar( jelly_ar_tabela( 'descargas' ), 'criado_em' ),
+			'marcacoes' => $contar( jelly_ar_tabela( 'marcacoes' ), 'pedido_em' ),
+		],
 	];
 }
 

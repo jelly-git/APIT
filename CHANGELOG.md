@@ -266,6 +266,20 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.54.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.18.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- No Painel, o cartão dos **últimos 30 dias** ganha, como na referência do
+  back-office:
+  - um gráfico dia a dia dos pedidos de marcação (linha a magenta, com a
+    área por baixo) e dos acessos dos associados (linha tracejada a roxo),
+    desenhado no servidor, sem bibliotecas;
+  - por baixo de cada número — pedidos de marcação, acessos, registos novos,
+    descargas —, a comparação com os 30 dias anteriores: a percentagem, a
+    subir a verde ou a descer a vermelho, "igual" ou "novo este mês".
+
 ## [0.53.0] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.17.0. O tema e a base de dados não mudam.
