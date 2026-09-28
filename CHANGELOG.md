@@ -266,6 +266,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.57.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.21.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **A área privada do associado**, em `/area-reservada/`: por agora uma
+  página simples, com o nome e a empresa de quem tem sessão e o botão
+  Terminar sessão, para provar o caminho. Cada um vê só os seus dados — a
+  página lê sempre a conta com sessão, nunca um id do endereço.
+  - É um endereço do plugin (regra de reescrita, `inc/area-privada.php`) e
+    não uma página do WordPress: não depende da base de dados e sobe com o
+    código. As regras refazem-se sozinhas uma vez por versão do plugin.
+  - Sem sessão, leva à página inicial com o pop-up de entrar aberto; com
+    sessão mas sem acesso (associado suspenso, conta que não é da AR), à
+    página inicial. Sem cache, por ser de uma pessoa.
+  - O hero é o das páginas do tema, com o degradé magenta-roxo da marca.
+- **O login leva à área privada**: ao entrar pelo pop-up, o associado vem
+  para `/area-reservada/` (antes, a página inicial). Com sessão, os botões
+  "Área Reservada" do cabeçalho e do menu móvel também levam lá, em vez de
+  abrirem o pop-up. A equipa continua a ir para o back-office ao entrar.
+
 ## [0.56.4] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.20.4. O tema e a base de dados não mudam.
