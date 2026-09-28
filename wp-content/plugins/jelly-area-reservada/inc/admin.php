@@ -23,21 +23,68 @@ defined( 'ABSPATH' ) || exit;
  * breve" e ganham página quando o módulo delas chegar.
  */
 function jelly_ar_admin_paginas() {
+	/*
+	 * Pela frequência com que se usam: primeiro o que pede decisão todos os
+	 * dias (com contador), depois o que se prepara uma vez por evento, e por
+	 * fim os conteúdos. `grupo` é o título por cima de cada bloco na navegação
+	 * (jelly_ar_admin_grupos()); o Painel fica sozinho, no topo.
+	 */
 	return [
-		'painel'       => [ 'titulo' => __( 'Painel', 'jelly-area-reservada' ), 'icone' => 'fa-gauge-high', 'pronta' => false ],
-		'utilizadores' => [ 'titulo' => __( 'Utilizadores', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'pronta' => true ],
-		'eventos'      => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-earth-europe', 'pronta' => true ],
-		'mesas'        => [ 'titulo' => __( 'Mesas e horários', 'jelly-area-reservada' ), 'icone' => 'fa-table-cells-large', 'pronta' => true ],
-		'marcacoes'    => [ 'titulo' => __( 'Aprovações', 'jelly-area-reservada' ), 'icone' => 'fa-circle-check', 'pronta' => true ],
-		'documentos'   => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'pronta' => true ],
-		'encontros'    => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-people-group', 'pronta' => false ],
-		'calendario'   => [ 'titulo' => __( 'Calendário', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'pronta' => true ],
+		'painel'       => [ 'titulo' => __( 'Painel', 'jelly-area-reservada' ), 'icone' => 'fa-gauge-high', 'pronta' => false, 'grupo' => '' ],
+		'marcacoes'    => [ 'titulo' => __( 'Aprovações', 'jelly-area-reservada' ), 'icone' => 'fa-circle-check', 'pronta' => true, 'grupo' => 'gestao' ],
+		'calendario'   => [ 'titulo' => __( 'Calendário', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'pronta' => true, 'grupo' => 'gestao' ],
+		'utilizadores' => [ 'titulo' => __( 'Utilizadores', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'pronta' => true, 'grupo' => 'gestao' ],
+		'eventos'      => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-earth-europe', 'pronta' => true, 'grupo' => 'eventos' ],
+		'mesas'        => [ 'titulo' => __( 'Mesas e horários', 'jelly-area-reservada' ), 'icone' => 'fa-table-cells-large', 'pronta' => true, 'grupo' => 'eventos' ],
+		'documentos'   => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'pronta' => true, 'grupo' => 'conteudos' ],
+		'encontros'    => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-people-group', 'pronta' => false, 'grupo' => 'conteudos' ],
 	];
 }
 
 /**
+ * Os títulos dos grupos da navegação.
+ */
+function jelly_ar_admin_grupos() {
+	return [
+		'gestao'    => __( 'Gestão', 'jelly-area-reservada' ),
+		'eventos'   => __( 'Eventos', 'jelly-area-reservada' ),
+		'conteudos' => __( 'Conteúdos', 'jelly-area-reservada' ),
+	];
+}
+
+/*
+ * Os endereços de antes da ordem por grupos (0.51.0), que já foram em e-mails:
+ * os Utilizadores eram a entrada (page=jelly-ar), e as Aprovações tinham
+ * page=jelly-ar-marcacoes. Um pedido com um desses leva ao sítio certo.
+ */
+function jelly_ar_admin_enderecos_antigos() {
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended
+	$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+	$args = array_map( 'sanitize_text_field', wp_unslash( array_diff_key( $_GET, [ 'page' => 1 ] ) ) );
+	// phpcs:enable
+
+	$destino = null;
+
+	// "Analisar pedido" de um registo: page=jelly-ar&utilizador=<id>.
+	if ( 'jelly-ar' === $page && ( isset( $args['utilizador'] ) || isset( $args['novo'] ) ) && 'utilizadores' !== jelly_ar_admin_atual() ) {
+		$destino = 'utilizadores';
+	}
+
+	// "Analisar pedido" de uma marcação: page=jelly-ar-marcacoes.
+	if ( 'jelly-ar-marcacoes' === $page && jelly_ar_admin_slug( 'marcacoes' ) !== $page ) {
+		$destino = 'marcacoes';
+	}
+
+	if ( $destino ) {
+		wp_safe_redirect( jelly_ar_admin_url( $destino, $args ) );
+		exit;
+	}
+}
+add_action( 'admin_init', 'jelly_ar_admin_enderecos_antigos', 2 );
+
+/**
  * O `page=` de cada área. A entrada principal do menu leva à primeira área
- * pronta — hoje os Utilizadores; quando houver Painel, passa a ser ele.
+ * pronta — hoje as Aprovações; quando houver Painel, passa a ser ele.
  */
 function jelly_ar_admin_slug( $chave ) {
 	foreach ( jelly_ar_admin_paginas() as $c => $p ) {

@@ -33,7 +33,7 @@ $contadores = [
 ?>
 <div class="jar" data-jar>
 	<aside class="jar__lado">
-		<a class="jar__marca" href="<?php echo esc_url( jelly_ar_admin_url( 'utilizadores' ) ); ?>">
+		<a class="jar__marca" href="<?php echo esc_url( admin_url( 'admin.php?page=jelly-ar' ) ); ?>">
 			<?php if ( $logo ) : ?>
 				<img src="<?php echo esc_url( $logo ); ?>" alt="<?php bloginfo( 'name' ); ?>">
 			<?php endif; ?>
@@ -41,7 +41,16 @@ $contadores = [
 		</a>
 
 		<nav class="jar__nav" aria-label="<?php esc_attr_e( 'Back-office da Área Reservada', 'jelly-area-reservada' ); ?>">
+			<?php
+			// O título de cada grupo (jelly_ar_admin_grupos()) vai por cima da primeira área dele.
+			$grupos = jelly_ar_admin_grupos();
+			$grupo  = null;
+			?>
 			<?php foreach ( $paginas as $c => $p ) : ?>
+				<?php if ( ! empty( $p['grupo'] ) && $p['grupo'] !== $grupo ) : ?>
+					<span class="jar__nav-grupo"><?php echo esc_html( $grupos[ $p['grupo'] ] ); ?></span>
+				<?php endif; ?>
+				<?php $grupo = $p['grupo'] ?? ''; ?>
 				<?php if ( $p['pronta'] ) : ?>
 					<a
 						class="jar__nav-item<?php echo $c === $chave ? ' is-atual' : ''; ?>"

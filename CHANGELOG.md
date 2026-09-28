@@ -266,6 +266,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.51.0] - 2026-09-28
+
+Plugin `jelly-area-reservada` 0.15.0. O tema e a base de dados não mudam.
+
+### Alterado
+- A navegação do back-office arruma-se por frequência de uso, em três grupos
+  com título:
+  - **Gestão** — Aprovações, Calendário, Utilizadores: o que pede decisão
+    todos os dias, com os contadores;
+  - **Eventos** — Eventos e Mesas e horários, por esta ordem, que é a de
+    montar um evento;
+  - **Conteúdos** — Documentos e Encontros (em breve).
+  O Painel (em breve) fica no topo, sozinho.
+- A entrada da Área Reservada passa a ser as Aprovações (a primeira área
+  pronta), em vez dos Utilizadores. Com isso, os endereços mudam: as
+  Aprovações ficam em `page=jelly-ar` e os Utilizadores em
+  `page=jelly-ar-utilizadores`.
+- As ligações antigas, que já foram em e-mails ("Analisar pedido" de um
+  registo ou de uma marcação), continuam a funcionar: levam ao sítio certo.
+- O logótipo da navegação leva à entrada.
+
 ## [0.50.1] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.14.1. O tema e a base de dados não mudam.

@@ -252,7 +252,7 @@ function jelly_ar_registo_avisar_equipa( $user_id, $campos ) {
 
 	// O slug da página vem de inc/admin.php, que o admin-ajax carrega; fora dele, o de sempre.
 	$link = add_query_arg(
-		[ 'page' => function_exists( 'jelly_ar_admin_slug' ) ? jelly_ar_admin_slug( 'utilizadores' ) : 'jelly-ar', 'utilizador' => $user_id ],
+		[ 'page' => function_exists( 'jelly_ar_admin_slug' ) ? jelly_ar_admin_slug( 'utilizadores' ) : 'jelly-ar-utilizadores', 'utilizador' => $user_id ],
 		admin_url( 'admin.php' )
 	);
 

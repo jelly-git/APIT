@@ -459,7 +459,7 @@ function jelly_ar_email_marcacao_equipa( $user_id, $evento, $mesa, $dia, $hora )
 	$horarios  = jelly_ar_horarios( $evento['id'] );
 	$intervalo = $horarios[ $dia ]['intervalo'] ?? JELLY_AR_INTERVALO_OMISSAO;
 	// O slug da página vem de inc/admin.php, que o admin-ajax carrega; fora dele, o de sempre.
-	$link = add_query_arg( [ 'page' => function_exists( 'jelly_ar_admin_slug' ) ? jelly_ar_admin_slug( 'marcacoes' ) : 'jelly-ar-marcacoes' ], admin_url( 'admin.php' ) );
+	$link = add_query_arg( [ 'page' => function_exists( 'jelly_ar_admin_slug' ) ? jelly_ar_admin_slug( 'marcacoes' ) : 'jelly-ar' ], admin_url( 'admin.php' ) );
 
 	return jelly_ar_enviar_email(
 		jelly_ar_emails_equipa(),
