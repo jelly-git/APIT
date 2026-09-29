@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.74.2] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.38.2. O tema e a base de dados não mudam.
+
+### Alterado
+- Nos Encontros da ARU, com a procura aplicada, o contador diz quantos ela
+  deixou ("1 de 5 encontros"), em vez de continuar a dar o total.
+
 ## [0.74.1] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.38.1. O tema e a base de dados não mudam.

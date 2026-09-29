@@ -55,8 +55,16 @@ $url    = function ( $args ) use ( $estado ) {
 	<?php if ( count( $todos ) > 1 ) : ?>
 		<div class="aru-barra">
 			<p class="aru-barra__conta">
-				<?php /* translators: %d: número de encontros */ ?>
-				<?php echo esc_html( sprintf( _n( '%d encontro', '%d encontros', count( $todos ), 'jelly-area-reservada' ), count( $todos ) ) ); ?>
+				<?php
+				if ( '' !== $procura ) {
+					// Com a procura, quantos dos encontros ela deixou.
+					/* translators: 1: encontrados, 2: total de encontros */
+					echo esc_html( sprintf( _n( '%1$d de %2$d encontro', '%1$d de %2$d encontros', count( $todos ), 'jelly-area-reservada' ), $total, count( $todos ) ) );
+				} else {
+					/* translators: %d: número de encontros */
+					echo esc_html( sprintf( _n( '%d encontro', '%d encontros', count( $todos ), 'jelly-area-reservada' ), count( $todos ) ) );
+				}
+				?>
 			</p>
 			<form class="aru-procura" method="get" action="<?php echo esc_url( jelly_ar_area_url( 'encontros' ) ); ?>" role="search">
 				<?php if ( 10 !== $por_pagina ) : ?>
