@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.60.6] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.24.6. O tema e a base de dados não mudam.
+
+### Alterado
+- No back-office, o menu **Calendário** passa a **Marcações** (e o título da
+  página e o botão do Painel que leva lá), para não se confundir com o
+  Calendário do site, que é a lista dos eventos. O endereço
+  (`page=jelly-ar-calendario`) não muda.
+
 ## [0.60.5] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.24.5. O tema e a base de dados não mudam.

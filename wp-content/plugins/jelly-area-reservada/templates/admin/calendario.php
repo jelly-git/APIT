@@ -1,6 +1,8 @@
 <?php
 /**
- * Calendário: as marcações de mesa no tempo, mês a mês.
+ * Marcações (no menu; a chave e o endereço continuam "calendario"): as
+ * marcações de mesa no tempo, mês a mês. Não se chama Calendário para não se
+ * confundir com o Calendário do site, que é a lista dos eventos.
  *
  * À esquerda, a grelha do mês (de segunda a domingo), com o número de
  * marcações de cada dia — confirmadas e por aprovar. À direita, as marcações
@@ -78,7 +80,7 @@ $rotulo_dia = function ( $ymd, $formato ) {
 ?>
 <div class="jar-cabeca">
 	<div>
-		<h1 class="jar-cabeca__titulo"><?php esc_html_e( 'Calendário', 'jelly-area-reservada' ); ?></h1>
+		<h1 class="jar-cabeca__titulo"><?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></h1>
 		<p class="jar-cabeca__intro"><?php esc_html_e( 'As marcações de mesa, dia a dia.', 'jelly-area-reservada' ); ?></p>
 	</div>
 </div>

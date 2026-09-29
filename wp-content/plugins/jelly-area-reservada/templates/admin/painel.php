@@ -298,7 +298,7 @@ if ( JELLY_AR_EXEMPLO ) {
 					<h2><?php esc_html_e( 'Próximos 7 dias', 'jelly-area-reservada' ); ?></h2>
 					<span class="jar-cartao__meta"><?php esc_html_e( 'As marcações de mesa, dia a dia.', 'jelly-area-reservada' ); ?></span>
 				</div>
-				<a class="jar-btn jar-btn--pequeno jar-btn--contorno" href="<?php echo esc_url( jelly_ar_admin_url( 'calendario' ) ); ?>"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> <?php esc_html_e( 'Calendário', 'jelly-area-reservada' ); ?></a>
+				<a class="jar-btn jar-btn--pequeno jar-btn--contorno" href="<?php echo esc_url( jelly_ar_admin_url( 'calendario' ) ); ?>"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i> <?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></a>
 			</header>
 
 			<?php if ( ! $p['agenda'] ) : ?>

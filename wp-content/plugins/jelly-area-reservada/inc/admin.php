@@ -32,7 +32,7 @@ function jelly_ar_admin_paginas() {
 	return [
 		'painel'       => [ 'titulo' => __( 'Painel', 'jelly-area-reservada' ), 'icone' => 'fa-gauge-high', 'pronta' => true, 'grupo' => '' ],
 		'marcacoes'    => [ 'titulo' => __( 'Aprovações', 'jelly-area-reservada' ), 'icone' => 'fa-circle-check', 'pronta' => true, 'grupo' => 'gestao' ],
-		'calendario'   => [ 'titulo' => __( 'Calendário', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'pronta' => true, 'grupo' => 'gestao' ],
+		'calendario'   => [ 'titulo' => __( 'Marcações', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'pronta' => true, 'grupo' => 'gestao' ],
 		'utilizadores' => [ 'titulo' => __( 'Utilizadores', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'pronta' => true, 'grupo' => 'gestao' ],
 		'eventos'      => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-earth-europe', 'pronta' => true, 'grupo' => 'eventos' ],
 		'mesas'        => [ 'titulo' => __( 'Mesas e horários', 'jelly-area-reservada' ), 'icone' => 'fa-table-cells-large', 'pronta' => true, 'grupo' => 'eventos' ],
