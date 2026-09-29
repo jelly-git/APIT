@@ -272,7 +272,7 @@ function jelly_ar_aru_pessoa( $user ) {
 function jelly_ar_aru_estados() {
 	return [
 		'pendente'  => __( 'Por aprovar', 'jelly-area-reservada' ),
-		'aprovada'  => __( 'Confirmada', 'jelly-area-reservada' ),
+		'aprovada'  => __( 'Confirmado', 'jelly-area-reservada' ),
 		'rejeitada' => __( 'Não aprovada', 'jelly-area-reservada' ),
 		'cancelada' => __( 'Cancelada', 'jelly-area-reservada' ),
 	];

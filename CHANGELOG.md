@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.66.6] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.30.6. O tema e a base de dados não mudam.
+
+### Alterado
+- Na ARU, o selo das marcações confirmadas passa de "Confirmada" a
+  **"Confirmado"**.
+
 ## [0.66.5] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.30.5. O tema e a base de dados não mudam.
