@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.69.2] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.33.2. O tema e a base de dados não mudam.
+
+### Alterado
+- Nos Documentos da ARU, sai a ligação "Ver só esta" do cabeçalho de cada
+  categoria; o filtro da categoria continua por cima da lista.
+
 ## [0.69.1] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.33.1. O tema e a base de dados não mudam.

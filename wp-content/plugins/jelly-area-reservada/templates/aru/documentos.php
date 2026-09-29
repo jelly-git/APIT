@@ -130,9 +130,6 @@ $novo_desde = time() - 30 * DAY_IN_SECONDS;
 							<?php /* translators: %d: documentos na categoria */ ?>
 							<small><?php echo esc_html( sprintf( _n( '%d documento', '%d documentos', $na_categoria[ $cat ] ?? count( $docs ), 'jelly-area-reservada' ), $na_categoria[ $cat ] ?? count( $docs ) ) ); ?></small>
 						</div>
-						<?php if ( ! $filtro && count( $categorias ) > 1 && isset( $categorias[ $cat ] ) ) : ?>
-							<a class="aru-ligacao" href="<?php echo esc_url( $url( [ 'categoria' => $cat, 'pagina' => 1 ] ) ); ?>"><?php esc_html_e( 'Ver só esta', 'jelly-area-reservada' ); ?> <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
-						<?php endif; ?>
 					</header>
 
 					<ul class="aru-grupo__lista">
