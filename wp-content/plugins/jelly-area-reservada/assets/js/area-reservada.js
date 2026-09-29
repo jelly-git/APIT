@@ -937,4 +937,13 @@
 	 * tudo o que os painéis usam já definido — a marcação também.
 	 */
 	lerAncora();
+
+	/* ---------- ARU: escolher e já aplicar ---------- */
+
+	// Um formulário data-aru-auto (o "Por página" dos Documentos) envia-se ao escolher; sem JavaScript, há o botão.
+	Array.prototype.forEach.call( document.querySelectorAll( 'form[data-aru-auto] select' ), function ( select ) {
+		select.addEventListener( 'change', function () {
+			select.form.submit();
+		} );
+	} );
 }() );

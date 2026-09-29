@@ -266,6 +266,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.69.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.33.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **Paginação e procura nos Documentos da ARU.**
+  - A lista mostra 10 documentos por página, com a paginação do back-office:
+    "1–10 de 27", o "Por página" (10, 20 ou 50, que se aplica ao escolher) e
+    as páginas, com a atual a escuro e as setas.
+  - Uma caixa de procura, ao lado dos filtros da categoria, procura no
+    título, na descrição e no nome do ficheiro, sem olhar a maiúsculas nem
+    acentos; junta-se ao filtro da categoria, e a mensagem diz quando nada
+    corresponde.
+  - A paginação é uma peça à parte (`templates/aru/parte-paginacao.php`),
+    para servir as outras listas da ARU.
+
 ## [0.68.3] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.32.3. O tema e a base de dados não mudam.

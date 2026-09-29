@@ -1717,6 +1717,169 @@ a.aru-slot--livre:focus-visible {
 	}
 }
 
+/* ---------- A procura e a paginação (Documentos) ---------- */
+
+/* Por cima da lista: os filtros da categoria à esquerda, a procura à direita. */
+.aru-barra {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 14px;
+	margin-bottom: 18px;
+}
+
+.aru-barra .aru-filtros {
+	margin-bottom: 0;
+}
+
+.aru-procura {
+	position: relative;
+	flex: 0 1 340px;
+	margin-left: auto;
+}
+
+.aru-procura > i {
+	position: absolute;
+	top: 50%;
+	left: 16px;
+	transform: translateY(-50%);
+	font-size: 14px;
+	color: var(--aru-suave);
+	pointer-events: none;
+}
+
+.aru-procura input[type="search"] {
+	width: 100%;
+	height: 42px;
+	margin: 0;
+	padding: 0 16px 0 42px;
+	border: 1px solid var(--aru-linha);
+	border-radius: 200px;
+	background: #fff;
+	font-family: inherit;
+	font-size: 14px;
+	color: var(--aru-preto);
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.aru-procura input[type="search"]:focus {
+	border-color: var(--aru-magenta);
+	outline: none;
+	box-shadow: 0 0 0 3px rgba(244, 24, 146, 0.12);
+}
+
+/* A paginação, como a do back-office (.jar-paginacao, admin.css). */
+.aru-paginacao {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px 24px;
+	margin: 18px -28px -24px;
+	padding: 14px 28px;
+	border-top: 1px solid var(--aru-linha);
+	font-size: 14px;
+	color: var(--aru-suave);
+}
+
+.aru-paginacao__contagem {
+	margin: 0;
+	font-variant-numeric: tabular-nums;
+}
+
+.aru-paginacao__tamanho {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+
+.aru-paginacao__tamanho label {
+	margin: 0;
+	white-space: nowrap;
+	font-size: 14px;
+	font-weight: 400;
+	color: var(--aru-suave);
+}
+
+.aru-paginacao__tamanho select {
+	min-height: 36px;
+	margin: 0;
+	padding: 0 32px 0 14px;
+	border: 1px solid var(--aru-linha);
+	border-radius: 200px;
+	background-color: #fff;
+	font-family: inherit;
+	font-size: 14px;
+	color: var(--aru-preto);
+	cursor: pointer;
+}
+
+.aru-paginacao__tamanho select:focus {
+	border-color: var(--aru-magenta);
+	outline: none;
+}
+
+.aru-paginas {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-left: auto;
+}
+
+.aru-pagina {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 36px;
+	height: 36px;
+	padding: 0 8px;
+	border-radius: 200px;
+	font-size: 14px;
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+	color: var(--aru-preto);
+	text-decoration: none;
+	transition: background 0.15s ease, color 0.15s ease;
+}
+
+a.aru-pagina:hover,
+a.aru-pagina:focus-visible {
+	background: rgba(27, 42, 51, 0.06);
+	color: var(--aru-preto);
+	outline: none;
+}
+
+.aru-pagina.is-atual {
+	background: var(--aru-preto);
+	color: #fff;
+}
+
+.aru-pagina.is-inativa {
+	color: rgba(27, 42, 51, 0.25);
+}
+
+.aru-pagina.is-reticencias {
+	min-width: 20px;
+	padding: 0;
+	color: var(--aru-suave);
+}
+
+@media (max-width: 640px) {
+	.aru-procura {
+		flex-basis: 100%;
+	}
+
+	.aru-paginacao {
+		margin: 16px -18px -20px;
+		padding: 14px 18px;
+	}
+
+	.aru-paginas {
+		margin-left: 0;
+	}
+}
+
 /* ---------- Os meus dados ---------- */
 
 a.aru-pessoa {
