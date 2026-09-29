@@ -995,4 +995,40 @@
 			ecra.closest( '.aru-leitor__ecra' ).scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
 		} );
 	} );
+	/* ---------- ARU: a procura ---------- */
+
+	/*
+	 * A procura dos Documentos e dos Encontros (form.aru-procura) faz-se no
+	 * servidor, como no back-office (form[data-jar-pesquisa], assets/js/admin.js):
+	 * o formulário envia-se sozinho meio segundo depois de se parar de
+	 * escrever, e o campo volta com o foco e o cursor no fim, para se
+	 * continuar. O X do campo mostra logo todos; o Enter continua a servir.
+	 */
+	Array.prototype.forEach.call( document.querySelectorAll( 'form.aru-procura' ), function ( form ) {
+		var campo = form.querySelector( 'input[type="search"]' );
+		var inicial = campo.value;
+		var espera = null;
+
+		function enviar() {
+			var valor = campo.value.trim();
+
+			// Uma letra só não chega para procurar; apagar tudo, sim.
+			if ( valor === inicial.trim() || 1 === valor.length ) {
+				return;
+			}
+			form.submit();
+		}
+
+		campo.addEventListener( 'input', function () {
+			clearTimeout( espera );
+			espera = setTimeout( enviar, 500 );
+		} );
+
+		campo.addEventListener( 'search', enviar );
+
+		if ( inicial ) {
+			campo.focus();
+			campo.setSelectionRange( inicial.length, inicial.length );
+		}
+	} );
 }() );

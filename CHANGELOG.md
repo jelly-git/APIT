@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.74.1] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.38.1. O tema e a base de dados não mudam.
+
+### Corrigido
+- A procura da ARU, nos Encontros e nos Documentos, só procurava ao carregar
+  em Enter, e o X do campo não voltava a mostrar todos. Passa a procurar
+  sozinha meio segundo depois de se parar de escrever, como no back-office,
+  e o campo volta com o cursor no fim, para se continuar a escrever.
+
 ## [0.74.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.38.0. O tema e a base de dados não mudam.
