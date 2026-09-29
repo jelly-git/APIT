@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.61.1] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.25.1. O tema e a base de dados não mudam.
+
+### Alterado
+- Na grelha de marcações, o separador da pausa entre dois períodos deixa de
+  estar colado ao bloco de antes: o bloco que vem depois ganha espaço à
+  esquerda, e o tracejado fica a meio, com a mesma folga dos dois lados.
+
 ## [0.61.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.25.0, esquema da base de dados 11. O tema não

@@ -4216,8 +4216,28 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	white-space: normal;
 }
 
-/* Na grelha de marcações, a pausa entre dois períodos: uma separação antes do bloco que vem depois. */
+/*
+ * Na grelha de marcações, a pausa entre dois períodos: o bloco que vem depois
+ * ganha 24px à esquerda, e o tracejado fica a meio desse espaço — com a mesma
+ * folga para o bloco de antes e para o de depois.
+ */
 .jar-grelha-horas th.is-depois-pausa,
 .jar-grelha-horas td.is-depois-pausa {
-	border-left: 3px dashed rgba(27, 42, 51, 0.18);
+	position: relative;
+	padding-left: 24px;
+}
+
+.jar-grelha-horas th.is-depois-pausa::before,
+.jar-grelha-horas td.is-depois-pausa::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	/* A meio dos 24px de cá mais os 4px do border-spacing de lá. */
+	left: 10px;
+	border-left: 2px dashed rgba(27, 42, 51, 0.2);
+}
+
+.jar-grelha-horas th.is-depois-pausa::before {
+	bottom: 6px;
 }
