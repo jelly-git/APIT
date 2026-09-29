@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.71.1] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.35.1. O tema e a base de dados não mudam.
+
+### Alterado
+- No Início da ARU, o número das marcações passa a "As minhas marcações", e
+  a nota por baixo diz o que conta: "2 confirmadas · 1 por aprovar" (ou só
+  uma das partes), ou "Nenhuma marcação por vir" — antes "marcações por
+  vir", que não se percebia.
+
 ## [0.71.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.35.0. O tema e a base de dados não mudam.

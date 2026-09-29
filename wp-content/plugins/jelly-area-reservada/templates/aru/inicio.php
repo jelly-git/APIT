@@ -31,6 +31,7 @@ $vivas = array_values( array_filter( $marcacoes, function ( $m ) {
 $pendentes = count( array_filter( $proximas, function ( $m ) {
 	return 'pendente' === $m['estado'];
 } ) );
+$confirmadas = count( $proximas ) - $pendentes;
 
 $com_marcacao = count( array_filter( $eventos, function ( $e ) {
 	return $e['marcacoes'];
@@ -80,10 +81,22 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 		jelly_ar_area_url( 'documentos' )
 	);
 	$numero(
-		__( 'Marcações', 'jelly-area-reservada' ),
+		__( 'As minhas marcações', 'jelly-area-reservada' ),
 		count( $proximas ),
-		/* translators: %d: marcações por aprovar */
-		$pendentes ? sprintf( _n( '%d por aprovar', '%d por aprovar', $pendentes, 'jelly-area-reservada' ), $pendentes ) : __( 'marcações por vir', 'jelly-area-reservada' ),
+		// O que o número conta: as que vêm, confirmadas e por aprovar.
+		$proximas
+			? implode(
+				' · ',
+				array_filter(
+					[
+						/* translators: %d: marcações confirmadas */
+						$confirmadas ? sprintf( _n( '%d confirmada', '%d confirmadas', $confirmadas, 'jelly-area-reservada' ), $confirmadas ) : '',
+						/* translators: %d: marcações por aprovar */
+						$pendentes ? sprintf( _n( '%d por aprovar', '%d por aprovar', $pendentes, 'jelly-area-reservada' ), $pendentes ) : '',
+					]
+				)
+			)
+			: __( 'Nenhuma marcação por vir', 'jelly-area-reservada' ),
 		'fa-calendar-check',
 		'turquesa',
 		jelly_ar_area_url( 'marcacoes' )
