@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.70.2] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.34.2. O tema e a base de dados não mudam.
+
+### Alterado
+- No cartão do perfil de "Os meus dados", a nota sobre o nome e o e-mail
+  passa a centrada, como o resto do cartão.
+
 ## [0.70.1] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.34.1. O tema e a base de dados não mudam.

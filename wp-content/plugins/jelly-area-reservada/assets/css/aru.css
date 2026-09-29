@@ -2067,7 +2067,7 @@ a.aru-pessoa:focus-visible .aru-pessoa__texto strong {
 	font-size: 12px;
 	line-height: 1.5;
 	color: var(--aru-suave);
-	text-align: left;
+	text-align: center;
 }
 
 .aru-perfil__nota i {
