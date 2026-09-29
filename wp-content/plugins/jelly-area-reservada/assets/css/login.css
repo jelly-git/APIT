@@ -161,8 +161,9 @@ body.login {
 	font-weight: 400;
 }
 
-.login form p,
-.login form .user-pass-wrap {
+/* Com o #login: o WordPress tem `#login form p { margin-bottom: 0 }`, que ganha a qualquer seletor só de classes. */
+#login form p,
+#login form .user-pass-wrap {
 	margin-bottom: 20px;
 }
 
@@ -235,11 +236,13 @@ body.login {
 }
 
 /* Manter sessão: a caixa do pop-up. */
-.login .forgetmenot {
+/* O espaço até ao botão: com o #login, pela mesma razão dos parágrafos (acima). */
+#login form .forgetmenot {
 	float: none;
 	display: flex;
 	align-items: center;
 	gap: 10px;
+	margin-bottom: 28px;
 }
 
 .login .forgetmenot label {
@@ -269,7 +272,7 @@ body.login {
 }
 
 /* O botão do pop-up: a pílula magenta, em maiúsculas, preta ao passar. */
-.login .submit {
+#login form .submit {
 	margin-bottom: 0;
 }
 

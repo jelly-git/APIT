@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.63.1] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.27.1. O tema e a base de dados não mudam.
+
+### Corrigido
+- Na entrada do back-office, o botão estava colado a "Manter sessão", e os
+  campos sem espaço entre si: o WordPress anula as margens com
+  `#login form p`, que ganhava às nossas regras. Passam a ter 20px entre
+  campos e 28px até ao botão.
+
 ## [0.63.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.27.0. O tema e a base de dados não mudam.
