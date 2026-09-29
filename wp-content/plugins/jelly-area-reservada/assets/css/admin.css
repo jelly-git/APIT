@@ -4181,3 +4181,43 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	font: inherit;
 	font-size: 14px;
 }
+
+/*
+ * Os períodos de um dia, no formulário dos horários (templates/admin/mesas.php):
+ * um por linha, o início – o fim e o X; por baixo, "+ Período".
+ */
+.jar-periodos {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+}
+
+.jar-periodo {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.jar-periodo__ate {
+	color: var(--jar-suave);
+}
+
+.jar-periodo__tirar[hidden] {
+	display: none;
+}
+
+.jar .jar-periodos__mais {
+	padding-left: 6px;
+	padding-right: 10px;
+}
+
+.jar-horarios__periodos-texto {
+	white-space: normal;
+}
+
+/* Na grelha de marcações, a pausa entre dois períodos: uma separação antes do bloco que vem depois. */
+.jar-grelha-horas th.is-depois-pausa,
+.jar-grelha-horas td.is-depois-pausa {
+	border-left: 3px dashed rgba(27, 42, 51, 0.18);
+}

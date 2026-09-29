@@ -266,6 +266,34 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.61.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.25.0, esquema da base de dados 11. O tema não
+muda.
+
+### Adicionado
+- **Vários períodos de marcação no mesmo dia.** Nos horários de um evento,
+  cada dia passa a ter um ou mais períodos (por exemplo 10:00–12:00 e
+  13:00–15:00, para uma pausa de almoço), escolhidos livremente pela equipa:
+  "+ Período" acrescenta outro, e o X tira um (o último de um dia não se tira
+  — para não marcar num dia, tira-se o visto). Entre dois períodos não há
+  blocos, por isso não se marca nessa pausa.
+  - Os períodos de um dia não se podem sobrepor, e nenhuma marcação que já
+    exista pode ficar fora deles; em qualquer dos casos nada se grava.
+  - A leitura dos horários mostra os períodos de cada dia
+    ("10:00–12:00 · 13:00–15:00"), e o histórico também.
+  - Na grelha de marcações, o cabeçalho de cada dia diz os períodos, e o
+    primeiro bloco depois de uma pausa leva uma separação.
+  - O pop-up da marcação, a ARU e as verificações usam os blocos de todos os
+    períodos, sem mais nada a mudar.
+
+### Base de dados
+- `jelly_ar_evento_horarios` passa a ter uma linha por período: sai a chave
+  única `evento_dia` (um horário por dia) e entra a chave `evento_periodo`.
+  A migração corre sozinha no primeiro acesso ao wp-admin, também em
+  produção, e os horários que já existem ficam, cada um como o único período
+  do seu dia.
+
 ## [0.60.6] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.24.6. O tema e a base de dados não mudam.

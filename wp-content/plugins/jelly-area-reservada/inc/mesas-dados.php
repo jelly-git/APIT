@@ -6,13 +6,15 @@
  * marcações — o visto "Os associados podem marcar mesas neste evento":
  *
  *   jelly_ar_mesas            as mesas do evento: nome, localização, lugares
- *   jelly_ar_evento_horarios  um dia do evento por linha: a hora de início, a
- *                             de fim e o intervalo entre marcações
+ *   jelly_ar_evento_horarios  um período de um dia por linha: a hora de início,
+ *                             a de fim e o intervalo entre marcações. Um dia
+ *                             pode ter vários (10:00–12:00 e 13:00–15:00)
  *   jelly_ar_marcacoes        um pedido de um associado para uma mesa, num dia,
  *                             a uma hora (o início de um bloco)
  *
- * Os blocos saem do horário: de hora_inicio a hora_fim, de intervalo em
- * intervalo, e só os que cabem inteiros antes do fim. Um bloco de uma mesa
+ * Os blocos saem dos períodos do dia: em cada um, de hora_inicio a hora_fim,
+ * de intervalo em intervalo, e só os que cabem inteiros antes do fim; entre
+ * dois períodos não há blocos. Um bloco de uma mesa
  * leva tantos associados quantos os lugares dela; cada marcação ocupa um
  * lugar enquanto não for rejeitada nem cancelada (ocupa = 1). A chave única
  * da tabela impede o mesmo associado duas vezes no mesmo bloco; os lugares, e
@@ -95,32 +97,51 @@ function jelly_ar_horarios( $evento_id ) {
 
 	$r = [];
 	// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-	foreach ( $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jelly_ar_tabela( 'evento_horarios' ) . ' WHERE evento_id = %d ORDER BY dia', $evento_id ) ) as $l ) {
-		$r[ $l->dia ] = [
-			'inicio'    => substr( $l->hora_inicio, 0, 5 ),
-			'fim'       => substr( $l->hora_fim, 0, 5 ),
-			'intervalo' => (int) $l->intervalo,
-		];
+	foreach ( $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jelly_ar_tabela( 'evento_horarios' ) . ' WHERE evento_id = %d ORDER BY dia, hora_inicio', $evento_id ) ) as $l ) {
+		$periodo = [ 'inicio' => substr( $l->hora_inicio, 0, 5 ), 'fim' => substr( $l->hora_fim, 0, 5 ) ];
+
+		if ( ! isset( $r[ $l->dia ] ) ) {
+			$r[ $l->dia ] = $periodo + [ 'intervalo' => (int) $l->intervalo, 'periodos' => [] ];
+		}
+
+		// O início e o fim do dia são os do primeiro e do último período.
+		$r[ $l->dia ]['fim']        = $periodo['fim'];
+		$r[ $l->dia ]['periodos'][] = $periodo;
 	}
 
 	return $r;
 }
 
 /**
- * Os blocos de um horário: as horas de início (H:i) dos que cabem inteiros
- * entre o início e o fim.
+ * Os blocos de um dia: as horas de início (H:i) dos que cabem inteiros em cada
+ * período. Aceita também um só período (início, fim e intervalo, sem
+ * `periodos`).
  */
 function jelly_ar_blocos( $horario ) {
-	$inicio    = jelly_ar_minutos( $horario['inicio'] );
-	$fim       = jelly_ar_minutos( $horario['fim'] );
 	$intervalo = max( 5, (int) $horario['intervalo'] );
+	$periodos  = ! empty( $horario['periodos'] ) ? $horario['periodos'] : [ $horario ];
 	$blocos    = [];
 
-	for ( $m = $inicio; $m + $intervalo <= $fim; $m += $intervalo ) {
-		$blocos[] = sprintf( '%02d:%02d', intdiv( $m, 60 ), $m % 60 );
+	foreach ( $periodos as $p ) {
+		$fim = jelly_ar_minutos( $p['fim'] );
+
+		for ( $m = jelly_ar_minutos( $p['inicio'] ); $m + $intervalo <= $fim; $m += $intervalo ) {
+			$blocos[] = sprintf( '%02d:%02d', intdiv( $m, 60 ), $m % 60 );
+		}
 	}
 
 	return $blocos;
+}
+
+/**
+ * Os períodos de um dia por extenso: "10:00–12:00 · 13:00–15:00".
+ */
+function jelly_ar_periodos_texto( $horario ) {
+	$periodos = ! empty( $horario['periodos'] ) ? $horario['periodos'] : [ $horario ];
+
+	return implode( ' · ', array_map( function ( $p ) {
+		return $p['inicio'] . '–' . $p['fim'];
+	}, $periodos ) );
 }
 
 /**

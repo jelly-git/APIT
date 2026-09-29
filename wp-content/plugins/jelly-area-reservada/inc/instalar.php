@@ -43,7 +43,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Sobe quando o que jelly_ar_instalar() cria mudar, para ela voltar a correr.
-define( 'JELLY_AR_DB_VERSION', '10' );
+define( 'JELLY_AR_DB_VERSION', '11' );
 
 /**
  * O nome completo de uma tabela da AR: jelly_ar_tabela( 'eventos' ).
@@ -217,6 +217,11 @@ function jelly_ar_esquema() {
 			KEY evento_id (evento_id)
 		) {$c};",
 
+		/*
+		 * Um período de marcações de um dia por linha: um dia pode ter vários
+		 * (10:00–12:00 e 13:00–15:00), que não se sobrepõem — isso verifica-se
+		 * no PHP (jelly_ar_horarios_guardar(), inc/mesas.php).
+		 */
 		"CREATE TABLE {$t( 'evento_horarios' )} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			evento_id bigint(20) unsigned NOT NULL,
@@ -225,7 +230,7 @@ function jelly_ar_esquema() {
 			hora_fim time NOT NULL,
 			intervalo smallint(5) unsigned NOT NULL DEFAULT 30,
 			PRIMARY KEY  (id),
-			UNIQUE KEY evento_dia (evento_id,dia)
+			KEY evento_periodo (evento_id,dia,hora_inicio)
 		) {$c};",
 
 		/*
@@ -343,6 +348,18 @@ function jelly_ar_limpar_migracao() {
 
 	if ( $wpdb->get_var( "SHOW INDEX FROM {$marcacoes} WHERE Key_name = 'bloco'" ) ) { // phpcs:ignore WordPress.DB
 		$wpdb->query( "ALTER TABLE {$marcacoes} DROP INDEX bloco" ); // phpcs:ignore WordPress.DB
+	}
+
+	/*
+	 * Esquema 10 → 11: um dia tinha um só horário, pela chave única
+	 * `evento_dia`. Passou a poder ter vários períodos: o dbDelta já criou a
+	 * chave `evento_periodo`, que não é única, e a antiga sai aqui. Os
+	 * horários que já existem ficam, cada um como o único período do seu dia.
+	 */
+	$horarios = jelly_ar_tabela( 'evento_horarios' );
+
+	if ( $wpdb->get_var( "SHOW INDEX FROM {$horarios} WHERE Key_name = 'evento_dia'" ) ) { // phpcs:ignore WordPress.DB
+		$wpdb->query( "ALTER TABLE {$horarios} DROP INDEX evento_dia" ); // phpcs:ignore WordPress.DB
 	}
 }
 

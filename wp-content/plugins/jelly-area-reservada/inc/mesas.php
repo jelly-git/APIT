@@ -152,12 +152,14 @@ add_action( 'admin_post_jelly_ar_mesa_apagar', 'jelly_ar_mesa_apagar' );
 
 /**
  * Os horários de todos os dias do evento, num só formulário: cada dia com o
- * visto "há marcações neste dia", a hora de início e a de fim; o intervalo é
- * um para o evento todo.
+ * visto "há marcações neste dia" e um ou mais períodos, cada um com a hora de
+ * início e a de fim (inicio[dia][] e fim[dia][]); o intervalo é um para o
+ * evento todo. Os períodos de um dia não se podem sobrepor; entre eles há uma
+ * pausa sem marcações, do tamanho que a equipa quiser.
  *
  * Antes de gravar, confirma-se que nenhuma marcação fica de fora: o seu dia
- * continua marcado, a sua hora cabe entre o início e o fim, e cai num bloco
- * do intervalo novo. Se alguma ficar, nada se grava.
+ * continua marcado, a sua hora cabe num período, e cai num bloco do intervalo
+ * novo. Se alguma ficar, nada se grava.
  */
 function jelly_ar_horarios_guardar() {
 	global $wpdb;
@@ -166,8 +168,16 @@ function jelly_ar_horarios_guardar() {
 
 	// phpcs:disable WordPress.Security.NonceVerification.Missing -- verificado em jelly_ar_mesas_pedido()
 	$ativos    = isset( $_POST['dia'] ) ? array_map( 'sanitize_text_field', array_keys( (array) wp_unslash( $_POST['dia'] ) ) ) : [];
-	$inicios   = isset( $_POST['inicio'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['inicio'] ) ) : [];
-	$fins      = isset( $_POST['fim'] ) ? array_map( 'sanitize_text_field', (array) wp_unslash( $_POST['fim'] ) ) : [];
+	// [ dia => [ hora, hora… ] ]: um dia pode trazer vários períodos.
+	$lista     = function ( $campo ) {
+		$r = [];
+		foreach ( isset( $_POST[ $campo ] ) ? (array) wp_unslash( $_POST[ $campo ] ) : [] as $dia => $horas ) {
+			$r[ sanitize_text_field( $dia ) ] = array_values( array_map( 'sanitize_text_field', (array) $horas ) );
+		}
+		return $r;
+	};
+	$inicios   = $lista( 'inicio' );
+	$fins      = $lista( 'fim' );
 	$intervalo = isset( $_POST['intervalo'] ) ? absint( $_POST['intervalo'] ) : JELLY_AR_INTERVALO_OMISSAO;
 	// phpcs:enable
 
@@ -186,20 +196,45 @@ function jelly_ar_horarios_guardar() {
 			continue;
 		}
 
-		$inicio = $hora( $inicios[ $dia ] ?? '' );
-		$fim    = $hora( $fins[ $dia ] ?? '' );
+		$periodos = [];
+		$passo    = jelly_ar_passo_horas( $intervalo );
 
-		if ( ! $inicio || ! $fim || jelly_ar_minutos( $fim ) - jelly_ar_minutos( $inicio ) < $intervalo ) {
+		foreach ( $inicios[ $dia ] ?? [] as $i => $valor ) {
+			$inicio = $hora( $valor );
+			$fim    = $hora( $fins[ $dia ][ $i ] ?? '' );
+
+			if ( ! $inicio || ! $fim || jelly_ar_minutos( $fim ) - jelly_ar_minutos( $inicio ) < $intervalo ) {
+				$voltar( [ 'erro' => 'horario-horas', 'dia' => $dia ] );
+			}
+
+			// As horas vão ao passo do intervalo: com 30 minutos, 10:00 ou 10:30, e não 10:15.
+			if ( jelly_ar_minutos( $inicio ) % $passo || jelly_ar_minutos( $fim ) % $passo ) {
+				$voltar( [ 'erro' => 'horario-passo', 'dia' => $dia ] );
+			}
+
+			$periodos[] = [ 'inicio' => $inicio, 'fim' => $fim ];
+		}
+
+		if ( ! $periodos ) {
 			$voltar( [ 'erro' => 'horario-horas', 'dia' => $dia ] );
 		}
 
-		// As horas vão ao passo do intervalo: com 30 minutos, 10:00 ou 10:30, e não 10:15.
-		$passo = jelly_ar_passo_horas( $intervalo );
-		if ( jelly_ar_minutos( $inicio ) % $passo || jelly_ar_minutos( $fim ) % $passo ) {
-			$voltar( [ 'erro' => 'horario-passo', 'dia' => $dia ] );
+		// Pela hora, e cada um só depois de o anterior acabar: dois períodos não se sobrepõem.
+		usort( $periodos, function ( $a, $b ) {
+			return strcmp( $a['inicio'], $b['inicio'] );
+		} );
+		for ( $i = 1; $i < count( $periodos ); $i++ ) {
+			if ( $periodos[ $i ]['inicio'] < $periodos[ $i - 1 ]['fim'] ) {
+				$voltar( [ 'erro' => 'horario-sobrepostos', 'dia' => $dia ] );
+			}
 		}
 
-		$novos[ $dia ] = [ 'inicio' => $inicio, 'fim' => $fim, 'intervalo' => $intervalo ];
+		$novos[ $dia ] = [
+			'inicio'    => $periodos[0]['inicio'],
+			'fim'       => end( $periodos )['fim'],
+			'intervalo' => $intervalo,
+			'periodos'  => $periodos,
+		];
 	}
 
 	// Sem nenhum dia não há onde marcar: o ecrã já avisa, e aqui recusa-se o mesmo.
@@ -223,24 +258,27 @@ function jelly_ar_horarios_guardar() {
 	$tabela = jelly_ar_tabela( 'evento_horarios' );
 	$wpdb->delete( $tabela, [ 'evento_id' => $evento['id'] ], [ '%d' ] ); // phpcs:ignore WordPress.DB
 
+	// Uma linha por período.
 	foreach ( $novos as $dia => $h ) {
-		$wpdb->insert( // phpcs:ignore WordPress.DB
-			$tabela,
-			[
-				'evento_id'   => $evento['id'],
-				'dia'         => $dia,
-				'hora_inicio' => $h['inicio'] . ':00',
-				'hora_fim'    => $h['fim'] . ':00',
-				'intervalo'   => $h['intervalo'],
-			]
-		);
+		foreach ( $h['periodos'] as $p ) {
+			$wpdb->insert( // phpcs:ignore WordPress.DB
+				$tabela,
+				[
+					'evento_id'   => $evento['id'],
+					'dia'         => $dia,
+					'hora_inicio' => $p['inicio'] . ':00',
+					'hora_fim'    => $p['fim'] . ':00',
+					'intervalo'   => $h['intervalo'],
+				]
+			);
+		}
 	}
 
-	// Os horários que ficaram, dia a dia: "qua, 7 out 10:00–18:00 · qui, 8 out 09:00–12:30".
+	// Os horários que ficaram, dia a dia: "qua, 7 out 10:00–12:00, 13:00–15:00 · qui, 8 out 09:00–12:30".
 	$resumo = [];
 	foreach ( $novos as $dia => $h ) {
 		$d        = DateTime::createFromFormat( '!Y-m-d', $dia );
-		$resumo[] = ( $d ? jelly_ar_data( 'D, j M', $d->getTimestamp() ) : $dia ) . ' ' . $h['inicio'] . '–' . $h['fim'];
+		$resumo[] = ( $d ? jelly_ar_data( 'D, j M', $d->getTimestamp() ) : $dia ) . ' ' . str_replace( ' · ', ', ', jelly_ar_periodos_texto( $h ) );
 	}
 	jelly_ar_historico_gravar( 'horarios-gravados', [ 'evento_id' => $evento['id'], 'resumo' => implode( ' · ', $resumo ) ] );
 

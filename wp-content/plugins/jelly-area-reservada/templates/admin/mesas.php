@@ -65,6 +65,8 @@ $erros  = [
 	'horario-horas'     => sprintf( __( 'Em %s, a hora de fim tem de ser depois da de início, com espaço para pelo menos um bloco.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
 	/* translators: %s: dia */
 	'horario-passo'     => sprintf( __( 'Em %s, as horas de início e de fim têm de acompanhar o intervalo escolhido: com 30 minutos, por exemplo, 10:00 ou 10:30.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
+	/* translators: %s: dia */
+	'horario-sobrepostos' => sprintf( __( 'Em %s, dois períodos sobrepõem-se. Cada período tem de começar depois de o anterior acabar. Nada foi gravado.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
 	'horario-nenhum'    => __( 'Nenhum dia estava escolhido, por isso nada foi gravado. Para os associados poderem marcar, é necessário escolher pelo menos um dia do evento.', 'jelly-area-reservada' ),
 	/* translators: %s: dia */
 	'horario-marcacoes' => sprintf( __( 'Em %s há marcações que ficariam fora dos blocos novos. Nada foi gravado: o horário desse dia tem de continuar a incluí-las.', 'jelly-area-reservada' ), $dia_erro ? $dia_curto( $dia_erro ) : '—' ),
@@ -490,8 +492,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Dia', 'jelly-area-reservada' ); ?></th>
-							<th><?php esc_html_e( 'Início', 'jelly-area-reservada' ); ?></th>
-							<th><?php esc_html_e( 'Fim', 'jelly-area-reservada' ); ?></th>
+							<th><?php esc_html_e( 'Períodos', 'jelly-area-reservada' ); ?></th>
 							<th class="jar-tabela__num jar-tabela__centro"><?php esc_html_e( 'Blocos', 'jelly-area-reservada' ); ?></th>
 						</tr>
 					</thead>
@@ -501,11 +502,10 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 							<tr>
 								<td><strong><?php echo esc_html( $dia_curto( $dia ) ); ?></strong></td>
 								<?php if ( $h ) : ?>
-									<td><?php echo esc_html( $h['inicio'] ); ?></td>
-									<td><?php echo esc_html( $h['fim'] ); ?></td>
+									<td class="jar-horarios__periodos-texto"><?php echo esc_html( jelly_ar_periodos_texto( $h ) ); ?></td>
 									<td class="jar-tabela__num jar-tabela__centro"><?php echo (int) count( jelly_ar_blocos( $h ) ); ?></td>
 								<?php else : ?>
-									<td colspan="3" class="jar-horarios__sem"><?php esc_html_e( 'Sem horário: não se marca neste dia', 'jelly-area-reservada' ); ?></td>
+									<td colspan="2" class="jar-horarios__sem"><?php esc_html_e( 'Sem horário: não se marca neste dia', 'jelly-area-reservada' ); ?></td>
 								<?php endif; ?>
 							</tr>
 						<?php endforeach; ?>
@@ -542,8 +542,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 				<thead>
 					<tr>
 						<th><?php esc_html_e( 'Dia', 'jelly-area-reservada' ); ?></th>
-						<th><?php esc_html_e( 'Início', 'jelly-area-reservada' ); ?></th>
-						<th><?php esc_html_e( 'Fim', 'jelly-area-reservada' ); ?></th>
+						<th><?php esc_html_e( 'Períodos', 'jelly-area-reservada' ); ?></th>
 						<th class="jar-tabela__num jar-tabela__centro"><?php esc_html_e( 'Blocos', 'jelly-area-reservada' ); ?></th>
 					</tr>
 				</thead>
@@ -569,9 +568,29 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 									</span>
 								</label>
 							</td>
-							<?php // Início e fim, sempre em 24 horas ($select_hora, acima). ?>
-							<td><?php $select_hora( 'inicio[' . $dia . ']', $h['inicio'] ?? '10:00', __( 'Início', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ), jelly_ar_passo_horas( $intervalo ) ); ?></td>
-							<td><?php $select_hora( 'fim[' . $dia . ']', $h['fim'] ?? '18:00', __( 'Fim', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ), jelly_ar_passo_horas( $intervalo ) ); ?></td>
+							<?php
+							/*
+							 * Os períodos do dia, cada um com o início e o fim, sempre em 24
+							 * horas ($select_hora, acima). "+ Período" acrescenta outro, com
+							 * o modelo de baixo (assets/js/admin.js, data-jar-periodos); o
+							 * último período de um dia não se tira — para não marcar num dia,
+							 * tira-se o visto.
+							 */
+							$periodos = $h ? $h['periodos'] : [ [ 'inicio' => '10:00', 'fim' => '18:00' ] ];
+							?>
+							<td>
+								<div class="jar-periodos" data-jar-periodos data-dia="<?php echo esc_attr( $dia ); ?>" data-rotulo="<?php echo esc_attr( $dia_curto( $dia ) ); ?>">
+									<?php foreach ( $periodos as $p ) : ?>
+										<div class="jar-periodo" data-jar-periodo>
+											<?php $select_hora( 'inicio[' . $dia . '][]', $p['inicio'], __( 'Início', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ), jelly_ar_passo_horas( $intervalo ) ); ?>
+											<span class="jar-periodo__ate" aria-hidden="true">–</span>
+											<?php $select_hora( 'fim[' . $dia . '][]', $p['fim'], __( 'Fim', 'jelly-area-reservada' ) . ', ' . $dia_curto( $dia ), jelly_ar_passo_horas( $intervalo ) ); ?>
+											<button type="button" class="jar-acao jar-periodo__tirar" data-jar-periodo-tirar aria-label="<?php esc_attr_e( 'Tirar este período', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Tirar este período', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+										</div>
+									<?php endforeach; ?>
+									<button type="button" class="jar-btn jar-btn--pequeno jar-btn--discreto jar-btn--criar jar-periodos__mais" data-jar-periodo-mais><i class="fa-solid fa-plus" aria-hidden="true"></i> <?php esc_html_e( 'Período', 'jelly-area-reservada' ); ?></button>
+								</div>
+							</td>
 							<td class="jar-tabela__num jar-tabela__centro"><?php echo $h ? (int) count( jelly_ar_blocos( $h ) ) : '—'; ?></td>
 						</tr>
 					<?php endforeach; ?>
@@ -728,13 +747,21 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 				continue;
 			}
 			$blocos = jelly_ar_blocos( $horarios[ $dia ] );
+
+			// Os blocos que vêm logo a seguir a uma pausa entre dois períodos: levam uma separação.
+			$pausa = [];
+			foreach ( $blocos as $i => $b ) {
+				if ( $i && jelly_ar_minutos( $b ) - jelly_ar_minutos( $blocos[ $i - 1 ] ) > $horarios[ $dia ]['intervalo'] ) {
+					$pausa[ $b ] = true;
+				}
+			}
 			?>
 			<section class="jar-cartao jar-cartao--tabela" id="jar-dia-<?php echo esc_attr( $dia ); ?>">
 				<header class="jar-cartao__cabeca">
 					<div>
 						<h2><?php echo esc_html( $dia_curto( $dia ) ); ?></h2>
-						<?php /* translators: 1: início, 2: fim, 3: minutos */ ?>
-						<span class="jar-cartao__meta"><?php echo esc_html( sprintf( __( '%1$s – %2$s · blocos de %3$d minutos', 'jelly-area-reservada' ), $horarios[ $dia ]['inicio'], $horarios[ $dia ]['fim'], $horarios[ $dia ]['intervalo'] ) ); ?></span>
+						<?php /* translators: 1: os períodos do dia, 2: minutos */ ?>
+						<span class="jar-cartao__meta"><?php echo esc_html( sprintf( __( '%1$s · blocos de %2$d minutos', 'jelly-area-reservada' ), jelly_ar_periodos_texto( $horarios[ $dia ] ), $horarios[ $dia ]['intervalo'] ) ); ?></span>
 					</div>
 				</header>
 				<div class="jar-grelha-horas">
@@ -743,7 +770,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 							<tr>
 								<th scope="col"><?php esc_html_e( 'Mesa', 'jelly-area-reservada' ); ?></th>
 								<?php foreach ( $blocos as $b ) : ?>
-									<th scope="col"><?php echo esc_html( $b ); ?></th>
+									<th scope="col"<?php echo isset( $pausa[ $b ] ) ? ' class="is-depois-pausa" title="' . esc_attr__( 'Depois de uma pausa', 'jelly-area-reservada' ) . '"' : ''; ?>><?php echo esc_html( $b ); ?></th>
 								<?php endforeach; ?>
 							</tr>
 						</thead>
@@ -774,7 +801,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 												: __( 'Disponível', 'jelly-area-reservada' ) );
 										}
 										?>
-										<td>
+										<td<?php echo isset( $pausa[ $b ] ) ? ' class="is-depois-pausa"' : ''; ?>>
 											<button
 												type="button"
 												class="jar-bloco jar-bloco--<?php echo esc_attr( $estado ); ?><?php echo count( $lista ) >= $m['lugares'] ? ' is-cheio' : ''; ?>"

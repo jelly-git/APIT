@@ -322,6 +322,65 @@
 		} );
 	}
 
+	/*
+	 * Os períodos de cada dia (data-jar-periodos, templates/admin/mesas.php):
+	 * "+ Período" copia o último e põe-no a seguir — a começar uma hora depois
+	 * do fim dele, com duas horas —; o X tira um. O último período de um dia
+	 * não se tira: para não marcar num dia, tira-se o visto do dia.
+	 */
+	var minutosPeriodo = function ( v ) {
+		var p = String( v ).split( ':' );
+		return parseInt( p[ 0 ], 10 ) * 60 + parseInt( p[ 1 ], 10 );
+	};
+	// Escolhe no select a opção mais perto de m (as opções vão ao passo do intervalo).
+	var escolherHora = function ( select, m ) {
+		var melhor = null;
+		Array.prototype.forEach.call( select.options, function ( o ) {
+			if ( null === melhor || Math.abs( minutosPeriodo( o.value ) - m ) < Math.abs( minutosPeriodo( melhor.value ) - m ) ) {
+				melhor = o;
+			}
+		} );
+		if ( melhor ) {
+			select.value = melhor.value;
+		}
+	};
+
+	Array.prototype.forEach.call( raiz.querySelectorAll( '[data-jar-periodos]' ), function ( caixa ) {
+		var acertar = function () {
+			var periodos = caixa.querySelectorAll( '[data-jar-periodo]' );
+			Array.prototype.forEach.call( periodos, function ( p ) {
+				p.querySelector( '[data-jar-periodo-tirar]' ).hidden = 1 === periodos.length;
+			} );
+		};
+
+		caixa.addEventListener( 'click', function ( e ) {
+			var tirar = e.target.closest( '[data-jar-periodo-tirar]' );
+			var mais = e.target.closest( '[data-jar-periodo-mais]' );
+
+			if ( tirar ) {
+				tirar.closest( '[data-jar-periodo]' ).remove();
+				acertar();
+				return;
+			}
+
+			if ( mais ) {
+				var todos = caixa.querySelectorAll( '[data-jar-periodo]' );
+				var ultimo = todos[ todos.length - 1 ];
+				var novo = ultimo.cloneNode( true );
+				var selects = novo.querySelectorAll( 'select' );
+				var fimAnterior = minutosPeriodo( ultimo.querySelectorAll( 'select' )[ 1 ].value );
+
+				escolherHora( selects[ 0 ], fimAnterior + 60 );
+				escolherHora( selects[ 1 ], fimAnterior + 180 );
+				caixa.insertBefore( novo, mais );
+				acertar();
+				selects[ 0 ].focus();
+			}
+		} );
+
+		acertar();
+	} );
+
 	var intervaloHoras = raiz.querySelector( '[data-jar-intervalo]' );
 
 	if ( intervaloHoras ) {
