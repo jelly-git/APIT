@@ -43,9 +43,10 @@ const JELLY_AR_AREA_CAMINHO = 'area-reservada';
  * O endereço da ARU, ou de uma das suas páginas.
  */
 function jelly_ar_area_url( $secao = '' ) {
-	$secao = is_string( $secao ) ? $secao : '';
+	// Só as secções que existem: outra coisa qualquer dá o Início, e nunca entra no endereço.
+	$secao = in_array( $secao, [ 'eventos', 'marcacoes', 'documentos', 'perfil' ], true ) ? $secao : '';
 
-	return home_url( '/' . JELLY_AR_AREA_CAMINHO . '/' . ( $secao && 'inicio' !== $secao ? $secao . '/' : '' ) );
+	return home_url( '/' . JELLY_AR_AREA_CAMINHO . '/' . ( $secao ? $secao . '/' : '' ) );
 }
 
 /**
@@ -232,7 +233,11 @@ add_action( 'wp_enqueue_scripts', 'jelly_ar_area_estilos', 25 );
 /* ---------- Ligar o login e os botões à ARU ---------- */
 
 // Ao entrar (e ao tentar abrir o wp-admin), o associado vem para a sua área.
-add_filter( 'jelly_ar_destino_associado', 'jelly_ar_area_url' );
+// Uma função própria, e não jelly_ar_area_url(): o filtro passa-lhe o destino antigo, que não é uma secção.
+function jelly_ar_area_destino() {
+	return jelly_ar_area_url();
+}
+add_filter( 'jelly_ar_destino_associado', 'jelly_ar_area_destino' );
 
 // Com sessão, os botões "Área Reservada" do tema levam à ARU; sem sessão, abrem o pop-up.
 function jelly_ar_area_botoes( $url ) {

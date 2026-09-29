@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.60.5] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.24.5. O tema e a base de dados não mudam.
+
+### Corrigido
+- Depois de entrar, o associado ia para um endereço partido
+  (`/area-reservada/https:/…/`): o filtro do destino passava o destino antigo
+  à função do endereço da ARU, que o tomava por uma secção. O filtro tem a sua
+  própria função, e o endereço da ARU só aceita as secções que existem. O
+  mesmo afetava quem tentava abrir o wp-admin.
+
 ## [0.60.4] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.24.4. O tema e a base de dados não mudam.
