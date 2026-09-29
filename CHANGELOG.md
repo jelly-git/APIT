@@ -266,6 +266,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.69.1] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.33.1. O tema e a base de dados não mudam.
+
+### Alterado
+- **Os Documentos da ARU com o desenho das Marcações**: agrupados por
+  categoria, cada grupo com a categoria em cabeça (o ícone, o nome, quantos
+  documentos tem, e "Ver só esta") e uma linha por documento, em colunas
+  alinhadas — o documento (ícone, título, "Novo", descrição), o tipo e o
+  tamanho, a data, e "Descarregar". A procura, os filtros e a paginação
+  ficam; os grupos fazem-se com os documentos da página.
+- **A paginação só aparece com mais de 10**, o menor "Por página": com menos,
+  cabem todos numa página. Nos Documentos da ARU e em todas as listas do
+  back-office (Documentos, Utilizadores, Eventos, Aprovações).
+
 ## [0.69.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.33.0. O tema e a base de dados não mudam.

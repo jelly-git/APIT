@@ -221,6 +221,11 @@ class Jelly_AR_Lista {
 	 * páginas — a primeira, a última e duas de cada lado da atual.
 	 */
 	public function paginacao() {
+		// Com tantos ou menos do que o menor "Por página" (10), cabem todos numa página: não há paginação.
+		if ( $this->total <= min( self::TAMANHOS ) ) {
+			return;
+		}
+
 		$pagina = $this->valores['pagina'];
 		$numeros = [];
 

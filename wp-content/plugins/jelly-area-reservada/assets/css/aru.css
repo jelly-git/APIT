@@ -1880,6 +1880,108 @@ a.aru-pagina:focus-visible {
 	}
 }
 
+/* ---------- Documentos: como nas Marcações ---------- */
+
+/* O ícone da categoria, no lugar da data dos grupos das Marcações. */
+.aru-grupo__icone {
+	flex: none;
+	display: grid;
+	place-items: center;
+	width: 48px;
+	height: 48px;
+	border-radius: 12px;
+	background: linear-gradient(135deg, var(--aru-magenta), var(--aru-roxo));
+	font-size: 18px;
+	color: #fff;
+}
+
+/* Uma linha: o documento (ícone, título, descrição), o tipo, a data e o botão. */
+.aru-linha--documento {
+	grid-template-columns: minmax(0, 2.6fr) minmax(90px, 0.7fr) minmax(110px, 0.8fr) auto;
+}
+
+.aru-linha__documento {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	min-width: 0;
+}
+
+.aru-linha__documento .aru-documento__icone {
+	width: 38px;
+	height: 38px;
+	border-radius: 10px;
+	font-size: 16px;
+}
+
+.aru-linha__documento .aru-documento__icone i {
+	width: auto;
+	margin: 0;
+	color: inherit;
+}
+
+.aru-linha__texto {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.aru-linha__texto strong {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.35;
+}
+
+.aru-linha__texto small {
+	overflow: hidden;
+	font-size: 13px;
+	color: var(--aru-suave);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.aru-linha__tipo,
+.aru-linha__data {
+	font-size: 13px;
+	color: var(--aru-suave);
+	white-space: nowrap;
+}
+
+.aru-linha--documento .aru-botao {
+	justify-self: end;
+}
+
+/* O ícone do botão fica o do botão: a regra dos ícones das linhas (magenta) apagava-o. */
+.aru-linha .aru-botao i {
+	width: auto;
+	margin: 0;
+	color: inherit;
+}
+
+@media (max-width: 640px) {
+	.aru-linha--documento {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 6px;
+	}
+
+	.aru-linha--documento .aru-linha__tipo,
+	.aru-linha--documento .aru-linha__data {
+		grid-column: auto;
+		grid-row: auto;
+		padding-left: 52px;
+	}
+
+	.aru-linha--documento .aru-botao {
+		justify-self: start;
+		margin-left: 52px;
+	}
+}
+
 /* ---------- Os meus dados ---------- */
 
 a.aru-pessoa {

@@ -108,32 +108,66 @@ $novo_desde = time() - 30 * DAY_IN_SECONDS;
 			</p>
 		</div>
 	<?php else : ?>
-		<ul class="aru-documentos">
-			<?php foreach ( $mostrar as $d ) : ?>
-				<li class="aru-documento">
-					<span class="aru-documento__icone aru-tipo--<?php echo esc_attr( $d['tipo'] ); ?>"><i class="fa-solid <?php echo esc_attr( jelly_ar_aru_icone( $d['tipo'] ) ); ?>" aria-hidden="true"></i></span>
-					<span class="aru-documento__texto">
-						<strong>
-							<?php echo esc_html( $d['titulo'] ); ?>
-							<?php if ( $d['ts'] >= $novo_desde ) : ?>
-								<em class="aru-novo"><?php esc_html_e( 'Novo', 'jelly-area-reservada' ); ?></em>
-							<?php endif; ?>
-						</strong>
-						<?php if ( $d['descricao'] ) : ?>
-							<span><?php echo esc_html( $d['descricao'] ); ?></span>
+		<?php
+		/*
+		 * Como nas Marcações: agrupados pela categoria (os desta página), cada
+		 * grupo com a categoria em cabeça e uma linha por documento — o título,
+		 * o tipo e o tamanho, a data, e o botão para descarregar.
+		 */
+		$grupos = [];
+		foreach ( $mostrar as $d ) {
+			$grupos[ $d['categoria'] ][] = $d;
+		}
+		$na_categoria = array_count_values( wp_list_pluck( $lista, 'categoria' ) );
+		?>
+		<div class="aru-grupos">
+			<?php foreach ( $grupos as $cat => $docs ) : ?>
+				<article class="aru-grupo">
+					<header class="aru-grupo__cabeca">
+						<span class="aru-grupo__icone"><i class="fa-solid fa-folder-open" aria-hidden="true"></i></span>
+						<div class="aru-grupo__evento">
+							<h3><?php echo esc_html( $categorias[ $cat ] ?? __( 'Sem categoria', 'jelly-area-reservada' ) ); ?></h3>
+							<?php /* translators: %d: documentos na categoria */ ?>
+							<small><?php echo esc_html( sprintf( _n( '%d documento', '%d documentos', $na_categoria[ $cat ] ?? count( $docs ), 'jelly-area-reservada' ), $na_categoria[ $cat ] ?? count( $docs ) ) ); ?></small>
+						</div>
+						<?php if ( ! $filtro && count( $categorias ) > 1 && isset( $categorias[ $cat ] ) ) : ?>
+							<a class="aru-ligacao" href="<?php echo esc_url( $url( [ 'categoria' => $cat, 'pagina' => 1 ] ) ); ?>"><?php esc_html_e( 'Ver só esta', 'jelly-area-reservada' ); ?> <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
 						<?php endif; ?>
-						<small><?php echo esc_html( implode( ' · ', array_filter( [ $d['categoria_nome'], strtoupper( $d['tipo'] ) . ' ' . size_format( $d['tamanho'], 1 ), $d['ts'] ? jelly_ar_data( 'j M Y', $d['ts'] ) : '' ] ) ) ); ?></small>
-					</span>
-					<?php /* translators: %s: título do documento */ ?>
-					<a class="aru-botao aru-botao--pequeno" href="<?php echo esc_url( jelly_ar_url_descarregar( $d['id'] ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Descarregar %s', 'jelly-area-reservada' ), $d['titulo'] ) ); ?>">
-						<i class="fa-solid fa-download" aria-hidden="true"></i> <span><?php esc_html_e( 'Descarregar', 'jelly-area-reservada' ); ?></span>
-					</a>
-				</li>
+					</header>
+
+					<ul class="aru-grupo__lista">
+						<?php foreach ( $docs as $d ) : ?>
+							<li class="aru-linha aru-linha--documento">
+								<span class="aru-linha__documento">
+									<span class="aru-documento__icone aru-tipo--<?php echo esc_attr( $d['tipo'] ); ?>"><i class="fa-solid <?php echo esc_attr( jelly_ar_aru_icone( $d['tipo'] ) ); ?>" aria-hidden="true"></i></span>
+									<span class="aru-linha__texto">
+										<strong>
+											<?php echo esc_html( $d['titulo'] ); ?>
+											<?php if ( $d['ts'] >= $novo_desde ) : ?>
+												<em class="aru-novo"><?php esc_html_e( 'Novo', 'jelly-area-reservada' ); ?></em>
+											<?php endif; ?>
+										</strong>
+										<?php if ( $d['descricao'] && $d['descricao'] !== $d['titulo'] ) : ?>
+											<small><?php echo esc_html( $d['descricao'] ); ?></small>
+										<?php endif; ?>
+									</span>
+								</span>
+								<span class="aru-linha__tipo"><?php echo esc_html( strtoupper( $d['tipo'] ) . ' · ' . size_format( $d['tamanho'], 1 ) ); ?></span>
+								<span class="aru-linha__data"><i class="fa-regular fa-calendar" aria-hidden="true"></i> <?php echo esc_html( $d['ts'] ? jelly_ar_data( 'j M Y', $d['ts'] ) : '—' ); ?></span>
+								<?php /* translators: %s: título do documento */ ?>
+								<a class="aru-botao aru-botao--pequeno" href="<?php echo esc_url( jelly_ar_url_descarregar( $d['id'] ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Descarregar %s', 'jelly-area-reservada' ), $d['titulo'] ) ); ?>">
+									<i class="fa-solid fa-download" aria-hidden="true"></i> <span><?php esc_html_e( 'Descarregar', 'jelly-area-reservada' ); ?></span>
+								</a>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				</article>
 			<?php endforeach; ?>
-		</ul>
+		</div>
 	<?php endif; ?>
 
-	<?php if ( $total ) : ?>
+	<?php // Só com mais de 10 (o menor "Por página"): com menos, cabem todos numa página. ?>
+	<?php if ( $total > 10 ) : ?>
 		<?php
 		$paginacao = [
 			'total'      => $total,
