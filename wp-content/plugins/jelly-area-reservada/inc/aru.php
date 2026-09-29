@@ -13,9 +13,9 @@
  *   /area-reservada/documentos/    os documentos publicados, para descarregar
  *   /area-reservada/perfil/        os meus dados: o telefone, a empresa e a palavra-passe
  *
- * Os eventos são os publicados para a Área Reservada: os "só Área reservada"
- * e os "Site e Área reservada". Os "só site" não aparecem aqui, e nada na ARU
- * leva ao calendário do site.
+ * Os eventos são os publicados que aceitam marcações (o visto "Os associados
+ * podem marcar mesas neste evento"): é isso, e só isso, que põe um evento na
+ * Área Reservada. Nada na ARU leva ao calendário do site.
  *
  * Tem o seu próprio desenho (templates/aru/, assets/css/aru.css), sem o
  * cabeçalho e o rodapé do site, mas com o wp_head() e o wp_footer(): as
@@ -319,8 +319,8 @@ function jelly_ar_aru_marcacoes( $user_id ) {
 	return $lista;
 }
 
-// Os eventos que a ARU mostra: publicados, e para a Área Reservada (só AR, ou site e AR).
-const JELLY_AR_ARU_ONDE = "e.estado = 'publicado' AND e.onde IN ('reservada', 'ambos')";
+// Os eventos que a ARU mostra: publicados e que aceitam marcações.
+const JELLY_AR_ARU_ONDE = "e.estado = 'publicado' AND e.marcacoes = 1";
 
 /**
  * Os eventos da Área Reservada que ainda não acabaram, do mais próximo. Com
@@ -340,7 +340,7 @@ function jelly_ar_aru_eventos( $passados = false, $limite = 0 ) {
 
 /**
  * Um evento da Área Reservada pelo id, ou null: não existe, não está
- * publicado, ou é só do site.
+ * publicado, ou não aceita marcações.
  */
 function jelly_ar_aru_evento( $id ) {
 	global $wpdb;

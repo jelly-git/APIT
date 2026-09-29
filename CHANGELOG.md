@@ -266,6 +266,23 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.62.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.26.0. O tema e a base de dados não mudam.
+
+### Alterado
+- **Onde aparece cada evento tem uma regra só.** No site (calendário e
+  pesquisa) aparecem todos os eventos publicados. Na Área Reservada (a ARU)
+  aparecem os que **aceitam marcações** — e é só isso que decide.
+  - Sai a opção "Onde aparece" (só no site, só na área reservada, os dois):
+    do formulário do evento, da página do evento, do filtro e da coluna da
+    lista. Junto das marcações, uma nota diz o que o visto faz.
+  - Na lista, o número "Na Área Reservada" conta os próximos com marcações,
+    e o quarto passa a "Com documentos".
+  - **Os eventos que estavam "só na área reservada" passam a aparecer no
+    calendário do site**; os que não aceitam marcações saem da ARU.
+  - A coluna `onde` fica na tabela, sem uso, com o que lá estava.
+
 ## [0.61.2] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.25.2. O tema e a base de dados não mudam.

@@ -1,7 +1,7 @@
 <?php
 /**
  * Um evento que não está na Área Reservada (não existe, não está publicado, ou
- * é só do site): a mesma moldura, com o caminho de volta. Responde 404.
+ * não aceita marcações): a mesma moldura, com o caminho de volta. Responde 404.
  */
 
 defined( 'ABSPATH' ) || exit;

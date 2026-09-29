@@ -1,6 +1,6 @@
 <?php
 /**
- * Os eventos na ARU: os da Área Reservada (só AR, e site e AR) que vêm, e os
+ * Os eventos na ARU: os que aceitam marcações (os da Área Reservada) que vêm, e os
  * últimos que já passaram. Cada um leva à sua página na ARU
  * (templates/aru/evento.php), nunca ao calendário do site.
  *

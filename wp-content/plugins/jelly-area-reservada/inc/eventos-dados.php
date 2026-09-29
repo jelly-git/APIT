@@ -7,11 +7,15 @@
  * site (o shortcode [apit_calendario] do tema) e a pesquisa do site leem daqui,
  * por jelly_ar_eventos_calendario*() e jelly_ar_eventos_pesquisa(). O tema não
  * sabe onde os eventos estão guardados, e o WordPress já não tem eventos.
+ *
+ * Onde cada evento aparece: no site, todos os publicados; na Área Reservada
+ * (a ARU, inc/aru.php), os que aceitam marcações. A escolha "Onde aparece"
+ * (site, área reservada, os dois) saiu; a coluna `onde` fica na tabela, sem
+ * uso, para não se perder o que lá estava.
  */
 
 defined( 'ABSPATH' ) || exit;
 
-const JELLY_AR_EVENTO_ONDE    = [ 'site', 'reservada', 'ambos' ];
 const JELLY_AR_EVENTO_ESTADOS = [ 'publicado', 'rascunho', 'lixo' ];
 
 /* ---------- Ler ---------- */
@@ -57,7 +61,6 @@ function jelly_ar_evento_da_linha( $l ) {
 		'fim'            => $fim && $fim > $inicio ? $fim : $inicio,
 		'local'          => $l->local,
 		'acao_texto'     => $l->botao_texto,
-		'onde'           => in_array( $l->onde, JELLY_AR_EVENTO_ONDE, true ) ? $l->onde : 'site',
 		'marcacoes'      => '1' === (string) $l->marcacoes,
 		'estado'         => $l->estado,
 	];
@@ -150,8 +153,7 @@ function jelly_ar_botao_do_evento( $evento ) {
  * o que entra, por que ordem e com que dados é decidido no back-office da
  * Área Reservada:
  *
- * - só os publicados e com "Onde aparece" no site (Só no site, ou No site e
- *   na área reservada);
+ * - todos os publicados;
  * - até ao fim do último dia: o Fim do evento, ou o Início se não tiver fim;
  * - do mais próximo para o mais distante.
  *
@@ -167,7 +169,7 @@ function jelly_ar_eventos_calendario_todos() {
 
 	$linhas = jelly_ar_eventos_consulta(
 		$wpdb->prepare(
-			"WHERE e.estado = 'publicado' AND e.onde IN ('site', 'ambos') AND COALESCE(e.fim, e.inicio) >= %s ORDER BY e.inicio, e.id",
+			"WHERE e.estado = 'publicado' AND COALESCE(e.fim, e.inicio) >= %s ORDER BY e.inicio, e.id",
 			current_time( 'Y-m-d' )
 		)
 	);
@@ -248,7 +250,7 @@ function jelly_ar_eventos_pesquisa( $termo, $limite = 50, $por_pagina = 12 ) {
 	$hoje   = current_time( 'Y-m-d' );
 	$linhas = jelly_ar_eventos_consulta(
 		$wpdb->prepare(
-			"WHERE e.estado = 'publicado' AND e.onde IN ('site', 'ambos') AND (e.titulo LIKE %s OR e.resumo LIKE %s OR e.local LIKE %s)
+			"WHERE e.estado = 'publicado' AND (e.titulo LIKE %s OR e.resumo LIKE %s OR e.local LIKE %s)
 			ORDER BY COALESCE(e.fim, e.inicio) < %s, CASE WHEN COALESCE(e.fim, e.inicio) >= %s THEN e.inicio END, e.inicio DESC, e.id
 			LIMIT %d",
 			$like,

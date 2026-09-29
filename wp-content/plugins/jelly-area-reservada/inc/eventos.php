@@ -4,9 +4,9 @@
  *
  * Os eventos estão na tabela jelly_ar_eventos (inc/instalar.php) e leem-se
  * por inc/eventos-dados.php, de onde também o calendário e a pesquisa do site
- * os tiram. Um evento só, para o site e para a AR; o que o distingue:
+ * os tiram. Um evento só, para o site e para a AR: no site aparecem todos os
+ * publicados; na Área Reservada, os que aceitam marcações. O que os distingue:
  *
- *   onde        site | reservada | ambos — onde aparece
  *   fim         o último dia; sem ele, o evento é de um dia. Com ele, fica no
  *               calendário até ao fim desse dia, e a linha das datas mostra o
  *               intervalo ("6–9 out 2026")
@@ -22,14 +22,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-function jelly_ar_evento_onde_nomes() {
-	return [
-		'site'      => __( 'Só no site', 'jelly-area-reservada' ),
-		'reservada' => __( 'Só na área reservada', 'jelly-area-reservada' ),
-		'ambos'     => __( 'No site e na área reservada', 'jelly-area-reservada' ),
-	];
-}
-
 // Ler os eventos e as categorias: inc/eventos-dados.php (jelly_ar_eventos_todos(), jelly_ar_evento(), jelly_ar_evento_categorias()).
 
 /* ---------- A lista ---------- */
@@ -39,7 +31,6 @@ function jelly_ar_eventos_lista() {
 		'eventos',
 		[
 			'quando'    => 'proximos',
-			'onde'      => '',
 			'categoria' => '',
 		],
 		'data',
@@ -48,7 +39,6 @@ function jelly_ar_eventos_lista() {
 		},
 		[
 			'quando'    => [ 'proximos', 'passados', 'todos' ],
-			'onde'      => JELLY_AR_EVENTO_ONDE,
 			'categoria' => array_keys( jelly_ar_evento_categorias() ),
 		]
 	);
@@ -62,9 +52,6 @@ function jelly_ar_eventos_filtrar( $eventos, $pedido ) {
 	$hoje = current_time( 'Ymd' );
 
 	$encontrados = array_values( array_filter( $eventos, function ( $e ) use ( $pedido ) {
-		if ( $pedido['onde'] && $e['onde'] !== $pedido['onde'] ) {
-			return false;
-		}
 		if ( $pedido['categoria'] && $e['categoria'] !== $pedido['categoria'] ) {
 			return false;
 		}
@@ -137,11 +124,10 @@ function jelly_ar_evento_guardar() {
 	$categoria  = isset( $_POST['categoria'] ) ? absint( $_POST['categoria'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	$inicio     = $data( 'inicio' );
 	$fim        = $data( 'fim' );
-	$onde       = $texto( 'onde' );
 	$resumo     = isset( $_POST['resumo'] ) ? sanitize_textarea_field( wp_unslash( $_POST['resumo'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
 	$categorias = wp_list_pluck( jelly_ar_evento_categorias(), 'id' );
 
-	if ( '' === $titulo || '' === $inicio || ! in_array( $categoria, $categorias, true ) || ! in_array( $onde, JELLY_AR_EVENTO_ONDE, true ) ) {
+	if ( '' === $titulo || '' === $inicio || ! in_array( $categoria, $categorias, true ) ) {
 		$voltar( 'campos' );
 	}
 
@@ -157,7 +143,6 @@ function jelly_ar_evento_guardar() {
 		'inicio'        => $inicio,
 		'fim'           => $fim && $fim !== $inicio ? $fim : null,
 		'local'         => mb_substr( $texto( 'local' ), 0, 150 ),
-		'onde'          => $onde,
 		'marcacoes'     => empty( $_POST['marcacoes'] ) ? 0 : 1, // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		'botao_texto'   => mb_substr( $texto( 'acao_texto' ), 0, 60 ),
 		'atualizado_em' => $agora,

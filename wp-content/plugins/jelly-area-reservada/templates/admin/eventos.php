@@ -5,18 +5,15 @@
  *
  * Os eventos são os do calendário do site (inc/eventos.php). Por onde a área
  * se liga às outras:
- * - "Onde aparece" decide se o evento está no calendário do site, só na área
- *   reservada, ou nos dois — o tema respeita-o no calendário e na pesquisa;
- * - um evento que aceita marcações ganha mesas e horários de 30 minutos, na
- *   área Mesas e horários, e os pedidos dos associados vão às Aprovações —
- *   ambas por chegar;
- * - o Calendário da área reservada mostra os eventos que lá aparecem.
+ * - todos os publicados aparecem no calendário e na pesquisa do site;
+ * - "aceita marcações" é o que põe o evento na Área Reservada (a ARU): o
+ *   evento ganha mesas e horários, na área Mesas e marcações, e os pedidos
+ *   dos associados vão às Aprovações.
  */
 
 defined( 'ABSPATH' ) || exit;
 
 $categorias = jelly_ar_evento_categorias();
-$onde_nomes = jelly_ar_evento_onde_nomes();
 $id         = isset( $_GET['evento'] ) ? absint( $_GET['evento'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $novo       = ! empty( $_GET['novo'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 $evento     = $id ? jelly_ar_evento( $id ) : null;
@@ -39,7 +36,7 @@ $avisos = [
 	'categoria-apagada'    => __( 'Categoria apagada.', 'jelly-area-reservada' ),
 ];
 $erros  = [
-	'campos' => __( 'Falta o título, a data de início, a categoria ou onde aparece.', 'jelly-area-reservada' ),
+	'campos' => __( 'Falta o título, a data de início ou a categoria.', 'jelly-area-reservada' ),
 	'datas'  => __( 'A data de fim não pode ser antes da de início.', 'jelly-area-reservada' ),
 	'falhou' => __( 'O evento não foi guardado. Tente outra vez.', 'jelly-area-reservada' ),
 	'categoria-nome'   => __( 'Escreva o nome da categoria.', 'jelly-area-reservada' ),
@@ -57,28 +54,6 @@ $mostrar_aviso = function () use ( $aviso, $erro, $avisos, $erros ) {
 	}
 };
 
-// Onde aparece, como etiqueta: um ícone para o site, outro para a área, os dois juntos.
-$onde = function ( $valor, $longo = false ) use ( $onde_nomes ) {
-	$icones = [
-		'site'      => '<i class="fa-solid fa-globe" aria-hidden="true"></i>',
-		'reservada' => '<i class="fa-solid fa-lock" aria-hidden="true"></i>',
-		'ambos'     => '<i class="fa-solid fa-globe" aria-hidden="true"></i><i class="fa-solid fa-lock" aria-hidden="true"></i>',
-	];
-	$curtos = [
-		'site'      => __( 'Site', 'jelly-area-reservada' ),
-		'reservada' => __( 'Área reservada', 'jelly-area-reservada' ),
-		'ambos'     => __( 'Site e Área reservada', 'jelly-area-reservada' ),
-	];
-
-	printf(
-		'<span class="jar-onde jar-onde--%1$s" title="%2$s">%3$s %4$s</span>',
-		esc_attr( $valor ),
-		esc_attr( $onde_nomes[ $valor ] ),
-		$icones[ $valor ], // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- marcação fixa acima
-		esc_html( $longo ? $onde_nomes[ $valor ] : $curtos[ $valor ] )
-	);
-};
-
 // A capa: o gradiente da categoria, o mesmo do cartão do calendário. Só a cor, sem texto.
 $capa = function ( $e, $grande = false ) {
 	printf(
@@ -93,7 +68,7 @@ $capa = function ( $e, $grande = false ) {
  * Os campos do evento, iguais no novo e na edição. As datas vêm como Ymd e o
  * <input type="date"> quer Y-m-d.
  */
-$campos = function ( $e ) use ( $categorias, $onde_nomes, $gerir_categorias ) {
+$campos = function ( $e ) use ( $categorias, $gerir_categorias ) {
 	$data = function ( $ymd ) {
 		return $ymd ? substr( $ymd, 0, 4 ) . '-' . substr( $ymd, 4, 2 ) . '-' . substr( $ymd, 6, 2 ) : '';
 	};
@@ -149,21 +124,12 @@ $campos = function ( $e ) use ( $categorias, $onde_nomes, $gerir_categorias ) {
 	</div>
 
 	<fieldset class="jar-opcoes">
-		<legend><?php esc_html_e( 'Onde aparece', 'jelly-area-reservada' ); ?> <i aria-hidden="true">*</i></legend>
-		<?php foreach ( $onde_nomes as $valor => $nome ) : ?>
-			<label class="jar-caixa">
-				<input type="radio" name="onde" value="<?php echo esc_attr( $valor ); ?>" <?php checked( $valor, $e['onde'] ?? 'ambos' ); ?> required>
-				<span><?php echo esc_html( $nome ); ?></span>
-			</label>
-		<?php endforeach; ?>
-	</fieldset>
-
-	<fieldset class="jar-opcoes">
 		<legend><?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></legend>
 		<label class="jar-caixa">
 			<input type="checkbox" name="marcacoes" value="1" <?php checked( ! empty( $e['marcacoes'] ) ); ?> data-jar-revela="jar-botao-texto">
 			<span><?php esc_html_e( 'Os associados podem marcar mesas neste evento', 'jelly-area-reservada' ); ?></span>
 		</label>
+		<small class="jar-campo__ajuda"><?php esc_html_e( 'O evento aparece sempre no calendário do site. Com as marcações ligadas, aparece também na Área Reservada dos associados.', 'jelly-area-reservada' ); ?></small>
 
 		<?php
 		/*
@@ -344,7 +310,7 @@ if ( $novo ) :
 		<div>
 			<a class="jar-voltar" href="<?php echo esc_url( jelly_ar_admin_url( 'eventos' ) ); ?>"><i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i> <?php esc_html_e( 'Eventos', 'jelly-area-reservada' ); ?></a>
 			<h1 class="jar-cabeca__titulo"><?php esc_html_e( 'Novo evento', 'jelly-area-reservada' ); ?></h1>
-			<p class="jar-cabeca__intro"><?php esc_html_e( 'Um evento só, para o calendário do site e para a área reservada: escolha onde aparece.', 'jelly-area-reservada' ); ?></p>
+			<p class="jar-cabeca__intro"><?php esc_html_e( 'Aparece no calendário do site; com as marcações ligadas, também na Área Reservada.', 'jelly-area-reservada' ); ?></p>
 		</div>
 	</div>
 
@@ -445,8 +411,6 @@ if ( $evento ) :
 				<dd><?php echo esc_html( jelly_ar_intervalo_datas( $evento['inicio'], $evento['fim'] ) ); ?></dd>
 				<dt><?php esc_html_e( 'Local', 'jelly-area-reservada' ); ?></dt>
 				<dd><?php echo esc_html( $evento['local'] ? $evento['local'] : '—' ); ?></dd>
-				<dt><?php esc_html_e( 'Onde aparece', 'jelly-area-reservada' ); ?></dt>
-				<dd><?php $onde( $evento['onde'] ); ?></dd>
 				<dt><?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></dt>
 				<dd><?php echo esc_html( $evento['marcacoes'] ? __( 'Aceita', 'jelly-area-reservada' ) : __( 'Não aceita', 'jelly-area-reservada' ) ); ?></dd>
 			</dl>
@@ -478,10 +442,6 @@ if ( $evento ) :
 					<div>
 						<dt><?php esc_html_e( 'Local', 'jelly-area-reservada' ); ?></dt>
 						<dd><?php echo esc_html( $evento['local'] ? $evento['local'] : '—' ); ?></dd>
-					</div>
-					<div>
-						<dt><?php esc_html_e( 'Onde aparece', 'jelly-area-reservada' ); ?></dt>
-						<dd><?php echo esc_html( $onde_nomes[ $evento['onde'] ] ); ?></dd>
 					</div>
 					<div class="jar-campo--largo">
 						<dt><?php esc_html_e( 'Resumo', 'jelly-area-reservada' ); ?></dt>
@@ -717,9 +677,6 @@ $hoje        = current_time( 'Ymd' );
 $proximos    = array_filter( $eventos, function ( $e ) use ( $hoje ) {
 	return $e['fim'] >= $hoje && 'publicado' === $e['estado'];
 } );
-$so_reservada = array_filter( $eventos, function ( $e ) {
-	return 'site' !== $e['onde'];
-} );
 
 // Os eventos com documentos, para a coluna Documentos: uma consulta para a lista toda.
 $com_documentos = jelly_ar_eventos_com_documentos();
@@ -738,15 +695,16 @@ $separadores = [
 ];
 $resumo = [
 	[ __( 'Próximos eventos', 'jelly-area-reservada' ), count( $proximos ), 'fa-calendar-days', 'azul' ],
-	[ __( 'Na área reservada', 'jelly-area-reservada' ), count( $so_reservada ), 'fa-lock', 'roxo' ],
-	[ __( 'Com marcações', 'jelly-area-reservada' ), count( $com_marcacoes ), 'fa-table-cells-large', 'magenta' ],
+	// Aceitar marcações é o que põe um evento na Área Reservada.
+	[ __( 'Na Área Reservada', 'jelly-area-reservada' ), count( $com_marcacoes ), 'fa-lock', 'roxo' ],
+	[ __( 'Com documentos', 'jelly-area-reservada' ), count( array_intersect( wp_list_pluck( $proximos, 'id' ), $com_documentos ) ), 'fa-file-lines', 'magenta' ],
 	[ __( 'Categorias', 'jelly-area-reservada' ), count( $categorias ), 'fa-tags', 'turquesa' ],
 ];
 ?>
 <div class="jar-cabeca">
 	<div>
 		<h1 class="jar-cabeca__titulo"><?php esc_html_e( 'Eventos', 'jelly-area-reservada' ); ?></h1>
-		<p class="jar-cabeca__intro"><?php esc_html_e( 'Os eventos do calendário do site e da área reservada — os mesmos, cada um com o sítio onde aparece.', 'jelly-area-reservada' ); ?></p>
+		<p class="jar-cabeca__intro"><?php esc_html_e( 'Todos os eventos publicados aparecem no calendário do site; os que aceitam marcações aparecem também na Área Reservada.', 'jelly-area-reservada' ); ?></p>
 	</div>
 	<div class="jar-cabeca__acoes">
 		<a class="jar-btn jar-btn--contorno" href="<?php echo esc_url( $gerir_categorias ); ?>"><i class="fa-solid fa-tags" aria-hidden="true"></i> <?php esc_html_e( 'Categorias', 'jelly-area-reservada' ); ?></a>
@@ -779,18 +737,6 @@ $resumo = [
 
 		<div class="jar-barra__filtros">
 			<form class="jar-escolha" method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" data-jar-auto>
-				<?php $tabela->campos_escondidos( [ 'onde' ] ); ?>
-				<label class="screen-reader-text" for="jar-onde"><?php esc_html_e( 'Onde aparece', 'jelly-area-reservada' ); ?></label>
-				<select id="jar-onde" name="onde">
-					<?php // Sem filtro. Leva o nome do filtro, para não se ler como a opção "No site e na área reservada". ?>
-					<option value=""><?php esc_html_e( 'Onde aparece: todos', 'jelly-area-reservada' ); ?></option>
-					<?php foreach ( $onde_nomes as $valor => $nome ) : ?>
-						<option value="<?php echo esc_attr( $valor ); ?>" <?php selected( $valor, $tabela->get( 'onde' ) ); ?>><?php echo esc_html( $nome ); ?></option>
-					<?php endforeach; ?>
-				</select>
-			</form>
-
-			<form class="jar-escolha" method="get" action="<?php echo esc_url( admin_url( 'admin.php' ) ); ?>" data-jar-auto>
 				<?php $tabela->campos_escondidos( [ 'categoria' ] ); ?>
 				<label class="screen-reader-text" for="jar-categoria"><?php esc_html_e( 'Categoria', 'jelly-area-reservada' ); ?></label>
 				<select id="jar-categoria" name="categoria">
@@ -818,7 +764,6 @@ $resumo = [
 				$tabela->coluna( 'data', __( 'Datas', 'jelly-area-reservada' ), 'jar-col--data' );
 				$tabela->coluna( 'local', __( 'Local', 'jelly-area-reservada' ), 'jar-col--local' );
 				?>
-				<th><?php esc_html_e( 'Onde aparece', 'jelly-area-reservada' ); ?></th>
 				<th class="jar-col--marcacoes jar-tabela__centro"><?php esc_html_e( 'Aceita marcações', 'jelly-area-reservada' ); ?></th>
 				<th class="jar-col--grelha jar-tabela__centro"><?php esc_html_e( 'Mesas e horários', 'jelly-area-reservada' ); ?></th>
 				<th class="jar-col--documentos jar-tabela__centro"><?php esc_html_e( 'Documentos', 'jelly-area-reservada' ); ?></th>
@@ -829,7 +774,7 @@ $resumo = [
 		<tbody>
 			<?php if ( ! $lista ) : ?>
 				<tr>
-					<td colspan="9" class="jar-vazio">
+					<td colspan="8" class="jar-vazio">
 						<?php
 						if ( '' !== $pesquisa ) {
 							/* translators: %s: o que se pesquisou */
@@ -855,7 +800,6 @@ $resumo = [
 					</td>
 					<td class="jar-tabela__num jar-col--data"><?php echo esc_html( jelly_ar_intervalo_datas( $e['inicio'], $e['fim'] ) ); ?></td>
 					<td class="jar-col--local"><?php echo esc_html( $e['local'] ? $e['local'] : '—' ); ?></td>
-					<td><?php $onde( $e['onde'] ); ?></td>
 					<td class="jar-col--marcacoes jar-tabela__centro"><?php jelly_ar_marca( $e['marcacoes'], __( 'Aceita marcações', 'jelly-area-reservada' ), __( 'Não aceita marcações', 'jelly-area-reservada' ) ); ?></td>
 					<?php
 					// O visto: mesas e horários prontos. O traço diz o que falta, ao passar.
