@@ -951,4 +951,48 @@
 			select.form.submit();
 		} );
 	} );
+	/* ---------- ARU: o leitor de um encontro ---------- */
+
+	/*
+	 * Na página de um encontro (templates/aru/encontro.php), escolher um vídeo
+	 * da lista troca o do leitor, já a dar, sem recarregar a página; o endereço
+	 * passa a ser o desse vídeo (?video=<id>), para se poder partilhar e voltar.
+	 */
+	Array.prototype.forEach.call( document.querySelectorAll( '[data-aru-leitor]' ), function ( leitor ) {
+		var ecra = leitor.querySelector( '[data-aru-leitor-ecra]' );
+		var titulo = leitor.querySelector( '[data-aru-leitor-titulo]' );
+
+		if ( ! ecra ) {
+			return;
+		}
+
+		leitor.addEventListener( 'click', function ( e ) {
+			var link = e.target.closest( '[data-aru-leitor-video]' );
+
+			if ( ! link || e.metaKey || e.ctrlKey || e.shiftKey ) {
+				return;
+			}
+
+			e.preventDefault();
+
+			Array.prototype.forEach.call( leitor.querySelectorAll( '[data-aru-leitor-video]' ), function ( l ) {
+				l.classList.toggle( 'is-atual', l === link );
+				if ( l === link ) {
+					l.setAttribute( 'aria-current', 'true' );
+				} else {
+					l.removeAttribute( 'aria-current' );
+				}
+			} );
+
+			ecra.src = link.getAttribute( 'data-aru-leitor-video' ) + '&autoplay=1';
+			ecra.title = link.getAttribute( 'data-titulo' );
+			titulo.textContent = link.getAttribute( 'data-titulo' );
+
+			if ( window.history && window.history.replaceState ) {
+				window.history.replaceState( null, '', link.href );
+			}
+
+			ecra.closest( '.aru-leitor__ecra' ).scrollIntoView( { behavior: 'smooth', block: 'nearest' } );
+		} );
+	} );
 }() );

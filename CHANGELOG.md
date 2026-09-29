@@ -266,6 +266,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.74.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.38.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **Os Encontros na ARU** (`/area-reservada/encontros/`), no menu da Agenda,
+  que deixa de dizer "Em breve": os encontros publicados, do mais recente, em
+  cartões com a capa, o play, o número de vídeos, a data, o título e o resumo.
+  Com a procura pelo título, pelo resumo e pelos títulos dos vídeos e, com
+  mais de 10, a paginação.
+- **A página de cada encontro** (`/area-reservada/encontros/<slug>/`): o leitor
+  com o vídeo, a lista dos vídeos por baixo — escolher um troca o do leitor sem
+  recarregar, e o endereço passa a levar esse vídeo (`?video=<id>`) —, o texto
+  do encontro e, ao lado, os outros encontros mais recentes. Os vídeos vêm do
+  youtube-nocookie. Um encontro que não existe ou não está publicado dá 404.
+- No Início, o número dos Encontros passa a contar os publicados, com a data
+  do mais recente.
+
 ## [0.73.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.37.0, esquema da base de dados 14. O tema não

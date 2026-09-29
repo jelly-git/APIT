@@ -2282,6 +2282,366 @@ a.aru-pessoa:focus-visible .aru-pessoa__texto strong {
 
 /* ---------- Ecrãs mais pequenos ---------- */
 
+/* ---------- Encontros ---------- */
+
+/* Um botão em contorno, para a ação secundária de um cartão: magenta, cheio ao passar. */
+.aru-botao--contorno {
+	background: transparent;
+	color: var(--aru-magenta);
+}
+
+.aru-botao--contorno:hover,
+.aru-botao--contorno:focus-visible {
+	border-color: var(--aru-magenta);
+	background: var(--aru-magenta);
+	color: #fff;
+}
+
+.aru-barra__conta {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--aru-suave);
+}
+
+/* A lista: cartões com a capa em 16:9, o play e o número de vídeos por cima. */
+.aru-cartoes-encontros {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 20px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.aru-cartao-encontro {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: hidden;
+	border: 1px solid var(--aru-linha);
+	border-radius: 16px;
+	background: #fff;
+	color: var(--aru-preto);
+	text-decoration: none;
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.aru-cartao-encontro:hover,
+.aru-cartao-encontro:focus-visible {
+	transform: translateY(-2px);
+	box-shadow: 0 2px 4px rgba(27, 42, 51, 0.05), 0 14px 30px rgba(27, 42, 51, 0.09);
+	color: var(--aru-preto);
+}
+
+.aru-cartao-encontro__capa {
+	position: relative;
+	display: block;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	background: #e9edf0;
+}
+
+.aru-cartao-encontro__capa.is-vazia {
+	background: var(--aru-degrade);
+}
+
+.aru-cartao-encontro__capa img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
+
+.aru-cartao-encontro:hover .aru-cartao-encontro__capa img {
+	transform: scale(1.04);
+}
+
+/* Um véu por baixo, para o número de vídeos se ler em qualquer imagem. */
+.aru-cartao-encontro__capa::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(180deg, transparent 55%, rgba(27, 42, 51, 0.55));
+}
+
+.aru-cartao-encontro__play {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	z-index: 1;
+	display: grid;
+	place-items: center;
+	width: 56px;
+	height: 56px;
+	border-radius: 50%;
+	background: rgba(244, 24, 146, 0.92);
+	font-size: 18px;
+	color: #fff;
+	transform: translate(-50%, -50%);
+	transition: transform 0.15s ease;
+}
+
+.aru-cartao-encontro__play i {
+	margin-left: 3px;
+}
+
+.aru-cartao-encontro:hover .aru-cartao-encontro__play {
+	transform: translate(-50%, -50%) scale(1.08);
+}
+
+.aru-cartao-encontro__videos {
+	position: absolute;
+	right: 14px;
+	bottom: 12px;
+	z-index: 1;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.aru-cartao-encontro__corpo {
+	display: flex;
+	flex: 1 1 auto;
+	flex-direction: column;
+	gap: 6px;
+	padding: 16px 20px 20px;
+}
+
+.aru-cartao-encontro__corpo small {
+	font-size: 13px;
+	color: var(--aru-suave);
+}
+
+.aru-cartao-encontro__corpo small i {
+	margin-right: 4px;
+	color: var(--aru-azul);
+}
+
+.aru-cartao-encontro__corpo strong {
+	font-size: 17px;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.aru-cartao-encontro__resumo {
+	display: -webkit-box;
+	overflow: hidden;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	font-size: 14px;
+	line-height: 1.5;
+	color: var(--aru-suave);
+}
+
+/* A página de um encontro: o título, a data e o número de vídeos. */
+.aru-encontro-titulo__factos {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 20px;
+	margin: 0 0 10px;
+	padding: 0;
+	list-style: none;
+	font-size: 14px;
+	color: var(--aru-suave);
+}
+
+.aru-encontro-titulo__factos i {
+	margin-right: 6px;
+	color: var(--aru-magenta);
+}
+
+/* O leitor: o vídeo em 16:9, o título dele e a lista dos vídeos do encontro. */
+.aru-leitor__ecra {
+	position: relative;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	border-radius: 12px;
+	background: #0d1519;
+}
+
+.aru-leitor__ecra iframe {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.aru-leitor__titulo {
+	margin: 16px 0 0;
+	font-size: 19px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--aru-preto);
+}
+
+.aru-leitor__lista {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+	gap: 14px;
+	margin: 20px 0 0;
+	padding: 18px 0 0;
+	border-top: 1px solid var(--aru-linha);
+	list-style: none;
+}
+
+.aru-leitor__video {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	color: var(--aru-preto);
+	text-decoration: none;
+}
+
+.aru-leitor__mini {
+	position: relative;
+	display: block;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	border-radius: 10px;
+	background: #e9edf0;
+	box-shadow: inset 0 0 0 0 var(--aru-magenta);
+}
+
+.aru-leitor__mini img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: opacity 0.15s ease;
+}
+
+.aru-leitor__video:hover .aru-leitor__mini img,
+.aru-leitor__video:focus-visible .aru-leitor__mini img {
+	opacity: 0.85;
+}
+
+/* O que está a dar: a moldura magenta e o "A ver" por cima. */
+.aru-leitor__a-ver {
+	position: absolute;
+	inset: 0;
+	display: none;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	background: rgba(27, 42, 51, 0.55);
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: #fff;
+}
+
+.aru-leitor__video.is-atual .aru-leitor__a-ver {
+	display: flex;
+}
+
+.aru-leitor__video.is-atual .aru-leitor__mini {
+	outline: 3px solid var(--aru-magenta);
+	outline-offset: -3px;
+}
+
+.aru-leitor__texto {
+	display: flex;
+	gap: 8px;
+	align-items: baseline;
+	line-height: 1.35;
+}
+
+.aru-leitor__texto small {
+	flex: none;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--aru-magenta);
+}
+
+.aru-leitor__texto strong {
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.aru-leitor__video.is-atual .aru-leitor__texto strong,
+.aru-leitor__video:hover .aru-leitor__texto strong {
+	color: var(--aru-magenta);
+}
+
+/* Os outros encontros, à direita: a capa pequena, o título e a data. */
+.aru-encontro-outros {
+	position: sticky;
+	top: 24px;
+}
+
+.aru-encontro-outros ul {
+	display: flex;
+	flex-direction: column;
+	margin: 0 0 18px;
+	padding: 0;
+	list-style: none;
+}
+
+.aru-encontro-outros li + li {
+	border-top: 1px solid var(--aru-linha);
+}
+
+.aru-encontro-outros li a {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 12px 0;
+	color: var(--aru-preto);
+	text-decoration: none;
+}
+
+.aru-encontro-outros li a > span:last-child {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+	line-height: 1.3;
+}
+
+.aru-encontro-outros strong {
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.aru-encontro-outros li a:hover strong {
+	color: var(--aru-magenta);
+}
+
+.aru-encontro-outros small {
+	font-size: 12px;
+	color: var(--aru-suave);
+}
+
+.aru-encontro-outros__capa {
+	flex: none;
+	width: 88px;
+	aspect-ratio: 16 / 9;
+	overflow: hidden;
+	border-radius: 8px;
+	background: #e9edf0;
+}
+
+.aru-encontro-outros__capa.is-vazia {
+	background: var(--aru-degrade);
+}
+
+.aru-encontro-outros__capa img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+@media (max-width: 1280px) {
+	.aru-encontro-outros {
+		position: static;
+	}
+}
+
 @media (max-width: 1280px) {
 	.aru-numeros {
 		grid-template-columns: repeat(2, minmax(0, 1fr));

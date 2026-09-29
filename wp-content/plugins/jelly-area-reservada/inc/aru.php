@@ -11,6 +11,8 @@
  *   /area-reservada/eventos/<slug>/  um evento: as datas, a marcação, os documentos
  *                                  (com o id no lugar do slug, reencaminha para o slug)
  *   /area-reservada/marcacoes/     as marcações de mesa do associado
+ *   /area-reservada/encontros/     os encontros publicados, com os vídeos
+ *   /area-reservada/encontros/<slug>/  um encontro: os vídeos e o texto
  *   /area-reservada/documentos/    os documentos publicados, para descarregar
  *   /area-reservada/perfil/        os meus dados: o telefone, a empresa e a palavra-passe
  *
@@ -45,7 +47,7 @@ const JELLY_AR_AREA_CAMINHO = 'area-reservada';
  */
 function jelly_ar_area_url( $secao = '' ) {
 	// Só as secções que existem: outra coisa qualquer dá o Início, e nunca entra no endereço.
-	$secao = in_array( $secao, [ 'eventos', 'marcacoes', 'documentos', 'perfil' ], true ) ? $secao : '';
+	$secao = in_array( $secao, [ 'eventos', 'marcacoes', 'encontros', 'documentos', 'perfil' ], true ) ? $secao : '';
 
 	return home_url( '/' . JELLY_AR_AREA_CAMINHO . '/' . ( $secao ? $secao . '/' : '' ) );
 }
@@ -76,7 +78,7 @@ function jelly_ar_aru_menu() {
 		'inicio'     => [ 'titulo' => __( 'Início', 'jelly-area-reservada' ), 'icone' => 'fa-house', 'url' => jelly_ar_area_url(), 'grupo' => '' ],
 		'eventos'    => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'url' => jelly_ar_area_url( 'eventos' ), 'grupo' => 'agenda' ],
 		'marcacoes'  => [ 'titulo' => __( 'Marcações', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-check', 'url' => jelly_ar_area_url( 'marcacoes' ), 'grupo' => 'agenda' ],
-		'encontros'  => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'url' => '', 'grupo' => 'agenda' ],
+		'encontros'  => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'url' => jelly_ar_area_url( 'encontros' ), 'grupo' => 'agenda' ],
 		'documentos' => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'url' => jelly_ar_area_url( 'documentos' ), 'grupo' => 'recursos' ],
 		'perfil'     => [ 'titulo' => __( 'Os meus dados', 'jelly-area-reservada' ), 'icone' => 'fa-user', 'url' => jelly_ar_area_url( 'perfil' ), 'grupo' => 'conta' ],
 	];
@@ -99,8 +101,8 @@ function jelly_ar_aru_grupos() {
 
 function jelly_ar_area_regra() {
 	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '/eventos/([^/]+)/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=eventos&jelly_ar_aru_evento=$matches[1]', 'top' );
-	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '(?:/(eventos|marcacoes|documentos|perfil))?/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=$matches[1]', 'top' );
-
+	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '/encontros/([^/]+)/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=encontros&jelly_ar_aru_encontro=$matches[1]', 'top' );
+	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '(?:/(eventos|marcacoes|encontros|documentos|perfil))?/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=$matches[1]', 'top' );
 }
 add_action( 'init', 'jelly_ar_area_regra' );
 
@@ -121,6 +123,7 @@ function jelly_ar_area_query_vars( $vars ) {
 	$vars[] = 'jelly_ar_area';
 	$vars[] = 'jelly_ar_aru';
 	$vars[] = 'jelly_ar_aru_evento';
+	$vars[] = 'jelly_ar_aru_encontro';
 
 	return $vars;
 }
@@ -131,12 +134,12 @@ function jelly_ar_e_area() {
 }
 
 /**
- * A secção da ARU pedida (a do menu): inicio, eventos, marcacoes, documentos ou perfil.
+ * A secção da ARU pedida (a do menu): inicio, eventos, marcacoes, encontros, documentos ou perfil.
  */
 function jelly_ar_aru_secao() {
 	$secao = (string) get_query_var( 'jelly_ar_aru' );
 
-	return in_array( $secao, [ 'eventos', 'marcacoes', 'documentos', 'perfil' ], true ) ? $secao : 'inicio';
+	return in_array( $secao, [ 'eventos', 'marcacoes', 'encontros', 'documentos', 'perfil' ], true ) ? $secao : 'inicio';
 }
 
 /**
@@ -170,6 +173,30 @@ function jelly_ar_aru_evento_url( $evento ) {
 	return jelly_ar_area_url( 'eventos' ) . rawurlencode( (string) $chave ) . '/';
 }
 
+/**
+ * O encontro pedido no endereço (/area-reservada/encontros/<slug>/), se
+ * estiver publicado; null se não houver.
+ */
+function jelly_ar_aru_encontro_pedido() {
+	$slug = sanitize_title( (string) get_query_var( 'jelly_ar_aru_encontro' ) );
+
+	if ( '' === $slug ) {
+		return null;
+	}
+
+	foreach ( jelly_ar_encontros_publicados() as $e ) {
+		if ( $e['slug'] === $slug ) {
+			return $e;
+		}
+	}
+
+	return null;
+}
+
+function jelly_ar_aru_encontro_url( $encontro ) {
+	return jelly_ar_area_url( 'encontros' ) . rawurlencode( $encontro['slug'] ) . '/';
+}
+
 /* ---------- A página ---------- */
 
 function jelly_ar_area_mostrar() {
@@ -194,7 +221,8 @@ function jelly_ar_area_mostrar() {
 	$aru = [
 		'secao'  => jelly_ar_aru_secao(),
 		'user'   => wp_get_current_user(),
-		'evento' => null,
+		'evento'   => null,
+		'encontro' => null,
 	];
 	// O template da página: o da secção, ou o de um evento.
 	$aru['pagina'] = $aru['secao'];
@@ -215,6 +243,16 @@ function jelly_ar_area_mostrar() {
 		}
 	}
 
+	// A página de um encontro: só os publicados; os outros dão 404.
+	if ( '' !== (string) get_query_var( 'jelly_ar_aru_encontro' ) ) {
+		$aru['encontro'] = jelly_ar_aru_encontro_pedido();
+		$aru['pagina']   = $aru['encontro'] ? 'encontro' : 'nao-existe';
+
+		if ( ! $aru['encontro'] ) {
+			status_header( 404 );
+		}
+	}
+
 	include JELLY_AR_DIR . 'templates/aru/shell.php';
 	exit;
 }
@@ -229,9 +267,10 @@ function jelly_ar_area_titulo( $partes ) {
 		$menu            = jelly_ar_aru_menu();
 		$secao           = jelly_ar_aru_secao();
 		$evento          = jelly_ar_aru_evento_pedido();
+		$evento          = $evento ? $evento : jelly_ar_aru_encontro_pedido();
 		$partes['title'] = 'inicio' === $secao
 			? __( 'Área Reservada', 'jelly-area-reservada' )
-			/* translators: %s: página da Área Reservada, ou o título do evento */
+			/* translators: %s: página da Área Reservada, ou o título do evento ou do encontro */
 			: sprintf( __( '%s · Área Reservada', 'jelly-area-reservada' ), $evento ? $evento['titulo'] : $menu[ $secao ]['titulo'] );
 	}
 

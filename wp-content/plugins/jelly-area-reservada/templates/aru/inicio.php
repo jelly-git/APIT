@@ -110,7 +110,17 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 		'magenta',
 		jelly_ar_area_url( 'eventos' )
 	);
-	$numero( __( 'Encontros', 'jelly-area-reservada' ), '—', __( 'Em breve', 'jelly-area-reservada' ), 'fa-user-group', 'azul', '' );
+	// Os encontros publicados; a nota diz a data do mais recente.
+	$encontros = jelly_ar_encontros_publicados();
+	$numero(
+		__( 'Encontros', 'jelly-area-reservada' ),
+		(string) count( $encontros ),
+		/* translators: %s: data do encontro mais recente */
+		$encontros ? sprintf( __( 'O mais recente: %s', 'jelly-area-reservada' ), $encontros[0]['data_texto'] ) : __( 'Ainda sem encontros', 'jelly-area-reservada' ),
+		'fa-user-group',
+		'azul',
+		jelly_ar_area_url( 'encontros' )
+	);
 	?>
 </div>
 
