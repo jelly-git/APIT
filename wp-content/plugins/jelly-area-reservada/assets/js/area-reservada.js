@@ -48,9 +48,9 @@
 	var MARCAR = /^#area-reservada-marcar-(\d+)$/;
 	var marcarEvento = null;
 	/*
-	 * O dia e a hora já escolhidos fora do pop-up (um horário livre na página do
-	 * evento da ARU, data-ar-dia e data-ar-hora): o pop-up abre com eles, e só
-	 * falta a mesa. Servem uma vez.
+	 * O dia, a hora e, na fila de uma mesa, a mesa já escolhidos fora do pop-up
+	 * (um horário livre na página do evento da ARU: data-ar-dia, data-ar-hora,
+	 * data-ar-mesa): o pop-up abre com eles. Servem uma vez.
 	 */
 	var marcarEscolhido = null;
 
@@ -161,7 +161,7 @@
 			if ( nome ) {
 				e.preventDefault();
 				marcarEscolhido = 'marcar' === nome && link.hasAttribute( 'data-ar-dia' )
-					? { dia: link.getAttribute( 'data-ar-dia' ), hora: link.getAttribute( 'data-ar-hora' ) }
+					? { dia: link.getAttribute( 'data-ar-dia' ), hora: link.getAttribute( 'data-ar-hora' ), mesa: link.getAttribute( 'data-ar-mesa' ) }
 					: null;
 				abrir( nome );
 			}
@@ -733,9 +733,10 @@
 				m.nome,
 				m.livres ? ( escolha.lugares ? plural( m.livres, 'lugar livre', 'lugares livres' ) : 'Livre' ) : ( escolha.lugares ? 'Completa' : 'Marcada' ),
 				! m.livres,
-				1 === bloco.mesas.filter( function ( x ) {
+				// A mesa vinda da fila dessa mesa na ARU (data-ar-mesa); sem ela, a única livre, se for só uma.
+				m.livres && ( escolha.mesa ? String( m.id ) === String( escolha.mesa ) : 1 === bloco.mesas.filter( function ( x ) {
 					return x.livres;
-				} ).length && m.livres
+				} ).length )
 			);
 
 			cartao.classList.add( 'apit-ar__mesa' );
@@ -811,7 +812,7 @@
 	function carregarMarcacao( id ) {
 		var ajax = painelMarcar.getAttribute( 'data-ar-ajax' );
 
-		escolha = { dias: [], dia: marcarEscolhido ? marcarEscolhido.dia : null, hora: marcarEscolhido ? marcarEscolhido.hora : null };
+		escolha = { dias: [], dia: marcarEscolhido ? marcarEscolhido.dia : null, hora: marcarEscolhido ? marcarEscolhido.hora : null, mesa: marcarEscolhido ? marcarEscolhido.mesa : null };
 		marcarEscolhido = null;
 		parte( 'titulo' ).textContent = 'Marcar mesa';
 		parte( 'evento' ).textContent = '';
@@ -866,6 +867,10 @@
 				escolha.hora = campo.value;
 				desenharEscolha();
 			} else {
+				// A mesa escolhida mantém-se ao trocar de hora, se nessa hora estiver livre.
+				if ( 'mesa' === campo.name ) {
+					escolha.mesa = campo.value;
+				}
 				acertarResumo();
 			}
 		} );

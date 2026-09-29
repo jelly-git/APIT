@@ -266,6 +266,19 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.72.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.36.0. O tema e a base de dados não mudam.
+
+### Alterado
+- **Na página de um evento com mais de uma mesa, os horários passam a ser
+  mostrados mesa a mesa**: em cada dia, uma fila por mesa, com o nome e onde
+  fica à esquerda e os horários dela ao lado. Um horário aparece ocupado
+  quando essa mesa está marcada — antes, na fila única, só quando estavam
+  todas, e as marcações feitas não se viam. Ao clicar num horário livre, o
+  pop-up abre já com o dia, a hora e a mesa escolhidos. Os eventos com uma
+  só mesa ficam como estavam.
+
 ## [0.71.1] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.35.1. O tema e a base de dados não mudam.

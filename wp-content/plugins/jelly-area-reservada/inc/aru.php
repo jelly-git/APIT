@@ -459,8 +459,41 @@ function jelly_ar_aru_horarios( $evento, $minhas ) {
 					'estado' => $e_minha ? ( 'pendente' === $minha['estado'] ? 'minha-pendente' : 'minha' ) : ( array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ? 'livre' : 'ocupado' ),
 				];
 			}, $d['blocos'] ),
+			// Os mesmos horários mesa a mesa, para os eventos com mais de uma: livre, ocupado ou a dele.
+			'mesas' => jelly_ar_aru_horarios_mesas( $d['blocos'], $minha ),
 		];
 	}, jelly_ar_disponibilidade( $evento ) );
+}
+
+/**
+ * Os horários de um dia, mesa a mesa: cada mesa com o nome, onde fica e os
+ * seus horários. Aqui um horário é "ocupado" quando essa mesa está marcada —
+ * não quando estão todas, como na fila única de jelly_ar_aru_horarios().
+ */
+function jelly_ar_aru_horarios_mesas( $blocos, $minha ) {
+	$mesas = [];
+
+	foreach ( $blocos as $b ) {
+		foreach ( $b['mesas'] as $m ) {
+			if ( ! isset( $mesas[ $m['id'] ] ) ) {
+				$mesas[ $m['id'] ] = [
+					'id'          => $m['id'],
+					'nome'        => $m['nome'],
+					'localizacao' => $m['localizacao'],
+					'horas'       => [],
+				];
+			}
+
+			$e_minha = $minha && $minha['hora'] === $b['hora'] && (int) $minha['mesa_id'] === (int) $m['id'];
+
+			$mesas[ $m['id'] ]['horas'][] = [
+				'hora'   => $b['hora'],
+				'estado' => $e_minha ? ( 'pendente' === $minha['estado'] ? 'minha-pendente' : 'minha' ) : ( $m['livres'] ? 'livre' : 'ocupado' ),
+			];
+		}
+	}
+
+	return array_values( $mesas );
 }
 
 /**

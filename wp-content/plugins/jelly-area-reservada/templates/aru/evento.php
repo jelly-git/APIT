@@ -3,7 +3,7 @@
  * Um evento na ARU (/area-reservada/eventos/<slug>/).
  *
  * À esquerda, os horários de marcação — um dia por linha, os horários em fila
- * ao lado, 6 a 8 por linha —; por baixo, o resumo do evento e os documentos,
+ * ao lado, 6 a 8 por linha; com mais de uma mesa, uma fila por mesa —; por baixo, o resumo do evento e os documentos,
  * os publicados, para descarregar. À direita, só o resumo do que o associado
  * tem marcado (ou o convite para marcar), que acompanha a página ao rolar.
  *
@@ -36,6 +36,39 @@ $rotulos = [
 	'minha-pendente' => __( 'Aguarda aprovação', 'jelly-area-reservada' ),
 	'minha'          => __( 'A sua marcação', 'jelly-area-reservada' ),
 ];
+
+/*
+ * Um horário. Num dia sem marcação sua, um livre abre o pop-up já com esse
+ * dia e essa hora (data-ar-dia, data-ar-hora; assets/js/area-reservada.js) e,
+ * na fila de uma mesa, também com a mesa (data-ar-mesa). Num dia em que já
+ * marcou, os horários só se veem — é uma por dia.
+ */
+$slot = function ( $d, $h, $mesa = null ) use ( $e, $rotulos ) {
+	$onde = $mesa ? $d['nome'] . ', ' . $h['hora'] . ', ' . $mesa['nome'] : $d['nome'] . ', ' . $h['hora'];
+
+	if ( ! $d['tem'] && 'livre' === $h['estado'] ) {
+		/* translators: %s: dia e hora (e a mesa) */
+		$marcar = sprintf( __( 'Marcar %s', 'jelly-area-reservada' ), $onde );
+		printf(
+			'<a class="aru-slot aru-slot--livre" href="%1$s" data-ar-dia="%2$s" data-ar-hora="%3$s"%4$s title="%5$s">%6$s<span class="screen-reader-text">%5$s</span></a>',
+			esc_url( jelly_ar_url_marcacao( $e['id'] ) ),
+			esc_attr( $d['dia'] ),
+			esc_attr( $h['hora'] ),
+			$mesa ? ' data-ar-mesa="' . (int) $mesa['id'] . '"' : '',
+			esc_attr( $marcar ),
+			esc_html( $h['hora'] )
+		);
+		return;
+	}
+
+	printf(
+		'<span class="aru-slot aru-slot--%1$s" title="%2$s">%3$s<span class="screen-reader-text">%4$s</span></span>',
+		esc_attr( $h['estado'] ),
+		esc_attr( $onde . ': ' . $rotulos[ $h['estado'] ] ),
+		esc_html( $h['hora'] ),
+		esc_html( $rotulos[ $h['estado'] ] )
+	);
+};
 ?>
 
 <a class="aru-voltar" href="<?php echo esc_url( jelly_ar_area_url( 'eventos' ) ); ?>"><i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i> <?php esc_html_e( 'Eventos', 'jelly-area-reservada' ); ?></a>
@@ -78,14 +111,6 @@ $rotulos = [
 				<?php elseif ( ! $dias ) : ?>
 					<p class="aru-nota"><?php esc_html_e( 'Já não há horários por vir neste evento.', 'jelly-area-reservada' ); ?></p>
 				<?php else : ?>
-					<?php
-					/*
-					 * Num dia sem marcação sua, um horário livre abre o pop-up já com esse
-					 * dia e essa hora (data-ar-dia, data-ar-hora; assets/js/area-reservada.js):
-					 * falta só a mesa. Num dia em que já marcou, os horários só se veem —
-					 * é uma por dia.
-					 */
-					?>
 					<?php if ( $pode_marcar ) : ?>
 						<p class="aru-nota"><?php esc_html_e( 'Escolha um horário disponível para pedir a marcação. Pode fazer uma marcação em cada dia do evento.', 'jelly-area-reservada' ); ?></p>
 					<?php else : ?>
@@ -102,25 +127,32 @@ $rotulos = [
 										<small class="<?php echo 'pendente' === $d['estado'] ? 'is-pendente' : ''; ?>"><?php echo esc_html( 'pendente' === $d['estado'] ? __( 'Por aprovar', 'jelly-area-reservada' ) : __( 'Já marcado', 'jelly-area-reservada' ) ); ?></small>
 									<?php endif; ?>
 								</h3>
-								<ul class="aru-dia__horas">
-									<?php foreach ( $d['horas'] as $h ) : ?>
-										<?php $titulo = $d['nome'] . ', ' . $h['hora'] . ': ' . $rotulos[ $h['estado'] ]; ?>
-										<li>
-											<?php if ( ! $d['tem'] && 'livre' === $h['estado'] ) : ?>
-												<?php /* translators: 1: dia, 2: hora */ ?>
-												<a class="aru-slot aru-slot--livre" href="<?php echo esc_url( jelly_ar_url_marcacao( $e['id'] ) ); ?>" data-ar-dia="<?php echo esc_attr( $d['dia'] ); ?>" data-ar-hora="<?php echo esc_attr( $h['hora'] ); ?>" title="<?php echo esc_attr( sprintf( __( 'Marcar %1$s, %2$s', 'jelly-area-reservada' ), $d['nome'], $h['hora'] ) ); ?>">
-													<?php echo esc_html( $h['hora'] ); ?>
-													<span class="screen-reader-text"><?php echo esc_html( sprintf( __( 'Marcar %1$s, %2$s', 'jelly-area-reservada' ), $d['nome'], $h['hora'] ) ); ?></span>
-												</a>
-											<?php else : ?>
-												<span class="aru-slot aru-slot--<?php echo esc_attr( $h['estado'] ); ?>" title="<?php echo esc_attr( $titulo ); ?>">
-													<?php echo esc_html( $h['hora'] ); ?>
-													<span class="screen-reader-text"><?php echo esc_html( $rotulos[ $h['estado'] ] ); ?></span>
-												</span>
-											<?php endif; ?>
-										</li>
-									<?php endforeach; ?>
-								</ul>
+								<?php if ( count( $d['mesas'] ) > 1 ) : ?>
+									<?php // Mais de uma mesa: uma fila de horários por mesa, com o nome e onde fica. ?>
+									<div class="aru-dia__mesas">
+										<?php foreach ( $d['mesas'] as $m ) : ?>
+											<div class="aru-dia__mesa">
+												<p class="aru-dia__mesa-nome">
+													<strong><?php echo esc_html( $m['nome'] ); ?></strong>
+													<?php if ( $m['localizacao'] ) : ?>
+														<small><?php echo esc_html( $m['localizacao'] ); ?></small>
+													<?php endif; ?>
+												</p>
+												<ul class="aru-dia__horas">
+													<?php foreach ( $m['horas'] as $h ) : ?>
+														<li><?php $slot( $d, $h, $m ); ?></li>
+													<?php endforeach; ?>
+												</ul>
+											</div>
+										<?php endforeach; ?>
+									</div>
+								<?php else : ?>
+									<ul class="aru-dia__horas">
+										<?php foreach ( $d['horas'] as $h ) : ?>
+											<li><?php $slot( $d, $h ); ?></li>
+										<?php endforeach; ?>
+									</ul>
+								<?php endif; ?>
 							</div>
 						<?php endforeach; ?>
 					</div>

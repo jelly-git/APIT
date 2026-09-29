@@ -1470,6 +1470,42 @@ a.aru-slot--livre:focus-visible {
 	color: #b86e00;
 }
 
+/*
+ * Com mais de uma mesa, cada dia tem uma fila de horários por mesa: o nome da
+ * mesa (e onde fica) à esquerda, os horários dela ao lado.
+ */
+.aru-dia__mesas {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.aru-dia__mesa {
+	display: grid;
+	grid-template-columns: 110px minmax(0, 1fr);
+	gap: 12px;
+	align-items: start;
+}
+
+.aru-dia__mesa-nome {
+	margin: 0;
+	padding-top: 4px;
+	line-height: 1.25;
+}
+
+.aru-dia__mesa-nome strong {
+	display: block;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--aru-preto);
+}
+
+.aru-dia__mesa-nome small {
+	display: block;
+	font-size: 12px;
+	color: var(--aru-suave);
+}
+
 /* As marcações do associado no evento, uma por dia, no resumo à direita. */
 .aru-minhas-evento {
 	display: flex;
@@ -2393,6 +2429,25 @@ a.aru-pessoa:focus-visible .aru-pessoa__texto strong {
 
 	.aru-dia__horas {
 		grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+	}
+
+	/* O nome da mesa por cima da fila dela. */
+	.aru-dia__mesa {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 6px;
+	}
+
+	.aru-dia__mesa-nome {
+		padding-top: 0;
+	}
+
+	.aru-dia__mesa-nome strong,
+	.aru-dia__mesa-nome small {
+		display: inline;
+	}
+
+	.aru-dia__mesa-nome small::before {
+		content: " · ";
 	}
 
 	.aru-form__acoes .aru-botao {
