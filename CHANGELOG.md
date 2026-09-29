@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.68.2] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.32.2. O tema e a base de dados não mudam.
+
+### Alterado
+- Na ARU, cada marcação mostra o intervalo, e não só a hora de início:
+  "12:00 – 12:30", com a duração dos blocos desse dia do evento. Nas
+  Marcações, na lista do Início, no resumo da página do evento e na marcação
+  do destaque.
+
 ## [0.68.1] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.32.1. O tema e a base de dados não mudam.

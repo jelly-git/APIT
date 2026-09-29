@@ -159,7 +159,7 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 							<?php
 							$outras = count( $destaque['minhas'] ) - 1;
 							/* translators: 1: dia, 2: hora */
-							echo esc_html( sprintf( __( 'A sua marcação: %1$s, %2$s', 'jelly-area-reservada' ), ucfirst( jelly_ar_data( 'j M', strtotime( $minha['dia'] ) ) ), $minha['hora'] ) );
+							echo esc_html( sprintf( __( 'A sua marcação: %1$s, %2$s', 'jelly-area-reservada' ), ucfirst( jelly_ar_data( 'j M', strtotime( $minha['dia'] ) ) ), jelly_ar_aru_intervalo( $e['id'], $minha['dia'], $minha['hora'] ) ) );
 							if ( $outras > 0 ) {
 								/* translators: %d: outras marcações no evento */
 								echo esc_html( sprintf( _n( ' (e mais %d)', ' (e mais %d)', $outras, 'jelly-area-reservada' ), $outras ) );

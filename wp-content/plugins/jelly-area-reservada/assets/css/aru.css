@@ -1590,7 +1590,7 @@ a.aru-slot--livre:focus-visible {
 /* Uma marcação: o dia, a hora, a mesa e o estado, em colunas alinhadas. */
 .aru-linha {
 	display: grid;
-	grid-template-columns: minmax(130px, 1.1fr) minmax(70px, 0.6fr) minmax(0, 1.6fr) auto;
+	grid-template-columns: minmax(130px, 1.1fr) minmax(120px, 0.8fr) minmax(0, 1.6fr) auto;
 	gap: 16px;
 	align-items: center;
 	padding: 12px 0;

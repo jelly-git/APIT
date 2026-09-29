@@ -79,7 +79,7 @@ $grupo = function ( $g ) use ( $estados ) {
 			<?php foreach ( $g['lista'] as $m ) : ?>
 				<li class="aru-linha<?php echo $m['viva'] && $m['futura'] ? '' : ' is-passada'; ?>">
 					<span class="aru-linha__dia"><i class="fa-regular fa-calendar" aria-hidden="true"></i> <?php echo esc_html( $m['data'] ); ?></span>
-					<span class="aru-linha__hora"><i class="fa-regular fa-clock" aria-hidden="true"></i> <?php echo esc_html( $m['hora'] ); ?></span>
+					<span class="aru-linha__hora"><i class="fa-regular fa-clock" aria-hidden="true"></i> <?php echo esc_html( $m['horas'] ); ?></span>
 					<span class="aru-linha__mesa"><i class="fa-solid fa-chair" aria-hidden="true"></i> <?php echo esc_html( implode( ' · ', array_filter( [ $m['mesa'], $m['localizacao'] ] ) ) ); ?></span>
 					<span class="aru-estado aru-estado--<?php echo esc_attr( $m['estado'] ); ?>"><?php echo esc_html( $estados[ $m['estado'] ] ?? $m['estado'] ); ?></span>
 				</li>

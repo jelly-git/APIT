@@ -197,7 +197,7 @@ $rotulos = [
 						<li>
 							<span class="aru-estado aru-estado--<?php echo esc_attr( $m['estado'] ); ?>"><?php echo esc_html( $estados[ $m['estado'] ] ?? $m['estado'] ); ?></span>
 							<strong><?php echo esc_html( ucfirst( jelly_ar_data( 'l, j \d\e F', strtotime( $m['dia'] ) ) ) ); ?></strong>
-							<small><i class="fa-regular fa-clock" aria-hidden="true"></i> <?php echo esc_html( $m['hora'] ); ?> · <i class="fa-solid fa-chair" aria-hidden="true"></i> <?php echo esc_html( jelly_ar_mesa_nome( $m['mesa_id'] ) ); ?></small>
+							<small><i class="fa-regular fa-clock" aria-hidden="true"></i> <?php echo esc_html( jelly_ar_aru_intervalo( $e['id'], $m['dia'], $m['hora'] ) ); ?> · <i class="fa-solid fa-chair" aria-hidden="true"></i> <?php echo esc_html( jelly_ar_mesa_nome( $m['mesa_id'] ) ); ?></small>
 						</li>
 					<?php endforeach; ?>
 				</ul>

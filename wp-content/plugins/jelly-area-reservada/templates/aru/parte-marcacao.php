@@ -21,7 +21,7 @@ $tag  = $abre ? 'a' : 'div';
 		</span>
 		<span class="aru-marcacao__texto">
 			<strong><?php echo esc_html( $m['evento'] ); ?></strong>
-			<small><?php echo esc_html( $m['data'] . ' · ' . $m['hora'] ); ?></small>
+			<small><?php echo esc_html( $m['data'] . ' · ' . $m['horas'] ); ?></small>
 			<small class="aru-marcacao__mesa"><i class="fa-solid fa-chair" aria-hidden="true"></i> <?php echo esc_html( implode( ' · ', array_filter( [ $m['mesa'], $m['localizacao'] ] ) ) ); ?></small>
 		</span>
 		<span class="aru-estado aru-estado--<?php echo esc_attr( $m['estado'] ); ?>"><?php echo esc_html( $estados[ $m['estado'] ] ?? $m['estado'] ); ?></span>

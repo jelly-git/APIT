@@ -288,6 +288,24 @@ function jelly_ar_aru_pessoa( $user ) {
 }
 
 /**
+ * O intervalo de uma marcação, do início ao fim do bloco: "12:00 – 12:30". A
+ * duração é a dos blocos desse dia do evento; sem horário para o dia, a de
+ * omissão.
+ */
+function jelly_ar_aru_intervalo( $evento_id, $dia, $hora ) {
+	static $horarios = [];
+
+	if ( ! isset( $horarios[ $evento_id ] ) ) {
+		$horarios[ $evento_id ] = jelly_ar_horarios( $evento_id );
+	}
+
+	$duracao = $horarios[ $evento_id ][ $dia ]['intervalo'] ?? JELLY_AR_INTERVALO_OMISSAO;
+	$fim     = jelly_ar_minutos( $hora ) + $duracao;
+
+	return $hora . ' – ' . sprintf( '%02d:%02d', intdiv( $fim, 60 ) % 24, $fim % 60 );
+}
+
+/**
  * O nome e a cor de cada estado de uma marcação, como o associado os lê.
  */
 function jelly_ar_aru_estados() {
@@ -321,6 +339,7 @@ function jelly_ar_aru_marcacoes( $user_id ) {
 			'dia_n'  => (int) gmdate( 'j', $ts ),
 			'mes'    => jelly_ar_data( 'M', $ts ),
 			'data'   => ucfirst( jelly_ar_data( 'D, j M', $ts ) ),
+			'horas'  => jelly_ar_aru_intervalo( $m['evento_id'], $m['dia'], $m['hora'] ),
 			// Viva: ainda prende o horário (por aprovar ou confirmada).
 			'viva'   => in_array( $m['estado'], [ 'pendente', 'aprovada' ], true ),
 			'cores'  => $cores[ $m['evento_id'] ] ?? [ 'inicio' => '#f41892', 'fim' => '#8048a6' ],
