@@ -382,12 +382,15 @@ function jelly_ar_aru_horarios( $evento, $minhas ) {
 			'dia'   => $d['dia'],
 			'nome'  => ucfirst( jelly_ar_data( 'l, j \d\e F', strtotime( $d['dia'] ) ) ),
 			'tem'   => (bool) $minha,
+			// O estado da marcação desse dia: pendente ou aprovada ('' sem marcação).
+			'estado' => $minha ? $minha['estado'] : '',
 			'horas' => array_map( function ( $b ) use ( $minha ) {
 				$e_minha = $minha && $minha['hora'] === $b['hora'];
 
 				return [
 					'hora'   => $b['hora'],
-					'estado' => $e_minha ? 'minha' : ( array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ? 'livre' : 'ocupado' ),
+					// A marcação do associado: confirmada (minha) ou à espera da equipa (minha-pendente).
+					'estado' => $e_minha ? ( 'pendente' === $minha['estado'] ? 'minha-pendente' : 'minha' ) : ( array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ? 'livre' : 'ocupado' ),
 				];
 			}, $d['blocos'] ),
 		];

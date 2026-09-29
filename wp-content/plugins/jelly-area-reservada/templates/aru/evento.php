@@ -32,7 +32,8 @@ $pode_marcar = (bool) array_filter( $dias, function ( $d ) {
 $rotulos = [
 	'livre'   => __( 'Disponível', 'jelly-area-reservada' ),
 	'ocupado' => __( 'Ocupado', 'jelly-area-reservada' ),
-	'minha'   => __( 'A sua marcação', 'jelly-area-reservada' ),
+	'minha'          => __( 'A sua marcação', 'jelly-area-reservada' ),
+	'minha-pendente' => __( 'A sua marcação, a aguardar aprovação', 'jelly-area-reservada' ),
 ];
 ?>
 
@@ -97,7 +98,7 @@ $rotulos = [
 								<h3 class="aru-dia__nome">
 									<?php echo esc_html( ucfirst( jelly_ar_data( 'D, j M', strtotime( $d['dia'] ) ) ) ); ?>
 									<?php if ( $d['tem'] ) : ?>
-										<small><?php esc_html_e( 'Já marcado', 'jelly-area-reservada' ); ?></small>
+										<small class="<?php echo 'pendente' === $d['estado'] ? 'is-pendente' : ''; ?>"><?php echo esc_html( 'pendente' === $d['estado'] ? __( 'Por aprovar', 'jelly-area-reservada' ) : __( 'Já marcado', 'jelly-area-reservada' ) ); ?></small>
 									<?php endif; ?>
 								</h3>
 								<ul class="aru-dia__horas">

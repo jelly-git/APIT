@@ -190,7 +190,8 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 						$rotulos = [
 							'livre'   => __( 'Disponível', 'jelly-area-reservada' ),
 							'ocupado' => __( 'Ocupado', 'jelly-area-reservada' ),
-							'minha'   => __( 'A sua marcação', 'jelly-area-reservada' ),
+							'minha'          => __( 'A sua marcação', 'jelly-area-reservada' ),
+							'minha-pendente' => __( 'Por aprovar', 'jelly-area-reservada' ),
 						];
 						?>
 						<?php foreach ( $destaque['horas'] as $h ) : ?>

@@ -266,6 +266,19 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.66.2] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.30.2. O tema e a base de dados não mudam.
+
+### Alterado
+- Nos horários da ARU, a marcação do associado **por aprovar** distingue-se
+  da confirmada: fica na cor âmbar do selo "Por aprovar" (a confirmada
+  continua magenta), com o seu lugar na legenda ("A sua marcação, a aguardar
+  aprovação"); por baixo do dia, "Por aprovar" em vez de "Já marcado". O
+  mesmo nos horários do destaque, no Início.
+- O selo **"Confirmada"** passa de verde a magenta em toda a ARU: o verde é
+  o de disponível, e o magenta o da marcação confirmada.
+
 ## [0.66.1] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.30.1. O tema e a base de dados não mudam.

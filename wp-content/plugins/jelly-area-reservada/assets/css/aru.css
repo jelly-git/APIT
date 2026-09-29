@@ -462,7 +462,8 @@
 }
 
 .aru-estado--pendente { background: rgba(245, 158, 11, 0.14); color: #b86e00; }
-.aru-estado--aprovada { background: rgba(46, 198, 176, 0.14); color: #168a79; }
+/* Confirmada em magenta, como a marcação na grelha: o verde é o de disponível. */
+.aru-estado--aprovada { background: rgba(244, 24, 146, 0.1); color: #d0107a; }
 .aru-estado--rejeitada { background: rgba(196, 33, 59, 0.1); color: #c4213b; }
 .aru-estado--cancelada { background: rgba(27, 42, 51, 0.07); color: var(--aru-suave); }
 
@@ -788,6 +789,8 @@ a.aru-numero:focus-visible {
 .aru-hora--ocupado { background: rgba(128, 72, 166, 0.16); box-shadow: inset 0 0 0 1px rgba(128, 72, 166, 0.45); color: var(--aru-roxo); }
 .aru-hora--minha { background: var(--aru-magenta); color: #fff; }
 .aru-hora--minha strong { color: #fff; }
+.aru-hora--minha-pendente { background: rgba(245, 158, 11, 0.16); box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.55); color: #b86e00; }
+.aru-hora--minha-pendente strong { color: #b86e00; }
 .aru-hora--mais { padding: 0; background: rgba(74, 133, 200, 0.1); }
 .aru-hora--mais a { color: var(--aru-azul); }
 
@@ -1397,6 +1400,13 @@ a.aru-slot--livre:focus-visible {
 	color: #fff;
 }
 
+/* A marcação do associado ainda por aprovar: a cor do selo "Por aprovar" (.aru-estado--pendente). */
+.aru-slot--minha-pendente {
+	background: rgba(245, 158, 11, 0.16);
+	box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.55);
+	color: #b86e00;
+}
+
 .aru-legenda {
 	display: flex;
 	flex-wrap: wrap;
@@ -1432,7 +1442,11 @@ a.aru-slot--livre:focus-visible {
 	margin-top: 2px;
 	font-size: 12px;
 	font-weight: 600;
-	color: var(--aru-roxo);
+	color: var(--aru-magenta);
+}
+
+.aru-dia__nome small.is-pendente {
+	color: #b86e00;
 }
 
 /* As marcações do associado no evento, uma por dia, no resumo à direita. */
