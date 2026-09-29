@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.66.1] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.30.1. O tema e a base de dados não mudam.
+
+### Alterado
+- Os horários da ARU (a página do evento e o destaque do Início) passam às
+  cores da grelha de marcações do back-office: **verde** disponível,
+  **roxo** ocupado e **magenta** a marcação do associado — antes eram verde,
+  cinzento riscado e roxo. Ao passar num horário disponível, o verde carrega,
+  em vez de ficar magenta, que é a cor de marcado.
+
 ## [0.66.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.30.0. O tema e a base de dados não mudam.

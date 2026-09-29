@@ -765,7 +765,8 @@ a.aru-numero:focus-visible {
 	color: var(--aru-preto);
 }
 
-.aru-hora--livre { background: rgba(46, 198, 176, 0.12); color: #168a79; }
+/* As cores da grelha de marcações do back-office, como nos horários da página do evento. */
+.aru-hora--livre { background: rgba(46, 198, 176, 0.14); box-shadow: inset 0 0 0 1px rgba(46, 198, 176, 0.35); color: #168a79; }
 
 /* Um horário livre do destaque que se pode marcar: o link ocupa o bloco. */
 .aru-hora--livre:has(a) {
@@ -779,17 +780,14 @@ a.aru-numero:focus-visible {
 
 .aru-hora--livre a:hover,
 .aru-hora--livre a:focus-visible {
-	background: var(--aru-magenta);
-	color: #fff;
+	background: rgba(46, 198, 176, 0.3);
+	box-shadow: inset 0 0 0 2px #2ec6b0;
+	color: #0f6e61;
 	outline: none;
 }
-
-.aru-hora--livre a:hover strong,
-.aru-hora--livre a:focus-visible strong {
-	color: #fff;
-}
-.aru-hora--ocupado { background: rgba(27, 42, 51, 0.05); color: var(--aru-suave); }
-.aru-hora--minha { background: rgba(128, 72, 166, 0.12); color: var(--aru-roxo); }
+.aru-hora--ocupado { background: rgba(128, 72, 166, 0.16); box-shadow: inset 0 0 0 1px rgba(128, 72, 166, 0.45); color: var(--aru-roxo); }
+.aru-hora--minha { background: var(--aru-magenta); color: #fff; }
+.aru-hora--minha strong { color: #fff; }
 .aru-hora--mais { padding: 0; background: rgba(74, 133, 200, 0.1); }
 .aru-hora--mais a { color: var(--aru-azul); }
 
@@ -1362,35 +1360,40 @@ a.aru-evento:focus-visible {
 	cursor: default;
 }
 
+/*
+ * As cores são as da grelha de marcações do back-office (.jar-bloco--*,
+ * admin.css): verde disponível, roxo ocupado, magenta a marcação do associado.
+ */
 .aru-slot--livre {
 	background: rgba(46, 198, 176, 0.14);
+	box-shadow: inset 0 0 0 1px rgba(46, 198, 176, 0.35);
 	color: #168a79;
 }
 
-/* Um horário livre que se pode marcar: abre o pop-up com esse dia e essa hora. */
+/* Um horário livre que se pode marcar: abre o pop-up com esse dia e essa hora. Ao passar, o verde carrega. */
 a.aru-slot--livre {
 	cursor: pointer;
 	text-decoration: none;
-	transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+	transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 a.aru-slot--livre:hover,
 a.aru-slot--livre:focus-visible {
-	background: var(--aru-magenta);
-	color: #fff;
+	background: rgba(46, 198, 176, 0.3);
+	box-shadow: inset 0 0 0 2px #2ec6b0;
+	color: #0f6e61;
 	transform: translateY(-1px);
 	outline: none;
 }
 
 .aru-slot--ocupado {
-	background: rgba(27, 42, 51, 0.05);
-	color: rgba(27, 42, 51, 0.38);
-	text-decoration: line-through;
-	text-decoration-color: rgba(27, 42, 51, 0.25);
+	background: rgba(128, 72, 166, 0.16);
+	box-shadow: inset 0 0 0 1px rgba(128, 72, 166, 0.45);
+	color: var(--aru-roxo);
 }
 
 .aru-slot--minha {
-	background: var(--aru-roxo);
+	background: var(--aru-magenta);
 	color: #fff;
 }
 
