@@ -70,6 +70,20 @@ $rotulos = [
 				<?php elseif ( ! $dias ) : ?>
 					<p class="aru-nota"><?php esc_html_e( 'Já não há horários por vir neste evento.', 'jelly-area-reservada' ); ?></p>
 				<?php else : ?>
+					<?php
+					/*
+					 * Sem marcação no evento, um horário livre abre o pop-up já com esse
+					 * dia e essa hora (data-ar-dia, data-ar-hora; assets/js/area-reservada.js):
+					 * falta só a mesa. Com marcação, os horários só se veem — é uma por evento.
+					 */
+					$pode_marcar = ! $minha;
+					?>
+					<?php if ( $pode_marcar ) : ?>
+						<p class="aru-nota"><?php esc_html_e( 'Escolha um horário disponível para pedir a marcação.', 'jelly-area-reservada' ); ?></p>
+					<?php else : ?>
+						<p class="aru-nota"><?php esc_html_e( 'Já tem uma marcação neste evento (é uma por evento). Os horários ficam aqui para consulta.', 'jelly-area-reservada' ); ?></p>
+					<?php endif; ?>
+
 					<?php // Um dia por linha: o dia à esquerda, os horários ao lado. ?>
 					<div class="aru-dias">
 						<?php foreach ( $dias as $d ) : ?>
@@ -77,9 +91,20 @@ $rotulos = [
 								<h3 class="aru-dia__nome"><?php echo esc_html( ucfirst( jelly_ar_data( 'D, j M', strtotime( $d['dia'] ) ) ) ); ?></h3>
 								<ul class="aru-dia__horas">
 									<?php foreach ( $d['horas'] as $h ) : ?>
-										<li class="aru-slot aru-slot--<?php echo esc_attr( $h['estado'] ); ?>" title="<?php echo esc_attr( $d['nome'] . ', ' . $h['hora'] . ': ' . $rotulos[ $h['estado'] ] ); ?>">
-											<?php echo esc_html( $h['hora'] ); ?>
-											<span class="screen-reader-text"><?php echo esc_html( $rotulos[ $h['estado'] ] ); ?></span>
+										<?php $titulo = $d['nome'] . ', ' . $h['hora'] . ': ' . $rotulos[ $h['estado'] ]; ?>
+										<li>
+											<?php if ( $pode_marcar && 'livre' === $h['estado'] ) : ?>
+												<?php /* translators: 1: dia, 2: hora */ ?>
+												<a class="aru-slot aru-slot--livre" href="<?php echo esc_url( jelly_ar_url_marcacao( $e['id'] ) ); ?>" data-ar-dia="<?php echo esc_attr( $d['dia'] ); ?>" data-ar-hora="<?php echo esc_attr( $h['hora'] ); ?>" title="<?php echo esc_attr( sprintf( __( 'Marcar %1$s, %2$s', 'jelly-area-reservada' ), $d['nome'], $h['hora'] ) ); ?>">
+													<?php echo esc_html( $h['hora'] ); ?>
+													<span class="screen-reader-text"><?php echo esc_html( sprintf( __( 'Marcar %1$s, %2$s', 'jelly-area-reservada' ), $d['nome'], $h['hora'] ) ); ?></span>
+												</a>
+											<?php else : ?>
+												<span class="aru-slot aru-slot--<?php echo esc_attr( $h['estado'] ); ?>" title="<?php echo esc_attr( $titulo ); ?>">
+													<?php echo esc_html( $h['hora'] ); ?>
+													<span class="screen-reader-text"><?php echo esc_html( $rotulos[ $h['estado'] ] ); ?></span>
+												</span>
+											<?php endif; ?>
 										</li>
 									<?php endforeach; ?>
 								</ul>

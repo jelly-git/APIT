@@ -47,6 +47,12 @@
 	 */
 	var MARCAR = /^#area-reservada-marcar-(\d+)$/;
 	var marcarEvento = null;
+	/*
+	 * O dia e a hora já escolhidos fora do pop-up (um horário livre na página do
+	 * evento da ARU, data-ar-dia e data-ar-hora): o pop-up abre com eles, e só
+	 * falta a mesa. Servem uma vez.
+	 */
+	var marcarEscolhido = null;
 
 	function painelDaAncora( hash ) {
 		var achado = MARCAR.exec( hash );
@@ -109,8 +115,20 @@
 		mostrarPainel( nome );
 	}
 
+	/*
+	 * Na ARU (body.aru-corpo), a página mostra as marcações e os horários: depois
+	 * de uma marcação feita no pop-up, fechar recarrega-a, para já aparecer.
+	 */
+	var recarregarAoFechar = false;
+
 	function fechar() {
 		if ( modal.hidden ) {
+			return;
+		}
+
+		if ( recarregarAoFechar ) {
+			escreverAncora( '' );
+			window.location.reload();
 			return;
 		}
 
@@ -142,6 +160,9 @@
 
 			if ( nome ) {
 				e.preventDefault();
+				marcarEscolhido = 'marcar' === nome && link.hasAttribute( 'data-ar-dia' )
+					? { dia: link.getAttribute( 'data-ar-dia' ), hora: link.getAttribute( 'data-ar-hora' ) }
+					: null;
 				abrir( nome );
 			}
 			return;
@@ -789,7 +810,8 @@
 	function carregarMarcacao( id ) {
 		var ajax = painelMarcar.getAttribute( 'data-ar-ajax' );
 
-		escolha = { dias: [], dia: null, hora: null };
+		escolha = { dias: [], dia: marcarEscolhido ? marcarEscolhido.dia : null, hora: marcarEscolhido ? marcarEscolhido.hora : null };
+		marcarEscolhido = null;
 		parte( 'titulo' ).textContent = 'Marcar mesa';
 		parte( 'evento' ).textContent = '';
 		parte( 'erro' ).hidden = true;
@@ -880,6 +902,7 @@
 					terminar();
 
 					if ( dados.sucesso ) {
+						recarregarAoFechar = document.body.classList.contains( 'aru-corpo' );
 						mostrarFeita( { titulo: parte( 'titulo' ).textContent }, dados.marcacao, true );
 						return;
 					}

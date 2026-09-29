@@ -187,13 +187,21 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 						?>
 						<?php foreach ( $destaque['horas'] as $h ) : ?>
 							<li class="aru-hora aru-hora--<?php echo esc_attr( $h['estado'] ); ?>">
-								<strong><?php echo esc_html( $h['hora'] ); ?></strong>
-								<span><?php echo esc_html( $rotulos[ $h['estado'] ] ); ?></span>
+								<?php // Sem marcação no evento, um horário livre abre o pop-up já com ele (como na página do evento). ?>
+								<?php if ( ! $minha && 'livre' === $h['estado'] ) : ?>
+									<a href="<?php echo esc_url( jelly_ar_url_marcacao( $e['id'] ) ); ?>" data-ar-dia="<?php echo esc_attr( $destaque['dia_ymd'] ); ?>" data-ar-hora="<?php echo esc_attr( $h['hora'] ); ?>">
+										<strong><?php echo esc_html( $h['hora'] ); ?></strong>
+										<span><?php esc_html_e( 'Marcar', 'jelly-area-reservada' ); ?></span>
+									</a>
+								<?php else : ?>
+									<strong><?php echo esc_html( $h['hora'] ); ?></strong>
+									<span><?php echo esc_html( $rotulos[ $h['estado'] ] ); ?></span>
+								<?php endif; ?>
 							</li>
 						<?php endforeach; ?>
 						<?php if ( $destaque['mais'] ) : ?>
 							<li class="aru-hora aru-hora--mais">
-								<a href="<?php echo esc_url( jelly_ar_url_marcacao( $e['id'] ) ); ?>">
+								<a href="<?php echo esc_url( $e['url'] ); ?>">
 									<?php /* translators: %d: horários que não se mostram */ ?>
 									<strong><?php echo esc_html( sprintf( __( '+%d', 'jelly-area-reservada' ), $destaque['mais'] ) ); ?></strong>
 									<span><?php esc_html_e( 'Ver todos', 'jelly-area-reservada' ); ?></span>

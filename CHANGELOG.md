@@ -266,6 +266,23 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.65.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.29.0. O tema e a base de dados não mudam.
+
+### Adicionado
+- **Marcar diretamente num horário, na ARU.** Na página de um evento, cada
+  horário disponível passa a ser um botão: abre o pop-up da marcação já com
+  esse dia e essa hora escolhidos, e só falta a mesa (com uma mesa só, nem
+  isso) e "Pedir marcação". O mesmo nos horários do evento em destaque, no
+  Início.
+  - Com uma marcação já feita no evento (é uma por evento), os horários só
+    se veem, e uma nota diz porquê.
+  - Depois de marcar, fechar o pop-up recarrega a página da ARU, para a
+    marcação e os horários aparecerem já atualizados.
+  - As ligações `#area-reservada-marcar-<id>` aceitam `data-ar-dia` e
+    `data-ar-hora`, que o pop-up usa como escolha inicial.
+
 ## [0.64.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.28.0. O tema e a base de dados não mudam.

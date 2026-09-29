@@ -470,6 +470,7 @@ function jelly_ar_aru_destaque( $eventos, $user_id ) {
 			'livres' => $livres,
 			'minha'  => $minha,
 			'dia'    => $dia ? $dia['nome'] : '',
+			'dia_ymd' => $dia ? $dia['dia'] : '',
 			'horas'  => $dia ? array_slice( $dia['horas'], 0, 6 ) : [],
 			'mais'   => $dia ? max( 0, count( $dia['horas'] ) - 6 ) : 0,
 		];
