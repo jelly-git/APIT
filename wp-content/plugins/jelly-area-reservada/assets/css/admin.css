@@ -4250,3 +4250,222 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 .jar-grelha-horas th.is-depois-pausa::before {
 	top: 0;
 }
+
+/* ---------- Encontros ---------- */
+
+.jar-numeros--tres {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* A capa: a imagem do encontro ou a do primeiro vídeo, em 16:9; sem as duas, o degradé com o ícone. */
+.jar-encontro-capa {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 78px;
+	height: 44px;
+	overflow: hidden;
+	border-radius: 3px;
+	background: #e9edf0;
+}
+
+.jar-encontro-capa img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.jar-encontro-capa.is-vazia {
+	background: linear-gradient(100deg, var(--jar-magenta), #8048a6);
+	font-size: 18px;
+	color: #fff;
+}
+
+.jar-encontro-capa--grande {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 16 / 9;
+	border-radius: 6px;
+}
+
+.jar-encontro-capa--grande.is-vazia {
+	font-size: 40px;
+}
+
+/* O resumo na lista, numa linha só. */
+.jar-encontro-resumo {
+	display: -webkit-box;
+	max-width: 520px;
+	overflow: hidden;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+
+.jar-col--videos {
+	width: 90px;
+}
+
+/* A imagem, no formulário: a pré-visualização e os botões ao lado. */
+.jar-imagem {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.jar-imagem__previa {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	justify-content: center;
+	width: 96px;
+	height: 54px;
+	overflow: hidden;
+	border-radius: 4px;
+	background: #e9edf0;
+	color: var(--jar-suave);
+}
+
+.jar-imagem__previa:empty::before {
+	content: "\f03e";
+	font-family: "Font Awesome 6 Free";
+	font-weight: 400;
+	font-size: 20px;
+}
+
+.jar-imagem__previa img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.jar-imagem__botoes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+/* Os vídeos, no formulário: uma linha por vídeo, com a miniatura, o link, o título e as setas. */
+.jar-videos {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+	width: 100%;
+}
+
+.jar-videos__lista {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.jar-video {
+	display: grid;
+	grid-template-columns: 96px minmax(0, 1.3fr) minmax(0, 1fr) auto;
+	gap: 12px;
+	align-items: end;
+	padding: 10px;
+	border: 1px solid var(--jar-linha);
+	border-radius: 6px;
+}
+
+.jar-video__mini {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 96px;
+	height: 54px;
+	overflow: hidden;
+	border-radius: 4px;
+	background: #e9edf0;
+	font-size: 22px;
+	color: var(--jar-suave);
+}
+
+.jar-video__mini img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.jar-video__acoes {
+	display: flex;
+	gap: 2px;
+	padding-bottom: 6px;
+}
+
+/* A primeira não sobe, a última não desce. */
+.jar-video:first-child [data-jar-video-subir],
+.jar-video:last-child [data-jar-video-descer] {
+	visibility: hidden;
+}
+
+/* Os vídeos, em leitura: a miniatura, o título e o link para o YouTube. */
+.jar-videos-leitura {
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	padding: 0 24px 8px;
+	list-style: none;
+	counter-reset: video;
+}
+
+.jar-videos-leitura li {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 12px 0;
+}
+
+.jar-videos-leitura li + li {
+	border-top: 1px solid var(--jar-linha);
+}
+
+.jar-videos-leitura img {
+	flex: none;
+	width: 96px;
+	height: 54px;
+	border-radius: 4px;
+	object-fit: cover;
+}
+
+.jar-videos-leitura span {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	line-height: 1.3;
+}
+
+.jar-videos-leitura strong {
+	font-weight: 500;
+}
+
+.jar-videos-leitura .jar-link {
+	font-size: 13px;
+}
+
+@media (max-width: 960px) {
+	.jar-numeros--tres {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.jar-video {
+		grid-template-columns: 96px minmax(0, 1fr);
+	}
+
+	.jar-video .jar-campo {
+		grid-column: 1 / -1;
+	}
+
+	.jar-video__acoes {
+		grid-column: 2;
+		grid-row: 1;
+		justify-self: end;
+		align-self: start;
+	}
+}

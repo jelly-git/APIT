@@ -381,6 +381,132 @@
 		acertar();
 	} );
 
+	/*
+	 * Os vídeos de um encontro (data-jar-videos, templates/admin/encontros.php):
+	 * "+ Vídeo" junta uma linha do modelo; as setas mudam a ordem, que é a das
+	 * linhas; o X tira a linha — a última só se esvazia. Ao colar o link,
+	 * aparece a miniatura do vídeo. Cancelar volta às linhas de partida.
+	 */
+	var youtubeId = function ( texto ) {
+		var t = String( texto ).trim();
+		var m = t.match( /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:watch\?(?:[^#]*&)?v=|embed\/|shorts\/|live\/|v\/))([A-Za-z0-9_-]{11})/i );
+
+		if ( /^[A-Za-z0-9_-]{11}$/.test( t ) ) {
+			return t;
+		}
+		return m ? m[ 1 ] : '';
+	};
+
+	Array.prototype.forEach.call( raiz.querySelectorAll( '[data-jar-videos]' ), function ( caixa ) {
+		var lista = caixa.querySelector( '[data-jar-videos-lista]' );
+		var modelo = caixa.querySelector( '[data-jar-video-modelo]' );
+		var inicio = lista.innerHTML;
+		var form = caixa.closest( 'form' );
+
+		var miniatura = function ( linha ) {
+			var id = youtubeId( linha.querySelector( '[data-jar-video-url]' ).value );
+			var mini = linha.querySelector( '[data-jar-video-mini]' );
+
+			mini.innerHTML = id
+				? '<img src="https://i.ytimg.com/vi/' + id + '/hqdefault.jpg" alt="">'
+				: '<i class="fa-brands fa-youtube" aria-hidden="true"></i>';
+		};
+
+		caixa.addEventListener( 'input', function ( e ) {
+			if ( e.target.hasAttribute( 'data-jar-video-url' ) ) {
+				miniatura( e.target.closest( '[data-jar-video]' ) );
+			}
+		} );
+
+		caixa.addEventListener( 'click', function ( e ) {
+			var linha = e.target.closest( '[data-jar-video]' );
+
+			if ( e.target.closest( '[data-jar-video-mais]' ) ) {
+				lista.appendChild( modelo.content.firstElementChild.cloneNode( true ) );
+				lista.lastElementChild.querySelector( '[data-jar-video-url]' ).focus();
+				return;
+			}
+
+			if ( ! linha ) {
+				return;
+			}
+
+			if ( e.target.closest( '[data-jar-video-tirar]' ) ) {
+				if ( 1 === lista.children.length ) {
+					Array.prototype.forEach.call( linha.querySelectorAll( 'input' ), function ( c ) {
+						c.value = 'hidden' === c.type ? '0' : '';
+					} );
+					miniatura( linha );
+				} else {
+					linha.remove();
+				}
+			} else if ( e.target.closest( '[data-jar-video-subir]' ) && linha.previousElementSibling ) {
+				lista.insertBefore( linha, linha.previousElementSibling );
+			} else if ( e.target.closest( '[data-jar-video-descer]' ) && linha.nextElementSibling ) {
+				lista.insertBefore( linha.nextElementSibling, linha );
+			}
+		} );
+
+		if ( form ) {
+			form.addEventListener( 'reset', function () {
+				lista.innerHTML = inicio;
+			} );
+		}
+	} );
+
+	/*
+	 * A imagem de um encontro (data-jar-imagem): escolhe-se na biblioteca do
+	 * WordPress (wp.media, carregada só nos Encontros); o id vai no campo
+	 * escondido. Cancelar volta à de partida.
+	 */
+	Array.prototype.forEach.call( raiz.querySelectorAll( '[data-jar-imagem]' ), function ( caixa ) {
+		var campo = caixa.querySelector( '[data-jar-imagem-id]' );
+		var previa = caixa.querySelector( '[data-jar-imagem-previa]' );
+		var escolher = caixa.querySelector( '[data-jar-imagem-escolher]' );
+		var tirar = caixa.querySelector( '[data-jar-imagem-tirar]' );
+		var form = caixa.closest( 'form' );
+		var janela = null;
+
+		var mostrar = function ( id, url ) {
+			campo.value = id || '0';
+			previa.innerHTML = url ? '<img src="' + encodeURI( url ) + '" alt="">' : '';
+			tirar.hidden = ! url;
+		};
+
+		if ( ! window.wp || ! window.wp.media ) {
+			escolher.disabled = true;
+			return;
+		}
+
+		escolher.addEventListener( 'click', function () {
+			if ( ! janela ) {
+				janela = window.wp.media( {
+					title: escolher.getAttribute( 'data-titulo' ),
+					button: { text: escolher.getAttribute( 'data-botao' ) },
+					library: { type: 'image' },
+					multiple: false
+				} );
+				janela.on( 'select', function () {
+					var img = janela.state().get( 'selection' ).first().toJSON();
+					var tamanho = img.sizes && ( img.sizes.medium_large || img.sizes.large || img.sizes.medium );
+
+					mostrar( img.id, tamanho ? tamanho.url : img.url );
+				} );
+			}
+			janela.open();
+		} );
+
+		tirar.addEventListener( 'click', function () {
+			mostrar( 0, '' );
+		} );
+
+		if ( form ) {
+			form.addEventListener( 'reset', function () {
+				mostrar( caixa.getAttribute( 'data-inicial' ), caixa.getAttribute( 'data-inicial-url' ) );
+			} );
+		}
+	} );
+
 	var intervaloHoras = raiz.querySelector( '[data-jar-intervalo]' );
 
 	if ( intervaloHoras ) {

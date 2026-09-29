@@ -37,7 +37,7 @@ function jelly_ar_admin_paginas() {
 		'eventos'      => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-earth-europe', 'pronta' => true, 'grupo' => 'eventos' ],
 		'mesas'        => [ 'titulo' => __( 'Mesas e horários', 'jelly-area-reservada' ), 'icone' => 'fa-table-cells-large', 'pronta' => true, 'grupo' => 'eventos' ],
 		'documentos'   => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'pronta' => true, 'grupo' => 'conteudos' ],
-		'encontros'    => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-people-group', 'pronta' => false, 'grupo' => 'conteudos' ],
+		'encontros'    => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-people-group', 'pronta' => true, 'grupo' => 'conteudos' ],
 	];
 }
 
@@ -170,6 +170,11 @@ function jelly_ar_admin_assets() {
 	wp_enqueue_style( 'jelly-ar-omnes', 'https://use.typekit.net/uqy3rtf.css', [], null );
 	wp_enqueue_style( 'jelly-ar-fa', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css', [], '6.7.2' );
 	wp_enqueue_style( 'jelly-ar-admin', JELLY_AR_URL . 'assets/css/admin.css', [], jelly_ar_versao_ficheiro( 'assets/css/admin.css' ) );
+	// Nos Encontros, a biblioteca de imagens do WordPress, para a imagem de cada um.
+	if ( 'encontros' === jelly_ar_admin_atual() ) {
+		wp_enqueue_media();
+	}
+
 	wp_enqueue_script( 'jelly-ar-admin', JELLY_AR_URL . 'assets/js/admin.js', [], jelly_ar_versao_ficheiro( 'assets/js/admin.js' ), true );
 }
 add_action( 'admin_enqueue_scripts', 'jelly_ar_admin_assets' );

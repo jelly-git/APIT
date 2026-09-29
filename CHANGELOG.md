@@ -266,6 +266,26 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.73.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.37.0, esquema da base de dados 14. O tema não
+muda. As tabelas novas são criadas sozinhas na primeira visita ao wp-admin
+depois do deploy; não é preciso subir a base de dados.
+
+### Adicionado
+- **Encontros no back-office** (Conteúdos → Encontros), como artigos de
+  notícias com vídeos: título, data, imagem, resumo e texto, e a lista dos
+  vídeos do YouTube, pela ordem em que se mostram. Cola-se o link do vídeo
+  (o da barra do browser, o de "Partilhar", o de um short); sem título, fica
+  o do YouTube. As setas mudam a ordem e a miniatura aparece ao colar o link.
+  Sem imagem escolhida, a capa é a do primeiro vídeo.
+- Publicar, passar a rascunho e enviar para o lixo, como nos eventos; a lista
+  com os separadores Todos, Publicados e Rascunhos e a pesquisa pelo título,
+  pelo resumo e pelos títulos dos vídeos.
+- As tabelas `jelly_ar_encontros` e `jelly_ar_encontro_videos`. Como o resto
+  da Área Reservada, não entram na exportação para produção: os encontros
+  criam-se lá.
+
 ## [0.72.1] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.36.1. O tema e a base de dados não mudam.

@@ -32,6 +32,11 @@
  *   jelly_ar_marcacoes         os pedidos de mesa dos associados
  *   jelly_ar_registo           quem fez o quê nas marcações, mesas e horários
  *
+ *   jelly_ar_encontros         os encontros, como artigos: título, data, texto
+ *                              e imagem; só na Área Reservada
+ *   jelly_ar_encontro_videos   os vídeos de cada encontro, do YouTube, pela
+ *                              ordem em que se mostram
+ *
  * Os estados guardam-se como texto (varchar) e não como ENUM: acrescentar um
  * estado não obriga a mudar o esquema, e os valores aceites são verificados no
  * PHP, antes de chegarem aqui.
@@ -43,7 +48,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Sobe quando o que jelly_ar_instalar() cria mudar, para ela voltar a correr.
-define( 'JELLY_AR_DB_VERSION', '13' );
+define( 'JELLY_AR_DB_VERSION', '14' );
 
 /**
  * O nome completo de uma tabela da AR: jelly_ar_tabela( 'eventos' ).
@@ -286,6 +291,44 @@ function jelly_ar_esquema() {
 			KEY evento_id (evento_id),
 			KEY marcacao_id (marcacao_id),
 			KEY associado_id (associado_id)
+		) {$c};",
+
+		/*
+		 * Os encontros: como um artigo de notícias, com a data em que decorreu,
+		 * o resumo da lista, o texto e a imagem (um anexo da biblioteca do
+		 * WordPress). publicado_em é a data da primeira publicação.
+		 */
+		"CREATE TABLE {$t( 'encontros' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			titulo varchar(255) NOT NULL,
+			slug varchar(200) NOT NULL DEFAULT '',
+			data date NOT NULL,
+			resumo text NOT NULL,
+			texto longtext NOT NULL,
+			imagem_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			estado varchar(20) NOT NULL DEFAULT 'publicado',
+			autor_id bigint(20) unsigned NOT NULL DEFAULT 0,
+			criado_em datetime NOT NULL,
+			atualizado_em datetime NOT NULL,
+			publicado_em datetime DEFAULT NULL,
+			PRIMARY KEY  (id),
+			KEY estado_data (estado,data),
+			KEY slug (slug)
+		) {$c};",
+
+		/*
+		 * Os vídeos de um encontro: o identificador do YouTube (os 11 caracteres
+		 * de watch?v=), o título e a ordem. Os vídeos são "não listados" no
+		 * YouTube; é por aqui que se chega a eles.
+		 */
+		"CREATE TABLE {$t( 'encontro_videos' )} (
+			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+			encontro_id bigint(20) unsigned NOT NULL,
+			youtube_id varchar(20) NOT NULL,
+			titulo varchar(255) NOT NULL DEFAULT '',
+			ordem smallint(5) unsigned NOT NULL DEFAULT 0,
+			PRIMARY KEY  (id),
+			KEY encontro_ordem (encontro_id,ordem)
 		) {$c};",
 	];
 }

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Área Reservada APIT
  * Description: Área reservada dos associados da APIT — login, registo e, nas fases seguintes, documentos, encontros, marcações e calendário.
- * Version:     0.36.1
+ * Version:     0.37.0
  * Author:      Jelly
  * Author URI:  https://jelly.pt
  * Text Domain: jelly-area-reservada
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Acertar com o cabeçalho acima e com a entrada do CHANGELOG.md do repositório.
-define( 'JELLY_AR_VERSION', '0.36.1' );
+define( 'JELLY_AR_VERSION', '0.37.0' );
 define( 'JELLY_AR_DIR', plugin_dir_path( __FILE__ ) );
 define( 'JELLY_AR_URL', plugin_dir_url( __FILE__ ) );
 
@@ -30,8 +30,7 @@ define( 'JELLY_AR_EXEMPLO', 'local' === wp_get_environment_type() );
 define( 'JELLY_AR_EXEMPLO_ID', 900000 );
 
 /*
- * Um ficheiro por módulo. Os que vêm a seguir — encontros,
- * eventos e mesas, marcações, calendário — entram aqui da mesma maneira.
+ * Um ficheiro por módulo; os que vierem entram aqui da mesma maneira.
  */
 require_once JELLY_AR_DIR . 'inc/instalar.php';
 require_once JELLY_AR_DIR . 'inc/acessos.php';
@@ -41,6 +40,7 @@ require_once JELLY_AR_DIR . 'inc/registo.php';
 require_once JELLY_AR_DIR . 'inc/sessao.php';
 require_once JELLY_AR_DIR . 'inc/documentos-dados.php';
 require_once JELLY_AR_DIR . 'inc/eventos-dados.php';
+require_once JELLY_AR_DIR . 'inc/encontros-dados.php';
 require_once JELLY_AR_DIR . 'inc/mesas-dados.php';
 require_once JELLY_AR_DIR . 'inc/historico.php';
 require_once JELLY_AR_DIR . 'inc/marcacoes.php';
@@ -59,6 +59,7 @@ if ( is_admin() ) {
 	require_once JELLY_AR_DIR . 'inc/documentos-categorias.php';
 	require_once JELLY_AR_DIR . 'inc/eventos.php';
 	require_once JELLY_AR_DIR . 'inc/eventos-categorias.php';
+	require_once JELLY_AR_DIR . 'inc/encontros.php';
 	require_once JELLY_AR_DIR . 'inc/mesas.php';
 	require_once JELLY_AR_DIR . 'inc/aprovacoes.php';
 	require_once JELLY_AR_DIR . 'inc/calendario.php';
