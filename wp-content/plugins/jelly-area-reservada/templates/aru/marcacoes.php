@@ -28,7 +28,7 @@ $abertos = array_values( array_filter( jelly_ar_aru_eventos(), function ( $e ) u
 
 <header class="aru-titulo">
 	<h1><?php esc_html_e( 'Marcações', 'jelly-area-reservada' ); ?></h1>
-	<p><?php esc_html_e( 'As suas marcações de mesa nos eventos da APIT. Um pedido fica por aprovar até a equipa o confirmar; nessa altura recebe um e-mail.', 'jelly-area-reservada' ); ?></p>
+	<p><?php esc_html_e( 'As marcações de mesa nos eventos da APIT. As marcações por aprovar aguardam a confirmação da APIT, que será enviada por e-mail.', 'jelly-area-reservada' ); ?></p>
 </header>
 
 <?php if ( $abertos ) : ?>

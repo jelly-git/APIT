@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.66.7] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.30.7. O tema e a base de dados não mudam.
+
+### Alterado
+- Na ARU, a nota sobre as marcações por aprovar passa a "As marcações por
+  aprovar aguardam a confirmação da APIT, que será enviada por e-mail." — no
+  resumo da página do evento e na introdução das Marcações.
+
 ## [0.66.6] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.30.6. O tema e a base de dados não mudam.

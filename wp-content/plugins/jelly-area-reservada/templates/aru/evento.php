@@ -202,7 +202,7 @@ $rotulos = [
 					<?php endforeach; ?>
 				</ul>
 				<?php if ( in_array( 'pendente', wp_list_pluck( $minhas, 'estado' ), true ) ) : ?>
-					<p class="aru-nota"><?php esc_html_e( 'Um pedido fica por aprovar até a equipa o confirmar; nessa altura recebe um e-mail.', 'jelly-area-reservada' ); ?></p>
+					<p class="aru-nota"><?php esc_html_e( 'As marcações por aprovar aguardam a confirmação da APIT, que será enviada por e-mail.', 'jelly-area-reservada' ); ?></p>
 				<?php endif; ?>
 			<?php elseif ( $e['terminado'] ) : ?>
 				<p class="aru-nota"><?php esc_html_e( 'Não fez marcações neste evento, que já terminou.', 'jelly-area-reservada' ); ?></p>
