@@ -288,7 +288,8 @@ function jelly_ar_aru_pessoa( $user ) {
 }
 
 /**
- * O intervalo de uma marcação, do início ao fim do bloco: "12:00 – 12:30". A
+ * O intervalo de uma marcação, do início ao fim do bloco: "12:00 às 12:30"
+ * (com um traço, as duas horas liam-se como duas marcações). A
  * duração é a dos blocos desse dia do evento; sem horário para o dia, a de
  * omissão.
  */
@@ -302,7 +303,8 @@ function jelly_ar_aru_intervalo( $evento_id, $dia, $hora ) {
 	$duracao = $horarios[ $evento_id ][ $dia ]['intervalo'] ?? JELLY_AR_INTERVALO_OMISSAO;
 	$fim     = jelly_ar_minutos( $hora ) + $duracao;
 
-	return $hora . ' – ' . sprintf( '%02d:%02d', intdiv( $fim, 60 ) % 24, $fim % 60 );
+	/* translators: 1: hora de início, 2: hora de fim */
+	return sprintf( __( '%1$s às %2$s', 'jelly-area-reservada' ), $hora, sprintf( '%02d:%02d', intdiv( $fim, 60 ) % 24, $fim % 60 ) );
 }
 
 /**

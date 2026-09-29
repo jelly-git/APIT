@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.68.3] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.32.3. O tema e a base de dados não mudam.
+
+### Alterado
+- O intervalo das marcações na ARU passa a "12:00 às 12:30": com o traço
+  ("12:00 – 12:30"), as duas horas liam-se como duas marcações.
+
 ## [0.68.2] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.32.2. O tema e a base de dados não mudam.
