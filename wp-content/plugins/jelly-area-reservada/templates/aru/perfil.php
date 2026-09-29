@@ -1,8 +1,10 @@
 <?php
 /**
- * Os meus dados, na ARU: o nome e o e-mail (só para ler), o telefone e a
- * empresa (para mudar), e a palavra-passe. Os formulários vão a
- * inc/aru-perfil.php, e voltam aqui com ?aviso= ou ?erro=.
+ * Os meus dados, na ARU. À esquerda, o perfil — o que não se muda aqui: as
+ * iniciais, o nome, o e-mail, a empresa e desde quando é associado. À direita,
+ * num cartão, o que se edita: os contactos (o telefone e a empresa) e a
+ * palavra-passe. Os formulários vão a inc/aru-perfil.php, e voltam aqui com
+ * ?aviso= ou ?erro=.
  *
  * @var array $aru    secao, user, pagina, evento.
  * @var array $pessoa jelly_ar_aru_pessoa().
@@ -50,94 +52,111 @@ $mensagem = function ( $cartao ) use ( $aviso, $erro, $avisos, $erros, $e_da_sen
 };
 ?>
 
+<?php
+// Desde quando é associado: da aprovação (ou, sem ela, do registo).
+$desde = $perfil ? ( $perfil->aprovado_em ? $perfil->aprovado_em : $perfil->registado_em ) : '';
+$desde = $desde ? jelly_ar_data( 'F \d\e Y', strtotime( $desde . ' UTC' ) ) : '';
+?>
+
 <header class="aru-titulo">
 	<h1><?php esc_html_e( 'Os meus dados', 'jelly-area-reservada' ); ?></h1>
-	<p><?php esc_html_e( 'Os dados da sua conta na Área Reservada. Para mudar o nome ou o e-mail, contacte a APIT.', 'jelly-area-reservada' ); ?></p>
+	<p><?php esc_html_e( 'Os dados da conta na Área Reservada. Para mudar o nome ou o e-mail, a APIT deve ser contactada.', 'jelly-area-reservada' ); ?></p>
 </header>
 
 <div class="aru-perfil">
-	<?php /* ---------- Os dados ---------- */ ?>
-	<section class="aru-cartao" id="jar-dados">
-		<header class="aru-cartao__cabeca">
-			<h2><i class="fa-regular fa-id-card" aria-hidden="true"></i> <?php esc_html_e( 'Dados pessoais', 'jelly-area-reservada' ); ?></h2>
-		</header>
+	<?php /* ---------- O perfil: o que não se muda aqui ---------- */ ?>
+	<aside class="aru-cartao aru-perfil__cartao">
+		<span class="aru-perfil__foto" aria-hidden="true"><?php echo esc_html( $pessoa['iniciais'] ); ?></span>
+		<h2 class="aru-perfil__nome"><?php echo esc_html( $pessoa['nome'] ); ?></h2>
+		<p class="aru-perfil__email"><?php echo esc_html( $user->user_email ); ?></p>
 
-		<?php $mensagem( 'dados' ); ?>
+		<ul class="aru-perfil__factos">
+			<?php if ( $perfil && $perfil->empresa ) : ?>
+				<li><i class="fa-solid fa-building" aria-hidden="true"></i> <?php echo esc_html( $perfil->empresa ); ?></li>
+			<?php endif; ?>
+			<?php if ( $desde ) : ?>
+				<?php /* translators: %s: mês e ano */ ?>
+				<li><i class="fa-regular fa-calendar-check" aria-hidden="true"></i> <?php echo esc_html( sprintf( __( 'Associado desde %s', 'jelly-area-reservada' ), $desde ) ); ?></li>
+			<?php endif; ?>
+		</ul>
 
-		<form class="aru-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="jelly_ar_perfil">
-			<?php wp_nonce_field( 'jelly_ar_perfil' ); ?>
+		<p class="aru-perfil__nota"><i class="fa-solid fa-lock" aria-hidden="true"></i> <?php esc_html_e( 'O nome e o e-mail identificam a conta e só a APIT os pode mudar.', 'jelly-area-reservada' ); ?></p>
+	</aside>
 
-			<div class="aru-campo">
-				<label for="aru-nome"><?php esc_html_e( 'Nome', 'jelly-area-reservada' ); ?></label>
-				<input type="text" id="aru-nome" value="<?php echo esc_attr( $pessoa['nome'] ); ?>" readonly aria-describedby="aru-fixos">
-			</div>
+	<?php /* ---------- O que se edita: os contactos e a palavra-passe ---------- */ ?>
+	<section class="aru-cartao aru-perfil__edicao">
+		<div class="aru-perfil__parte" id="jar-dados">
+			<header class="aru-cartao__cabeca">
+				<h2><i class="fa-regular fa-id-card" aria-hidden="true"></i> <?php esc_html_e( 'Contactos', 'jelly-area-reservada' ); ?></h2>
+			</header>
 
-			<div class="aru-campo">
-				<label for="aru-email"><?php esc_html_e( 'E-mail', 'jelly-area-reservada' ); ?></label>
-				<input type="email" id="aru-email" value="<?php echo esc_attr( $user->user_email ); ?>" readonly aria-describedby="aru-fixos">
-			</div>
-
-			<p class="aru-nota aru-form__inteira" id="aru-fixos"><i class="fa-solid fa-lock" aria-hidden="true"></i> <?php esc_html_e( 'O nome e o e-mail identificam a conta e só a APIT os pode mudar.', 'jelly-area-reservada' ); ?></p>
+			<?php $mensagem( 'dados' ); ?>
 
 			<?php if ( $perfil ) : ?>
+				<form class="aru-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+					<input type="hidden" name="action" value="jelly_ar_perfil">
+					<?php wp_nonce_field( 'jelly_ar_perfil' ); ?>
+
+					<div class="aru-campo">
+						<label for="aru-telefone"><?php esc_html_e( 'Telefone', 'jelly-area-reservada' ); ?></label>
+						<input type="tel" id="aru-telefone" name="telefone" value="<?php echo esc_attr( $perfil->telefone ); ?>" maxlength="30" pattern="\+?[\d\s().\-]{9,20}" autocomplete="tel" placeholder="+351 912 345 678">
+					</div>
+
+					<div class="aru-campo">
+						<label for="aru-empresa"><?php esc_html_e( 'Empresa', 'jelly-area-reservada' ); ?></label>
+						<input type="text" id="aru-empresa" name="empresa" value="<?php echo esc_attr( $perfil->empresa ); ?>" maxlength="150" autocomplete="organization">
+					</div>
+
+					<div class="aru-form__acoes">
+						<button type="submit" class="aru-botao">
+							<span><?php esc_html_e( 'Guardar', 'jelly-area-reservada' ); ?></span>
+							<i class="fa-solid fa-check" aria-hidden="true"></i>
+						</button>
+					</div>
+				</form>
+			<?php else : ?>
+				<p class="aru-nota"><?php esc_html_e( 'Esta conta não tem dados de associado para alterar.', 'jelly-area-reservada' ); ?></p>
+			<?php endif; ?>
+		</div>
+
+		<div class="aru-perfil__parte" id="jar-senha">
+			<header class="aru-cartao__cabeca">
+				<h2><i class="fa-solid fa-key" aria-hidden="true"></i> <?php esc_html_e( 'Palavra-passe', 'jelly-area-reservada' ); ?></h2>
+			</header>
+
+			<?php $mensagem( 'senha' ); ?>
+
+			<form class="aru-form aru-form--tres" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="jelly_ar_perfil_senha">
+				<?php wp_nonce_field( 'jelly_ar_perfil_senha' ); ?>
+				<?php // Para o gestor de palavras-passe do browser saber de que conta é. ?>
+				<input type="hidden" name="username" value="<?php echo esc_attr( $user->user_email ); ?>" autocomplete="username">
+
 				<div class="aru-campo">
-					<label for="aru-telefone"><?php esc_html_e( 'Telefone', 'jelly-area-reservada' ); ?></label>
-					<input type="tel" id="aru-telefone" name="telefone" value="<?php echo esc_attr( $perfil->telefone ); ?>" maxlength="30" pattern="\+?[\d\s().\-]{9,20}" autocomplete="tel" placeholder="+351 912 345 678">
+					<label for="aru-atual"><?php esc_html_e( 'Atual', 'jelly-area-reservada' ); ?></label>
+					<input type="password" id="aru-atual" name="atual" required autocomplete="current-password">
 				</div>
 
 				<div class="aru-campo">
-					<label for="aru-empresa"><?php esc_html_e( 'Empresa', 'jelly-area-reservada' ); ?></label>
-					<input type="text" id="aru-empresa" name="empresa" value="<?php echo esc_attr( $perfil->empresa ); ?>" maxlength="150" autocomplete="organization">
+					<label for="aru-senha"><?php esc_html_e( 'Nova', 'jelly-area-reservada' ); ?></label>
+					<input type="password" id="aru-senha" name="senha" required minlength="<?php echo (int) JELLY_AR_SENHA_MINIMO; ?>" autocomplete="new-password" aria-describedby="aru-senha-regra">
 				</div>
+
+				<div class="aru-campo">
+					<label for="aru-senha2"><?php esc_html_e( 'Confirmar a nova', 'jelly-area-reservada' ); ?></label>
+					<input type="password" id="aru-senha2" name="senha2" required minlength="<?php echo (int) JELLY_AR_SENHA_MINIMO; ?>" autocomplete="new-password">
+				</div>
+
+				<?php /* translators: %d: número de caracteres */ ?>
+				<p class="aru-nota aru-form__inteira" id="aru-senha-regra"><?php echo esc_html( sprintf( __( 'A nova palavra-passe tem pelo menos %d caracteres e não pode ser o e-mail.', 'jelly-area-reservada' ), JELLY_AR_SENHA_MINIMO ) ); ?></p>
 
 				<div class="aru-form__acoes">
 					<button type="submit" class="aru-botao">
-						<span><?php esc_html_e( 'Guardar dados', 'jelly-area-reservada' ); ?></span>
-						<i class="fa-solid fa-check" aria-hidden="true"></i>
+						<span><?php esc_html_e( 'Alterar palavra-passe', 'jelly-area-reservada' ); ?></span>
+						<i class="fa-solid fa-key" aria-hidden="true"></i>
 					</button>
 				</div>
-			<?php endif; ?>
-		</form>
-	</section>
-
-	<?php /* ---------- A palavra-passe ---------- */ ?>
-	<section class="aru-cartao" id="jar-senha">
-		<header class="aru-cartao__cabeca">
-			<h2><i class="fa-solid fa-key" aria-hidden="true"></i> <?php esc_html_e( 'Palavra-passe', 'jelly-area-reservada' ); ?></h2>
-		</header>
-
-		<?php $mensagem( 'senha' ); ?>
-
-		<form class="aru-form aru-form--coluna" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="jelly_ar_perfil_senha">
-			<?php wp_nonce_field( 'jelly_ar_perfil_senha' ); ?>
-			<?php // Para o gestor de palavras-passe do browser saber de que conta é. ?>
-			<input type="hidden" name="username" value="<?php echo esc_attr( $user->user_email ); ?>" autocomplete="username">
-
-			<div class="aru-campo">
-				<label for="aru-atual"><?php esc_html_e( 'Palavra-passe atual', 'jelly-area-reservada' ); ?></label>
-				<input type="password" id="aru-atual" name="atual" required autocomplete="current-password">
-			</div>
-
-			<div class="aru-campo">
-				<label for="aru-senha"><?php esc_html_e( 'Nova palavra-passe', 'jelly-area-reservada' ); ?></label>
-				<input type="password" id="aru-senha" name="senha" required minlength="<?php echo (int) JELLY_AR_SENHA_MINIMO; ?>" autocomplete="new-password" aria-describedby="aru-senha-regra">
-				<?php /* translators: %d: número de caracteres */ ?>
-				<small id="aru-senha-regra"><?php echo esc_html( sprintf( __( 'Pelo menos %d caracteres.', 'jelly-area-reservada' ), JELLY_AR_SENHA_MINIMO ) ); ?></small>
-			</div>
-
-			<div class="aru-campo">
-				<label for="aru-senha2"><?php esc_html_e( 'Confirmar a nova palavra-passe', 'jelly-area-reservada' ); ?></label>
-				<input type="password" id="aru-senha2" name="senha2" required minlength="<?php echo (int) JELLY_AR_SENHA_MINIMO; ?>" autocomplete="new-password">
-			</div>
-
-			<div class="aru-form__acoes">
-				<button type="submit" class="aru-botao">
-					<span><?php esc_html_e( 'Alterar palavra-passe', 'jelly-area-reservada' ); ?></span>
-					<i class="fa-solid fa-key" aria-hidden="true"></i>
-				</button>
-			</div>
-		</form>
+			</form>
+		</div>
 	</section>
 </div>

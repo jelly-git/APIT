@@ -266,6 +266,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.70.1] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.34.1. O tema e a base de dados não mudam.
+
+### Alterado
+- **Os meus dados, na ARU, com outro desenho** (os dois cartões tinham
+  alturas diferentes e não se alinhavam):
+  - à esquerda, o **perfil** — o que não se muda aqui: as iniciais, o nome,
+    o e-mail, a empresa, "Associado desde …" e a nota de que o nome e o
+    e-mail só a APIT os muda;
+  - à direita, um cartão com o que se edita: os **contactos** (o telefone e
+    a empresa) e, por baixo, a **palavra-passe**, com os três campos lado a
+    lado;
+  - os dois cartões com a mesma altura.
+
 ## [0.70.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.34.0, esquema da base de dados 13. O tema não

@@ -1996,9 +1996,104 @@ a.aru-pessoa:focus-visible .aru-pessoa__texto strong {
 
 .aru-perfil {
 	display: grid;
-	grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+	grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
 	gap: 24px;
-	align-items: start;
+	/* Os dois cartões com a mesma altura. */
+	align-items: stretch;
+}
+
+/* O cartão do perfil, à esquerda: o que não se muda aqui. */
+.aru-perfil__cartao {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding-top: 32px;
+	text-align: center;
+}
+
+.aru-perfil__foto {
+	display: grid;
+	place-items: center;
+	width: 88px;
+	height: 88px;
+	margin-bottom: 16px;
+	border-radius: 50%;
+	background: var(--aru-degrade);
+	font-size: 30px;
+	font-weight: 600;
+	color: #fff;
+}
+
+.aru-perfil__nome {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 600;
+	line-height: 1.25;
+	color: var(--aru-preto);
+}
+
+.aru-perfil__email {
+	margin: 4px 0 18px;
+	font-size: 14px;
+	color: var(--aru-suave);
+	word-break: break-word;
+}
+
+.aru-perfil__factos {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	width: 100%;
+	margin: 0 0 18px;
+	padding: 16px 0 0;
+	border-top: 1px solid var(--aru-linha);
+	list-style: none;
+	font-size: 14px;
+	color: var(--aru-preto);
+}
+
+.aru-perfil__factos i {
+	width: 16px;
+	margin-right: 6px;
+	color: var(--aru-magenta);
+	text-align: center;
+}
+
+.aru-perfil__nota {
+	margin: auto 0 0;
+	padding: 12px 14px;
+	border-radius: 12px;
+	background: rgba(27, 42, 51, 0.04);
+	font-size: 12px;
+	line-height: 1.5;
+	color: var(--aru-suave);
+	text-align: left;
+}
+
+.aru-perfil__nota i {
+	margin-right: 4px;
+}
+
+/* À direita, um cartão com as duas partes que se editam, separadas por uma linha. */
+.aru-perfil__parte + .aru-perfil__parte {
+	margin-top: 24px;
+	padding-top: 24px;
+	border-top: 1px solid var(--aru-linha);
+}
+
+/* A palavra-passe: os três campos lado a lado (com as duas classes, para ganhar à regra de .aru-form, que vem depois). */
+.aru-form.aru-form--tres {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.aru-form--tres .aru-nota {
+	margin: -6px 0 0;
+}
+
+@media (max-width: 640px) {
+	.aru-form.aru-form--tres {
+		grid-template-columns: minmax(0, 1fr);
+	}
 }
 
 .aru-form {
