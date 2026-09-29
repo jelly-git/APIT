@@ -40,7 +40,7 @@ $avisos = [
 	'mesa-criada'       => __( 'Mesa criada.', 'jelly-area-reservada' ),
 	'mesa-atualizada'   => __( 'Mesa guardada.', 'jelly-area-reservada' ),
 	'mesa-apagada'      => __( 'Mesa apagada.', 'jelly-area-reservada' ),
-	'horarios'          => __( 'Horários guardados. A grelha já usa os blocos novos.', 'jelly-area-reservada' ),
+	'horarios'          => __( 'Horários guardados. A grelha de marcações já usa os blocos novos.', 'jelly-area-reservada' ),
 	/* translators: %d: número de associados */
 	'marcacao-criada'   => sprintf( _n( '%d associado marcado, já confirmado. Foi enviado um e-mail com os dados da marcação.', '%d associados marcados, já confirmados. Foi enviado a cada um um e-mail com os dados da marcação.', $n, 'jelly-area-reservada' ), $n ),
 	/* translators: %d: número de marcações */
@@ -54,7 +54,7 @@ $erros  = [
 	'mesa-em-uso'       => __( 'Essa mesa tem marcações e não se pode apagar.', 'jelly-area-reservada' ),
 	/* translators: %d: lugares ocupados */
 	'mesa-lugares'      => sprintf( __( 'A mesa tem um bloco com %d lugares ocupados: os lugares não podem ficar abaixo disso. Nada foi gravado.', 'jelly-area-reservada' ), $n ),
-	'marcacao-bloco'    => __( 'Esse horário já não existe na grelha: a mesa ou o horário mudaram. Nada foi gravado.', 'jelly-area-reservada' ),
+	'marcacao-bloco'    => __( 'Esse horário já não existe na grelha de marcações: a mesa ou o horário mudaram. Nada foi gravado.', 'jelly-area-reservada' ),
 	'marcacao-ninguem'  => __( 'Nenhum associado estava escolhido, por isso nada foi gravado.', 'jelly-area-reservada' ),
 	'marcacao-mesmo'    => __( 'O horário escolhido é aquele onde a marcação já está. Nada foi mudado.', 'jelly-area-reservada' ),
 	'marcacao-cheia'    => JELLY_AR_LUGARES
@@ -129,7 +129,7 @@ $badge = function ( $e ) {
 			: sprintf( _n( 'Disponível · %d horário livre', 'Disponível · %d horários livres', $d['livres'], 'jelly-area-reservada' ), $d['livres'] ),
 		'completo'   => __( 'Completo', 'jelly-area-reservada' ),
 		'terminado'  => __( 'Terminado', 'jelly-area-reservada' ),
-		'sem-grelha' => __( 'Sem grelha', 'jelly-area-reservada' ),
+		'sem-grelha' => __( 'Sem grelha de marcações', 'jelly-area-reservada' ),
 	];
 	$titulos = [
 		'disponivel' => __( 'Há horários por marcar, ainda por vir.', 'jelly-area-reservada' ),
@@ -310,7 +310,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 		[
 			'mesas'     => [ __( 'Mesas', 'jelly-area-reservada' ), count( $mesas ), ! $mesas ],
 			'horarios'  => [ __( 'Horários', 'jelly-area-reservada' ), count( $horarios ), ! $horarios ],
-			'grelha'    => [ __( 'Grelha', 'jelly-area-reservada' ), null, false ],
+			'grelha'    => [ __( 'Grelha de marcações', 'jelly-area-reservada' ), null, false ],
 		] as $s => $rotulo
 	) :
 		/*
@@ -406,7 +406,7 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 											data-jar-form="jar-apagar-mesa-<?php echo (int) $m['id']; ?>"
 											<?php /* translators: %s: mesa */ ?>
 											data-titulo="<?php echo esc_attr( sprintf( __( 'Apagar a mesa "%s"?', 'jelly-area-reservada' ), $m['nome'] ) ); ?>"
-											data-texto="<?php esc_attr_e( 'Sai da grelha deste evento. Não tem marcações, por isso ninguém a perde.', 'jelly-area-reservada' ); ?>"
+											data-texto="<?php esc_attr_e( 'Sai da grelha de marcações deste evento. Não tem marcações, por isso ninguém a perde.', 'jelly-area-reservada' ); ?>"
 											data-sim="<?php esc_attr_e( 'Apagar mesa', 'jelly-area-reservada' ); ?>"
 											data-resultado=""
 											<?php /* translators: %s: mesa */ ?>
@@ -669,8 +669,8 @@ $fora = array_diff( array_keys( $horarios ), $dias );
 				<?php
 				echo esc_html(
 					! $mesas
-						? __( 'A grelha aparece quando o evento tiver mesas e horários. Faltam as mesas.', 'jelly-area-reservada' )
-						: __( 'A grelha aparece quando o evento tiver mesas e horários. Faltam os horários.', 'jelly-area-reservada' )
+						? __( 'A grelha de marcações aparece quando o evento tiver mesas e horários. Faltam as mesas.', 'jelly-area-reservada' )
+						: __( 'A grelha de marcações aparece quando o evento tiver mesas e horários. Faltam os horários.', 'jelly-area-reservada' )
 				);
 				?>
 			</p>

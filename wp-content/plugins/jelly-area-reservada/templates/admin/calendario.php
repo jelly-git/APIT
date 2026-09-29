@@ -235,7 +235,7 @@ $rotulo_dia = function ( $ymd, $formato ) {
 									<?php if ( $pendente ) : ?>
 										<a class="jar-acao" href="<?php echo esc_url( jelly_ar_admin_url( 'marcacoes', [ 'evento' => $m['evento_id'] ] ) ); ?>" aria-label="<?php esc_attr_e( 'Decidir em Aprovações', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Decidir em Aprovações', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></a>
 									<?php endif; ?>
-									<a class="jar-acao" href="<?php echo esc_url( jelly_ar_admin_url( 'mesas', [ 'evento' => $m['evento_id'], 'separador' => 'grelha' ] ) . '#jar-dia-' . $ymd ); ?>" aria-label="<?php esc_attr_e( 'Ver na grelha', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Ver na grelha', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i></a>
+									<a class="jar-acao" href="<?php echo esc_url( jelly_ar_admin_url( 'mesas', [ 'evento' => $m['evento_id'], 'separador' => 'grelha' ] ) . '#jar-dia-' . $ymd ); ?>" aria-label="<?php esc_attr_e( 'Ver na grelha de marcações', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Ver na grelha de marcações', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i></a>
 								</span>
 							</li>
 						<?php endforeach; ?>

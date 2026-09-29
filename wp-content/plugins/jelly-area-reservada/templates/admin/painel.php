@@ -196,7 +196,7 @@ if ( JELLY_AR_EXEMPLO ) {
 							'disponivel' => sprintf( _n( '%d horário livre', '%d horários livres', $x['estado']['livres'], 'jelly-area-reservada' ), $x['estado']['livres'] ),
 							'completo'   => __( 'Completo', 'jelly-area-reservada' ),
 							'terminado'  => __( 'Terminado', 'jelly-area-reservada' ),
-							'sem-grelha' => __( 'Sem grelha', 'jelly-area-reservada' ),
+							'sem-grelha' => __( 'Sem grelha de marcações', 'jelly-area-reservada' ),
 						];
 						?>
 						<li>

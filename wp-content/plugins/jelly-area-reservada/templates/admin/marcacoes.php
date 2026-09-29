@@ -31,7 +31,7 @@ $n         = isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 0; // phpcs:ignore Wor
 
 $avisos = [
 	/* translators: %d: número de pedidos */
-	'aprovada'  => sprintf( _n( '%d pedido aprovado. O associado foi avisado por e-mail, e a grelha já mostra a marcação confirmada.', '%d pedidos aprovados. Cada associado foi avisado por e-mail, e a grelha já mostra as marcações confirmadas.', $n, 'jelly-area-reservada' ), $n ),
+	'aprovada'  => sprintf( _n( '%d pedido aprovado. O associado foi avisado por e-mail, e a grelha de marcações já mostra a marcação confirmada.', '%d pedidos aprovados. Cada associado foi avisado por e-mail, e a grelha de marcações já mostra as marcações confirmadas.', $n, 'jelly-area-reservada' ), $n ),
 	/* translators: %d: número de pedidos */
 	'rejeitada' => sprintf( _n( '%d pedido rejeitado. O associado foi avisado por e-mail, e o horário voltou a ficar livre.', '%d pedidos rejeitados. Cada associado foi avisado por e-mail, e os horários voltaram a ficar livres.', $n, 'jelly-area-reservada' ), $n ),
 ];
@@ -134,7 +134,7 @@ $quando = function ( $m ) {
 					data-jar-confirmar
 					data-jar-form="jar-aprovacoes"
 					data-titulo="<?php esc_attr_e( 'Rejeitar os pedidos escolhidos?', 'jelly-area-reservada' ); ?>"
-					data-texto="<?php esc_attr_e( 'Os horários voltam a ficar livres na grelha, e cada associado recebe um e-mail a informar que o pedido não foi aprovado.', 'jelly-area-reservada' ); ?>"
+					data-texto="<?php esc_attr_e( 'Os horários voltam a ficar livres na grelha de marcações, e cada associado recebe um e-mail a informar que o pedido não foi aprovado.', 'jelly-area-reservada' ); ?>"
 					data-sim="<?php esc_attr_e( 'Rejeitar', 'jelly-area-reservada' ); ?>"
 					data-resultado=""
 				><i class="fa-solid fa-xmark" aria-hidden="true"></i> <?php esc_html_e( 'Rejeitar', 'jelly-area-reservada' ); ?></button>
@@ -225,7 +225,7 @@ $quando = function ( $m ) {
 										data-jar-form="jar-rejeitar-<?php echo (int) $m['id']; ?>"
 										<?php /* translators: %s: associado */ ?>
 										data-titulo="<?php echo esc_attr( sprintf( __( 'Rejeitar o pedido de %s?', 'jelly-area-reservada' ), $m['nome'] ) ); ?>"
-										data-texto="<?php esc_attr_e( 'O horário volta a ficar livre na grelha, e o associado recebe um e-mail a informar que o pedido não foi aprovado.', 'jelly-area-reservada' ); ?>"
+										data-texto="<?php esc_attr_e( 'O horário volta a ficar livre na grelha de marcações, e o associado recebe um e-mail a informar que o pedido não foi aprovado.', 'jelly-area-reservada' ); ?>"
 										data-sim="<?php esc_attr_e( 'Rejeitar', 'jelly-area-reservada' ); ?>"
 										data-resultado=""
 										<?php /* translators: %s: associado */ ?>
@@ -233,7 +233,7 @@ $quando = function ( $m ) {
 										title="<?php esc_attr_e( 'Rejeitar', 'jelly-area-reservada' ); ?>"
 									><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
 								<?php endif; ?>
-								<a class="jar-acao" href="<?php echo esc_url( $grelha ); ?>" aria-label="<?php esc_attr_e( 'Ver na grelha', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Ver na grelha', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i></a>
+								<a class="jar-acao" href="<?php echo esc_url( $grelha ); ?>" aria-label="<?php esc_attr_e( 'Ver na grelha de marcações', 'jelly-area-reservada' ); ?>" title="<?php esc_attr_e( 'Ver na grelha de marcações', 'jelly-area-reservada' ); ?>"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i></a>
 							</span>
 						</td>
 					</tr>

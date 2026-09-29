@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.60.4] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.24.4. O tema e a base de dados não mudam.
+
+### Alterado
+- Em Mesas e marcações, e nos textos que falam dela (Aprovações, Calendário,
+  Painel), a "Grelha" passa a **"Grelha de marcações"**: o separador, os
+  avisos, os botões "Ver na grelha de marcações" e o estado "Sem grelha de
+  marcações". Os endereços (`separador=grelha`) não mudam.
+
 ## [0.60.3] - 2026-09-28
 
 Plugin `jelly-area-reservada` 0.24.3. O tema e a base de dados não mudam.
