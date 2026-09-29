@@ -1256,7 +1256,7 @@ a.aru-evento:focus-visible {
 
 .aru-evento-grelha {
 	display: grid;
-	grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+	grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
 	gap: 24px;
 	align-items: start;
 }
@@ -1289,49 +1289,154 @@ a.aru-evento:focus-visible {
 	color: var(--aru-suave);
 }
 
-.aru-evento-marcacao__minha {
+/*
+ * Os horários de marcação na página do evento: um dia por linha — o dia à
+ * esquerda, os horários ao lado, em blocos compactos que partem para a linha
+ * de baixo (6 a 8 por linha, na coluna larga) —, e a legenda das cores.
+ */
+.aru-dias {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
-	gap: 6px;
-	margin-bottom: 18px;
-	padding: 16px 18px;
-	border-radius: 14px;
-	background: rgba(128, 72, 166, 0.06);
 }
 
-.aru-evento-marcacao__minha strong {
-	font-size: 16px;
+.aru-dia {
+	display: grid;
+	grid-template-columns: 96px minmax(0, 1fr);
+	gap: 16px;
+	align-items: start;
+	padding: 14px 0;
 }
 
-.aru-evento-marcacao__minha small {
-	font-size: 13px;
-	color: var(--aru-suave);
+.aru-dia + .aru-dia {
+	border-top: 1px solid var(--aru-linha);
 }
 
-.aru-evento-marcacao__minha small i {
-	margin-right: 3px;
-	color: var(--aru-magenta);
-}
-
-.aru-evento-marcacao__botao {
-	width: 100%;
-	margin-bottom: 8px;
-}
-
-.aru-evento-marcacao__dia {
-	margin-top: 18px;
-}
-
-.aru-evento-marcacao__dia h3 {
-	margin: 0 0 10px;
+.aru-dia__nome {
+	margin: 0;
+	padding-top: 8px;
 	font-size: 14px;
 	font-weight: 600;
 	color: var(--aru-preto);
 }
 
-.aru-evento-marcacao .aru-horarios__lista {
-	grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+.aru-dia__horas {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+	gap: 8px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.aru-slot {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 36px;
+	border-radius: 10px;
+	font-size: 14px;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+	cursor: default;
+}
+
+.aru-slot--livre {
+	background: rgba(46, 198, 176, 0.14);
+	color: #168a79;
+}
+
+.aru-slot--ocupado {
+	background: rgba(27, 42, 51, 0.05);
+	color: rgba(27, 42, 51, 0.38);
+	text-decoration: line-through;
+	text-decoration-color: rgba(27, 42, 51, 0.25);
+}
+
+.aru-slot--minha {
+	background: var(--aru-roxo);
+	color: #fff;
+}
+
+.aru-legenda {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px 20px;
+	margin: 12px 0 0;
+	padding: 14px 0 0;
+	border-top: 1px solid var(--aru-linha);
+	list-style: none;
+	font-size: 13px;
+	color: var(--aru-suave);
+}
+
+.aru-legenda li {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.aru-slot--amostra {
+	width: 18px;
+	height: 18px;
+	border-radius: 5px;
+}
+
+/* O resumo à direita: o que está marcado, e acompanha a página ao rolar. */
+.aru-evento-resumo {
+	position: sticky;
+	top: 24px;
+}
+
+.aru-evento-resumo > .aru-estado {
+	margin-bottom: 14px;
+}
+
+.aru-resumo-dados {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin: 0 0 18px;
+}
+
+.aru-resumo-dados div {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--aru-linha);
+}
+
+.aru-resumo-dados dt {
+	font-size: 13px;
+	font-weight: 600;
+	letter-spacing: 0.4px;
+	text-transform: uppercase;
+	color: var(--aru-suave);
+}
+
+.aru-resumo-dados dd {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 600;
+	text-align: right;
+}
+
+.aru-evento-resumo__livres {
+	margin: 0 0 8px;
+	font-size: 15px;
+	color: var(--aru-suave);
+}
+
+.aru-evento-resumo__livres strong {
+	display: block;
+	font-size: 34px;
+	font-weight: 600;
+	line-height: 1.1;
+	color: #1f2d6b;
+}
+
+.aru-evento-resumo__botao {
+	width: 100%;
 }
 
 /* ---------- Os meus dados ---------- */
@@ -1466,6 +1571,12 @@ a.aru-pessoa:focus-visible .aru-pessoa__texto strong {
 		grid-template-columns: minmax(0, 1fr);
 	}
 
+	/* Numa coluna só, o resumo do que está marcado vem primeiro, e não acompanha a página. */
+	.aru-evento-resumo {
+		position: static;
+		order: -1;
+	}
+
 	.aru-proximos .aru-eventos {
 		grid-template-columns: minmax(0, 1fr);
 	}
@@ -1598,6 +1709,20 @@ a.aru-pessoa:focus-visible .aru-pessoa__texto strong {
 
 	.aru-form {
 		grid-template-columns: minmax(0, 1fr);
+	}
+
+	/* O dia por cima dos horários. */
+	.aru-dia {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 8px;
+	}
+
+	.aru-dia__nome {
+		padding-top: 0;
+	}
+
+	.aru-dia__horas {
+		grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
 	}
 
 	.aru-form__acoes .aru-botao {

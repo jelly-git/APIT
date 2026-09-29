@@ -266,6 +266,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.64.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.28.0. O tema e a base de dados não mudam.
+
+### Alterado
+- **A página de um evento na ARU** troca de lado:
+  - à esquerda, os **horários de marcação**, um dia por linha — o dia à
+    esquerda e os horários ao lado, em blocos compactos que partem para a
+    linha de baixo (6 a 8 por linha, conforme a largura), com a legenda das
+    cores por baixo: disponível, ocupado (riscado) e a sua marcação. Com
+    muitos dias, a página cresce para baixo em vez de ficar uma fila sem fim;
+  - por baixo, "Sobre o evento" e os documentos, como antes;
+  - à direita, **só o resumo do que está marcado** — o estado, o dia, a hora
+    e a mesa, e "Ver a minha marcação" — ou, sem marcação, os horários livres
+    e "Marcar mesa". Acompanha a página ao rolar.
+  - Em ecrãs estreitos, o resumo vem primeiro, e o dia fica por cima dos
+    horários.
+
 ## [0.63.1] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.27.1. O tema e a base de dados não mudam.
