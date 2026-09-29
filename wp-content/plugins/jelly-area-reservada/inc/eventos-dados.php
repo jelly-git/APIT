@@ -18,6 +18,27 @@ defined( 'ABSPATH' ) || exit;
 
 const JELLY_AR_EVENTO_ESTADOS = [ 'publicado', 'rascunho', 'lixo' ];
 
+/* ---------- O slug ---------- */
+
+/**
+ * O slug de um evento, a partir do título ("Conecta 2026" → conecta-2026), e
+ * único entre os eventos: se outro já o tiver, -2, -3… $id é o do próprio
+ * evento, que não conta.
+ */
+function jelly_ar_evento_slug( $titulo, $id = 0 ) {
+	global $wpdb;
+
+	$base = sanitize_title( $titulo );
+	$base = '' !== $base ? mb_substr( $base, 0, 190 ) : 'evento';
+	$slug = $base;
+
+	for ( $n = 2; $wpdb->get_var( $wpdb->prepare( 'SELECT id FROM ' . jelly_ar_tabela( 'eventos' ) . ' WHERE slug = %s AND id <> %d LIMIT 1', $slug, $id ) ); $n++ ) { // phpcs:ignore WordPress.DB
+		$slug = $base . '-' . $n;
+	}
+
+	return $slug;
+}
+
 /* ---------- Ler ---------- */
 
 /**
@@ -49,6 +70,7 @@ function jelly_ar_evento_da_linha( $l ) {
 	return [
 		'id'             => (int) $l->id,
 		'titulo'         => $l->titulo,
+		'slug'           => (string) $l->slug,
 		'resumo'         => $l->resumo,
 		'categoria'      => (string) $l->cat_slug,
 		'categoria_id'   => (int) $l->categoria_id,

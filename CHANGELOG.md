@@ -266,6 +266,25 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.68.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.32.0, esquema da base de dados 12. O tema não
+muda.
+
+### Alterado
+- **A página de um evento na ARU tem o slug no endereço**, e não o número:
+  `/area-reservada/eventos/conecta-2026/` em vez de `/area-reservada/eventos/14/`.
+  - O slug sai do título e é único (um segundo "Conecta 2026" seria
+    `conecta-2026-2`); acompanha o título quando o evento se guarda no
+    back-office.
+  - Os endereços antigos, com o número, continuam a servir: reencaminham
+    (301) para o do slug.
+
+### Base de dados
+- `jelly_ar_eventos` ganha a coluna `slug` (e a chave `slug`). A migração
+  corre sozinha no primeiro acesso ao wp-admin, também em produção, e dá um
+  slug a cada evento que ainda não o tem.
+
 ## [0.67.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.31.0. O tema e a base de dados não mudam.

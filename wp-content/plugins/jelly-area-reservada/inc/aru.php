@@ -8,7 +8,8 @@
  *
  *   /area-reservada/               Início
  *   /area-reservada/eventos/       os eventos da Área Reservada
- *   /area-reservada/eventos/<id>/  um evento: as datas, a marcação, os documentos
+ *   /area-reservada/eventos/<slug>/  um evento: as datas, a marcação, os documentos
+ *                                  (com o id no lugar do slug, reencaminha para o slug)
  *   /area-reservada/marcacoes/     as marcações de mesa do associado
  *   /area-reservada/documentos/    os documentos publicados, para descarregar
  *   /area-reservada/perfil/        os meus dados: o telefone, a empresa e a palavra-passe
@@ -84,7 +85,7 @@ function jelly_ar_aru_menu() {
 /* ---------- Os endereços ---------- */
 
 function jelly_ar_area_regra() {
-	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '/eventos/([0-9]+)/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=eventos&jelly_ar_aru_evento=$matches[1]', 'top' );
+	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '/eventos/([^/]+)/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=eventos&jelly_ar_aru_evento=$matches[1]', 'top' );
 	add_rewrite_rule( '^' . JELLY_AR_AREA_CAMINHO . '(?:/(eventos|marcacoes|documentos|perfil))?/?$', 'index.php?jelly_ar_area=1&jelly_ar_aru=$matches[1]', 'top' );
 
 }
@@ -126,20 +127,34 @@ function jelly_ar_aru_secao() {
 }
 
 /**
- * O evento pedido no endereço (/area-reservada/eventos/<id>/), se for da Área
- * Reservada; null se não houver id ou se o evento não for de lá.
+ * O que vem no endereço no lugar do evento (/area-reservada/eventos/<slug>/):
+ * o slug, ou o id dos endereços antigos. '' sem nada.
  */
-function jelly_ar_aru_evento_pedido() {
-	$id = absint( get_query_var( 'jelly_ar_aru_evento' ) );
-
-	return $id ? jelly_ar_aru_evento( $id ) : null;
+function jelly_ar_aru_evento_pedido_valor() {
+	return sanitize_title( (string) get_query_var( 'jelly_ar_aru_evento' ) );
 }
 
 /**
- * O endereço da página de um evento na ARU.
+ * O evento pedido no endereço, pelo slug — ou pelo id, nos endereços antigos
+ * —, se for da Área Reservada; null se não houver ou se o evento não for de lá.
  */
-function jelly_ar_aru_evento_url( $id ) {
-	return jelly_ar_area_url( 'eventos' ) . (int) $id . '/';
+function jelly_ar_aru_evento_pedido() {
+	$valor = jelly_ar_aru_evento_pedido_valor();
+
+	if ( '' === $valor ) {
+		return null;
+	}
+
+	return ctype_digit( $valor ) ? jelly_ar_aru_evento( (int) $valor ) : jelly_ar_aru_evento_por_slug( $valor );
+}
+
+/**
+ * O endereço da página de um evento na ARU, pelo slug (o id, se ainda não o tiver).
+ */
+function jelly_ar_aru_evento_url( $evento ) {
+	$chave = is_array( $evento ) ? ( '' !== $evento['slug'] ? $evento['slug'] : $evento['id'] ) : (int) $evento;
+
+	return jelly_ar_area_url( 'eventos' ) . rawurlencode( (string) $chave ) . '/';
 }
 
 /* ---------- A página ---------- */
@@ -172,9 +187,15 @@ function jelly_ar_area_mostrar() {
 	$aru['pagina'] = $aru['secao'];
 
 	// A página de um evento: só os da Área Reservada; os outros, e os que não existem, dão 404.
-	if ( absint( get_query_var( 'jelly_ar_aru_evento' ) ) ) {
+	if ( '' !== jelly_ar_aru_evento_pedido_valor() ) {
 		$aru['evento'] = jelly_ar_aru_evento_pedido();
 		$aru['pagina'] = $aru['evento'] ? 'evento' : 'nao-existe';
+
+		// Um endereço antigo, com o id: vai para o do slug, e fica esse.
+		if ( $aru['evento'] && ctype_digit( jelly_ar_aru_evento_pedido_valor() ) && '' !== $aru['evento']['slug'] ) {
+			wp_safe_redirect( $aru['evento']['url'], 301 );
+			exit;
+		}
 
 		if ( ! $aru['evento'] ) {
 			status_header( 404 );
@@ -351,6 +372,17 @@ function jelly_ar_aru_evento( $id ) {
 }
 
 /**
+ * Um evento da Área Reservada pelo slug, ou null.
+ */
+function jelly_ar_aru_evento_por_slug( $slug ) {
+	global $wpdb;
+
+	$linhas = jelly_ar_eventos_consulta( $wpdb->prepare( 'WHERE e.slug = %s AND ' . JELLY_AR_ARU_ONDE . ' LIMIT 1', $slug ) );
+
+	return $linhas ? jelly_ar_aru_evento_da_linha( $linhas[0] ) : null;
+}
+
+/**
  * Um evento na forma que a ARU mostra: o de sempre, mais as datas por
  * extenso, o dia e o mês do quadrado, se já acabou, e o endereço na ARU.
  */
@@ -363,7 +395,7 @@ function jelly_ar_aru_evento_da_linha( $l ) {
 		'dia_n'     => (int) gmdate( 'j', $ts ),
 		'mes'       => jelly_ar_data( 'M', $ts ),
 		'terminado' => ( $e['fim'] ? $e['fim'] : $e['inicio'] ) < current_time( 'Ymd' ),
-		'url'       => jelly_ar_aru_evento_url( $e['id'] ),
+		'url'       => jelly_ar_aru_evento_url( $e ),
 	];
 }
 

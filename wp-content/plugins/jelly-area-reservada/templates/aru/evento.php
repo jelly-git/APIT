@@ -1,6 +1,6 @@
 <?php
 /**
- * Um evento na ARU (/area-reservada/eventos/<id>/).
+ * Um evento na ARU (/area-reservada/eventos/<slug>/).
  *
  * À esquerda, os horários de marcação — um dia por linha, os horários em fila
  * ao lado, 6 a 8 por linha —; por baixo, o resumo do evento e os documentos,

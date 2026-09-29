@@ -149,6 +149,9 @@ function jelly_ar_evento_guardar() {
 	];
 	$novo = ! $id;
 
+	// O slug do endereço na ARU acompanha o título.
+	$linha['slug'] = jelly_ar_evento_slug( $titulo, $id );
+
 	if ( $novo ) {
 		// Um evento novo publica-se já, ou fica em rascunho, conforme se escolheu.
 		$linha['estado']    = isset( $_POST['estado'] ) && 'rascunho' === $_POST['estado'] ? 'rascunho' : 'publicado'; // phpcs:ignore WordPress.Security.NonceVerification.Missing

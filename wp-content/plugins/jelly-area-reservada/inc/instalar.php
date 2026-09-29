@@ -43,7 +43,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Sobe quando o que jelly_ar_instalar() cria mudar, para ela voltar a correr.
-define( 'JELLY_AR_DB_VERSION', '11' );
+define( 'JELLY_AR_DB_VERSION', '12' );
 
 /**
  * O nome completo de uma tabela da AR: jelly_ar_tabela( 'eventos' ).
@@ -188,6 +188,7 @@ function jelly_ar_esquema() {
 		"CREATE TABLE {$t( 'eventos' )} (
 			id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 			titulo varchar(255) NOT NULL,
+			slug varchar(200) NOT NULL DEFAULT '',
 			resumo text NOT NULL,
 			categoria_id bigint(20) unsigned DEFAULT NULL,
 			inicio date NOT NULL,
@@ -202,6 +203,7 @@ function jelly_ar_esquema() {
 			atualizado_em datetime NOT NULL,
 			PRIMARY KEY  (id),
 			KEY calendario (estado,onde,fim),
+			KEY slug (slug),
 			KEY inicio (inicio),
 			KEY categoria_id (categoria_id)
 		) {$c};",
@@ -360,6 +362,17 @@ function jelly_ar_limpar_migracao() {
 
 	if ( $wpdb->get_var( "SHOW INDEX FROM {$horarios} WHERE Key_name = 'evento_dia'" ) ) { // phpcs:ignore WordPress.DB
 		$wpdb->query( "ALTER TABLE {$horarios} DROP INDEX evento_dia" ); // phpcs:ignore WordPress.DB
+	}
+
+	/*
+	 * Esquema 11 → 12: os eventos ganham um slug, para o endereço da página na
+	 * ARU (/area-reservada/eventos/conecta-2026/). Os que ainda não o têm
+	 * recebem-no do título, do mais antigo para o mais novo.
+	 */
+	$eventos = jelly_ar_tabela( 'eventos' );
+
+	foreach ( $wpdb->get_results( "SELECT id, titulo FROM {$eventos} WHERE slug = '' ORDER BY id" ) as $l ) { // phpcs:ignore WordPress.DB
+		$wpdb->update( $eventos, [ 'slug' => jelly_ar_evento_slug( $l->titulo, (int) $l->id ) ], [ 'id' => $l->id ] ); // phpcs:ignore WordPress.DB
 	}
 }
 
