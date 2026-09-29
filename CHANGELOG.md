@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.68.1] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.32.1. O tema e a base de dados não mudam.
+
+### Alterado
+- Na página Marcações da ARU, "As minhas próximas marcações" passa a
+  **"As minhas marcações"**.
+
 ## [0.68.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.32.0, esquema da base de dados 12. O tema não

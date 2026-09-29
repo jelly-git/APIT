@@ -98,7 +98,7 @@ $grupo = function ( $g ) use ( $estados ) {
 <?php /* ---------- As minhas próximas marcações ---------- */ ?>
 <section class="aru-cartao">
 	<header class="aru-cartao__cabeca">
-		<h2><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> <?php esc_html_e( 'As minhas próximas marcações', 'jelly-area-reservada' ); ?> <?php if ( $proximas ) : ?><b class="aru-conta"><?php echo (int) count( $proximas ); ?></b><?php endif; ?></h2>
+		<h2><i class="fa-solid fa-calendar-check" aria-hidden="true"></i> <?php esc_html_e( 'As minhas marcações', 'jelly-area-reservada' ); ?> <?php if ( $proximas ) : ?><b class="aru-conta"><?php echo (int) count( $proximas ); ?></b><?php endif; ?></h2>
 	</header>
 
 	<?php if ( ! $proximas ) : ?>
