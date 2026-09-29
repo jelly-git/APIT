@@ -29,11 +29,12 @@ $dias    = $aberta ? jelly_ar_aru_horarios( $e, $minhas ) : [];
 $pode_marcar = (bool) array_filter( $dias, function ( $d ) {
 	return ! $d['tem'] && in_array( 'livre', wp_list_pluck( $d['horas'], 'estado' ), true );
 } );
+// Pela ordem da legenda: disponível, ocupado, a aguardar aprovação, a sua marcação.
 $rotulos = [
-	'livre'   => __( 'Disponível', 'jelly-area-reservada' ),
-	'ocupado' => __( 'Ocupado', 'jelly-area-reservada' ),
-	'minha'          => __( 'A sua marcação', 'jelly-area-reservada' ),
+	'livre'          => __( 'Disponível', 'jelly-area-reservada' ),
+	'ocupado'        => __( 'Ocupado', 'jelly-area-reservada' ),
 	'minha-pendente' => __( 'Aguarda aprovação', 'jelly-area-reservada' ),
+	'minha'          => __( 'A sua marcação', 'jelly-area-reservada' ),
 ];
 ?>
 
