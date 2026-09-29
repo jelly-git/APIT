@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$todos      = jelly_ar_aru_documentos();
+$todos      = jelly_ar_aru_documentos( $aru['user']->ID );
 $categorias = array_filter( array_unique( wp_list_pluck( $todos, 'categoria_nome', 'categoria' ) ) );
 
 // phpcs:disable WordPress.Security.NonceVerification.Recommended
@@ -54,7 +54,6 @@ $url    = function ( $args ) use ( $estado ) {
 	return add_query_arg( array_filter( $args, 'strlen' ), jelly_ar_area_url( 'documentos' ) );
 };
 
-$novo_desde = time() - 30 * DAY_IN_SECONDS;
 ?>
 
 <header class="aru-titulo">
@@ -140,7 +139,8 @@ $novo_desde = time() - 30 * DAY_IN_SECONDS;
 									<span class="aru-linha__texto">
 										<strong>
 											<?php echo esc_html( $d['titulo'] ); ?>
-											<?php if ( $d['ts'] >= $novo_desde ) : ?>
+											<?php // Publicado há menos de 30 dias e ainda não descarregado por este associado. ?>
+											<?php if ( $d['novo'] ) : ?>
 												<em class="aru-novo"><?php esc_html_e( 'Novo', 'jelly-area-reservada' ); ?></em>
 											<?php endif; ?>
 										</strong>

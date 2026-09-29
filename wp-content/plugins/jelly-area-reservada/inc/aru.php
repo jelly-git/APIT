@@ -469,18 +469,28 @@ function jelly_ar_aru_pode_marcar( $evento, $user_id ) {
 }
 
 /**
- * Os documentos publicados, do mais recente, com o nome da categoria.
+ * Os documentos publicados, do publicado mais recentemente, com o nome da
+ * categoria e, para o associado $user_id, se é "Novo" para ele.
  */
-function jelly_ar_aru_documentos() {
+function jelly_ar_aru_documentos( $user_id = 0 ) {
+	global $wpdb;
+
 	$categorias = jelly_ar_documento_categorias();
 	$docs       = array_values( array_filter( jelly_ar_documentos_reais(), function ( $d ) {
 		return 'publicado' === $d['estado'];
 	} ) );
 
+	// Os que o associado já descarregou: para ele, deixam de ser "Novo".
+	$descarregados = $user_id ? array_map( 'intval', $wpdb->get_col( $wpdb->prepare( 'SELECT DISTINCT documento_id FROM ' . jelly_ar_tabela( 'descargas' ) . ' WHERE user_id = %d', $user_id ) ) ) : []; // phpcs:ignore WordPress.DB
+	$novo_desde    = time() - 30 * DAY_IN_SECONDS;
+
 	foreach ( $docs as &$d ) {
-		$quando             = DateTime::createFromFormat( 'd/m/Y H:i', $d['data'] );
-		$d['ts']            = $quando ? $quando->getTimestamp() : 0;
+		// A data que conta é a da publicação; sem ela (não devia faltar), a do carregamento.
+		$quando              = DateTime::createFromFormat( 'd/m/Y H:i', $d['data'] );
+		$d['ts']             = $d['publicado_ts'] ? $d['publicado_ts'] : ( $quando ? $quando->getTimestamp() : 0 );
 		$d['categoria_nome'] = $categorias[ $d['categoria'] ] ?? '';
+		// "Novo": publicado há menos de 30 dias, e ainda não descarregado por este associado.
+		$d['novo']           = $d['ts'] >= $novo_desde && ! in_array( $d['id'], $descarregados, true );
 	}
 	unset( $d );
 

@@ -11,14 +11,14 @@
 defined( 'ABSPATH' ) || exit;
 
 $uid        = $aru['user']->ID;
-$documentos = jelly_ar_aru_documentos();
+$documentos = jelly_ar_aru_documentos( $uid );
 $marcacoes  = jelly_ar_aru_marcacoes( $uid );
 $eventos    = jelly_ar_aru_eventos();
 $destaque   = jelly_ar_aru_destaque( $eventos, $uid );
 $estados    = jelly_ar_aru_estados();
 
 $novos = count( array_filter( $documentos, function ( $d ) {
-	return $d['ts'] >= time() - 30 * DAY_IN_SECONDS;
+	return $d['novo'];
 } ) );
 
 $proximas  = array_values( array_filter( $marcacoes, function ( $m ) {
@@ -74,7 +74,7 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 		__( 'Documentos', 'jelly-area-reservada' ),
 		count( $documentos ),
 		/* translators: %d: documentos novos */
-		$novos ? sprintf( _n( '%d novo nos últimos 30 dias', '%d novos nos últimos 30 dias', $novos, 'jelly-area-reservada' ), $novos ) : __( 'disponíveis para descarregar', 'jelly-area-reservada' ),
+		$novos ? sprintf( _n( '%d novo por descarregar', '%d novos por descarregar', $novos, 'jelly-area-reservada' ), $novos ) : __( 'disponíveis para descarregar', 'jelly-area-reservada' ),
 		'fa-file-lines',
 		'roxo',
 		jelly_ar_area_url( 'documentos' )

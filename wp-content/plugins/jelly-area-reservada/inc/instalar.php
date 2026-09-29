@@ -43,7 +43,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Sobe quando o que jelly_ar_instalar() cria mudar, para ela voltar a correr.
-define( 'JELLY_AR_DB_VERSION', '12' );
+define( 'JELLY_AR_DB_VERSION', '13' );
 
 /**
  * O nome completo de uma tabela da AR: jelly_ar_tabela( 'eventos' ).
@@ -145,6 +145,7 @@ function jelly_ar_esquema() {
 			autor_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			criado_em datetime NOT NULL,
 			atualizado_em datetime NOT NULL,
+			publicado_em datetime DEFAULT NULL,
 			PRIMARY KEY  (id),
 			KEY estado (estado),
 			KEY categoria_id (categoria_id),
@@ -374,6 +375,14 @@ function jelly_ar_limpar_migracao() {
 	foreach ( $wpdb->get_results( "SELECT id, titulo FROM {$eventos} WHERE slug = '' ORDER BY id" ) as $l ) { // phpcs:ignore WordPress.DB
 		$wpdb->update( $eventos, [ 'slug' => jelly_ar_evento_slug( $l->titulo, (int) $l->id ) ], [ 'id' => $l->id ] ); // phpcs:ignore WordPress.DB
 	}
+
+	/*
+	 * Esquema 12 → 13: os documentos ganham a data de publicação, de onde se
+	 * contam os 30 dias do "Novo" na ARU. Nos que já estavam publicados, a
+	 * melhor que há é a do carregamento.
+	 */
+	$documentos = jelly_ar_tabela( 'documentos' );
+	$wpdb->query( "UPDATE {$documentos} SET publicado_em = criado_em WHERE estado = 'publicado' AND publicado_em IS NULL" ); // phpcs:ignore WordPress.DB
 }
 
 /*

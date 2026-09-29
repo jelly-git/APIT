@@ -166,6 +166,8 @@ function jelly_ar_documento_da_linha( $l ) {
 		'guardado'  => $l->ficheiro,
 		'tamanho'   => (int) $l->tamanho,
 		'data'      => get_date_from_gmt( $l->criado_em, 'd/m/Y H:i' ),
+		// Quando foi publicado (a última vez), como timestamp; 0 se não estiver.
+		'publicado_ts' => $l->publicado_em ? (int) strtotime( $l->publicado_em . ' UTC' ) : 0,
 		'estado'    => $l->estado,
 		'autor'     => $autor ? $autor->display_name : '',
 		'descargas' => (int) $l->descargas,
@@ -357,6 +359,7 @@ function jelly_ar_guardar_documento() {
 			'autor_id'      => get_current_user_id(),
 			'criado_em'     => $agora,
 			'atualizado_em' => $agora,
+			'publicado_em'  => $publicar ? $agora : null,
 		]
 	);
 
@@ -420,6 +423,43 @@ function jelly_ar_editar_documento() {
 	exit;
 }
 add_action( 'admin_post_jelly_ar_editar_documento', 'jelly_ar_editar_documento' );
+
+/**
+ * Publicar um documento, ou passá-lo a rascunho, na página dele. Publicar
+ * guarda a data: é dela que se contam os 30 dias do "Novo" na ARU; voltar a
+ * publicar conta como uma publicação nova.
+ */
+function jelly_ar_documento_estado() {
+	global $wpdb;
+
+	if ( ! jelly_ar_e_administrador() ) {
+		wp_die( esc_html__( 'Esta área é só para administradores.', 'jelly-area-reservada' ), '', [ 'response' => 403 ] );
+	}
+
+	$id = isset( $_POST['documento'] ) ? absint( $_POST['documento'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+	check_admin_referer( 'jelly_ar_documento_estado_' . $id );
+
+	$doc    = jelly_ar_documento_real( $id );
+	$estado = isset( $_POST['estado'] ) && 'publicado' === $_POST['estado'] ? 'publicado' : 'rascunho'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
+	if ( ! $doc ) {
+		wp_die( esc_html__( 'Esse documento não existe.', 'jelly-area-reservada' ), '', [ 'response' => 404 ] );
+	}
+
+	$agora = current_time( 'mysql', true );
+	$linha = [ 'estado' => $estado, 'atualizado_em' => $agora ];
+
+	if ( 'publicado' === $estado && 'publicado' !== $doc['estado'] ) {
+		$linha['publicado_em'] = $agora;
+	}
+
+	$wpdb->update( jelly_ar_tabela( 'documentos' ), $linha, [ 'id' => $id ] ); // phpcs:ignore WordPress.DB
+
+	wp_safe_redirect( jelly_ar_admin_url( 'documentos', [ 'documento' => $id, 'aviso' => 'publicado' === $estado ? 'publicado' : 'rascunho' ] ) );
+	exit;
+}
+add_action( 'admin_post_jelly_ar_documento_estado', 'jelly_ar_documento_estado' );
 
 /* ---------- Apagar ---------- */
 

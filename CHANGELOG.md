@@ -266,6 +266,29 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.70.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.34.0, esquema da base de dados 13. O tema não
+muda.
+
+### Alterado
+- **"Novo" nos documentos da ARU, por associado e a contar da publicação.** Um
+  documento é "Novo" para um associado durante os 30 dias a seguir a ser
+  publicado, e só até ele o descarregar. O número do Início passa a "N novos
+  por descarregar", e a data na lista é a da publicação.
+
+### Corrigido
+- Na página de um documento do back-office, **Publicar** e **Passar a
+  rascunho** só mudavam o selo no ecrã, sem gravar: ao recarregar, o
+  documento estava como antes. Passam a gravar (`jelly_ar_documento_estado()`),
+  com um aviso; publicar guarda a data da publicação (voltar a publicar conta
+  como uma nova). Nos documentos de exemplo, continua só no ecrã.
+
+### Base de dados
+- `jelly_ar_documentos` ganha a coluna `publicado_em`. A migração corre
+  sozinha no primeiro acesso ao wp-admin, também em produção, e dá aos que já
+  estão publicados a data do carregamento.
+
 ## [0.69.2] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.33.2. O tema e a base de dados não mudam.

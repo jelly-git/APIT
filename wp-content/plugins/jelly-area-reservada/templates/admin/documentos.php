@@ -39,6 +39,8 @@ $avisos  = [
 	'substituido'          => __( 'Dados guardados e ficheiro substituído. O anterior foi apagado.', 'jelly-area-reservada' ),
 	'eventos'              => __( 'Eventos do documento guardados.', 'jelly-area-reservada' ),
 	'apagado'              => __( 'Documento apagado, assim como o ficheiro e o histórico de descargas.', 'jelly-area-reservada' ),
+	'publicado'            => __( 'Documento publicado: os associados já o veem, e fica "Novo" durante 30 dias para quem ainda não o descarregou.', 'jelly-area-reservada' ),
+	'rascunho'             => __( 'Documento passado a rascunho: os associados deixam de o ver.', 'jelly-area-reservada' ),
 	/* translators: %d: número de documentos */
 	'apagados'             => sprintf( _n( '%d documento apagado, assim como o ficheiro e o histórico de descargas.', '%d documentos apagados, assim como os ficheiros e o histórico de descargas.', max( 1, isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 1 ), 'jelly-area-reservada' ), max( 1, isset( $_GET['n'] ) ? absint( $_GET['n'] ) : 1 ) ), // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 	'categoria-criada'     => __( 'Categoria criada.', 'jelly-area-reservada' ),
@@ -369,16 +371,35 @@ if ( $doc ) :
 					<?php wp_nonce_field( 'jelly_ar_apagar_documento_' . $doc['id'] ); ?>
 				</form>
 
+			<?php
+			/*
+			 * Publicar e passar a rascunho: nos documentos da AR, gravam
+			 * (jelly_ar_documento_estado(), inc/documentos-dados.php) — publicar
+			 * guarda a data, de onde se conta o "Novo" na ARU. Nos de exemplo, só no ecrã.
+			 */
+			?>
+			<?php if ( $real ) : ?>
+				<form id="jar-estado" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" hidden>
+					<input type="hidden" name="action" value="jelly_ar_documento_estado">
+					<input type="hidden" name="documento" value="<?php echo (int) $doc['id']; ?>">
+					<input type="hidden" name="estado" value="<?php echo $publicado ? 'rascunho' : 'publicado'; ?>">
+					<?php wp_nonce_field( 'jelly_ar_documento_estado_' . $doc['id'] ); ?>
+				</form>
+			<?php endif; ?>
+
 			<?php if ( $publicado ) : ?>
 				<button
 					type="button"
 					class="jar-btn jar-btn--contorno"
 					data-jar-confirmar
+					<?php echo $real ? 'data-jar-form="jar-estado"' : ''; ?>
 					data-titulo="<?php esc_attr_e( 'Tirar da área reservada?', 'jelly-area-reservada' ); ?>"
 					data-texto="<?php esc_attr_e( 'O documento passa a rascunho e os associados deixam de o ver. Pode voltar a publicá-lo quando quiser.', 'jelly-area-reservada' ); ?>"
 					data-sim="<?php esc_attr_e( 'Passar a rascunho', 'jelly-area-reservada' ); ?>"
 					data-resultado="rascunho"
 				><?php esc_html_e( 'Passar a rascunho', 'jelly-area-reservada' ); ?></button>
+			<?php elseif ( $real ) : ?>
+				<button type="submit" form="jar-estado" class="jar-btn"><?php esc_html_e( 'Publicar', 'jelly-area-reservada' ); ?></button>
 			<?php else : ?>
 				<button type="button" class="jar-btn" data-jar-decidir="publicado"><?php esc_html_e( 'Publicar', 'jelly-area-reservada' ); ?></button>
 			<?php endif; ?>
