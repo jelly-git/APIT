@@ -4227,17 +4227,26 @@ body.jelly-ar-admin #wpbody-content > :not(.jar) {
 	padding-left: 24px;
 }
 
+/*
+ * O tracejado é feito de um pedaço por célula (a hora, e cada mesa). Para ser
+ * uma linha só, com os traços todos à mesma distância: cada pedaço estende-se
+ * 2px para cima e para baixo, e cobre os 4px do border-spacing entre linhas;
+ * e o padrão dos traços está preso à janela (background-attachment: fixed),
+ * por isso continua de um pedaço para o outro em vez de recomeçar em cada um.
+ */
 .jar-grelha-horas th.is-depois-pausa::before,
 .jar-grelha-horas td.is-depois-pausa::before {
 	content: "";
 	position: absolute;
-	top: 0;
-	bottom: 0;
+	top: -2px;
+	bottom: -2px;
 	/* A meio dos 24px de cá mais os 4px do border-spacing de lá. */
 	left: 10px;
-	border-left: 2px dashed rgba(27, 42, 51, 0.2);
+	width: 2px;
+	background: repeating-linear-gradient(to bottom, rgba(27, 42, 51, 0.22) 0 5px, transparent 5px 10px);
+	background-attachment: fixed;
 }
 
 .jar-grelha-horas th.is-depois-pausa::before {
-	bottom: 6px;
+	top: 0;
 }

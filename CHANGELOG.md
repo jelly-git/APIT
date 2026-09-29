@@ -266,6 +266,15 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.61.2] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.25.2. O tema e a base de dados não mudam.
+
+### Alterado
+- O separador da pausa na grelha de marcações passa a ser uma linha só, com
+  os traços todos à mesma distância: antes era um pedaço por célula, cada um
+  a recomeçar o tracejado, com um vazio entre as linhas.
+
 ## [0.61.1] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.25.1. O tema e a base de dados não mudam.
