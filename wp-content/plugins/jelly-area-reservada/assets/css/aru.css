@@ -1529,6 +1529,194 @@ a.aru-slot--livre:focus-visible {
 	width: 100%;
 }
 
+/* ---------- Marcações ---------- */
+
+/* As marcações agrupadas por evento: um bloco por evento. */
+.aru-grupos {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.aru-grupo {
+	overflow: hidden;
+	border: 1px solid var(--aru-linha);
+	border-radius: 16px;
+}
+
+.aru-grupo__cabeca {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 14px 18px;
+	background: rgba(27, 42, 51, 0.025);
+	border-bottom: 1px solid var(--aru-linha);
+}
+
+.aru-grupo__cabeca .aru-data {
+	width: 48px;
+	height: 48px;
+	border-radius: 12px;
+}
+
+.aru-grupo__cabeca .aru-data strong {
+	font-size: 18px;
+}
+
+.aru-grupo__evento {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.aru-grupo__evento h3 {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--aru-preto);
+}
+
+.aru-grupo__evento small {
+	font-size: 13px;
+	color: var(--aru-suave);
+}
+
+.aru-grupo__lista {
+	margin: 0;
+	padding: 0 18px;
+	list-style: none;
+}
+
+/* Uma marcação: o dia, a hora, a mesa e o estado, em colunas alinhadas. */
+.aru-linha {
+	display: grid;
+	grid-template-columns: minmax(130px, 1.1fr) minmax(70px, 0.6fr) minmax(0, 1.6fr) auto;
+	gap: 16px;
+	align-items: center;
+	padding: 12px 0;
+	font-size: 14px;
+	color: var(--aru-preto);
+}
+
+.aru-linha + .aru-linha {
+	border-top: 1px solid var(--aru-linha);
+}
+
+.aru-linha i {
+	width: 16px;
+	margin-right: 4px;
+	font-size: 13px;
+	color: var(--aru-magenta);
+	text-align: center;
+}
+
+.aru-linha__dia {
+	font-weight: 600;
+}
+
+.aru-linha__hora {
+	font-variant-numeric: tabular-nums;
+}
+
+.aru-linha__mesa {
+	overflow: hidden;
+	color: var(--aru-suave);
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.aru-linha .aru-estado {
+	justify-self: end;
+}
+
+.aru-historico .aru-grupo {
+	opacity: 0.75;
+}
+
+/* Os eventos com marcação aberta: cartões pequenos, lado a lado. */
+.aru-abertos {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+	gap: 14px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.aru-aberto {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	height: 100%;
+	padding: 14px 16px;
+	border: 1px solid var(--aru-linha);
+	border-radius: 16px;
+	color: var(--aru-preto);
+	text-decoration: none;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.aru-aberto:hover,
+.aru-aberto:focus-visible {
+	border-color: rgba(244, 24, 146, 0.35);
+	box-shadow: 0 8px 20px rgba(27, 42, 51, 0.07);
+	color: var(--aru-preto);
+	transform: translateY(-1px);
+	outline: none;
+}
+
+.aru-aberto__texto {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+
+.aru-aberto__texto strong {
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.aru-aberto__texto small {
+	font-size: 13px;
+	color: var(--aru-suave);
+}
+
+.aru-aberto__texto em {
+	margin-top: 4px;
+	font-size: 13px;
+	font-style: normal;
+	font-weight: 600;
+	color: var(--aru-magenta);
+}
+
+.aru-aberto__texto em i {
+	margin-left: 4px;
+	font-size: 12px;
+}
+
+@media (max-width: 640px) {
+	.aru-grupo__cabeca {
+		flex-wrap: wrap;
+	}
+
+	.aru-linha {
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 4px 12px;
+	}
+
+	.aru-linha__mesa {
+		grid-column: 1 / -1;
+		grid-row: 3;
+	}
+
+	.aru-linha .aru-estado {
+		grid-column: 2;
+		grid-row: 1;
+	}
+}
+
 /* ---------- Os meus dados ---------- */
 
 a.aru-pessoa {

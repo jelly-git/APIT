@@ -266,6 +266,23 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.67.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.31.0. O tema e a base de dados não mudam.
+
+### Alterado
+- **A página Marcações da ARU reorganizada.**
+  - Primeiro, **"As minhas próximas marcações"** (antes "Próximas", que se lia
+    como uma lista de eventos por marcar), **agrupadas por evento**: o evento
+    em cabeça — a data, o título, as datas, o local e "Ver evento" — e, por
+    baixo, uma linha por marcação, com o dia, a hora, a mesa e o estado em
+    colunas alinhadas. O mesmo evento deixa de se repetir em cada linha.
+  - Depois, **"Eventos com marcação aberta"** (antes "Pode marcar mesa em",
+    no topo): cartões pequenos, lado a lado, que levam à página do evento
+    para escolher o horário.
+  - No fim, o **histórico**, agrupado da mesma maneira e esbatido, com uma
+    frase a dizer o que lá está.
+
 ## [0.66.7] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.30.7. O tema e a base de dados não mudam.
