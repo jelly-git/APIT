@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.71.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.35.0. O tema e a base de dados não mudam.
+
+### Alterado
+- **O menu da ARU por grupos**, com títulos pequenos, pelo que o associado
+  faz: o **Início** sozinho no topo; a **Agenda** — Eventos, Marcações e
+  Encontros (em breve) —; os **Recursos** — Documentos —; e a **Conta** — Os
+  meus dados —, à parte, no fundo do painel, por cima da frase. Em ecrãs
+  estreitos, fica tudo numa fila, sem os títulos.
+
 ## [0.70.2] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.34.2. O tema e a base de dados não mudam.

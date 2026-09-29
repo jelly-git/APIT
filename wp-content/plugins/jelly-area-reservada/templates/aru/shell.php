@@ -97,9 +97,37 @@ $item = function ( $chave, $m, $classe ) use ( $secao ) {
 	</header>
 
 	<aside class="aru-lado">
+		<?php
+		/*
+		 * O menu por grupos, com o título de cada um: o Início sozinho, a
+		 * Agenda e os Recursos por baixo; a Conta à parte, no fundo do painel.
+		 */
+		$grupos = jelly_ar_aru_grupos();
+		$atual  = null;
+		?>
 		<nav class="aru-menu" aria-label="<?php esc_attr_e( 'Área Reservada', 'jelly-area-reservada' ); ?>">
 			<?php foreach ( $menu as $chave => $m ) : ?>
+				<?php
+				if ( 'conta' === $m['grupo'] ) {
+					continue;
+				}
+				?>
+				<?php if ( $m['grupo'] !== $atual && isset( $grupos[ $m['grupo'] ] ) ) : ?>
+					<p class="aru-menu__grupo"><?php echo esc_html( $grupos[ $m['grupo'] ] ); ?></p>
+				<?php endif; ?>
+				<?php $atual = $m['grupo']; ?>
 				<?php $item( $chave, $m, 'aru-menu__item' ); ?>
+			<?php endforeach; ?>
+		</nav>
+
+		<nav class="aru-menu aru-menu--conta" aria-label="<?php echo esc_attr( $grupos['conta'] ); ?>">
+			<p class="aru-menu__grupo"><?php echo esc_html( $grupos['conta'] ); ?></p>
+			<?php foreach ( $menu as $chave => $m ) : ?>
+				<?php
+				if ( 'conta' === $m['grupo'] ) {
+					$item( $chave, $m, 'aru-menu__item' );
+				}
+				?>
 			<?php endforeach; ?>
 		</nav>
 

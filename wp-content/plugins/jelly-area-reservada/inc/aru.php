@@ -73,12 +73,25 @@ function jelly_ar_area_tem_acesso( $user = null ) {
  */
 function jelly_ar_aru_menu() {
 	return [
-		'inicio'     => [ 'titulo' => __( 'Início', 'jelly-area-reservada' ), 'icone' => 'fa-house', 'url' => jelly_ar_area_url() ],
-		'eventos'    => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'url' => jelly_ar_area_url( 'eventos' ) ],
-		'marcacoes'  => [ 'titulo' => __( 'Marcações', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-check', 'url' => jelly_ar_area_url( 'marcacoes' ) ],
-		'documentos' => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'url' => jelly_ar_area_url( 'documentos' ) ],
-		'perfil'     => [ 'titulo' => __( 'Os meus dados', 'jelly-area-reservada' ), 'icone' => 'fa-user', 'url' => jelly_ar_area_url( 'perfil' ) ],
-		'encontros'  => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'url' => '' ],
+		'inicio'     => [ 'titulo' => __( 'Início', 'jelly-area-reservada' ), 'icone' => 'fa-house', 'url' => jelly_ar_area_url(), 'grupo' => '' ],
+		'eventos'    => [ 'titulo' => __( 'Eventos', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-days', 'url' => jelly_ar_area_url( 'eventos' ), 'grupo' => 'agenda' ],
+		'marcacoes'  => [ 'titulo' => __( 'Marcações', 'jelly-area-reservada' ), 'icone' => 'fa-calendar-check', 'url' => jelly_ar_area_url( 'marcacoes' ), 'grupo' => 'agenda' ],
+		'encontros'  => [ 'titulo' => __( 'Encontros', 'jelly-area-reservada' ), 'icone' => 'fa-user-group', 'url' => '', 'grupo' => 'agenda' ],
+		'documentos' => [ 'titulo' => __( 'Documentos', 'jelly-area-reservada' ), 'icone' => 'fa-file-lines', 'url' => jelly_ar_area_url( 'documentos' ), 'grupo' => 'recursos' ],
+		'perfil'     => [ 'titulo' => __( 'Os meus dados', 'jelly-area-reservada' ), 'icone' => 'fa-user', 'url' => jelly_ar_area_url( 'perfil' ), 'grupo' => 'conta' ],
+	];
+}
+
+/**
+ * Os títulos dos grupos do menu, pela ordem em que aparecem: a agenda (o que
+ * se marca), os recursos (o que se consulta) e a conta, que fica no fundo,
+ * à parte. O Início não tem grupo: vem sozinho, no topo.
+ */
+function jelly_ar_aru_grupos() {
+	return [
+		'agenda'   => __( 'Agenda', 'jelly-area-reservada' ),
+		'recursos' => __( 'Recursos', 'jelly-area-reservada' ),
+		'conta'    => __( 'Conta', 'jelly-area-reservada' ),
 	];
 }
 

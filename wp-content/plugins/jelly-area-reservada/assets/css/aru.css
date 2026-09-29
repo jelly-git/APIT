@@ -237,10 +237,31 @@
 	text-transform: uppercase;
 }
 
+/* Os títulos dos grupos do menu: pequenos, em maiúsculas, discretos. */
+.aru-menu__grupo {
+	margin: 18px 16px 4px;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 1.2px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.62);
+}
+
+/* A conta, à parte, no fundo do painel, por cima da frase. */
+.aru-menu--conta {
+	margin-top: auto;
+	padding-top: 12px;
+	border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.aru-menu--conta .aru-menu__grupo {
+	margin-top: 6px;
+}
+
 .aru-lado__frase {
 	position: relative;
-	margin: auto 0 0;
-	padding: 40px 16px 0;
+	margin: 24px 0 0;
+	padding: 20px 16px 0;
 	font-size: 21px;
 	font-weight: 500;
 	line-height: 1.35;
@@ -2235,14 +2256,25 @@ a.aru-pessoa:focus-visible .aru-pessoa__texto strong {
 
 	.aru-lado {
 		position: static;
+		flex-direction: row;
 		min-height: 0;
 		padding: 8px;
+		overflow-x: auto;
+		scrollbar-width: none;
 	}
 
 	.aru-menu {
 		flex-direction: row;
-		overflow-x: auto;
-		scrollbar-width: none;
+	}
+
+	.aru-menu__grupo {
+		display: none;
+	}
+
+	.aru-menu--conta {
+		margin-top: 0;
+		padding-top: 0;
+		border-top: 0;
 	}
 
 	.aru-menu__item {
