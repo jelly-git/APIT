@@ -120,7 +120,7 @@ $slot = function ( $d, $h, $mesa = null ) use ( $e, $rotulos ) {
 					<?php // Um dia por linha: o dia à esquerda, os horários ao lado. ?>
 					<div class="aru-dias">
 						<?php foreach ( $dias as $d ) : ?>
-							<div class="aru-dia<?php echo $d["tem"] ? " is-marcado" : ""; ?>">
+							<div class="aru-dia<?php echo $d["tem"] ? " is-marcado" : ""; ?><?php echo count( $d["mesas"] ) > 1 ? " is-mesas" : ""; ?>">
 								<h3 class="aru-dia__nome">
 									<?php echo esc_html( ucfirst( jelly_ar_data( 'D, j M', strtotime( $d['dia'] ) ) ) ); ?>
 									<?php if ( $d['tem'] ) : ?>

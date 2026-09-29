@@ -1474,6 +1474,21 @@ a.aru-slot--livre:focus-visible {
  * Com mais de uma mesa, cada dia tem uma fila de horários por mesa: o nome da
  * mesa (e onde fica) à esquerda, os horários dela ao lado.
  */
+/* O dia por cima das mesas, e não ao lado: as filas ficam com a largura toda. */
+.aru-dia.is-mesas {
+	grid-template-columns: minmax(0, 1fr);
+	gap: 10px;
+}
+
+.aru-dia.is-mesas .aru-dia__nome {
+	padding-top: 0;
+}
+
+.aru-dia.is-mesas .aru-dia__nome small {
+	display: inline;
+	margin: 0 0 0 8px;
+}
+
 .aru-dia__mesas {
 	display: flex;
 	flex-direction: column;
@@ -1482,7 +1497,7 @@ a.aru-slot--livre:focus-visible {
 
 .aru-dia__mesa {
 	display: grid;
-	grid-template-columns: 110px minmax(0, 1fr);
+	grid-template-columns: 90px minmax(0, 1fr);
 	gap: 12px;
 	align-items: start;
 }
@@ -1504,6 +1519,18 @@ a.aru-slot--livre:focus-visible {
 	display: block;
 	font-size: 12px;
 	color: var(--aru-suave);
+}
+
+/* Nove horários por linha, em quadrados um pouco mais pequenos. */
+.aru-dia__mesa .aru-dia__horas {
+	grid-template-columns: repeat(9, minmax(0, 1fr));
+	gap: 6px;
+}
+
+.aru-dia__mesa .aru-slot {
+	height: 32px;
+	border-radius: 8px;
+	font-size: 13px;
 }
 
 /* As marcações do associado no evento, uma por dia, no resumo à direita. */
@@ -2431,7 +2458,11 @@ a.aru-pessoa:focus-visible .aru-pessoa__texto strong {
 		grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
 	}
 
-	/* O nome da mesa por cima da fila dela. */
+	/* O nome da mesa por cima da fila dela; os horários voltam a arrumar-se sozinhos. */
+	.aru-dia__mesa .aru-dia__horas {
+		grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+	}
+
 	.aru-dia__mesa {
 		grid-template-columns: minmax(0, 1fr);
 		gap: 6px;

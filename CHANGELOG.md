@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.72.1] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.36.1. O tema e a base de dados não mudam.
+
+### Alterado
+- Nos eventos com mais de uma mesa, o dia passa para cima das mesas, em vez
+  de ocupar uma coluna à esquerda que deixava um vazio por baixo; e os
+  horários de cada mesa, em quadrados um pouco mais pequenos, cabem nove por
+  linha. Em ecrãs estreitos, arrumam-se sozinhos como antes.
+
 ## [0.72.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.36.0. O tema e a base de dados não mudam.
