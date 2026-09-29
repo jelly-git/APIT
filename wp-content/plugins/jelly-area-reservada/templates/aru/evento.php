@@ -33,7 +33,7 @@ $rotulos = [
 	'livre'   => __( 'Disponível', 'jelly-area-reservada' ),
 	'ocupado' => __( 'Ocupado', 'jelly-area-reservada' ),
 	'minha'          => __( 'A sua marcação', 'jelly-area-reservada' ),
-	'minha-pendente' => __( 'A sua marcação, a aguardar aprovação', 'jelly-area-reservada' ),
+	'minha-pendente' => __( 'Aguarda aprovação', 'jelly-area-reservada' ),
 ];
 ?>
 

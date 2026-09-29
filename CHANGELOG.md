@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.66.3] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.30.3. O tema e a base de dados não mudam.
+
+### Alterado
+- Na legenda dos horários da página do evento, "A sua marcação, a aguardar
+  aprovação" passa a **"Aguarda aprovação"**.
+
 ## [0.66.2] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.30.2. O tema e a base de dados não mudam.
