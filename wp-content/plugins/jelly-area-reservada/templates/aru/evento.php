@@ -212,12 +212,8 @@ $rotulos = [
 				<p class="aru-nota"><?php esc_html_e( 'Ainda não tem marcações neste evento. Pode fazer uma em cada dia; o pedido fica por aprovar até a equipa o confirmar.', 'jelly-area-reservada' ); ?></p>
 			<?php endif; ?>
 
-			<?php // Enquanto houver um dia em que ainda pode marcar: quantos horários livres, e o botão. ?>
+			<?php // Enquanto houver um dia em que ainda pode marcar: o botão. ?>
 			<?php if ( $pode_marcar && ! $e['terminado'] ) : ?>
-				<p class="aru-evento-resumo__livres">
-					<strong><?php echo (int) $estado['livres']; ?></strong>
-					<?php echo esc_html( _n( 'horário livre', 'horários livres', (int) $estado['livres'], 'jelly-area-reservada' ) ); ?>
-				</p>
 				<a class="aru-botao aru-evento-resumo__botao" href="<?php echo esc_url( jelly_ar_url_marcacao( $e['id'] ) ); ?>">
 					<span><?php echo esc_html( $minhas ? __( 'Marcar noutro dia', 'jelly-area-reservada' ) : __( 'Marcar mesa', 'jelly-area-reservada' ) ); ?></span>
 					<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>

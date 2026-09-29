@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.66.5] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.30.5. O tema e a base de dados não mudam.
+
+### Alterado
+- No resumo "As minhas marcações" da página do evento, sai o número de
+  horários livres; fica o botão para marcar.
+
 ## [0.66.4] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.30.4. O tema e a base de dados não mudam.

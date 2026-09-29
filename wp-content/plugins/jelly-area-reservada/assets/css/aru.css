@@ -1525,20 +1525,6 @@ a.aru-slot--livre:focus-visible {
 	text-align: right;
 }
 
-.aru-evento-resumo__livres {
-	margin: 0 0 8px;
-	font-size: 15px;
-	color: var(--aru-suave);
-}
-
-.aru-evento-resumo__livres strong {
-	display: block;
-	font-size: 34px;
-	font-weight: 600;
-	line-height: 1.1;
-	color: #1f2d6b;
-}
-
 .aru-evento-resumo__botao {
 	width: 100%;
 }
