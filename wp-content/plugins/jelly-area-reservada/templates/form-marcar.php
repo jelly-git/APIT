@@ -61,7 +61,7 @@ $ajax = wp_make_link_relative( admin_url( 'admin-ajax.php' ) );
 
 		<p class="apit-ar__nota">
 			<i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-			<?php esc_html_e( 'O pedido fica a aguardar aprovação da APIT. A confirmação segue por e-mail. É possível uma marcação por evento.', 'jelly-area-reservada' ); ?>
+			<?php esc_html_e( 'O pedido fica a aguardar aprovação da APIT. A confirmação segue por e-mail. É possível uma marcação por dia do evento.', 'jelly-area-reservada' ); ?>
 		</p>
 	</form>
 

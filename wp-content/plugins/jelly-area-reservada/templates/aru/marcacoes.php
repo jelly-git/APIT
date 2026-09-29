@@ -20,12 +20,9 @@ $passadas  = array_values( array_filter( $marcacoes, function ( $m ) {
 	return ! ( $m['futura'] && $m['viva'] );
 } ) );
 
-// Os eventos com marcação abertos onde o associado ainda não tem marcação (uma por evento).
-$tem     = wp_list_pluck( array_filter( $marcacoes, function ( $m ) {
-	return in_array( $m['estado'], [ 'pendente', 'aprovada' ], true );
-} ), 'evento_id' );
-$abertos = array_values( array_filter( jelly_ar_aru_eventos(), function ( $e ) use ( $tem ) {
-	return $e['marcacoes'] && ! in_array( $e['id'], $tem, true ) && 'disponivel' === jelly_ar_disponibilidade_estado( $e )['estado'];
+// Os eventos onde o associado ainda pode marcar: num dia sem marcação sua (é uma por dia).
+$abertos = array_values( array_filter( jelly_ar_aru_eventos(), function ( $e ) use ( $uid ) {
+	return jelly_ar_aru_pode_marcar( $e, $uid );
 } ) );
 ?>
 

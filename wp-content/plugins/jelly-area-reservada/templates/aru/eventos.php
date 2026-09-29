@@ -15,18 +15,19 @@ $proximos  = jelly_ar_aru_eventos();
 $passados  = jelly_ar_aru_eventos( true, 12 );
 $estados   = jelly_ar_aru_estados();
 
-// As marcações vivas do associado, por evento, para o cartão dizer "A sua marcação".
+// As marcações vivas do associado, por evento (uma por dia do evento), para o cartão dizer o estado.
 $minhas = [];
 foreach ( jelly_ar_aru_marcacoes( $uid ) as $m ) {
 	if ( $m['viva'] ) {
-		$minhas[ $m['evento_id'] ] = $m;
+		$minhas[ $m['evento_id'] ][] = $m;
 	}
 }
 
 // Um cartão de evento: a data na cor da categoria, o título, as datas e o local, e o que há nele.
 $cartao = function ( $e ) use ( $minhas, $estados ) {
 	$docs  = count( jelly_ar_evento_documentos( $e['id'], true ) );
-	$minha = $minhas[ $e['id'] ] ?? null;
+	$suas  = $minhas[ $e['id'] ] ?? [];
+	$minha = $suas ? $suas[0] : null;
 	?>
 	<li>
 		<a class="aru-cartao-evento<?php echo $e['terminado'] ? ' is-passado' : ''; ?>" href="<?php echo esc_url( $e['url'] ); ?>">
@@ -46,6 +47,10 @@ $cartao = function ( $e ) use ( $minhas, $estados ) {
 				<span class="aru-cartao-evento__marcas">
 					<?php if ( $minha ) : ?>
 						<span class="aru-estado aru-estado--<?php echo esc_attr( $minha['estado'] ); ?>"><?php echo esc_html( $estados[ $minha['estado'] ] ); ?></span>
+						<?php if ( count( $suas ) > 1 ) : ?>
+							<?php /* translators: %d: marcações do associado no evento */ ?>
+							<span class="aru-marca"><i class="fa-solid fa-chair" aria-hidden="true"></i> <?php echo esc_html( sprintf( _n( '%d marcação', '%d marcações', count( $suas ), 'jelly-area-reservada' ), count( $suas ) ) ); ?></span>
+						<?php endif; ?>
 					<?php elseif ( $e['marcacoes'] && ! $e['terminado'] ) : ?>
 						<span class="aru-marca"><i class="fa-solid fa-chair" aria-hidden="true"></i> <?php esc_html_e( 'Marcação de mesa', 'jelly-area-reservada' ); ?></span>
 					<?php endif; ?>

@@ -8,8 +8,9 @@
  *
  * - sem sessão, o pop-up abre o login e volta à marcação depois de entrar;
  * - com a sessão de um associado ativo, os dias, as horas e as mesas com lugar
- *   (jelly_ar_disponibilidade()), ou a marcação que já tem neste evento — uma
- *   por evento;
+ *   (jelly_ar_disponibilidade()), com os dias em que já tem marcação marcados
+ *   como tal — é uma por dia do evento —; ou, sem nenhum dia por marcar, a
+ *   marcação que já tem;
  * - com outra sessão (a da equipa), um aviso: marcar é para associados.
  *
  * O pedido entra pendente (jelly_ar_pedir()) e é aprovado em Aprovações. O
@@ -50,6 +51,18 @@ function jelly_ar_marcacao_resumo( $evento, $marcacao ) {
 		'mesa_nome'  => $mesa ? $mesa['nome'] : '—',
 		'mesa_local' => $mesa ? $mesa['localizacao'] : '',
 	];
+}
+
+/**
+ * Os dias da disponibilidade, com `minha` nos dias em que o associado já tem
+ * marcação (uma por dia): o pop-up mostra-os como "Já marcado" e não os deixa
+ * escolher.
+ */
+function jelly_ar_marcacao_dias( $evento, $minhas ) {
+	return array_map( function ( $d ) use ( $minhas ) {
+		$d['minha'] = isset( $minhas[ $d['dia'] ] );
+		return $d;
+	}, jelly_ar_disponibilidade( $evento ) );
 }
 
 /**
@@ -96,15 +109,30 @@ function jelly_ar_marcacao_dados() {
 		wp_send_json( $base + [ 'mensagem' => __( 'A marcação de mesas é feita pelos associados da APIT, com a sessão iniciada na Área Reservada.', 'jelly-area-reservada' ) ] );
 	}
 
-	$minha = jelly_ar_marcacao_do_associado( $evento['id'], $user_id );
+	$minhas = jelly_ar_marcacoes_do_associado( $evento['id'], $user_id );
+	$dias   = jelly_ar_marcacao_dias( $evento, $minhas );
 
-	if ( $minha ) {
-		wp_send_json( $base + [ 'marcacao' => jelly_ar_marcacao_resumo( $evento, $minha ) ] );
+	// Ainda há um dia em que pode marcar: um sem marcação sua, com algum lugar livre.
+	$por_marcar = array_filter( $dias, function ( $d ) {
+		if ( $d['minha'] ) {
+			return false;
+		}
+		foreach ( $d['blocos'] as $b ) {
+			if ( array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ) {
+				return true;
+			}
+		}
+		return false;
+	} );
+
+	// Sem nenhum dia por marcar, e com marcação: o pop-up mostra a primeira.
+	if ( $minhas && ! $por_marcar ) {
+		wp_send_json( $base + [ 'marcacao' => jelly_ar_marcacao_resumo( $evento, reset( $minhas ) ) ] );
 	}
 
 	wp_send_json(
 		$base + [
-			'dias'    => jelly_ar_disponibilidade( $evento ),
+			'dias'    => $dias,
 			// Sem lugares por mesa (JELLY_AR_LUGARES), cada mesa mostra-se livre ou marcada.
 			'lugares' => JELLY_AR_LUGARES,
 			// O nonce vem aqui, e não na página: a página pode estar numa cache.
@@ -148,7 +176,7 @@ function jelly_ar_marcacao_pedir() {
 	if ( is_wp_error( $mesa ) ) {
 		$mensagens = [
 			'marcacao-fechada' => __( 'Este evento já não aceita marcações.', 'jelly-area-reservada' ),
-			'marcacao-tem'     => __( 'Já existe uma marcação neste evento. Para a alterar, a APIT deve ser contactada.', 'jelly-area-reservada' ),
+			'marcacao-tem'     => __( 'Já existe uma marcação sua nesse dia (é uma por dia). Escolha outro dia, por favor.', 'jelly-area-reservada' ),
 			'marcacao-bloco'   => __( 'Esse horário já não está disponível. Escolha outro, por favor.', 'jelly-area-reservada' ),
 			'marcacao-cheia'   => __( 'Entretanto, essa mesa ficou marcada a essa hora. Escolha outra mesa ou outra hora, por favor.', 'jelly-area-reservada' ),
 			'marcacao-ocupado' => __( 'Há outro pedido a ser tratado para esse horário. Tente de novo dentro de momentos.', 'jelly-area-reservada' ),
@@ -158,7 +186,7 @@ function jelly_ar_marcacao_pedir() {
 			[
 				'mensagem' => $mensagens[ $mesa->get_error_code() ] ?? __( 'Não foi possível fazer o pedido.', 'jelly-area-reservada' ),
 				// Com os lugares mudados, o pop-up redesenha a escolha com os de agora.
-				'dias'     => jelly_ar_disponibilidade( $evento ),
+				'dias'     => jelly_ar_marcacao_dias( $evento, jelly_ar_marcacoes_do_associado( $evento['id'], $user_id ) ),
 			]
 		);
 	}
@@ -170,7 +198,7 @@ function jelly_ar_marcacao_pedir() {
 	wp_send_json(
 		[
 			'sucesso'  => true,
-			'marcacao' => jelly_ar_marcacao_resumo( $evento, jelly_ar_marcacao_do_associado( $evento['id'], $user_id ) ),
+			'marcacao' => jelly_ar_marcacao_resumo( $evento, jelly_ar_marcacao_do_associado( $evento['id'], $user_id, $dia ) ),
 		]
 	);
 }

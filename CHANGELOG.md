@@ -266,6 +266,28 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.66.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.30.0. O tema e a base de dados não mudam.
+
+### Alterado
+- **Uma marcação por dia do evento**, e não uma por evento: num evento de
+  quatro dias, o associado pode ter até quatro, uma em cada dia.
+  - O pedido só é recusado se já houver uma marcação sua **nesse dia**.
+  - No pop-up, os dias em que já marcou aparecem como "Já marcado" e não se
+    escolhem; os outros continuam abertos. Só quando já não há nenhum dia por
+    marcar é que o pop-up mostra a marcação feita.
+  - Na página do evento da ARU, o resumo passa a "As minhas marcações", com
+    todas (o estado, o dia, a hora e a mesa de cada uma) e "Marcar noutro dia"
+    enquanto houver dias livres; nos horários, um dia já marcado diz "Já
+    marcado" e os horários dele ficam esbatidos e sem clique.
+  - No Início, os horários do destaque clicam-se se o dia ainda não tem
+    marcação, e o botão passa a levar à página do evento, onde se veem todas.
+  - Na lista de eventos da ARU, o cartão diz quantas marcações há, se forem
+    mais do que uma; em Marcações, "Pode marcar mesa em" inclui os eventos
+    onde ainda há um dia por marcar.
+  - O texto do pop-up passa a "É possível uma marcação por dia do evento."
+
 ## [0.65.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.29.0. O tema e a base de dados não mudam.

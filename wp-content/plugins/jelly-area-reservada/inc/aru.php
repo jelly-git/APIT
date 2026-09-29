@@ -370,15 +370,20 @@ function jelly_ar_aru_evento_da_linha( $l ) {
 /**
  * Os horários de um evento, dia a dia, e o que cada um é para este
  * associado: livre, ocupado, ou a marcação dele. Só os que ainda não
- * passaram (jelly_ar_disponibilidade()).
+ * passaram (jelly_ar_disponibilidade()). $minhas são as marcações dele no
+ * evento, pelo dia (jelly_ar_marcacoes_do_associado()); `tem` diz se o dia já
+ * tem uma — é uma por dia, e nesse dia não se marca outra.
  */
-function jelly_ar_aru_horarios( $evento, $minha ) {
-	return array_map( function ( $d ) use ( $minha ) {
+function jelly_ar_aru_horarios( $evento, $minhas ) {
+	return array_map( function ( $d ) use ( $minhas ) {
+		$minha = $minhas[ $d['dia'] ] ?? null;
+
 		return [
 			'dia'   => $d['dia'],
 			'nome'  => ucfirst( jelly_ar_data( 'l, j \d\e F', strtotime( $d['dia'] ) ) ),
-			'horas' => array_map( function ( $b ) use ( $d, $minha ) {
-				$e_minha = $minha && $minha['dia'] === $d['dia'] && $minha['hora'] === $b['hora'];
+			'tem'   => (bool) $minha,
+			'horas' => array_map( function ( $b ) use ( $minha ) {
+				$e_minha = $minha && $minha['hora'] === $b['hora'];
 
 				return [
 					'hora'   => $b['hora'],
@@ -387,6 +392,24 @@ function jelly_ar_aru_horarios( $evento, $minha ) {
 			}, $d['blocos'] ),
 		];
 	}, jelly_ar_disponibilidade( $evento ) );
+}
+
+/**
+ * Se o associado ainda pode marcar no evento: num dia sem marcação sua (é uma
+ * por dia), com algum horário livre.
+ */
+function jelly_ar_aru_pode_marcar( $evento, $user_id ) {
+	if ( empty( $evento['marcacoes'] ) || 'disponivel' !== jelly_ar_disponibilidade_estado( $evento )['estado'] ) {
+		return false;
+	}
+
+	foreach ( jelly_ar_aru_horarios( $evento, jelly_ar_marcacoes_do_associado( $evento['id'], $user_id ) ) as $d ) {
+		if ( ! $d['tem'] && in_array( 'livre', wp_list_pluck( $d['horas'], 'estado' ), true ) ) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 /**
@@ -448,7 +471,8 @@ function jelly_ar_aru_destaque( $eventos, $user_id ) {
 		}
 
 		$dias   = jelly_ar_disponibilidade( $e );
-		$minha  = jelly_ar_marcacao_do_associado( $e['id'], $user_id );
+		$minhas = jelly_ar_marcacoes_do_associado( $e['id'], $user_id );
+		$minha  = $minhas ? reset( $minhas ) : null;
 		$total  = 0;
 		$livres = 0;
 
@@ -460,7 +484,7 @@ function jelly_ar_aru_destaque( $eventos, $user_id ) {
 		}
 
 		// Os horários do primeiro dia que ainda os tem.
-		$horarios = jelly_ar_aru_horarios( $e, $minha );
+		$horarios = jelly_ar_aru_horarios( $e, $minhas );
 		$dia      = $horarios[0] ?? null;
 
 		return [
@@ -469,6 +493,9 @@ function jelly_ar_aru_destaque( $eventos, $user_id ) {
 			'total'  => $total,
 			'livres' => $livres,
 			'minha'  => $minha,
+			'minhas' => $minhas,
+			// Nesse dia ainda pode marcar (é uma por dia).
+			'pode'   => $dia && ! $dia['tem'],
 			'dia'    => $dia ? $dia['nome'] : '',
 			'dia_ymd' => $dia ? $dia['dia'] : '',
 			'horas'  => $dia ? array_slice( $dia['horas'], 0, 6 ) : [],

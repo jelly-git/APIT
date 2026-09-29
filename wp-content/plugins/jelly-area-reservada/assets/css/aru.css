@@ -1418,6 +1418,56 @@ a.aru-slot--livre:focus-visible {
 	border-radius: 5px;
 }
 
+/* Num dia já marcado (é uma por dia), os horários livres ficam esbatidos: não se marcam. */
+.aru-dia.is-marcado .aru-slot--livre {
+	opacity: 0.45;
+}
+
+/* O dia já marcado, por baixo do nome do dia. */
+.aru-dia__nome small {
+	display: block;
+	margin-top: 2px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--aru-roxo);
+}
+
+/* As marcações do associado no evento, uma por dia, no resumo à direita. */
+.aru-minhas-evento {
+	display: flex;
+	flex-direction: column;
+	margin: 0 0 16px;
+	padding: 0;
+	list-style: none;
+}
+
+.aru-minhas-evento li {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 4px;
+	padding: 12px 0;
+}
+
+.aru-minhas-evento li + li {
+	border-top: 1px solid var(--aru-linha);
+}
+
+.aru-minhas-evento strong {
+	margin-top: 4px;
+	font-size: 15px;
+}
+
+.aru-minhas-evento small {
+	font-size: 13px;
+	color: var(--aru-suave);
+}
+
+.aru-minhas-evento small i {
+	margin-right: 2px;
+	color: var(--aru-magenta);
+}
+
 /* O resumo à direita: o que está marcado, e acompanha a página ao rolar. */
 .aru-evento-resumo {
 	position: sticky;

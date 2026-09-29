@@ -712,7 +712,8 @@
 				return s + livresNoBloco( b );
 			}, 0 );
 
-			dias.appendChild( opcao( 'dia', d.dia, d.rotulo, livres ? '' : 'Completo', ! livres, d.dia === escolha.dia ) );
+			// É uma marcação por dia: num dia em que já marcou, o dia fica fechado (d.minha, inc/marcacoes.php).
+			dias.appendChild( opcao( 'dia', d.dia, d.rotulo, d.minha ? 'Já marcado' : ( livres ? '' : 'Completo' ), d.minha || ! livres, d.dia === escolha.dia ) );
 		} );
 
 		horas.textContent = '';
@@ -779,14 +780,14 @@
 			return;
 		}
 
-		// O primeiro dia com lugar, se o escolhido já não tiver.
+		// O primeiro dia com lugar e sem marcação sua, se o escolhido não servir.
 		var dia = escolha.dias.filter( function ( d ) {
 			return d.dia === escolha.dia;
 		} )[ 0 ];
 
-		if ( ! dia ) {
+		if ( ! dia || dia.minha ) {
 			escolha.dia = ( escolha.dias.filter( function ( d ) {
-				return d.blocos.some( function ( b ) {
+				return ! d.minha && d.blocos.some( function ( b ) {
 					return livresNoBloco( b ) > 0;
 				} );
 			} )[ 0 ] || escolha.dias[ 0 ] ).dia;

@@ -561,21 +561,40 @@ function jelly_ar_bloco_soltar( $mesa_id, $dia, $hora ) {
 /* ---------- O pedido do associado ---------- */
 
 /**
- * A marcação viva (pendente ou aprovada) de um associado num evento, ou null.
- * Cada associado tem no máximo uma por evento.
+ * As marcações vivas (pendentes ou aprovadas) de um associado num evento,
+ * pelo dia: [ Y-m-d => marcação ]. Cada associado tem no máximo uma por dia
+ * do evento — num evento de quatro dias, até quatro.
  */
-function jelly_ar_marcacao_do_associado( $evento_id, $user_id ) {
+function jelly_ar_marcacoes_do_associado( $evento_id, $user_id ) {
 	global $wpdb;
 
-	$l = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . jelly_ar_tabela( 'marcacoes' ) . ' WHERE evento_id = %d AND user_id = %d AND ocupa = 1 ORDER BY id DESC LIMIT 1', $evento_id, $user_id ) ); // phpcs:ignore WordPress.DB
+	$r = [];
+	// phpcs:ignore WordPress.DB
+	foreach ( $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jelly_ar_tabela( 'marcacoes' ) . ' WHERE evento_id = %d AND user_id = %d AND ocupa = 1 ORDER BY dia, hora', $evento_id, $user_id ) ) as $l ) {
+		$r[ $l->dia ] = [
+			'id'      => (int) $l->id,
+			'mesa_id' => (int) $l->mesa_id,
+			'dia'     => $l->dia,
+			'hora'    => substr( $l->hora, 0, 5 ),
+			'estado'  => $l->estado,
+		];
+	}
 
-	return $l ? [
-		'id'      => (int) $l->id,
-		'mesa_id' => (int) $l->mesa_id,
-		'dia'     => $l->dia,
-		'hora'    => substr( $l->hora, 0, 5 ),
-		'estado'  => $l->estado,
-	] : null;
+	return $r;
+}
+
+/**
+ * A marcação viva de um associado num evento, num dia; sem dia, a primeira
+ * (a mais cedo). null se não houver.
+ */
+function jelly_ar_marcacao_do_associado( $evento_id, $user_id, $dia = '' ) {
+	$suas = jelly_ar_marcacoes_do_associado( $evento_id, $user_id );
+
+	if ( $dia ) {
+		return $suas[ $dia ] ?? null;
+	}
+
+	return $suas ? reset( $suas ) : null;
 }
 
 /**
@@ -655,7 +674,8 @@ function jelly_ar_pedir( $evento, $user_id, $mesa_id, $dia, $hora ) {
 		return new WP_Error( 'marcacao-fechada' );
 	}
 
-	if ( jelly_ar_marcacao_do_associado( $evento['id'], $user_id ) ) {
+	// Uma por dia do evento: noutro dia, pode.
+	if ( jelly_ar_marcacao_do_associado( $evento['id'], $user_id, $dia ) ) {
 		return new WP_Error( 'marcacao-tem' );
 	}
 
