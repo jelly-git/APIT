@@ -266,6 +266,26 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.63.0] - 2026-09-29
+
+Plugin `jelly-area-reservada` 0.27.0. O tema e a base de dados não mudam.
+
+### Alterado
+- **A entrada do back-office (`wp-login.php`) com o aspeto do pop-up da Área
+  Reservada**, o que os associados veem para entrar e definir a palavra-passe:
+  o fundo escuro; o cartão com o painel de arte à esquerda (o degradé da
+  marca, o logótipo branco e "Juntos fazemos chegar mais longe o audiovisual
+  português.") e o formulário à direita, com um título e uma frase; os
+  campos, a caixa "Manter sessão" e o botão em pílula magenta do pop-up, e a
+  letra do site.
+  - O mesmo em "Esqueceu-se da senha?" (Recuperar a palavra-passe) e ao
+    definir uma nova (Definir a palavra-passe).
+  - O logótipo leva ao site (e não ao wordpress.org), e o seletor de idioma
+    por baixo do cartão sai.
+  - Em ecrãs estreitos, a arte passa para cima do formulário.
+  - Só muda o aspeto: o formulário continua a ser o do WordPress
+    (`inc/login-bo.php`, `assets/css/login.css`).
+
 ## [0.62.0] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.26.0. O tema e a base de dados não mudam.

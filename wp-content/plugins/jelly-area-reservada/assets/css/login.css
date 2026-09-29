@@ -1,0 +1,405 @@
+/*
+ * A entrada do back-office (wp-login.php, inc/login-bo.php) com o aspeto do
+ * pop-up da Área Reservada (area-reservada.css): o fundo escuro, e o cartão
+ * com a arte à esquerda e o formulário à direita.
+ *
+ * O #login do WordPress passa a ser a grelha do cartão: o h1 (o logótipo) é a
+ * coluna da arte, a todo o comprimento; o resto — o título, as mensagens, o
+ * formulário e as ligações — vai pela coluna da direita, uma coisa por linha.
+ */
+
+body.login {
+	--ar-preto: #1b2a33;
+	--ar-magenta: #f41892;
+	--ar-azul: #4a85c8;
+	--ar-roxo: #8048a6;
+	--ar-turquesa: #2ec6b0;
+	--ar-erro: #c4213b;
+	--ar-fonte: "omnes-pro", -apple-system, "Segoe UI", sans-serif;
+	--ar-lado: 56px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	padding: 24px;
+	box-sizing: border-box;
+	background:
+		radial-gradient(900px 600px at 0% 0%, rgba(244, 24, 146, 0.18), transparent 60%),
+		radial-gradient(900px 600px at 100% 100%, rgba(74, 133, 200, 0.18), transparent 60%),
+		var(--ar-preto);
+	font-family: var(--ar-fonte);
+	color: var(--ar-preto);
+}
+
+.login #login {
+	display: grid;
+	grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+	grid-auto-rows: auto;
+	width: 100%;
+	max-width: 1040px;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	border-radius: 3px;
+	background: #fff;
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+}
+
+/* Tudo o que não é a arte vai pela direita, com a folga do pop-up. */
+.login #login > *:not(.wp-login-logo) {
+	grid-column: 2;
+	margin-right: var(--ar-lado);
+	margin-left: var(--ar-lado);
+}
+
+/* ---------- A arte: o h1 do logótipo ---------- */
+
+.login h1.wp-login-logo {
+	grid-column: 1;
+	/* A todo o comprimento do cartão, qualquer que seja o número de linhas da direita. */
+	grid-row: 1 / span 20;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 40px;
+	min-height: 520px;
+	margin: 0;
+	padding: 48px 40px 44px;
+	/* O WordPress centra o h1; no pop-up, a frase é à esquerda. */
+	text-align: left;
+	background-color: var(--ar-magenta);
+	background-image:
+		radial-gradient(80% 55% at 100% 78%, var(--ar-turquesa) 0%, rgba(46, 198, 176, 0) 60%),
+		radial-gradient(75% 50% at 96% 52%, var(--ar-azul) 0%, rgba(74, 133, 200, 0) 62%),
+		radial-gradient(90% 45% at 78% 96%, var(--ar-roxo) 0%, rgba(128, 72, 166, 0) 65%);
+	color: #fff;
+}
+
+.login h1.wp-login-logo a {
+	width: 150px;
+	height: 50px;
+	margin: 0;
+	background-position: left center;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.login h1.wp-login-logo a:focus {
+	box-shadow: 0 0 0 2px #fff;
+}
+
+/* A frase do pop-up, por baixo. */
+.login h1.wp-login-logo::after {
+	content: "Juntos fazemos chegar mais longe o audiovisual português.";
+	max-width: 12em;
+	font-family: var(--ar-fonte);
+	font-weight: 500;
+	font-size: 30px;
+	line-height: 1.2;
+}
+
+/* ---------- O título e as mensagens ---------- */
+
+.jar-login__cabeca {
+	margin-top: 56px;
+	margin-bottom: 28px;
+}
+
+.jar-login__cabeca h2 {
+	margin: 0 0 8px;
+	font-family: var(--ar-fonte);
+	font-weight: 500;
+	font-size: 34px;
+	line-height: 1.15;
+	color: var(--ar-preto);
+}
+
+.jar-login__cabeca p {
+	margin: 0;
+	font-size: 16px;
+	line-height: 1.5;
+	color: rgba(27, 42, 51, 0.75);
+}
+
+.login .message,
+.login .notice,
+.login .success,
+.login #login_error {
+	margin-bottom: 20px;
+	padding: 14px 16px;
+	border: 0;
+	border-left: 4px solid var(--ar-magenta);
+	border-radius: 0;
+	background: rgba(244, 24, 146, 0.06);
+	box-shadow: none;
+	font-size: 15px;
+	line-height: 1.45;
+}
+
+.login #login_error,
+.login .notice-error {
+	border-left-color: var(--ar-erro);
+	background: rgba(196, 33, 59, 0.08);
+	color: var(--ar-erro);
+}
+
+.login .notice p,
+.login .message p {
+	margin: 0;
+}
+
+/* ---------- O formulário ---------- */
+
+.login form {
+	margin-top: 0;
+	padding: 0;
+	overflow: visible;
+	border: 0;
+	background: none;
+	box-shadow: none;
+	font-weight: 400;
+}
+
+.login form p,
+.login form .user-pass-wrap {
+	margin-bottom: 20px;
+}
+
+.login label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 1.4;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: var(--ar-preto);
+}
+
+.login form .input,
+.login input[type="text"],
+.login input[type="email"],
+.login input[type="password"] {
+	width: 100%;
+	height: 56px;
+	min-height: 56px;
+	margin: 0;
+	padding: 0 14px;
+	border: 1px solid var(--ar-preto);
+	border-radius: 0;
+	background: rgba(27, 42, 51, 0.04);
+	box-shadow: none;
+	font-family: var(--ar-fonte);
+	font-size: 16px;
+	color: var(--ar-preto);
+	transition: border-color 0.2s;
+}
+
+.login form .input:focus,
+.login input[type="text"]:focus,
+.login input[type="email"]:focus,
+.login input[type="password"]:focus {
+	border-color: var(--ar-magenta);
+	outline: none;
+	box-shadow: none;
+}
+
+/* O olho da palavra-passe, por dentro do campo. */
+.login .wp-pwd {
+	position: relative;
+}
+
+.login .button.wp-hide-pw {
+	top: 50%;
+	right: 6px;
+	width: 44px;
+	height: 44px;
+	min-height: 0;
+	transform: translateY(-50%);
+	border: 0;
+	background: none;
+	color: var(--ar-preto);
+}
+
+.login .button.wp-hide-pw:focus {
+	border: 0;
+	box-shadow: 0 0 0 2px var(--ar-magenta);
+}
+
+.login .button.wp-hide-pw .dashicons {
+	top: 0;
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+}
+
+/* Manter sessão: a caixa do pop-up. */
+.login .forgetmenot {
+	float: none;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.login .forgetmenot label {
+	display: inline;
+	margin: 0;
+	font-size: 15px;
+	letter-spacing: 0;
+	text-transform: none;
+}
+
+.login input[type="checkbox"] {
+	width: 18px;
+	height: 18px;
+	margin: 0;
+	border-color: var(--ar-preto);
+	border-radius: 0;
+	accent-color: var(--ar-magenta);
+}
+
+.login input[type="checkbox"]:checked::before {
+	filter: hue-rotate(0);
+}
+
+.login input[type="checkbox"]:focus {
+	border-color: var(--ar-magenta);
+	box-shadow: 0 0 0 1px var(--ar-magenta);
+}
+
+/* O botão do pop-up: a pílula magenta, em maiúsculas, preta ao passar. */
+.login .submit {
+	margin-bottom: 0;
+}
+
+.login .button-primary,
+.login #wp-submit {
+	float: none;
+	display: block;
+	width: 100%;
+	height: auto;
+	min-height: 0;
+	padding: 17px 30px 15px;
+	border: 2px solid var(--ar-magenta);
+	border-radius: 200px;
+	background: var(--ar-magenta);
+	box-shadow: none;
+	text-shadow: none;
+	font-family: var(--ar-fonte);
+	font-weight: 500;
+	font-size: 15px;
+	line-height: 1.68;
+	letter-spacing: 0.3px;
+	text-transform: uppercase;
+	color: #fff;
+	cursor: pointer;
+	transition: background-color 0.2s, border-color 0.2s;
+}
+
+.login .button-primary:hover,
+.login .button-primary:focus,
+.login #wp-submit:hover,
+.login #wp-submit:focus {
+	border-color: var(--ar-preto);
+	background: var(--ar-preto);
+	box-shadow: none;
+	color: #fff;
+}
+
+/* O medidor da palavra-passe, ao definir uma nova. */
+.login #pass-strength-result {
+	width: 100%;
+	margin: 8px 0 0;
+	border-radius: 0;
+}
+
+.login .pw-weak {
+	margin-bottom: 20px;
+}
+
+.login .reset-pass-submit {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.login .reset-pass-submit .button {
+	float: none;
+	width: 100%;
+	margin: 0;
+}
+
+/* ---------- As ligações por baixo ---------- */
+
+.login #nav,
+.login #backtoblog {
+	padding: 0;
+	margin-top: 20px;
+	font-size: 15px;
+}
+
+.login #backtoblog {
+	margin-bottom: 40px;
+}
+
+.login #nav a,
+.login #backtoblog a,
+.login .privacy-policy-page-link a {
+	font-weight: 500;
+	color: var(--ar-magenta);
+	text-decoration: none;
+}
+
+.login #nav a:hover,
+.login #backtoblog a:hover,
+.login .privacy-policy-page-link a:hover {
+	color: var(--ar-preto);
+	text-decoration: underline;
+}
+
+.login .privacy-policy-page-link {
+	margin-top: -24px;
+	margin-bottom: 40px;
+	text-align: left;
+	font-size: 13px;
+}
+
+/* ---------- Ecrãs estreitos: a arte por cima, pequena ---------- */
+
+@media (max-width: 782px) {
+	body.login {
+		--ar-lado: 24px;
+
+		align-items: flex-start;
+		padding: 16px;
+	}
+
+	.login #login {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.login h1.wp-login-logo {
+		grid-column: 1;
+		grid-row: auto;
+		min-height: 0;
+		padding: 28px 24px;
+		gap: 20px;
+	}
+
+	.login h1.wp-login-logo::after {
+		font-size: 22px;
+	}
+
+	.login #login > *:not(.wp-login-logo) {
+		grid-column: 1;
+	}
+
+	.jar-login__cabeca {
+		margin-top: 28px;
+	}
+
+	.jar-login__cabeca h2 {
+		font-size: 28px;
+	}
+}
