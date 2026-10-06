@@ -266,6 +266,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.76.1] - 2026-10-06
+
+Só o tema.
+
+### Corrigido
+- **A janela do vídeo da Home não fechava com o rato.** O X, o clique à volta
+  e os controlos do próprio leitor não faziam nada, só o Esc. A janela está
+  dentro da camada de decoração do herói, que ignora o rato, e essa
+  propriedade herda-se mesmo por cima de tudo. Verificado com cliques reais
+  a 1536×730 e a 390px; os testes da 0.76.0 usavam cliques simulados por
+  código, que não passam por aí.
+
 ## [0.76.0] - 2026-10-06
 
 Só o tema. O plugin não muda. A base de dados também não: os campos novos

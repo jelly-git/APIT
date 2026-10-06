@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.76.0
+Version: 0.76.1
 */
 
 :root {
@@ -1341,6 +1341,14 @@ a.btn--escuro:focus-visible {
  * would have been off the top.
  */
 .apit-video-modal {
+	/*
+	 * The dialog sits inside .hero-decor, which ignores the pointer, and
+	 * pointer-events is inherited — the top layer changes where the dialog
+	 * paints, not what it inherits. Without this every click went through it:
+	 * the close button, the backdrop and the player's own controls did nothing,
+	 * and the only way out was Esc.
+	 */
+	pointer-events: auto;
 	/* As wide as what plays in it, so the close button sits on its corner. */
 	width: fit-content;
 	max-width: 92vw;
