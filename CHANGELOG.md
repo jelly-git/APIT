@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.77.2] - 2026-10-06
+
+Só o tema.
+
+### Alterado
+- **Newsletter, consentimento:** o link da Política de Privacidade passa de
+  700 a 600 (Omnes Pro semibold, que está no kit de fontes).
+
 ## [0.77.1] - 2026-10-06
 
 Só o tema.

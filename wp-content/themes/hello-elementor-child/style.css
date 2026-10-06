@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.77.1
+Version: 0.77.2
 */
 
 :root {
@@ -2598,7 +2598,8 @@ a.btn--escuro:focus-visible {
  * pointer widens the words and shifts the rest of the line.
  */
 .newsletter__consent a {
-	font-weight: 700;
+	/* Semibold: the client found 700 too heavy beside the 14px line. */
+	font-weight: 600;
 	text-decoration: underline;
 	transition: color 0.2s ease;
 }
