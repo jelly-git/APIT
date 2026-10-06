@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.74.2
+Version: 0.75.0
 */
 
 :root {
@@ -437,6 +437,39 @@ ul {
 	color: var(--apit-black);
 }
 
+/*
+ * With a session, the "Área Reservada" buttons (header and mobile panel) carry
+ * the greeting under the label — "Olá, Inês!", in normal case and lighter —
+ * and a larger person icon: the button says who is signed in.
+ */
+.apit-cta-ar__texto {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.2;
+	white-space: nowrap;
+}
+
+.apit-cta-ar__texto small {
+	font-weight: 400;
+	font-size: 14px;
+	letter-spacing: 0;
+	text-transform: none;
+	opacity: 0.85;
+}
+
+.apit-header__cta.is-sessao,
+.apit-menu-mobile__cta.is-sessao {
+	flex-shrink: 0;
+	gap: 22px;
+	padding-top: 9px;
+	padding-bottom: 9px;
+}
+
+.apit-header__cta.is-sessao i,
+.apit-menu-mobile__cta.is-sessao i {
+	font-size: 22px;
+}
+
 /* ---------- Cabeçalho: hambúrguer ---------- */
 
 .apit-header__burger {
@@ -466,7 +499,7 @@ ul {
 }
 
 /*
- * O cabeçalho entre os 1240 e os 1439.
+ * O cabeçalho entre os 1240 e os 1479.
  *
  * Em cima está desenhado para 1440 e daí para cima: o logótipo, sete itens de
  * menu com 32px de intervalo, a lupa e o botão da Área Reservada somam 1418px,
@@ -478,8 +511,12 @@ ul {
  * Aqui aperta-se o que dá para apertar, sem tirar nada de vista: intervalos,
  * corpo de letra, respiro do botão e tamanho do logótipo. São ~290px, que
  * chegam para o cabeçalho caber inteiro até aos 1240.
+ *
+ * Vai até aos 1479, e não aos 1439: a media query conta a barra de
+ * deslocamento, e numa janela de 1440 com ela sobram 1425px — o botão da Área
+ * Reservada, que não parte a linha, ficava 30px fora da janela.
  */
-@media (min-width: 1240px) and (max-width: 1439px) {
+@media (min-width: 1240px) and (max-width: 1479px) {
 	.apit-header__main {
 		padding-inline: 24px;
 	}

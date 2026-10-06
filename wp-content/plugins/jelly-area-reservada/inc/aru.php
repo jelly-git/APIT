@@ -318,6 +318,17 @@ function jelly_ar_area_botoes( $url ) {
 }
 add_filter( 'apit_area_reservada_url', 'jelly_ar_area_botoes' );
 
+// E dizem quem tem a sessão, por baixo de "Área Reservada": "Olá, Inês!".
+function jelly_ar_area_saudacao( $texto ) {
+	if ( ! jelly_ar_area_tem_acesso() ) {
+		return $texto;
+	}
+
+	/* translators: %s: primeiro nome de quem tem a sessão */
+	return sprintf( __( 'Olá, %s!', 'jelly-area-reservada' ), jelly_ar_aru_pessoa( wp_get_current_user() )['primeiro'] );
+}
+add_filter( 'apit_area_reservada_saudacao', 'jelly_ar_area_saudacao' );
+
 /* ---------- Os dados da ARU ---------- */
 
 /**

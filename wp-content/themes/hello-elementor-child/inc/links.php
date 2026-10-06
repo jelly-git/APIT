@@ -85,3 +85,29 @@ add_action( 'template_redirect', 'apit_iniciar_prefixo_de_links', 0 );
 function apit_area_reservada_url() {
 	return apply_filters( 'apit_area_reservada_url', '#area-reservada' );
 }
+
+/**
+ * The greeting under "Área Reservada" on the buttons ("Olá, Inês!"), or ''
+ * without a session. Same contract as the URL above: the plugin knows who is
+ * signed in and fills it through this filter; the theme only draws it.
+ */
+function apit_area_reservada_saudacao() {
+	return (string) apply_filters( 'apit_area_reservada_saudacao', '' );
+}
+
+/**
+ * The inside of an "Área Reservada" button: the label, the greeting under it
+ * when there is a session, and the person icon.
+ */
+function apit_area_reservada_botao() {
+	$saudacao = apit_area_reservada_saudacao();
+	?>
+	<span class="apit-cta-ar__texto">
+		<span><?php esc_html_e( 'Área Reservada', 'apit' ); ?></span>
+		<?php if ( '' !== $saudacao ) : ?>
+			<small><?php echo esc_html( $saudacao ); ?></small>
+		<?php endif; ?>
+	</span>
+	<i class="fa-solid fa-user" aria-hidden="true"></i>
+	<?php
+}

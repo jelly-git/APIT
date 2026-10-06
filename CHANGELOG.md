@@ -266,6 +266,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.75.0] - 2026-10-06
+
+Plugin `jelly-area-reservada` 0.39.0. A base de dados não muda.
+
+### Alterado
+- **O botão "Área Reservada" do cabeçalho do site diz quem tem a sessão**: por
+  baixo de "ÁREA RESERVADA", "Olá, Inês!", em minúsculas e mais leve, com o
+  ícone da pessoa maior; o mesmo no menu do telemóvel. Sem sessão, fica como
+  estava. O nome vem do plugin pelo filtro `apit_area_reservada_saudacao`,
+  como o endereço do botão vem pelo `apit_area_reservada_url`: o tema não
+  depende do plugin.
+- O texto do botão deixa de partir em duas linhas.
+
+### Corrigido
+- O cabeçalho compacto (intervalos, letra e logótipo mais pequenos) passa a ir
+  até aos 1479px, e não aos 1439: a media query conta a barra de deslocamento,
+  e numa janela de 1440 com ela o botão da Área Reservada ficava fora da janela.
+
 ## [0.74.2] - 2026-09-29
 
 Plugin `jelly-area-reservada` 0.38.2. O tema e a base de dados não mudam.

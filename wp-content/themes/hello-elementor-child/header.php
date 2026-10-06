@@ -70,9 +70,8 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 				></button>
 			</nav>
 
-			<a href="<?php echo esc_url( apit_area_reservada_url() ); ?>" class="apit-header__cta">
-				<?php esc_html_e( 'Área Reservada', 'apit' ); ?>
-				<i class="fa-solid fa-user" aria-hidden="true"></i>
+			<a href="<?php echo esc_url( apit_area_reservada_url() ); ?>" class="apit-header__cta<?php echo '' !== apit_area_reservada_saudacao() ? ' is-sessao' : ''; ?>">
+				<?php apit_area_reservada_botao(); ?>
 			</a>
 
 			<?php // Shown below the desktop breakpoint; opens the panel further down. ?>
@@ -156,9 +155,8 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 		?>
 	</nav>
 
-	<a href="<?php echo esc_url( apit_area_reservada_url() ); ?>" class="apit-menu-mobile__cta">
-		<?php esc_html_e( 'Área Reservada', 'apit' ); ?>
-		<i class="fa-solid fa-user" aria-hidden="true"></i>
+	<a href="<?php echo esc_url( apit_area_reservada_url() ); ?>" class="apit-menu-mobile__cta<?php echo '' !== apit_area_reservada_saudacao() ? ' is-sessao' : ''; ?>">
+		<?php apit_area_reservada_botao(); ?>
 	</a>
 
 	<nav class="apit-menu-mobile__secundario" aria-label="<?php esc_attr_e( 'Links secundários', 'apit' ); ?>">
