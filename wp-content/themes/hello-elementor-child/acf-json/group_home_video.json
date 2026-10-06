@@ -1,0 +1,111 @@
+{
+    "key": "group_home_video",
+    "title": "Home — vídeo do destaque",
+    "fields": [
+        {
+            "key": "field_home_video_ficheiro",
+            "label": "Vídeo — ficheiro",
+            "name": "home_video_ficheiro",
+            "aria-label": "",
+            "type": "file",
+            "instructions": "Um ficheiro MP4 ou WebM da biblioteca de multimédia. Abre por cima da página, com os controlos do browser, quando se carrega no painel escuro ao lado do título.\n\nSe preferir um vídeo do YouTube ou do Vimeo, deixe este vazio e use o campo ao lado. Se os dois estiverem preenchidos, vale o ficheiro.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "id",
+            "library": "all",
+            "min_size": "",
+            "max_size": "",
+            "mime_types": "mp4, webm"
+        },
+        {
+            "key": "field_home_video_link",
+            "label": "Vídeo — link do YouTube ou do Vimeo",
+            "name": "home_video_link",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "O endereço do vídeo como aparece no browser, por exemplo https://www.youtube.com/watch?v=… , https://youtu.be/… , um YouTube Short ou https://vimeo.com/… .",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https://www.youtube.com/watch?v=…"
+        },
+        {
+            "key": "field_home_video_capa",
+            "label": "Imagem de capa",
+            "name": "home_video_capa",
+            "aria-label": "",
+            "type": "image",
+            "instructions": "A imagem que preenche o painel antes de o vídeo abrir. O painel é ao alto (cerca de 1:2), por isso a imagem é recortada ao centro: o que importa deve ficar no meio.\n\nSem imagem, o painel fica escuro, só com o botão de play.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "id",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": "jpg, jpeg, png, webp",
+            "preview_size": "medium"
+        },
+        {
+            "key": "field_home_video_rotulo",
+            "label": "Texto do botão (para leitores de ecrã)",
+            "name": "home_video_rotulo",
+            "aria-label": "",
+            "type": "text",
+            "instructions": "Não aparece no ecrã: é o que um leitor de ecrã anuncia ao chegar ao botão de play. Diga que vídeo é.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "50",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "maxlength": "",
+            "allow_in_bindings": 0,
+            "placeholder": "Ver o vídeo do 11.º Encontro da APIT",
+            "prepend": "",
+            "append": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "page_type",
+                "operator": "==",
+                "value": "front_page"
+            }
+        ]
+    ],
+    "menu_order": 1,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": true,
+    "description": "O painel escuro com o botão de play, ao lado do título da Home. Sem vídeo, o painel fica como está, só decorativo.",
+    "show_in_rest": 0,
+    "display_title": "",
+    "allow_ai_access": false,
+    "ai_description": "",
+    "modified": 1791288000
+}

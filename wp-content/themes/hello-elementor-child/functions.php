@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.75.2' );
+define( 'APIT_CHILD_VERSION', '0.76.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -180,6 +180,20 @@ function apit_child_enqueue_assets() {
 		wp_enqueue_script(
 			'apit-hero-slider',
 			get_stylesheet_directory_uri() . '/assets/js/hero-slider.js',
+			[],
+			APIT_CHILD_VERSION,
+			true
+		);
+	}
+
+	/*
+	 * The Home hero's video panel. It finds nothing to do when no video is set
+	 * in the back office — the panel is then not a link — and stops there.
+	 */
+	if ( is_front_page() ) {
+		wp_enqueue_script(
+			'apit-video-destaque',
+			get_stylesheet_directory_uri() . '/assets/js/video-destaque.js',
 			[],
 			APIT_CHILD_VERSION,
 			true

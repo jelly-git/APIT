@@ -19,9 +19,79 @@ function apit_render_template_part( $slug, $args = null ) {
 }
 
 function apit_shortcode_hero_decor() {
-	return apit_render_template_part( 'template-parts/hero-decor' );
+	return apit_render_template_part( 'template-parts/hero-decor', [ 'video' => apit_video_destaque() ] );
 }
 add_shortcode( 'apit_hero_decor', 'apit_shortcode_hero_decor' );
+
+/**
+ * The video behind the Home hero's dark panel, from the "Home — vídeo do
+ * destaque" fields, ready for the template: null when there is none, and the
+ * panel stays the decoration it always was.
+ *
+ * A file wins over a link, as the field's instructions say. A link is turned
+ * into the provider's embed address here rather than in the browser, so a link
+ * the site does not know how to play falls back to opening in a new tab instead
+ * of an empty frame.
+ *
+ * @return array|null tipo (ficheiro|embed), src (what plays), href (what the
+ *                    panel links to without JavaScript), vertical, capa, rotulo
+ */
+function apit_video_destaque() {
+	$ficheiro = apit_media_url( (string) apit_campo( 'home_video_ficheiro' ), 'videos' );
+	$link     = trim( (string) apit_campo( 'home_video_link' ) );
+
+	if ( $ficheiro ) {
+		$video = [
+			'tipo'     => 'ficheiro',
+			'src'      => $ficheiro,
+			'href'     => $ficheiro,
+			'vertical' => false,
+		];
+	} elseif ( $link ) {
+		$video = [
+			'tipo'     => 'embed',
+			'src'      => apit_video_embed_url( $link ),
+			'href'     => $link,
+			// Shorts are 9:16; everything else on these two sites is 16:9.
+			'vertical' => false !== strpos( $link, '/shorts/' ),
+		];
+	} else {
+		return null;
+	}
+
+	$capa = (int) apit_campo( 'home_video_capa' );
+
+	$video['capa']   = $capa ? $capa : 0;
+	$video['rotulo'] = trim( (string) apit_campo( 'home_video_rotulo' ) );
+
+	if ( '' === $video['rotulo'] ) {
+		$video['rotulo'] = __( 'Ver o vídeo', 'apit' );
+	}
+
+	return $video;
+}
+
+/**
+ * A YouTube or Vimeo page address as the address of its player, set to start
+ * on its own — it only ever loads because someone pressed play.
+ *
+ * YouTube's no-cookie domain: the player sets no tracking cookies until the
+ * video is played, which is the most a site without a consent banner can ask.
+ *
+ * Returns '' for anything else, and the template then leaves the panel as a
+ * plain link to the address.
+ */
+function apit_video_embed_url( $link ) {
+	if ( preg_match( '~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})~', $link, $m ) ) {
+		return 'https://www.youtube-nocookie.com/embed/' . $m[1] . '?autoplay=1&rel=0&playsinline=1';
+	}
+
+	if ( preg_match( '~vimeo\.com/(?:video/)?(\d+)~', $link, $m ) ) {
+		return 'https://player.vimeo.com/video/' . $m[1] . '?autoplay=1';
+	}
+
+	return '';
+}
 
 /**
  * The events section, in the three shapes the site needs.

@@ -266,6 +266,41 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.76.0] - 2026-10-06
+
+Só o tema. O plugin não muda. A base de dados também não: os campos novos
+vivem em `acf-json` e vão com o código. O vídeo é escolhido no back-office de
+cada site.
+
+### Adicionado
+- **Vídeo no painel escuro do herói da Home**, escolhido no back-office em
+  Páginas › Home › *Home — vídeo do destaque*:
+  - um ficheiro MP4/WebM da biblioteca, **ou** um link do YouTube (normal,
+    `youtu.be` ou Short) ou do Vimeo;
+  - uma imagem de capa, que preenche o painel recortada ao centro;
+  - o texto que um leitor de ecrã anuncia no botão.
+- **Como funciona:**
+  - Carregar no painel abre o vídeo numa janela por cima da página. Fecha
+    com o X, com Esc ou com um clique fora, e o vídeo pára.
+  - O YouTube toca pelo domínio sem cookies (`youtube-nocookie.com`) e só é
+    contactado quando se carrega no play.
+  - Sem JavaScript, o painel continua a abrir o vídeo, num separador novo.
+  - Sem vídeo escolhido, o painel fica exactamente como estava: decorativo e
+    escondido dos leitores de ecrã.
+- **Verificado de 1920 a 360px, incluindo 1536×730, 1229×600 e 1093×530
+  (ecrãs a 125%):**
+  - a capa cobre o painel e o painel não toca no texto;
+  - o painel recebe o clique em toda a área;
+  - o vídeo e o botão de fechar cabem no ecrã, porque a janela reserva 60px
+    em cima e em baixo para o X.
+
+### Corrigido
+- **A camada da decoração do herói (logótipo e painel) passa para cima do
+  bloco de texto, como o desenho pretendia.** Por ser um item *flex* com
+  `z-index`, fechava o painel numa camada abaixo do texto. Por isso a linha
+  branca do herói entrava 60px no painel escuro, e a caixa vazia do texto
+  apanhava os cliques no painel.
+
 ## [0.75.2] - 2026-10-06
 
 Só o tema. O plugin e a base de dados não mudam. Revisão do responsivo em

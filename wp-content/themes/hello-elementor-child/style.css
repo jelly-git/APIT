@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.75.2
+Version: 0.76.0
 */
 
 :root {
@@ -1014,6 +1014,24 @@ a.btn--escuro:focus-visible {
 	margin: 0 !important;
 }
 
+/*
+ * The decoration's wrapper above the text, at 3.
+ *
+ * It is a flex item of the hero, and a flex item with a z-index is a stacking
+ * context even when it is not positioned — so the rule above giving it 2 sealed
+ * the teaser panel inside it, and the panel's own 3 counted for nothing. The
+ * text column, also at 2 and later in the markup, then painted over the panel:
+ * the divider line ran 60px into the black, and once the panel became a link
+ * to the video, the text column's empty box took the click.
+ *
+ * Nothing in the decoration covers the text — the badge and the panel keep to
+ * the right of the column (see .hero__watch-badge) — and the layer ignores the
+ * pointer except on the panel.
+ */
+.apit-hero > .elementor-element-herodecor {
+	z-index: 3;
+}
+
 .hero-decor {
 	position: absolute;
 	inset: 0;
@@ -1267,6 +1285,148 @@ a.btn--escuro:focus-visible {
 	color: var(--apit-branco);
 }
 
+/*
+ * The panel once a video is set in "Home — vídeo do destaque": a link, so it
+ * has to take the pointer back from .hero-decor, which ignores it so the
+ * decoration never gets in the way of the text.
+ */
+.hero__video--com-video {
+	pointer-events: auto;
+	cursor: pointer;
+}
+
+/*
+ * The cover fills the panel and is cropped to it. Two classes against
+ * Elementor's `.elementor img { height: auto }`, as on the hero poster.
+ *
+ * Positioned, so it paints over the offset frame's part inside the panel —
+ * which on the plain dark panel shows as a line across it — and leaves the
+ * part outside, the offset the design is about.
+ */
+.hero__video .hero__video-capa {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	max-width: none;
+	object-fit: cover;
+}
+
+.hero__video--com-video .hero__play {
+	position: relative;
+	transition: transform 0.2s ease;
+}
+
+.hero__video--com-video:hover .hero__play,
+.hero__video--com-video:focus-visible .hero__play {
+	transform: scale(1.08);
+}
+
+.hero__video--com-video:focus-visible {
+	outline: 3px solid var(--apit-branco);
+	outline-offset: 4px;
+}
+
+/*
+ * The dialog the video plays in (assets/js/video-destaque.js). It is in the
+ * browser's top layer, so nothing about the hero — its clipping, its stacking —
+ * reaches it.
+ *
+ * As wide as the screen allows up to 1100px for a landscape video, and capped
+ * by the height so the controls never fall below the fold. A vertical video
+ * (a YouTube Short, or a file filmed upright) is sized by its height instead.
+ *
+ * The height leaves 60px above and below: the close button sits 52px above
+ * the video, and at 85% of a 530px window — a 1366x768 screen at 125% — it
+ * would have been off the top.
+ */
+.apit-video-modal {
+	/* As wide as what plays in it, so the close button sits on its corner. */
+	width: fit-content;
+	max-width: 92vw;
+	max-height: none;
+	padding: 0;
+	border: 0;
+	overflow: visible;
+	background: transparent;
+}
+
+.apit-video-modal::backdrop {
+	background: rgba(27, 42, 51, 0.88);
+}
+
+.apit-video-modal__palco {
+	position: relative;
+	width: min(1100px, 92vw, calc((100vh - 120px) * 16 / 9));
+	aspect-ratio: 16 / 9;
+	background: #000;
+}
+
+.apit-video-modal__palco.is-vertical {
+	width: min(92vw, calc((100vh - 120px) * 9 / 16));
+	aspect-ratio: 9 / 16;
+}
+
+/*
+ * A file keeps its own proportions, whatever way it was filmed: the box takes
+ * the video's size instead of imposing one.
+ */
+.apit-video-modal__palco.is-ficheiro {
+	width: auto;
+	aspect-ratio: auto;
+	background: transparent;
+}
+
+.apit-video-modal__palco iframe,
+.apit-video-modal__palco video {
+	display: block;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.apit-video-modal__palco.is-ficheiro video {
+	width: auto;
+	height: auto;
+	max-width: min(1100px, 92vw);
+	max-height: calc(100vh - 120px);
+	background: #000;
+}
+
+/* Above the video's top right corner, clear of the player's own controls. */
+.apit-video-modal__fechar {
+	position: absolute;
+	top: -52px;
+	right: 0;
+	width: 44px;
+	height: 44px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	font-size: 26px;
+	line-height: 44px;
+	color: var(--apit-branco);
+	cursor: pointer;
+}
+
+/* Hello's reset paints every focused or hovered button pink; not this one. */
+.apit-video-modal__fechar:focus {
+	background: transparent;
+	color: var(--apit-branco);
+}
+
+.apit-video-modal__fechar:hover,
+.apit-video-modal__fechar:focus-visible {
+	background: rgba(255, 255, 255, 0.15);
+	color: var(--apit-branco);
+}
+
+.apit-video-modal__fechar:focus-visible {
+	outline: 2px solid var(--apit-branco);
+	outline-offset: 2px;
+}
+
 
 /* See the !important note above — same Elementor max-width rule applies here. */
 .apit-hero .apit-hero__caption {
@@ -1344,6 +1504,18 @@ a.btn--escuro:focus-visible {
 		width: 100%;
 		height: min(560px, 90vw);
 		margin-top: 32px;
+	}
+
+	/*
+	 * Still in the flow, but positioned: the cover is absolute, and against a
+	 * static panel it measured itself against the hero instead and missed the
+	 * panel altogether. The desktop offsets go, or relative positioning would
+	 * apply them and push the panel 445px down over the caption.
+	 */
+	.hero__video--com-video {
+		position: relative;
+		top: auto;
+		right: auto;
 	}
 
 	/*
