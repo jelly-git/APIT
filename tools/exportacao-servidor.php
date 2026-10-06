@@ -23,6 +23,15 @@
  *    repostas no fim. Vai com elas o diagnóstico do último envio falhado, com
  *    o IP e o nome desta máquina.
  *
+ * Os dados de demonstração nunca vão (regra do cliente, 28 de setembro). Os da
+ * AR já ficam de fora com as tabelas dela; aqui sai o que não está nelas:
+ *
+ *  - o vídeo do painel da Home, quando é de demonstração. Os campos
+ *    `home_video_*` estão na wp_postmeta da Home, que vai inteira com o resto
+ *    do conteúdo; um vídeo de demonstração é o que tem o texto do botão
+ *    (`home_video_rotulo`) a começar por "DEMO". Saem todos os campos do vídeo
+ *    dessa página, e em produção o painel fica decorativo, como sem vídeo.
+ *
  * E os endereços escapados dentro do JSON do Elementor (`http:\\/\\/apit.local`),
  * que o search-replace não apanha. Feito aqui e não em sed: o padrão é feito de
  * barras invertidas e passá-lo por uma shell intacto já falhou três vezes.
@@ -46,10 +55,14 @@ $s = str_replace( 'http:' . $b . $b . 'apit.local', 'https:' . $b . $b . 'dev.je
 // Os ids dos termos órfãos, lidos da wp_term_taxonomy (term_taxonomy_id, term_id, taxonomy).
 preg_match_all( "~^\('\d+', '(\d+)', 'jelly_ar_[^']*',~m", $s, $m );
 
+// As páginas cujo vídeo do painel é de demonstração (wp_postmeta: meta_id, post_id, meta_key, meta_value).
+preg_match_all( "~^\('\d+', '(\d+)', 'home_video_rotulo', 'DEMO~m", $s, $demo );
+
 $fora = array(
 	'wp_options'       => "~^\('\d+', '(jelly_ar_[^']*|_transient_[^']*jelly_ar_[^']*|wp_mail_smtp[^']*|_transient_[^']*wp_mail_smtp[^']*)',~",
 	'wp_term_taxonomy' => "~^\('\d+', '\d+', 'jelly_ar_[^']*',~",
 	'wp_terms'         => $m[1] ? "~^\('(" . implode( '|', $m[1] ) . ")', ~" : null,
+	'wp_postmeta'      => $demo[1] ? "~^\('\d+', '(" . implode( '|', array_unique( $demo[1] ) ) . ")', '_?home_video_[a-z]+',~" : null,
 );
 
 /*

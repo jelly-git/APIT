@@ -349,6 +349,7 @@ grep -v apit_ar_opcoes $F | grep -c "wp_mail_smtp"         # 0
 grep -c "wpmailsmtp" $F                                   # 0
 grep -c -E 'TABLE[^`]*`wp_(jelly_ar_|users|usermeta)' $F   # 0
 grep -c -E "demo-|example\.test|192\.0\.2\." $F            # 0
+grep -c "home_video_rotulo', 'DEMO" $F                # 0: o vídeo DEMO da Home sai no script
 grep -c "CREATE TABLE" $F                                  # 19
 
 # arquivar a cópia versionada, com a versão lida do próprio tema

@@ -269,8 +269,8 @@ A versão aqui registada corresponde ao campo `Version` de
 ## [0.76.0] - 2026-10-06
 
 Só o tema. O plugin não muda. A base de dados também não: os campos novos
-vivem em `acf-json` e vão com o código. O vídeo é escolhido no back-office de
-cada site.
+vivem em `acf-json` e vão com o código. O vídeo escolhido fica na `wp_postmeta`
+da Home e sobe com o resto do conteúdo, como qualquer campo de página.
 
 ### Adicionado
 - **Vídeo no painel escuro do herói da Home**, escolhido no back-office em
@@ -293,6 +293,11 @@ cada site.
   - o painel recebe o clique em toda a área;
   - o vídeo e o botão de fechar cabem no ecrã, porque a janela reserva 60px
     em cima e em baixo para o X.
+- **O vídeo DEMO da Home não sobe para produção.** O
+  `tools/exportacao-servidor.php` tira do ficheiro os campos `home_video_*` de
+  uma página cujo texto do botão do vídeo comece por "DEMO"; em produção o
+  painel fica decorativo. Provado com uma exportação real da `wp_postmeta`:
+  as 6 linhas saem e o ficheiro importa sem erros.
 
 ### Corrigido
 - **A camada da decoração do herói (logótipo e painel) passa para cima do
