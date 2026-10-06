@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.77.1] - 2026-10-06
+
+Só o tema.
+
+### Alterado
+- **Newsletter, consentimento:** a caixa marcada fica magenta, com o visto a
+  branco. O link da Política de Privacidade passa a negrito e fica magenta
+  com o rato por cima (ou com o foco do teclado). O negrito é permanente, e
+  não só no hover, para o resto da linha não se deslocar.
+
 ## [0.77.0] - 2026-10-06
 
 O tema e o `tools/exportacao-servidor.php`. **O formulário "Newsletter" vive

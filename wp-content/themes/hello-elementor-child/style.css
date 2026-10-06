@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.77.0
+Version: 0.77.1
 */
 
 :root {
@@ -2575,6 +2575,12 @@ a.btn--escuro:focus-visible {
 	opacity: 1;
 }
 
+/* Ticked, the box fills in the magenta of the submit button; the tick stays white. */
+.newsletter__consent input:checked {
+	border-color: var(--apit-magenta);
+	background: var(--apit-magenta);
+}
+
 /*
  * The reset's white ring reaches every control in the form, not just the text
  * fields. Here the box goes and the border takes the magenta, so the checkbox
@@ -2587,8 +2593,19 @@ a.btn--escuro:focus-visible {
 	border-color: var(--apit-magenta);
 }
 
+/*
+ * Bold all the time, not only on hover: a weight that changes under the
+ * pointer widens the words and shifts the rest of the line.
+ */
 .newsletter__consent a {
+	font-weight: 700;
 	text-decoration: underline;
+	transition: color 0.2s ease;
+}
+
+.newsletter__consent a:hover,
+.newsletter__consent a:focus-visible {
+	color: var(--apit-magenta);
 }
 
 /*
