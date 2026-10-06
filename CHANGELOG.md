@@ -266,6 +266,45 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.77.0] - 2026-10-06
+
+O tema e o `tools/exportacao-servidor.php`. **O formulário "Newsletter" vive
+na base de dados** (Gravity Forms, id 2 no local): em produção tem de chegar
+com uma exportação nova da base de dados, ou ser importado à mão em
+Formulários › Importar/Exportar.
+
+### Adicionado
+- **O formulário da newsletter passa a funcionar.** Antes não enviava nada
+  (`action="#"`). O desenho fica exactamente o mesmo: o HTML é o do tema, e a
+  inscrição é entregue ao formulário "Newsletter" do Gravity Forms
+  (`inc/newsletter.php`, por `GFAPI::submit_form`):
+  - o Gravity Forms guarda a entrada e envia as notificações; com o Mailchimp
+    Add-On, envia também para a audiência;
+  - o que se decide no back-office aparece no site: os campos obrigatórios,
+    os *placeholders*, o texto do consentimento e a mensagem de confirmação
+    são lidos do formulário;
+  - o texto do consentimento mantém a ligação à Política de Privacidade;
+  - a resposta aparece por baixo do botão, sem recarregar a página. Os campos
+    em falta ou recusados ficam sublinhados a magenta, a cor que o foco já
+    usa;
+  - um email repetido diz "Este email já está inscrito na APIT News.";
+  - sem JavaScript também funciona: envia e volta à mesma página com o
+    resultado;
+  - tem um campo-armadilha invisível contra robôs: quem o preenche recebe a
+    resposta de sucesso e nada é guardado;
+  - o tema encontra o formulário pelo título "Newsletter", pelo que um
+    formulário importado à mão com outro id também serve.
+- **Testado:** sem consentimento, sem nome, email inválido no browser e no
+  servidor, armadilha, inscrição válida e email repetido; a 1536px e a 390px,
+  com e sem JavaScript.
+
+### Corrigido
+- **A exportação da base de dados não leva a ligação ao Mailchimp.** Os *feeds*
+  (`wp_gf_addon_feed`) ficam fora do ficheiro, e as opções do Mailchimp Add-On
+  (chave de API, audiência) que estiverem no servidor são guardadas e repostas,
+  como as do SMTP. Sem isto, a primeira exportação depois de instalar o Add-On
+  apagava a configuração feita em produção.
+
 ## [0.76.1] - 2026-10-06
 
 Só o tema.

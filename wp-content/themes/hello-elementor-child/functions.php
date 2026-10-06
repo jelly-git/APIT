@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.76.1' );
+define( 'APIT_CHILD_VERSION', '0.77.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -15,6 +15,7 @@ require_once get_stylesheet_directory() . '/inc/breadcrumbs.php';
 require_once get_stylesheet_directory() . '/inc/elementor.php';
 require_once get_stylesheet_directory() . '/inc/hero.php';
 require_once get_stylesheet_directory() . '/inc/links.php';
+require_once get_stylesheet_directory() . '/inc/newsletter.php';
 require_once get_stylesheet_directory() . '/inc/noticias.php';
 require_once get_stylesheet_directory() . '/inc/pesquisa.php';
 require_once get_stylesheet_directory() . '/inc/shortcodes.php';
@@ -146,6 +147,18 @@ function apit_child_enqueue_assets() {
 	wp_localize_script( 'apit-pesquisa', 'apitPesquisa', [
 		'rota' => esc_url_raw( rest_url( 'apit/v1/pesquisa' ) ),
 	] );
+
+	/*
+	 * Registered, not enqueued: template-parts/newsletter.php enqueues it, so it
+	 * loads on the pages that have the form, wherever the shortcode is dropped.
+	 */
+	wp_register_script(
+		'apit-newsletter',
+		get_stylesheet_directory_uri() . '/assets/js/newsletter.js',
+		[],
+		APIT_CHILD_VERSION,
+		true
+	);
 
 	wp_enqueue_script(
 		'apit-voltar-ao-topo',

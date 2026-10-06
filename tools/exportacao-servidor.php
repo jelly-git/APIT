@@ -32,6 +32,13 @@
  *    (`home_video_rotulo`) a começar por "DEMO". Saem todos os campos do vídeo
  *    dessa página, e em produção o painel fica decorativo, como sem vídeo.
  *
+ *  - a ligação ao Mailchimp (as opções `gravityformsaddon_gravityformsmailchimp*`
+ *    do Mailchimp Add-On do Gravity Forms: a chave de API e a audiência). Como
+ *    o envio de e-mail, é de cada site e põe-se no back-office de cada um; as
+ *    do servidor são guardadas antes e repostas no fim. Os feeds, que ligam o
+ *    formulário à audiência, estão na `wp_gf_addon_feed`, que a exportação já
+ *    não leva.
+ *
  * E os endereços escapados dentro do JSON do Elementor (`http:\\/\\/apit.local`),
  * que o search-replace não apanha. Feito aqui e não em sed: o padrão é feito de
  * barras invertidas e passá-lo por uma shell intacto já falhou três vezes.
@@ -59,7 +66,7 @@ preg_match_all( "~^\('\d+', '(\d+)', 'jelly_ar_[^']*',~m", $s, $m );
 preg_match_all( "~^\('\d+', '(\d+)', 'home_video_rotulo', 'DEMO~m", $s, $demo );
 
 $fora = array(
-	'wp_options'       => "~^\('\d+', '(jelly_ar_[^']*|_transient_[^']*jelly_ar_[^']*|wp_mail_smtp[^']*|_transient_[^']*wp_mail_smtp[^']*)',~",
+	'wp_options'       => "~^\('\d+', '(jelly_ar_[^']*|_transient_[^']*jelly_ar_[^']*|wp_mail_smtp[^']*|_transient_[^']*wp_mail_smtp[^']*|gravityformsaddon_gravityformsmailchimp[^']*)',~",
 	'wp_term_taxonomy' => "~^\('\d+', '\d+', 'jelly_ar_[^']*',~",
 	'wp_terms'         => $m[1] ? "~^\('(" . implode( '|', $m[1] ) . ")', ~" : null,
 	'wp_postmeta'      => $demo[1] ? "~^\('\d+', '(" . implode( '|', array_unique( $demo[1] ) ) . ")', '_?home_video_[a-z]+',~" : null,
@@ -107,10 +114,10 @@ $inicio = "SET @OLD_SQL_MODE = @@SQL_MODE;\n"
 	. "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';\n"
 	. "SET NAMES utf8mb4;\n"
 	. "SET FOREIGN_KEY_CHECKS = 0;\n"
-	. "-- As opcoes da Area Reservada e as do envio de e-mail (WP Mail SMTP) que\n"
-	. "-- estiverem no servidor ficam como estao: a wp_options e substituida\n"
-	. "-- abaixo, e estas linhas voltam no fim.\n"
-	. "CREATE TEMPORARY TABLE apit_ar_opcoes SELECT option_name, option_value, autoload FROM wp_options WHERE option_name LIKE 'jelly\\_ar\\_%' OR option_name LIKE '\\_transient\\_%jelly\\_ar\\_%' OR option_name LIKE 'wp\\_mail\\_smtp%' OR option_name LIKE '\\_transient\\_%wp\\_mail\\_smtp%';\n";
+	. "-- As opcoes da Area Reservada, as do envio de e-mail (WP Mail SMTP) e as do\n"
+	. "-- Mailchimp Add-On que estiverem no servidor ficam como estao: a wp_options\n"
+	. "-- e substituida abaixo, e estas linhas voltam no fim.\n"
+	. "CREATE TEMPORARY TABLE apit_ar_opcoes SELECT option_name, option_value, autoload FROM wp_options WHERE option_name LIKE 'jelly\\_ar\\_%' OR option_name LIKE '\\_transient\\_%jelly\\_ar\\_%' OR option_name LIKE 'wp\\_mail\\_smtp%' OR option_name LIKE '\\_transient\\_%wp\\_mail\\_smtp%' OR option_name LIKE 'gravityformsaddon\\_gravityformsmailchimp%';\n";
 
 $fim = "INSERT INTO wp_options (option_name, option_value, autoload) SELECT option_name, option_value, autoload FROM apit_ar_opcoes ON DUPLICATE KEY UPDATE option_value = VALUES(option_value), autoload = VALUES(autoload);\n"
 	. "DROP TEMPORARY TABLE apit_ar_opcoes;\n"

@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.76.1
+Version: 0.77.0
 */
 
 :root {
@@ -2589,6 +2589,53 @@ a.btn--escuro:focus-visible {
 
 .newsletter__consent a {
 	text-decoration: underline;
+}
+
+/*
+ * The spam trap (inc/newsletter.php): out of sight and out of reach, but not
+ * display:none, which some bots know to leave alone.
+ */
+.newsletter__armadilha {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+/*
+ * A field the form rejected keeps the underline the design gives it, in the
+ * colour the focus already uses — no box, no icon.
+ */
+.newsletter__field input[aria-invalid="true"] {
+	border-bottom-color: var(--apit-magenta);
+}
+
+.newsletter__consent input[aria-invalid="true"] {
+	border-color: var(--apit-magenta);
+	border-width: 2px;
+}
+
+/*
+ * The answer to a submission, under the button: the Gravity Forms confirmation,
+ * or what is missing. Same size and colour as the consent line, so it reads as
+ * part of the form rather than as an alert laid over it.
+ */
+.newsletter__estado {
+	margin: 4px 0 0;
+	font-family: var(--apit-font);
+	font-size: 15px;
+	line-height: 1.5;
+	color: #fff;
+}
+
+.newsletter__estado.is-erro {
+	font-weight: 500;
+}
+
+.newsletter__form[aria-busy="true"] .newsletter__submit {
+	opacity: 0.7;
+	cursor: progress;
 }
 
 .newsletter .newsletter__submit {

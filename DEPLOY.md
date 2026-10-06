@@ -92,6 +92,21 @@ para actualizações e add-ons: os formulários funcionam sem ela.
 O formulário em si **viaja na base de dados**, nas tabelas `wp_gf_*` — não é
 preciso recriá-lo no servidor.
 
+**A newsletter** usa o formulário "Newsletter" (id 2 no local). O desenho é o do
+tema (`template-parts/newsletter.php`), que entrega a inscrição ao Gravity Forms
+por `inc/newsletter.php`; o tema encontra o formulário pelo título, pelo que um
+formulário importado à mão com outro id também serve. Sem o formulário no
+servidor, o bloco aparece mas responde que a inscrição não está disponível. As
+inscrições ficam em `wp_gf_entry*`, que a exportação não leva (secção 3.2): as de
+produção ficam em produção.
+
+O envio para o Mailchimp é o **Mailchimp Add-On** do Gravity Forms, instalado à
+mão como o próprio Gravity Forms. A chave de API e a audiência põem-se no
+back-office de cada site (Formulários › Definições › Mailchimp) e o *feed* no
+formulário Newsletter. As inscrições feitas antes do *feed* existir não passam
+sozinhas: exportam-se em CSV (Formulários › Importar/Exportar) e importam-se na
+audiência.
+
 ### ACF Pro é manual, nas duas pontas
 
 O ACF Pro é licenciado e por isso não está no repositório — o `.gitignore`
@@ -305,6 +320,7 @@ O que fica fora do ficheiro, e porquê:
 | `wp_gf_entry*`, `wp_gf_draft_submissions` | as respostas aos formulários (Media Kit) recebidas em produção |
 | `wp_wpmailsmtp_*` (`debug_events`, `tasks_meta`) | o envio de e-mail é o de cada servidor |
 | as opções `wp_mail_smtp*` e os transientes dele | a configuração do envio de produção (o PHP) fica como está: guardadas antes e repostas depois, como as da AR |
+| `wp_gf_addon_feed` e as opções `gravityformsaddon_gravityformsmailchimp*` | a ligação ao Mailchimp (feed, chave de API, audiência) é a de cada site e configura-se no back-office dele; as opções do servidor são guardadas antes e repostas depois |
 | as opções `jelly_ar_*` e os transientes da AR | a `wp_options` é substituída inteira; estas são guardadas antes e repostas depois, com o valor que tinham no servidor |
 | os termos `jelly_ar_doc_categoria` | restos órfãos de uma versão antiga do plugin |
 
@@ -324,7 +340,7 @@ cd "C:\Users\faust\Local Sites\apit"
 # conhece, e as do Gravity Forms caíam em silêncio — o formulário do Media Kit
 # ficava fora sem aviso nenhum.
 TABELAS=$(wp db tables --all-tables-with-prefix --format=csv | tr ',' '\n' | tr -d '\r' \
-  | grep -v -E '^wp_(jelly_ar_.*|users|usermeta|wpmailsmtp_.*|gf_entry|gf_entry_meta|gf_entry_notes|gf_draft_submissions)$')
+  | grep -v -E '^wp_(jelly_ar_.*|users|usermeta|wpmailsmtp_.*|gf_entry|gf_entry_meta|gf_entry_notes|gf_draft_submissions|gf_addon_feed)$')
 
 # troca os URLs e escreve o ficheiro, sem tocar na base de dados local.
 # --precise porque os dados do Elementor estão serializados.
@@ -333,8 +349,8 @@ wp search-replace "http://apit.local" "https://dev.jellycode.agency/apit" \
 
 # O resto é texto: os endereços escapados dentro do JSON do Elementor, que o
 # comando acima não apanha; as linhas da AR que estão em tabelas partilhadas;
-# as opções do WP Mail SMTP; e o cabeçalho (SQL_MODE, e guardar/repor as opções
-# da AR e do SMTP que estiverem no servidor). O porquê de cada um está no próprio script.
+# as opções do WP Mail SMTP e do Mailchimp; e o cabeçalho (SQL_MODE, e
+# guardar/repor as opções da AR, do SMTP e do Mailchimp que estiverem no servidor). O porquê de cada um está no próprio script.
 php app/public/tools/exportacao-servidor.php bd-sem-cabecalho.sql apit-bd-para-servidor.sql
 rm bd-sem-cabecalho.sql
 
@@ -347,6 +363,8 @@ grep -c "'_elementor_css'" $F                              # 0
 grep -v apit_ar_opcoes $F | grep -c "jelly_ar"             # 0
 grep -v apit_ar_opcoes $F | grep -c "wp_mail_smtp"         # 0
 grep -c "wpmailsmtp" $F                                   # 0
+grep -v apit_ar_opcoes $F | grep -c "gravityformsmailchimp" # 0
+grep -c "wp_gf_addon_feed" $F                             # 0
 grep -c -E 'TABLE[^`]*`wp_(jelly_ar_|users|usermeta)' $F   # 0
 grep -c -E "demo-|example\.test|192\.0\.2\." $F            # 0
 grep -c "home_video_rotulo', 'DEMO" $F                # 0: o vídeo DEMO da Home sai no script
