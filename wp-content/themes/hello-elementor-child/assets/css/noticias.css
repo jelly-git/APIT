@@ -367,24 +367,51 @@
  */
 .noticia-single__hero {
 	padding-bottom: 150px !important;
+	/*
+	 * The fade to the page tone runs in those 150px, under the date and not
+	 * over it. With the shared 292-537px fade the date — at about 407px — sat
+	 * on 54% of #F4F9FF and the last line of a three-line headline on more:
+	 * white on near-white. Measured from the bottom it clears however many
+	 * lines the headline takes.
+	 */
+	--apit-hero-scrim: linear-gradient(
+		to bottom,
+		rgba(244, 249, 255, 0) calc(100% - 140px),
+		#f4f9ff 100%
+	);
 }
 
 /*
  * The article's own picture sits behind the hero, and a photograph is a busier
  * backdrop than a gradient: the veil keeps the white type legible over whatever
  * was uploaded, and the hero's own fade still runs over the top of it.
+ *
+ * Heavier on the left, where the text is. The veil used to be 0.25 at the
+ * height of the title and the same right across, and over a light picture —
+ * the Watch Portugal article opens on a projected screen with its own white
+ * lettering — the headline and the breadcrumb were white on white. The
+ * picture is whatever the editor uploads, so the veil has to hold over the
+ * lightest one: about 0.5 under the title, which is large type and needs 3:1,
+ * and 0.7 at the top left, under the 14px breadcrumb, which needs 4.5:1. The
+ * right-hand side, where there is no text, keeps the picture almost clear.
  */
 .noticia-single__hero .apit-hero__media::before {
 	content: "";
 	position: absolute;
 	inset: 0;
 	z-index: 1;
-	background: linear-gradient(
-		to bottom,
-		rgba(27, 42, 51, 0.55) 0%,
-		rgba(27, 42, 51, 0.25) 45%,
-		rgba(27, 42, 51, 0.15) 100%
-	);
+	background:
+		linear-gradient(
+			to bottom,
+			rgba(27, 42, 51, 0.35) 0%,
+			rgba(27, 42, 51, 0) 60%
+		),
+		linear-gradient(
+			to right,
+			rgba(27, 42, 51, 0.55) 0%,
+			rgba(27, 42, 51, 0.4) 55%,
+			rgba(27, 42, 51, 0.12) 100%
+		);
 }
 
 /* A headline is longer than a page title, so it may run to three lines. */
@@ -590,6 +617,20 @@
 
 	.noticia-single__corpo {
 		padding-block: 60px 50px;
+	}
+}
+
+@media (max-width: 768px) {
+	/*
+	 * The Home's phone rule sizes every .apit-hero__media to the Home's colour
+	 * band, a property this hero does not have, and the layer shrank to the
+	 * picture's own height: the photo filled the top 260px of the hero and
+	 * stopped on a hard edge, with the title half on it and half on the
+	 * fallback gradient. Given the whole hero back, as Todos os Associados is.
+	 */
+	.noticia-single__hero .apit-hero__media {
+		bottom: 0;
+		height: auto;
 	}
 }
 

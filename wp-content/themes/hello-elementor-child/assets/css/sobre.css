@@ -28,6 +28,20 @@
 	 * background instead of behind the hero's own content.
 	 */
 	isolation: isolate;
+	/*
+	 * What shows when there is no video: on a phone, where the video is not
+	 * loaded and this page has no portrait image set, and anywhere while the
+	 * video is still buffering. The hero painted nothing of its own, so the
+	 * page's white came through and the white breadcrumb and title were white
+	 * on white — on a phone, permanently. The same artwork the Home hero falls
+	 * back to, the colours the video itself is made of.
+	 */
+	background-color: var(--apit-magenta);
+	background-image:
+		radial-gradient(120% 90% at 78% 8%, #2ec6b0 0%, rgba(46, 198, 176, 0) 55%),
+		radial-gradient(90% 80% at 100% 42%, #4a85c8 0%, rgba(74, 133, 200, 0) 60%),
+		radial-gradient(70% 70% at 62% 30%, var(--apit-roxo) 0%, rgba(128, 72, 166, 0) 65%),
+		radial-gradient(110% 100% at 8% 78%, var(--apit-magenta) 0%, rgba(244, 24, 146, 0) 70%);
 }
 
 /*
@@ -198,6 +212,31 @@
  */
 .apit-sobre-hero .sobre-hero__doc-botoes {
 	flex-wrap: wrap;
+}
+
+/*
+ * Below 1860px the "US" of the wordmark runs under the buttons.
+ *
+ * The word scales with the viewport (14.6vw) and is pinned to the right edge;
+ * the buttons sit in the right-hand column at their own fixed width. At 1920
+ * the "US" starts 30px clear of "Regulamento Interno", and the two close in as
+ * the screen narrows: at 1536 — a 1920 screen at 125% — the word started 94px
+ * inside the button, and the label was read across white stripes.
+ *
+ * The buttons are outlines, so the word showed through them. Here they get the
+ * page tone as a fill: where nothing is behind them it is the colour that was
+ * already there, and where the word is, it stops at the button's edge. Moving
+ * the buttons was tried and does not work — stacked, the column is aligned to
+ * the bottom of the paragraph beside it, so it grew upwards into "ABOUT"; and
+ * anchored at the top instead, the second button lands on the row of icons
+ * underneath.
+ *
+ * :not(:hover) leaves the dark hover fill of .btn--escuro alone.
+ */
+@media (min-width: 1025px) and (max-width: 1859px) {
+	.apit-sobre-hero .sobre-hero__doc-botoes .btn.btn--escuro .elementor-button:not(:hover):not(:focus-visible) {
+		background-color: rgba(244, 249, 255, 0.92);
+	}
 }
 
 /*
@@ -673,6 +712,18 @@
 	.apit-sobre-hero {
 		padding-top: 150px !important;
 		padding-bottom: 80px !important;
+	}
+
+	/*
+	 * The Home's phone rule sizes every .apit-hero__media to the Home's colour
+	 * band, a property this hero does not have, so the layer collapsed to 0px —
+	 * and the fade on its ::after went with it, leaving the dark paragraph on
+	 * full-strength colour once the hero had any. Given the whole hero back, as
+	 * on Todos os Associados and the article.
+	 */
+	.apit-sobre-hero .apit-hero__media {
+		bottom: 0;
+		height: auto;
 	}
 
 	/*

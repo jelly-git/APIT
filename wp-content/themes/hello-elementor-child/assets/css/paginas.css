@@ -1892,14 +1892,54 @@
 		padding-top: 160px !important;
 		padding-bottom: 80px !important;
 		/*
-		 * Back to percentages: the 292px and 537px above are read off a 1920px
-		 * design and would put the whole fade below a hero that is 356px tall
-		 * here and 289px on a phone — which is to say, no fade at all.
+		 * The 292px and 537px above are read off a 1920px design and would put
+		 * the whole fade below a hero this short — so here it is measured from
+		 * the hero's bottom edge instead.
+		 *
+		 * It used to be 28.4% to 66% of the hero's height, and that was the
+		 * worst of both: on a 356px hero the fade was solid by 235px, which is
+		 * where the title is. At 1024px the Calendário and Documentos titles,
+		 * the Notícias and Internacionalização paragraphs and the
+		 * Internacionalização buttons were white on 64 to 100% of #F4F9FF —
+		 * there, but unreadable.
+		 *
+		 * From the bottom it clears whatever the copy wraps to. The last 80px are
+		 * the hero's own bottom padding, under the last line of text; the fade
+		 * runs there and finishes on the section's tone, so the join with the
+		 * section that rides up (.apit-sobrepoe) stays seamless — the cards of
+		 * that section sit over the faded strip, not over the text.
 		 */
 		--apit-hero-scrim: linear-gradient(
 			to bottom,
-			rgba(244, 249, 255, 0) 28.4%,
-			#f4f9ff 66%
+			rgba(244, 249, 255, 0) calc(100% - 80px),
+			#f4f9ff 100%
+		);
+	}
+
+	/*
+	 * The rule above is later in the file than the pages' own values, so it was
+	 * also overriding them. Associados has no fade at all — its white copy and
+	 * outlined buttons need the artwork at full strength — and at 1024px it was
+	 * getting the shared one: "Quem pode associar-se" and the text under it,
+	 * white, sat on solid #F4F9FF.
+	 */
+	.hero--associados {
+		--apit-hero-scrim: none;
+	}
+
+	/*
+	 * Todos os Associados: white title on the colour, dark copy and button on
+	 * the pale. Its desktop fade is in pixels from the top and arrives too late
+	 * here; from the bottom, the paragraph and the button get the pale and the
+	 * title above them keeps the colour. Measured from 769 to 1024px: the
+	 * title ends 312px above the hero's bottom edge and the paragraph starts at
+	 * 288, so the fade starts between them and is solid before the button.
+	 */
+	.hero--todos-associados {
+		--apit-hero-scrim: linear-gradient(
+			to bottom,
+			rgba(244, 249, 255, 0) calc(100% - 300px),
+			#f4f9ff calc(100% - 190px)
 		);
 	}
 
@@ -2160,6 +2200,24 @@
 		transparent 0 var(--apit-sobe),
 		var(--apit-branco) var(--apit-sobe)
 	) !important;
+	/*
+	 * The box rides up further than the hero's bottom padding — 291px against
+	 * 260 on desktop, 132 against 80 on a tablet — so its transparent top lies
+	 * over the end of the hero's content. Seen, the content is untouched; but
+	 * the box is on top, and it took the clicks: at 1024px the two
+	 * Internacionalização buttons could not be pressed, and on every width the
+	 * last line of the Calendário, Documentos, Notícias and Media Kit heroes
+	 * could not be selected.
+	 *
+	 * The box itself has nothing to click. Its contents take the pointer back
+	 * below, and they start after the section's own top padding, clear of the
+	 * hero's text.
+	 */
+	pointer-events: none;
+}
+
+.apit-sobrepoe > * {
+	pointer-events: auto;
 }
 
 /*

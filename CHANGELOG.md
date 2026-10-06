@@ -266,6 +266,56 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.75.2] - 2026-10-06
+
+Só o tema. O plugin e a base de dados não mudam. Revisão do responsivo em
+todas as páginas públicas, de 1920 a 360px, com atenção aos ecrãs a 125%
+(1536×730, 1229×600, 1093×530). Feita com duas verificações por script —
+texto sobre texto, sobre imagem ou tapado, e quanto do desvanecimento claro
+fica por trás de cada texto branco — e confirmada à vista.
+
+### Corrigido
+- **Home, 1401 a ~1750px (um ecrã 1920 a 125% dá 1536):** o logótipo Watch
+  Portugal e o painel do vídeo estavam a `right: 310px`, a margem da coluna só
+  a 1920. Mais estreito, aproximavam-se do texto: "Produtores" passava 43px por
+  baixo do logótipo e o fim da legenda "11.º Encontro" ficava 104px tapado pelo
+  painel a 1536 (91 e 152 a 1440). Passam a seguir a margem da coluna; a 1920
+  fica igual.
+- **Heróis das páginas, 769 a 1024px (tablets):** o desvanecimento para claro
+  estava em percentagem da altura e ficava completo a meio do herói. Os títulos
+  do Calendário e dos Documentos, os parágrafos das Notícias, Media Kit e
+  Internacionalização e os botões desta ficavam brancos sobre 64 a 100% de
+  branco. Passa a correr só na margem de baixo do herói.
+- **Associados, 769 a 1024px:** a regra anterior apagava o "sem
+  desvanecimento" da página, e "Quem pode associar-se" ficava branco sobre
+  branco. **Todos os Associados** ganha um desvanecimento próprio neste
+  tamanho: título sobre a cor, parágrafo e botão escuros sobre o claro.
+- **Secções que sobem para dentro do herói** (Calendário, Documentos,
+  Notícias, Internacionalização, Media Kit): a caixa transparente da secção
+  ficava por cima do fim do conteúdo do herói e apanhava os cliques. A 1024px
+  os dois botões da Internacionalização não se carregavam. Agora a caixa deixa
+  passar o clique; o conteúdo dela continua clicável.
+- **Notícia individual:**
+  - O título branco caía sobre a parte clara da fotografia: o véu escuro
+    passa a ser mais forte do lado do texto.
+  - A data ficava sobre 54% de branco: o desvanecimento passa para a margem de
+    baixo do herói.
+  - A fotografia acabava antes do fim do herói, numa aresta seca. O
+    `theme.css` do Hello limita `.post .wp-post-image` a 500/400/300px.
+  - No telemóvel a fotografia ocupava só o topo do herói.
+- **Sobre a APIT, telemóvel:** o herói ficava branco e a migalha e o título,
+  brancos, não se viam. A camada da imagem tinha 0px (regra de telemóvel da
+  Home), o vídeo não carrega no telemóvel e a página não tem imagem para ele.
+  O herói passa a ter por baixo a mesma arte em degradé da Home. O desenho
+  móvel mantém-se: cor por trás do título, claro por trás do parágrafo.
+- **Sobre a APIT, 1025 a 1859px:** o "US" da palavra decorativa passava por
+  baixo do texto de "Regulamento Interno" (94px a 1536). Os dois botões
+  ganham o tom da página como fundo; a 1920 não muda nada.
+- **Páginas sem herói** (Política de privacidade, as que estão no modelo
+  básico, 404, arquivos): o cabeçalho transparente ficava branco sobre
+  branco, com o título da página por baixo do logótipo. Aí passa a ocupar o
+  seu lugar e a ter o fundo escuro do site.
+
 ## [0.75.1] - 2026-10-06
 
 Só o tema. O plugin e a base de dados não mudam.

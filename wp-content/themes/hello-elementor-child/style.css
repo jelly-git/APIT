@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.75.1
+Version: 0.75.2
 */
 
 :root {
@@ -52,15 +52,29 @@ ul {
 	 * 39% opacity at the top to nothing at the bottom, there to keep the menu
 	 * legible over the artwork. It is stretched to the header box rather than
 	 * covered, since it is a gradient and must not be cropped.
-	 *
-	 * TODO: pages without a coloured hero behind the header will need their own
-	 * treatment — the menu is white and would vanish on a light background.
 	 */
 	background-image: url("assets/img/header-bg.png");
 	background-position: top center;
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	color: var(--apit-branco);
+}
+
+/*
+ * A page with no hero has nothing coloured for the header to float over: the
+ * white logo and menu sat on the white page, and the page's own title started
+ * under the logo — on the Política de privacidade, the pages still on the
+ * default template, the 404 and the archives. There the header takes its
+ * place in the flow, so the content starts below it, and the site's dark tone
+ * behind it.
+ *
+ * Decided by what the page holds rather than by a list of templates, so a page
+ * built later with or without a hero needs nothing here.
+ */
+body:not(:has(.apit-hero, .apit-pagina-hero, .apit-sobre-hero)) .apit-header {
+	position: relative;
+	background-color: var(--apit-black);
+	background-image: none;
 }
 
 .apit-header__topbar {
@@ -966,6 +980,12 @@ a.btn--escuro:focus-visible {
 		radial-gradient(110% 100% at 8% 78%, var(--apit-magenta) 0%, rgba(244, 24, 146, 0) 70%);
 	color: #fff;
 	isolation: isolate;
+	/*
+	 * Where the badge and the teaser panel sit from the right: the edge of the
+	 * content column (see .hero__watch-badge). The percentage resolves against
+	 * their containing block, the decoration layer, which is the hero's width.
+	 */
+	--apit-hero-lado: clamp(20px, calc(50% - 642px), 310px);
 }
 
 .apit-hero .elementor-widget-text-editor p {
@@ -1096,10 +1116,23 @@ a.btn--escuro:focus-visible {
 	border-top-color: rgba(255, 255, 255, 0.5) !important;
 }
 
-/* Watch Portugal badge — Figma node 83:3098 (356x158). */
+/*
+ * Watch Portugal badge — Figma node 83:3098 (356x158).
+ *
+ * The badge and the teaser panel below share one right edge: the right edge of
+ * the 1300px content column, which on the 1920px design is 310px from the side.
+ * A fixed 310px only lands there at 1920. Narrower, the column's margin shrinks
+ * and 310 does not, so the two blocks slid in over the text: at 1536px — a
+ * 1920x1080 screen at 125% — "Produtores" ran 43px under the badge and the last
+ * 104px of the caption under the panel; at 1440 it was 91 and 152.
+ *
+ * Measured from the column instead: half the hero less half the column, with
+ * the 7.5px the scrollbar takes at 1920 folded in so the design is unchanged
+ * there. 310 is the ceiling, so a wider screen keeps the design's distance.
+ */
 .hero__watch-badge {
 	position: absolute;
-	right: 310px;
+	right: var(--apit-hero-lado);
 	top: 243px;
 	z-index: 1;
 	width: 356px;
@@ -1139,9 +1172,17 @@ a.btn--escuro:focus-visible {
  * and object-position doing nothing because there was nothing left to fit.
  *
  * The video is not affected: the rule is about `img`.
+ *
+ * max-height for the same kind of reason. On an article the poster is the
+ * featured image, and Hello Elementor's theme.css caps `.post .wp-post-image`
+ * at 500px, 400px under 992 and 300px under 576 — two classes, the same
+ * weight as this. The picture stopped short of the hero's bottom edge, on a
+ * hard line with the fallback gradient under it: 80px of it on a 580px desktop
+ * hero, and on a phone through the middle of the title.
  */
 .apit-hero__video,
 .apit-hero__media .apit-hero__poster {
+	max-height: none;
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -1187,7 +1228,7 @@ a.btn--escuro:focus-visible {
  */
 .hero__video {
 	position: absolute;
-	right: 310px;
+	right: var(--apit-hero-lado);
 	top: 445px;
 	/*
 	 * 3, above the text widgets at 2: the divider runs the width of the column
