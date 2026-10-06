@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.75.1] - 2026-10-06
+
+Só o tema. O plugin e a base de dados não mudam.
+
+### Corrigido
+- O cabeçalho compacto vai até aos 1539px, e não aos 1479: com sessão, o
+  botão da Área Reservada leva o "Olá, …!" e, numa janela de 1480, ainda
+  saía 1px da janela. Visto com e sem sessão a 1280, 1440, 1480, 1540 e
+  1920px.
+
 ## [0.75.0] - 2026-10-06
 
 Plugin `jelly-area-reservada` 0.39.0. A base de dados não muda.
