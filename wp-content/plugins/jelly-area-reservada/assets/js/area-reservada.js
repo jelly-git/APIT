@@ -397,10 +397,16 @@
 		if ( 'senha' === tipo ) {
 			window.history.replaceState( window.history.state, '', window.location.pathname + window.location.hash );
 
-			// Com acesso, a sessão já ficou iniciada (inc/sessao.php): segue direto para a Área Reservada.
-			if ( dados.destino ) {
-				window.location.assign( dados.destino );
-				return;
+			/*
+			 * Com acesso, a sessão já ficou iniciada (inc/sessao.php): o painel
+			 * "Palavra-passe definida" confirma, e o "Entrar" leva direto à Área
+			 * Reservada, em vez de abrir o login.
+			 */
+			var entrar = dados.destino && form.parentNode.querySelector( '[data-ar-entrar-com]' );
+
+			if ( entrar ) {
+				entrar.setAttribute( 'href', dados.destino );
+				entrar.removeAttribute( 'data-ar-entrar-com' );
 			}
 		}
 

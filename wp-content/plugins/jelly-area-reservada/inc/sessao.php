@@ -263,12 +263,13 @@ function jelly_ar_definir_senha() {
 	}
 
 	/*
-	 * Quem tem acesso à Área Reservada fica já com a sessão iniciada e segue
-	 * para lá, sem voltar a escrever o que acabou de escolher: a ligação do
-	 * e-mail provou que a conta é sua. Uma sessão de outra conta neste browser
-	 * dá lugar a esta. O wp_login regista o acesso (inc/acessos.php), como um
-	 * login normal. Sem acesso, fica o painel "Palavra-passe definida", com o
-	 * botão para entrar.
+	 * Quem tem acesso à Área Reservada fica já com a sessão iniciada, sem voltar
+	 * a escrever o que acabou de escolher: a ligação do e-mail provou que a
+	 * conta é sua. O painel "Palavra-passe definida" confirma, e o "Entrar"
+	 * leva ao `destino` (assets/js/area-reservada.js). Uma sessão de outra conta
+	 * neste browser dá lugar a esta. O wp_login regista o acesso
+	 * (inc/acessos.php), como um login normal. Sem acesso, o "Entrar" abre o
+	 * login, como sempre.
 	 */
 	if ( jelly_ar_area_tem_acesso( $user ) ) {
 		wp_clear_auth_cookie();
