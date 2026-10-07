@@ -204,6 +204,14 @@ function jelly_ar_area_mostrar() {
 		return;
 	}
 
+	/*
+	 * Dados de uma pessoa: nada de caches pelo caminho — e também nos
+	 * reencaminhamentos de baixo. Um 302 para o pop-up guardado de uma visita
+	 * sem sessão (por um proxy ou pelo browser) mandava para lá quem já tinha
+	 * entrado, em vez de abrir a ARU.
+	 */
+	nocache_headers();
+
 	if ( ! is_user_logged_in() ) {
 		wp_safe_redirect( home_url( '/#area-reservada' ) );
 		exit;
@@ -214,8 +222,6 @@ function jelly_ar_area_mostrar() {
 		exit;
 	}
 
-	// Dados de uma pessoa: nada de caches pelo caminho.
-	nocache_headers();
 	status_header( 200 );
 
 	$aru = [

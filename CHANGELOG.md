@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.77.4] - 2026-10-07
+
+Plugin `jelly-area-reservada` 0.39.2. O tema e a base de dados não mudam.
+
+### Corrigido
+- Os reencaminhamentos de `/area-reservada/` (para o pop-up, sem sessão; para
+  a página inicial, sem acesso) passam a sair com os cabeçalhos de não guardar
+  em cache, como a própria página da ARU. Um reencaminhamento guardado de uma
+  visita sem sessão podia mandar para o pop-up quem já tinha entrado, em vez
+  de abrir a ARU.
+
 ## [0.77.3] - 2026-10-07
 
 Plugin `jelly-area-reservada` 0.39.1. O tema e a base de dados não mudam.
