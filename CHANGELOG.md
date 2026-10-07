@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.77.3] - 2026-10-07
+
+Plugin `jelly-area-reservada` 0.39.1. O tema e a base de dados não mudam.
+
+### Alterado
+- No pop-up da Área Reservada, com a sessão já iniciada, o botão passa a ser
+  "Aceder à Área Reservada", que leva à ARU, em vez de "Terminar sessão" — a
+  saída está no topo da ARU. O nome é o do perfil do associado ("Inês
+  Duarte"), e não o nome de utilizador. Só uma conta do WordPress sem acesso
+  à Área Reservada continua a ver "Terminar sessão".
+
 ## [0.77.2] - 2026-10-06
 
 Só o tema.

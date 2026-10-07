@@ -6,8 +6,10 @@
  * (jelly_ar_entrar(), inc/sessao.php). Um acesso por aprovar, suspenso ou
  * rejeitado não entra, e a mensagem diz porquê.
  *
- * Com a sessão já iniciada, o painel mostra quem entrou e a saída, em vez do
- * formulário.
+ * Com a sessão já iniciada, o painel mostra quem entrou e, em vez do
+ * formulário, o botão para a Área Reservada (a ARU, inc/aru.php), onde está
+ * também a saída. Só uma sessão sem acesso à ARU — uma conta do WordPress
+ * que não é da AR — fica com o botão para terminar a sessão.
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -17,17 +19,27 @@ $ajax = wp_make_link_relative( admin_url( 'admin-ajax.php' ) );
 <h2 class="apit-ar__titulo" id="apit-ar-titulo-login"><?php esc_html_e( 'Área Reservada', 'jelly-area-reservada' ); ?></h2>
 
 <?php if ( is_user_logged_in() ) : ?>
-	<?php $eu = wp_get_current_user(); ?>
+	<?php
+	$eu     = wp_get_current_user();
+	$acesso = jelly_ar_area_tem_acesso( $eu );
+	?>
 	<p class="apit-ar__intro">
 		<?php
 		/* translators: %s: nome */
-		printf( esc_html__( 'Sessão iniciada como %s.', 'jelly-area-reservada' ), '<strong>' . esc_html( $eu->display_name ) . '</strong>' );
+		printf( esc_html__( 'Sessão iniciada como %s.', 'jelly-area-reservada' ), '<strong>' . esc_html( $acesso ? jelly_ar_aru_pessoa( $eu )['nome'] : $eu->display_name ) . '</strong>' );
 		?>
 	</p>
-	<a class="btn btn--solid apit-ar__submeter" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>">
-		<?php esc_html_e( 'Terminar sessão', 'jelly-area-reservada' ); ?>
-		<i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
-	</a>
+	<?php if ( $acesso ) : ?>
+		<a class="btn btn--solid apit-ar__submeter" href="<?php echo esc_url( jelly_ar_area_url() ); ?>">
+			<?php esc_html_e( 'Aceder à Área Reservada', 'jelly-area-reservada' ); ?>
+			<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
+		</a>
+	<?php else : ?>
+		<a class="btn btn--solid apit-ar__submeter" href="<?php echo esc_url( wp_logout_url( home_url( '/' ) ) ); ?>">
+			<?php esc_html_e( 'Terminar sessão', 'jelly-area-reservada' ); ?>
+			<i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
+		</a>
+	<?php endif; ?>
 	<?php return; ?>
 <?php endif; ?>
 
