@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.77.6
+Version: 0.77.7
 */
 
 :root {
@@ -402,12 +402,35 @@ body:not(:has(.apit-hero, .apit-pagina-hero, .apit-sobre-hero)) .apit-header {
 }
 
 .apit-header__search-toggle:hover,
-.apit-header__search-toggle:focus-visible,
-.apit-menu-mobile__pesquisa:hover,
-.apit-menu-mobile__pesquisa:focus-visible,
-.apit-menu-mobile__fechar:hover,
-.apit-menu-mobile__fechar:focus-visible {
+.apit-header__search-toggle:focus-visible {
 	color: var(--apit-magenta);
+}
+
+/*
+ * In the mobile menu the buttons stay white: the panel is magenta, and the
+ * magenta hover the header uses made the glass vanish into it — on a phone,
+ * where a tap leaves :hover and :focus on the button, the icon disappeared as
+ * soon as it was touched. Dimmed a little instead, so the touch still shows.
+ */
+.apit-menu-mobile__pesquisa,
+.apit-menu-mobile__fechar {
+	transition: opacity 0.15s ease;
+}
+
+.apit-menu-mobile__pesquisa:hover,
+.apit-menu-mobile__pesquisa:focus,
+.apit-menu-mobile__pesquisa:active,
+.apit-menu-mobile__fechar:hover,
+.apit-menu-mobile__fechar:focus,
+.apit-menu-mobile__fechar:active {
+	color: #fff;
+	opacity: 0.75;
+}
+
+.apit-menu-mobile__pesquisa:focus-visible,
+.apit-menu-mobile__fechar:focus-visible {
+	outline: 2px solid #fff;
+	outline-offset: 3px;
 }
 
 .apit-header__cta {

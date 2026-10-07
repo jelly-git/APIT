@@ -125,6 +125,29 @@
 		}
 	} );
 
+	/*
+	 * O botão da lupa no menu do telemóvel. Não tinha nada ligado: tocava-se e
+	 * não acontecia nada. Abre a mesma faixa, depois de fechar o menu — que
+	 * ocupa o ecrã inteiro e ficaria por cima dela. O menu fecha-se pelo seu
+	 * próprio botão, para o menu-mobile.js arrumar o que é dele (o scroll da
+	 * página, o aria-expanded do hambúrguer).
+	 */
+	var botaoMovel = document.querySelector( '.apit-menu-mobile__pesquisa' );
+
+	if ( botaoMovel ) {
+		botaoMovel.setAttribute( 'aria-controls', 'apit-pesquisa' );
+
+		botaoMovel.addEventListener( 'click', function () {
+			var fecharMenu = document.querySelector( '.apit-menu-mobile__fechar' );
+
+			if ( fecharMenu ) {
+				fecharMenu.click();
+			}
+
+			abrir();
+		} );
+	}
+
 	fechar.addEventListener( 'click', esconder );
 
 	limpar.addEventListener( 'click', function () {
@@ -152,7 +175,8 @@
 
 	// Um clique fora fecha a faixa, como fecha qualquer painel deste género.
 	document.addEventListener( 'click', function ( e ) {
-		if ( faixa.hidden || faixa.contains( e.target ) || botao.contains( e.target ) ) {
+		// O botão do menu do telemóvel também abre a faixa: o seu clique não a fecha.
+		if ( faixa.hidden || faixa.contains( e.target ) || botao.contains( e.target ) || ( botaoMovel && botaoMovel.contains( e.target ) ) ) {
 			return;
 		}
 

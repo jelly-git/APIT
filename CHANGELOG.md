@@ -266,6 +266,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.77.7] - 2026-10-07
+
+Só o tema.
+
+### Corrigido
+- **Pesquisa no menu do telemóvel.**
+  - A lupa desaparecia ao tocar: o hover e o foco passavam-na a magenta, a
+    cor do fundo do menu. No menu do telemóvel, a lupa e o X ficam sempre
+    brancos, um pouco mais ténues ao toque, com contorno branco para quem
+    navega pelo teclado.
+  - Tocar na lupa não fazia nada: o botão não tinha código ligado. Agora
+    fecha o menu e abre a faixa de pesquisa do cabeçalho, com o cursor no
+    campo. Verificado a 390px: menu, lupa, resultados enquanto se escreve e
+    fecho.
+
 ## [0.77.6] - 2026-10-07
 
 Plugin `jelly-area-reservada` 0.39.4. O tema e a base de dados não mudam.
