@@ -262,6 +262,29 @@ function jelly_ar_definir_senha() {
 		jelly_ar_email_senha_definida( $user, $perfil );
 	}
 
+	/*
+	 * Quem tem acesso à Área Reservada fica já com a sessão iniciada e segue
+	 * para lá, sem voltar a escrever o que acabou de escolher: a ligação do
+	 * e-mail provou que a conta é sua. Uma sessão de outra conta neste browser
+	 * dá lugar a esta. O wp_login regista o acesso (inc/acessos.php), como um
+	 * login normal. Sem acesso, fica o painel "Palavra-passe definida", com o
+	 * botão para entrar.
+	 */
+	if ( jelly_ar_area_tem_acesso( $user ) ) {
+		wp_clear_auth_cookie();
+		wp_set_current_user( $user->ID );
+		wp_set_auth_cookie( $user->ID, false, is_ssl() );
+		do_action( 'wp_login', $user->user_login, $user );
+
+		jelly_ar_responder(
+			[
+				'sucesso' => true,
+				'email'   => $user->user_email,
+				'destino' => jelly_ar_e_administrador( $user ) ? admin_url( 'admin.php?page=jelly-ar' ) : jelly_ar_area_url(),
+			]
+		);
+	}
+
 	jelly_ar_responder( [ 'sucesso' => true, 'email' => $user->user_email ] );
 }
 add_action( 'wp_ajax_nopriv_jelly_ar_senha', 'jelly_ar_definir_senha' );

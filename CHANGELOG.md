@@ -266,6 +266,18 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.77.5] - 2026-10-07
+
+Plugin `jelly-area-reservada` 0.39.3. O tema e a base de dados não mudam.
+
+### Alterado
+- **Depois de definir a palavra-passe, o associado entra logo na Área
+  Reservada.** A sessão fica iniciada ao guardar, e o browser segue para a ARU
+  (a equipa, para o back-office), sem o painel "Palavra-passe definida" nem o
+  de entrar, que repetiam o mesmo passo. A entrada fica no histórico de
+  acessos, como num login normal. Uma conta sem acesso à Área Reservada
+  continua a ver o painel, com o botão "Entrar".
+
 ## [0.77.4] - 2026-10-07
 
 Plugin `jelly-area-reservada` 0.39.2. O tema e a base de dados não mudam.

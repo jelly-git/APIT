@@ -396,6 +396,12 @@
 
 		if ( 'senha' === tipo ) {
 			window.history.replaceState( window.history.state, '', window.location.pathname + window.location.hash );
+
+			// Com acesso, a sessão já ficou iniciada (inc/sessao.php): segue direto para a Área Reservada.
+			if ( dados.destino ) {
+				window.location.assign( dados.destino );
+				return;
+			}
 		}
 
 		mostrarSucesso( form );
