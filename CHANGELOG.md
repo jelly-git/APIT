@@ -266,6 +266,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.77.8] - 2026-10-08
+
+Só o tema. A base de dados não muda.
+
+### Alterado
+- **Vídeo da Home sem imagem de capa:** com um link do YouTube ou do Vimeo, o
+  painel mostra a miniatura do próprio vídeo, em vez de ficar uma caixa
+  preta.
+  - No YouTube usa a miniatura grande (1280px) e, nos vídeos que não a têm, a
+    de 480px. No Vimeo pede-a ao próprio Vimeo.
+  - A resposta fica guardada uma semana, para nenhuma visita esperar pelo
+    YouTube ou pelo Vimeo.
+  - Com uma capa carregada no back-office, é essa que vale. Com um ficheiro
+    de vídeo, que não tem miniatura, o painel continua escuro.
+  - A instrução do campo "Imagem de capa" passa a dizê-lo.
+
 ## [0.77.7] - 2026-10-07
 
 Só o tema.

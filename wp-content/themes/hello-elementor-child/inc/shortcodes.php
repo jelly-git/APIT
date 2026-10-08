@@ -62,6 +62,13 @@ function apit_video_destaque() {
 	$capa = (int) apit_campo( 'home_video_capa' );
 
 	$video['capa']   = $capa ? $capa : 0;
+
+	/*
+	 * Without a cover, a YouTube or Vimeo link brings its own: the video's
+	 * thumbnail. The panel used to stay a black box until someone pressed play.
+	 * A file has no thumbnail to ask for, and keeps the dark panel.
+	 */
+	$video['capa_url'] = ( ! $capa && 'embed' === $video['tipo'] ) ? apit_video_miniatura( $link ) : '';
 	$video['rotulo'] = trim( (string) apit_campo( 'home_video_rotulo' ) );
 
 	if ( '' === $video['rotulo'] ) {
@@ -69,6 +76,50 @@ function apit_video_destaque() {
 	}
 
 	return $video;
+}
+
+/**
+ * The thumbnail of a YouTube or Vimeo video, or '' when there is none.
+ *
+ * YouTube's are at fixed addresses, but the large one (maxresdefault, 1280px)
+ * only exists for videos uploaded in HD — ask for it on an older one and the
+ * answer is a 404. So it is checked once, and the 480px one (hqdefault, which
+ * every video has) stands in when it is missing. The 480px one alone would be
+ * blown up almost twice to fill the panel on a wide screen.
+ *
+ * Vimeo has no fixed address: its oEmbed answer gives the thumbnail.
+ *
+ * Either way the answer is kept for a week, so a page view never waits on
+ * YouTube or Vimeo — only the first one after the link changes, and that only
+ * once. A failed lookup is kept too, for an hour, rather than retried on every
+ * view.
+ */
+function apit_video_miniatura( $link ) {
+	$chave = 'apit_video_miniatura_' . md5( $link );
+	$guardada = get_transient( $chave );
+
+	if ( false !== $guardada ) {
+		return $guardada;
+	}
+
+	$url = '';
+
+	if ( preg_match( '~(?:youtube\.com/(?:watch\?(?:.*&)?v=|embed/|shorts/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})~', $link, $m ) ) {
+		$grande   = 'https://i.ytimg.com/vi/' . $m[1] . '/maxresdefault.jpg';
+		$resposta = wp_remote_head( $grande, [ 'timeout' => 4 ] );
+
+		$url = ( ! is_wp_error( $resposta ) && 200 === (int) wp_remote_retrieve_response_code( $resposta ) )
+			? $grande
+			: 'https://i.ytimg.com/vi/' . $m[1] . '/hqdefault.jpg';
+	} elseif ( preg_match( '~vimeo\.com/(?:video/)?(\d+)~', $link, $m ) ) {
+		$resposta = wp_remote_get( 'https://vimeo.com/api/oembed.json?width=1280&url=' . rawurlencode( 'https://vimeo.com/' . $m[1] ), [ 'timeout' => 4 ] );
+		$dados    = is_wp_error( $resposta ) ? null : json_decode( wp_remote_retrieve_body( $resposta ), true );
+		$url      = is_array( $dados ) && ! empty( $dados['thumbnail_url'] ) ? esc_url_raw( $dados['thumbnail_url'] ) : '';
+	}
+
+	set_transient( $chave, $url, $url ? WEEK_IN_SECONDS : HOUR_IN_SECONDS );
+
+	return $url;
 }
 
 /**

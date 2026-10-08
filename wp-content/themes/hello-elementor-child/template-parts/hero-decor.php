@@ -58,6 +58,12 @@ $no_dialogo = $video && '' !== $video['src'];
 						'sizes'   => '(max-width: 1400px) 100vw, 329px',
 					]
 				);
+			} elseif ( ! empty( $video['capa_url'] ) ) {
+				// No cover set: the YouTube or Vimeo thumbnail (apit_video_miniatura()).
+				printf(
+					'<img class="hero__video-capa" src="%s" alt="" loading="eager" referrerpolicy="no-referrer">',
+					esc_url( $video['capa_url'] )
+				);
 			}
 			?>
 			<span class="hero__play" aria-hidden="true"><i class="fa-solid fa-circle-play"></i></span>

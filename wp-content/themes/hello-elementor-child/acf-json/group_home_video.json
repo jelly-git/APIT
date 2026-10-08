@@ -45,7 +45,7 @@
             "name": "home_video_capa",
             "aria-label": "",
             "type": "image",
-            "instructions": "A imagem que preenche o painel antes de o vídeo abrir. O painel é ao alto (cerca de 1:2), por isso a imagem é recortada ao centro: o que importa deve ficar no meio.\n\nSem imagem, o painel fica escuro, só com o botão de play.",
+            "instructions": "A imagem que preenche o painel antes de o vídeo abrir. O painel é ao alto (cerca de 1:2), por isso a imagem é recortada ao centro: o que importa deve ficar no meio.\n\nSem imagem: com um link do YouTube ou do Vimeo, aparece a miniatura do próprio vídeo; com um ficheiro, o painel fica escuro, só com o botão de play.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
