@@ -22,9 +22,18 @@ function jelly_ar_csv_comecar( $nome, $titulos ) {
 
 	$saida = fopen( 'php://output', 'w' );
 	fwrite( $saida, "\xEF\xBB\xBF" );
-	fputcsv( $saida, $titulos, ';' );
+	jelly_ar_csv_linha( $saida, $titulos );
 
 	return $saida;
+}
+
+/**
+ * Uma linha do CSV. Os parâmetros vão todos explícitos: o PHP 8.4 dá como
+ * obsoleto confiar no valor por omissão do escape. Ficam os de sempre — aspas
+ * a delimitar e a barra como escape —, para o ficheiro sair igual.
+ */
+function jelly_ar_csv_linha( $saida, $campos ) {
+	fputcsv( $saida, $campos, ';', '"', '\\' );
 }
 
 function jelly_ar_exportar_pode() {
@@ -64,7 +73,7 @@ function jelly_ar_exportar_utilizadores() {
 	);
 
 	foreach ( $lista as $u ) {
-		fputcsv( $saida, [
+		jelly_ar_csv_linha( $saida, [
 			$u['nome'],
 			$u['apelido'],
 			$u['email'],
@@ -76,7 +85,7 @@ function jelly_ar_exportar_utilizadores() {
 			$u['aprovado_por'],
 			$u['ultimo'],
 			$u['acessos'],
-		], ';' );
+		] );
 	}
 
 	fclose( $saida );
@@ -107,7 +116,7 @@ function jelly_ar_exportar_descargas() {
 	$saida = jelly_ar_csv_comecar( 'descargas-' . sanitize_title( $doc['titulo'] ), [ 'Data e hora', 'Nome', 'E-mail', 'Empresa' ] );
 
 	foreach ( jelly_ar_descargas_de( $doc ) as $d ) {
-		fputcsv( $saida, [ $d['quando'], $d['nome'], $d['email'], $d['empresa'] ], ';' );
+		jelly_ar_csv_linha( $saida, [ $d['quando'], $d['nome'], $d['email'], $d['empresa'] ] );
 	}
 
 	fclose( $saida );
@@ -185,7 +194,7 @@ function jelly_ar_exportar_acessos() {
 	);
 
 	foreach ( jelly_ar_obter_acessos( $utilizador ) as $a ) {
-		fputcsv( $saida, [ $a['quando'], $a['nome'], $a['email'], $a['ip'], $a['dispositivo'], $a['user_agent'] ?? '' ], ';' );
+		jelly_ar_csv_linha( $saida, [ $a['quando'], $a['nome'], $a['email'], $a['ip'], $a['dispositivo'], $a['user_agent'] ?? '' ] );
 	}
 
 	fclose( $saida );

@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.78.1] - 2026-10-22
+
+Plugin `jelly-area-reservada` 0.40.1. O tema e a base de dados não mudam.
+
+### Alterado
+- **Exportações em CSV preparadas para o PHP 8.4.** Cada linha passa por
+  `jelly_ar_csv_linha()`, que dá ao `fputcsv` todos os parâmetros explícitos.
+  O PHP 8.4 dá como obsoleto confiar no valor por omissão do escape. Os
+  valores são os de sempre, e os ficheiros saem iguais byte a byte.
+
 ## [0.78.0] - 2026-10-22
 
 Plugin `jelly-area-reservada` 0.40.0. O tema e a base de dados não mudam.
