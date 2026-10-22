@@ -15,7 +15,7 @@ $proximos  = jelly_ar_aru_eventos();
 $passados  = jelly_ar_aru_eventos( true, 12 );
 $estados   = jelly_ar_aru_estados();
 
-// As marcações vivas do associado, por evento (uma por dia do evento), para o cartão dizer o estado.
+// As marcações vivas do associado, por evento, para o cartão dizer o estado.
 $minhas = [];
 foreach ( jelly_ar_aru_marcacoes( $uid ) as $m ) {
 	if ( $m['viva'] ) {

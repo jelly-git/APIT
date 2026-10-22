@@ -266,6 +266,31 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.78.0] - 2026-10-22
+
+Plugin `jelly-area-reservada` 0.40.0. O tema e a base de dados não mudam.
+
+### Alterado
+- **Um associado pode marcar vários horários no mesmo evento**, a pedido da
+  cliente: mais do que um na mesma mesa, no mesmo dia, ou em mesas diferentes.
+  Até aqui era uma marcação por dia do evento.
+  - A única regra que fica é não ter duas marcações à mesma hora: ninguém
+    está em duas mesas ao mesmo tempo. É a mesma regra que a equipa já tinha
+    ao marcar associados no back-office.
+  - No pop-up, o dia já não fecha com "Já marcado": diz quantas marcações o
+    associado lá tem. Fecham só as horas que já são dele, com "Sua".
+  - Depois de um pedido, o pop-up mostra o botão "Marcar outro horário" se
+    ainda houver horas livres. O botão volta à escolha com os lugares
+    atualizados.
+  - Na página do evento na ARU:
+    - todos os horários livres se marcam;
+    - numa mesa, um horário livre fica esbatido e não se marca quando o
+      associado já tem marcação a essa hora noutra mesa;
+    - cada dia diz quantas marcações o associado lá tem;
+    - o botão do resumo passa a "Marcar outro horário".
+  - Cada pedido continua a entrar por aprovar, com os seus e-mails, e é
+    aprovado em Aprovações como até aqui.
+
 ## [0.77.8] - 2026-10-08
 
 Só o tema. A base de dados não muda.

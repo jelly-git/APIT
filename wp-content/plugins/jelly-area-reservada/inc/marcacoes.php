@@ -8,9 +8,9 @@
  *
  * - sem sessão, o pop-up abre o login e volta à marcação depois de entrar;
  * - com a sessão de um associado ativo, os dias, as horas e as mesas com lugar
- *   (jelly_ar_disponibilidade()), com os dias em que já tem marcação marcados
- *   como tal — é uma por dia do evento —; ou, sem nenhum dia por marcar, a
- *   marcação que já tem;
+ *   (jelly_ar_disponibilidade()), com as horas em que já tem marcação marcadas
+ *   como suas — pode ter várias, mas não duas à mesma hora —; ou, sem nenhuma
+ *   hora por marcar, a marcação que já tem;
  * - com outra sessão (a da equipa), um aviso: marcar é para associados.
  *
  * O pedido entra pendente (jelly_ar_pedir()) e é aprovado em Aprovações. O
@@ -54,15 +54,39 @@ function jelly_ar_marcacao_resumo( $evento, $marcacao ) {
 }
 
 /**
- * Os dias da disponibilidade, com `minha` nos dias em que o associado já tem
- * marcação (uma por dia): o pop-up mostra-os como "Já marcado" e não os deixa
- * escolher.
+ * Os dias da disponibilidade, com `minha` nas horas em que o associado já tem
+ * marcação, em qualquer mesa: o pop-up mostra-as como suas e não as deixa
+ * escolher — ninguém está em duas mesas ao mesmo tempo. O dia leva em
+ * `minhas` quantas tem nele.
  */
 function jelly_ar_marcacao_dias( $evento, $minhas ) {
 	return array_map( function ( $d ) use ( $minhas ) {
-		$d['minha'] = isset( $minhas[ $d['dia'] ] );
+		$horas = wp_list_pluck( jelly_ar_marcacoes_no_dia( $minhas, $d['dia'] ), 'hora' );
+
+		$d['minhas'] = count( $horas );
+		foreach ( $d['blocos'] as &$b ) {
+			$b['minha'] = in_array( $b['hora'], $horas, true );
+		}
+		unset( $b );
+
 		return $d;
 	}, jelly_ar_disponibilidade( $evento ) );
+}
+
+/**
+ * Se ainda há uma hora em que o associado pode marcar: uma sem marcação sua,
+ * com alguma mesa livre.
+ */
+function jelly_ar_marcacao_ha_mais( $dias ) {
+	foreach ( $dias as $d ) {
+		foreach ( $d['blocos'] as $b ) {
+			if ( ! $b['minha'] && array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ) {
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 /**
@@ -112,22 +136,9 @@ function jelly_ar_marcacao_dados() {
 	$minhas = jelly_ar_marcacoes_do_associado( $evento['id'], $user_id );
 	$dias   = jelly_ar_marcacao_dias( $evento, $minhas );
 
-	// Ainda há um dia em que pode marcar: um sem marcação sua, com algum lugar livre.
-	$por_marcar = array_filter( $dias, function ( $d ) {
-		if ( $d['minha'] ) {
-			return false;
-		}
-		foreach ( $d['blocos'] as $b ) {
-			if ( array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ) {
-				return true;
-			}
-		}
-		return false;
-	} );
-
-	// Sem nenhum dia por marcar, e com marcação: o pop-up mostra a primeira.
-	if ( $minhas && ! $por_marcar ) {
-		wp_send_json( $base + [ 'marcacao' => jelly_ar_marcacao_resumo( $evento, reset( $minhas ) ) ] );
+	// Sem nenhuma hora por marcar, e com marcação: o pop-up mostra a primeira.
+	if ( $minhas && ! jelly_ar_marcacao_ha_mais( $dias ) ) {
+		wp_send_json( $base + [ 'marcacao' => jelly_ar_marcacao_resumo( $evento, $minhas[0] ) ] );
 	}
 
 	wp_send_json(
@@ -176,7 +187,7 @@ function jelly_ar_marcacao_pedir() {
 	if ( is_wp_error( $mesa ) ) {
 		$mensagens = [
 			'marcacao-fechada' => __( 'Este evento já não aceita marcações.', 'jelly-area-reservada' ),
-			'marcacao-tem'     => __( 'Já existe uma marcação sua nesse dia (é uma por dia). Escolha outro dia, por favor.', 'jelly-area-reservada' ),
+			'marcacao-tem'     => __( 'Já tem uma marcação a essa hora, noutra mesa. Escolha outra hora, por favor.', 'jelly-area-reservada' ),
 			'marcacao-bloco'   => __( 'Esse horário já não está disponível. Escolha outro, por favor.', 'jelly-area-reservada' ),
 			'marcacao-cheia'   => __( 'Entretanto, essa mesa ficou marcada a essa hora. Escolha outra mesa ou outra hora, por favor.', 'jelly-area-reservada' ),
 			'marcacao-ocupado' => __( 'Há outro pedido a ser tratado para esse horário. Tente de novo dentro de momentos.', 'jelly-area-reservada' ),
@@ -198,7 +209,9 @@ function jelly_ar_marcacao_pedir() {
 	wp_send_json(
 		[
 			'sucesso'  => true,
-			'marcacao' => jelly_ar_marcacao_resumo( $evento, jelly_ar_marcacao_do_associado( $evento['id'], $user_id, $dia ) ),
+			'marcacao' => jelly_ar_marcacao_resumo( $evento, jelly_ar_marcacao_do_associado( $evento['id'], $user_id, $dia, $hora ) ),
+			// Ainda há horas por marcar: o pop-up oferece marcar outro horário.
+			'mais'     => jelly_ar_marcacao_ha_mais( jelly_ar_marcacao_dias( $evento, jelly_ar_marcacoes_do_associado( $evento['id'], $user_id ) ) ),
 		]
 	);
 }

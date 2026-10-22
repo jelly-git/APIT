@@ -61,7 +61,7 @@ $ajax = wp_make_link_relative( admin_url( 'admin-ajax.php' ) );
 
 		<p class="apit-ar__nota">
 			<i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-			<?php esc_html_e( 'O pedido fica a aguardar aprovação da APIT. A confirmação segue por e-mail. É possível uma marcação por dia do evento.', 'jelly-area-reservada' ); ?>
+			<?php esc_html_e( 'O pedido fica a aguardar aprovação da APIT. A confirmação segue por e-mail. Pode marcar vários horários, um pedido de cada vez.', 'jelly-area-reservada' ); ?>
 		</p>
 	</form>
 
@@ -104,7 +104,12 @@ $ajax = wp_make_link_relative( admin_url( 'admin-ajax.php' ) );
 		</ol>
 
 		<div class="apit-ar__marcada-acoes">
-			<button type="button" class="btn btn--solid apit-ar__submeter" data-ar-fechar><?php esc_html_e( 'Fechar', 'jelly-area-reservada' ); ?></button>
+			<?php // Com horas ainda por marcar no evento, o JavaScript mostra o botão para pedir outra. ?>
+			<button type="button" class="btn btn--solid apit-ar__submeter" data-ar-marcar-outro hidden>
+				<?php esc_html_e( 'Marcar outro horário', 'jelly-area-reservada' ); ?>
+				<i class="fa-solid fa-plus" aria-hidden="true"></i>
+			</button>
+			<button type="button" class="btn btn--solid apit-ar__submeter" data-ar-marcar-fechar data-ar-fechar><?php esc_html_e( 'Fechar', 'jelly-area-reservada' ); ?></button>
 			<p class="apit-ar__marcada-contacto">
 				<?php
 				printf(

@@ -1452,12 +1452,12 @@ a.aru-slot--livre:focus-visible {
 	border-radius: 5px;
 }
 
-/* Num dia já marcado (é uma por dia), os horários livres ficam esbatidos: não se marcam. */
-.aru-dia.is-marcado .aru-slot--livre {
+/* Um horário livre a uma hora em que o associado já está noutra mesa fica esbatido: não se marca. */
+.aru-slot--livre.is-bloqueado {
 	opacity: 0.45;
 }
 
-/* O dia já marcado, por baixo do nome do dia. */
+/* Quantas marcações o associado tem no dia, por baixo do nome do dia. */
 .aru-dia__nome small {
 	display: block;
 	margin-top: 2px;
@@ -1533,7 +1533,7 @@ a.aru-slot--livre:focus-visible {
 	font-size: 13px;
 }
 
-/* As marcações do associado no evento, uma por dia, no resumo à direita. */
+/* As marcações do associado no evento, no resumo à direita. */
 .aru-minhas-evento {
 	display: flex;
 	flex-direction: column;

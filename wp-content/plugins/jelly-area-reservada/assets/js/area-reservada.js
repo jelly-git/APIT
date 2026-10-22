@@ -616,9 +616,17 @@
 
 	/*
 	 * A marcação feita — a de agora, ou a que já existia: a faixa do estado, o
-	 * cartão com a data, as horas e a mesa, e os passos do pedido.
+	 * cartão com a data, as horas e a mesa, e os passos do pedido. Com `mais`,
+	 * ainda há horas por marcar: aparece o botão para marcar outro horário.
 	 */
-	function mostrarFeita( evento, m, agora ) {
+	function mostrarFeita( evento, m, agora, mais ) {
+		var fechar = painelMarcar.querySelector( '[data-ar-marcar-fechar]' );
+
+		painelMarcar.querySelector( '[data-ar-marcar-outro]' ).hidden = ! mais;
+		// Com os dois botões, o principal é marcar outro; o Fechar passa a contorno.
+		fechar.classList.toggle( 'btn--solid', ! mais );
+		fechar.classList.toggle( 'btn--outline', !! mais );
+
 		var aprovada = 'aprovada' === m.estado;
 		var titulo = painelMarcar.querySelector( '[data-ar-marcar-feita-titulo]' );
 		var local = painelMarcar.querySelector( '[data-ar-bilhete-local]' );
@@ -683,7 +691,12 @@
 		} )[ 0 ] : null;
 	}
 
+	// Os lugares que o associado pode marcar: numa hora em que já tem marcação (b.minha, inc/marcacoes.php), nenhum.
 	function livresNoBloco( b ) {
+		if ( b.minha ) {
+			return 0;
+		}
+
 		return b.mesas.reduce( function ( soma, m ) {
 			return soma + m.livres;
 		}, 0 );
@@ -724,15 +737,16 @@
 				return s + livresNoBloco( b );
 			}, 0 );
 
-			// É uma marcação por dia: num dia em que já marcou, o dia fica fechado (d.minha, inc/marcacoes.php).
-			dias.appendChild( opcao( 'dia', d.dia, d.rotulo, d.minha ? 'Já marcado' : ( livres ? '' : 'Completo' ), d.minha || ! livres, d.dia === escolha.dia ) );
+			// Pode marcar várias horas no mesmo dia: o dia diz quantas já lá tem, e só fecha sem nenhuma hora por marcar.
+			dias.appendChild( opcao( 'dia', d.dia, d.rotulo, livres ? ( d.minhas ? plural( d.minhas, 'marcação sua', 'marcações suas' ) : '' ) : ( d.minhas ? 'Já marcado' : 'Completo' ), ! livres, d.dia === escolha.dia ) );
 		} );
 
 		horas.textContent = '';
 		( dia ? dia.blocos : [] ).forEach( function ( b ) {
 			var livres = livresNoBloco( b );
 
-			horas.appendChild( opcao( 'hora', b.hora, b.hora, '', ! livres, b.hora === escolha.hora ) );
+			// Uma hora em que já marcou fica fechada, com "Sua": não está em duas mesas ao mesmo tempo.
+			horas.appendChild( opcao( 'hora', b.hora, b.hora, b.minha ? 'Sua' : '', ! livres, b.hora === escolha.hora ) );
 		} );
 
 		mesas.textContent = '';
@@ -793,17 +807,18 @@
 			return;
 		}
 
-		// O primeiro dia com lugar e sem marcação sua, se o escolhido não servir.
+		// O primeiro dia com uma hora que ainda pode marcar, se o escolhido não servir.
+		var temLivres = function ( d ) {
+			return d.blocos.some( function ( b ) {
+				return livresNoBloco( b ) > 0;
+			} );
+		};
 		var dia = escolha.dias.filter( function ( d ) {
 			return d.dia === escolha.dia;
 		} )[ 0 ];
 
-		if ( ! dia || dia.minha ) {
-			escolha.dia = ( escolha.dias.filter( function ( d ) {
-				return ! d.minha && d.blocos.some( function ( b ) {
-					return livresNoBloco( b ) > 0;
-				} );
-			} )[ 0 ] || escolha.dias[ 0 ] ).dia;
+		if ( ! dia || ! temLivres( dia ) ) {
+			escolha.dia = ( escolha.dias.filter( temLivres )[ 0 ] || escolha.dias[ 0 ] ).dia;
 			escolha.hora = null;
 		}
 
@@ -866,6 +881,11 @@
 	if ( painelMarcar ) {
 		var formMarcar = parte( 'form' );
 
+		// Depois de um pedido, outro horário no mesmo evento: a escolha volta, com os lugares de agora.
+		painelMarcar.querySelector( '[data-ar-marcar-outro]' ).addEventListener( 'click', function () {
+			carregarMarcacao( formMarcar.evento.value );
+		} );
+
 		formMarcar.addEventListener( 'change', function ( e ) {
 			var campo = e.target;
 
@@ -921,7 +941,7 @@
 
 					if ( dados.sucesso ) {
 						recarregarAoFechar = document.body.classList.contains( 'aru-corpo' );
-						mostrarFeita( { titulo: parte( 'titulo' ).textContent }, dados.marcacao, true );
+						mostrarFeita( { titulo: parte( 'titulo' ).textContent }, dados.marcacao, true, dados.mais );
 						return;
 					}
 

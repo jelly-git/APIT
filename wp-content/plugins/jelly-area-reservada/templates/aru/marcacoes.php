@@ -5,7 +5,7 @@
  * Primeiro as suas próximas marcações, agrupadas por evento: o evento em
  * cabeça (título, datas, local, e a ligação para a página dele) e, por baixo,
  * uma linha por marcação — o dia, a hora, a mesa e o estado. Depois, os
- * eventos onde ainda pode marcar (num dia sem marcação sua; é uma por dia),
+ * eventos onde ainda pode marcar (a uma hora sem marcação sua),
  * em cartões pequenos. No fim, o histórico, agrupado da mesma maneira.
  *
  * @var array $aru    secao, user.
@@ -25,7 +25,7 @@ $passadas  = array_values( array_filter( $marcacoes, function ( $m ) {
 	return ! ( $m['futura'] && $m['viva'] );
 } ) );
 
-// Os eventos onde o associado ainda pode marcar: num dia sem marcação sua (é uma por dia).
+// Os eventos onde o associado ainda pode marcar: a uma hora sem marcação sua.
 $abertos = array_values( array_filter( jelly_ar_aru_eventos(), function ( $e ) use ( $uid ) {
 	return jelly_ar_aru_pode_marcar( $e, $uid );
 } ) );
@@ -119,7 +119,7 @@ $grupo = function ( $g ) use ( $estados ) {
 		<header class="aru-cartao__cabeca">
 			<div>
 				<h2><i class="fa-solid fa-chair" aria-hidden="true"></i> <?php esc_html_e( 'Eventos com marcação aberta', 'jelly-area-reservada' ); ?></h2>
-				<p class="aru-cartao__meta"><?php esc_html_e( 'Eventos com dias em que ainda pode marcar mesa: uma marcação por dia do evento.', 'jelly-area-reservada' ); ?></p>
+				<p class="aru-cartao__meta"><?php esc_html_e( 'Eventos com horários em que ainda pode marcar mesa.', 'jelly-area-reservada' ); ?></p>
 			</div>
 		</header>
 		<ul class="aru-abertos">

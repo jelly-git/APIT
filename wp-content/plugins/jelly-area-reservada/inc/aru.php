@@ -493,30 +493,32 @@ function jelly_ar_aru_evento_da_linha( $l ) {
  * Os horários de um evento, dia a dia, e o que cada um é para este
  * associado: livre, ocupado, ou a marcação dele. Só os que ainda não
  * passaram (jelly_ar_disponibilidade()). $minhas são as marcações dele no
- * evento, pelo dia (jelly_ar_marcacoes_do_associado()); `tem` diz se o dia já
- * tem uma — é uma por dia, e nesse dia não se marca outra.
+ * evento (jelly_ar_marcacoes_do_associado()); `tem` diz quantas tem no dia.
+ * Pode ter várias no mesmo dia, mas não duas à mesma hora.
  */
 function jelly_ar_aru_horarios( $evento, $minhas ) {
 	return array_map( function ( $d ) use ( $minhas ) {
-		$minha = $minhas[ $d['dia'] ] ?? null;
+		// As do dia, pela hora.
+		$do_dia = array_column( jelly_ar_marcacoes_no_dia( $minhas, $d['dia'] ), null, 'hora' );
+		$estados = wp_list_pluck( $do_dia, 'estado' );
 
 		return [
 			'dia'   => $d['dia'],
 			'nome'  => ucfirst( jelly_ar_data( 'l, j \d\e F', strtotime( $d['dia'] ) ) ),
-			'tem'   => (bool) $minha,
-			// O estado da marcação desse dia: pendente ou aprovada ('' sem marcação).
-			'estado' => $minha ? $minha['estado'] : '',
-			'horas' => array_map( function ( $b ) use ( $minha ) {
-				$e_minha = $minha && $minha['hora'] === $b['hora'];
+			'tem'   => count( $do_dia ),
+			// O estado das marcações desse dia: pendente se alguma ainda o está, aprovada, ou '' sem marcação.
+			'estado' => in_array( 'pendente', $estados, true ) ? 'pendente' : ( $estados ? 'aprovada' : '' ),
+			'horas' => array_map( function ( $b ) use ( $do_dia ) {
+				$minha = $do_dia[ $b['hora'] ] ?? null;
 
 				return [
 					'hora'   => $b['hora'],
 					// A marcação do associado: confirmada (minha) ou à espera da equipa (minha-pendente).
-					'estado' => $e_minha ? ( 'pendente' === $minha['estado'] ? 'minha-pendente' : 'minha' ) : ( array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ? 'livre' : 'ocupado' ),
+					'estado' => $minha ? ( 'pendente' === $minha['estado'] ? 'minha-pendente' : 'minha' ) : ( array_sum( wp_list_pluck( $b['mesas'], 'livres' ) ) ? 'livre' : 'ocupado' ),
 				];
 			}, $d['blocos'] ),
 			// Os mesmos horários mesa a mesa, para os eventos com mais de uma: livre, ocupado ou a dele.
-			'mesas' => jelly_ar_aru_horarios_mesas( $d['blocos'], $minha ),
+			'mesas' => jelly_ar_aru_horarios_mesas( $d['blocos'], $do_dia ),
 		];
 	}, jelly_ar_disponibilidade( $evento ) );
 }
@@ -524,12 +526,16 @@ function jelly_ar_aru_horarios( $evento, $minhas ) {
 /**
  * Os horários de um dia, mesa a mesa: cada mesa com o nome, onde fica e os
  * seus horários. Aqui um horário é "ocupado" quando essa mesa está marcada —
- * não quando estão todas, como na fila única de jelly_ar_aru_horarios().
+ * não quando estão todas, como na fila única de jelly_ar_aru_horarios(). Um
+ * livre a uma hora em que o associado já está noutra mesa leva `bloqueado`:
+ * vê-se, mas não se marca. $do_dia são as marcações dele no dia, pela hora.
  */
-function jelly_ar_aru_horarios_mesas( $blocos, $minha ) {
+function jelly_ar_aru_horarios_mesas( $blocos, $do_dia ) {
 	$mesas = [];
 
 	foreach ( $blocos as $b ) {
+		$minha = $do_dia[ $b['hora'] ] ?? null;
+
 		foreach ( $b['mesas'] as $m ) {
 			if ( ! isset( $mesas[ $m['id'] ] ) ) {
 				$mesas[ $m['id'] ] = [
@@ -540,11 +546,12 @@ function jelly_ar_aru_horarios_mesas( $blocos, $minha ) {
 				];
 			}
 
-			$e_minha = $minha && $minha['hora'] === $b['hora'] && (int) $minha['mesa_id'] === (int) $m['id'];
+			$e_minha = $minha && (int) $minha['mesa_id'] === (int) $m['id'];
 
 			$mesas[ $m['id'] ]['horas'][] = [
-				'hora'   => $b['hora'],
-				'estado' => $e_minha ? ( 'pendente' === $minha['estado'] ? 'minha-pendente' : 'minha' ) : ( $m['livres'] ? 'livre' : 'ocupado' ),
+				'hora'      => $b['hora'],
+				'estado'    => $e_minha ? ( 'pendente' === $minha['estado'] ? 'minha-pendente' : 'minha' ) : ( $m['livres'] ? 'livre' : 'ocupado' ),
+				'bloqueado' => $minha && ! $e_minha,
 			];
 		}
 	}
@@ -553,8 +560,8 @@ function jelly_ar_aru_horarios_mesas( $blocos, $minha ) {
 }
 
 /**
- * Se o associado ainda pode marcar no evento: num dia sem marcação sua (é uma
- * por dia), com algum horário livre.
+ * Se o associado ainda pode marcar no evento: a uma hora sem marcação sua,
+ * com alguma mesa livre.
  */
 function jelly_ar_aru_pode_marcar( $evento, $user_id ) {
 	if ( empty( $evento['marcacoes'] ) || 'disponivel' !== jelly_ar_disponibilidade_estado( $evento )['estado'] ) {
@@ -562,7 +569,7 @@ function jelly_ar_aru_pode_marcar( $evento, $user_id ) {
 	}
 
 	foreach ( jelly_ar_aru_horarios( $evento, jelly_ar_marcacoes_do_associado( $evento['id'], $user_id ) ) as $d ) {
-		if ( ! $d['tem'] && in_array( 'livre', wp_list_pluck( $d['horas'], 'estado' ), true ) ) {
+		if ( in_array( 'livre', wp_list_pluck( $d['horas'], 'estado' ), true ) ) {
 			return true;
 		}
 	}
@@ -640,7 +647,7 @@ function jelly_ar_aru_destaque( $eventos, $user_id ) {
 
 		$dias   = jelly_ar_disponibilidade( $e );
 		$minhas = jelly_ar_marcacoes_do_associado( $e['id'], $user_id );
-		$minha  = $minhas ? reset( $minhas ) : null;
+		$minha  = $minhas ? $minhas[0] : null;
 		$total  = 0;
 		$livres = 0;
 
@@ -662,8 +669,8 @@ function jelly_ar_aru_destaque( $eventos, $user_id ) {
 			'livres' => $livres,
 			'minha'  => $minha,
 			'minhas' => $minhas,
-			// Nesse dia ainda pode marcar (é uma por dia).
-			'pode'   => $dia && ! $dia['tem'],
+			// Nesse dia pode marcar os horários livres: as horas já suas não o são.
+			'pode'   => (bool) $dia,
 			'dia'    => $dia ? $dia['nome'] : '',
 			'dia_ymd' => $dia ? $dia['dia'] : '',
 			'horas'  => $dia ? array_slice( $dia['horas'], 0, 6 ) : [],

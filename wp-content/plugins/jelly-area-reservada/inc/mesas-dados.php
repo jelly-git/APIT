@@ -562,8 +562,8 @@ function jelly_ar_bloco_soltar( $mesa_id, $dia, $hora ) {
 
 /**
  * As marcações vivas (pendentes ou aprovadas) de um associado num evento,
- * pelo dia: [ Y-m-d => marcação ]. Cada associado tem no máximo uma por dia
- * do evento — num evento de quatro dias, até quatro.
+ * por ordem de dia e hora. Pode ter várias no mesmo dia, em qualquer mesa —
+ * só não duas à mesma hora (jelly_ar_pedir()).
  */
 function jelly_ar_marcacoes_do_associado( $evento_id, $user_id ) {
 	global $wpdb;
@@ -571,7 +571,7 @@ function jelly_ar_marcacoes_do_associado( $evento_id, $user_id ) {
 	$r = [];
 	// phpcs:ignore WordPress.DB
 	foreach ( $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . jelly_ar_tabela( 'marcacoes' ) . ' WHERE evento_id = %d AND user_id = %d AND ocupa = 1 ORDER BY dia, hora', $evento_id, $user_id ) ) as $l ) {
-		$r[ $l->dia ] = [
+		$r[] = [
 			'id'      => (int) $l->id,
 			'mesa_id' => (int) $l->mesa_id,
 			'dia'     => $l->dia,
@@ -584,17 +584,26 @@ function jelly_ar_marcacoes_do_associado( $evento_id, $user_id ) {
 }
 
 /**
- * A marcação viva de um associado num evento, num dia; sem dia, a primeira
- * (a mais cedo). null se não houver.
+ * A marcação viva de um associado num evento, nesse dia e a essa hora; sem
+ * dia, a primeira (a mais cedo). null se não houver.
  */
-function jelly_ar_marcacao_do_associado( $evento_id, $user_id, $dia = '' ) {
-	$suas = jelly_ar_marcacoes_do_associado( $evento_id, $user_id );
-
-	if ( $dia ) {
-		return $suas[ $dia ] ?? null;
+function jelly_ar_marcacao_do_associado( $evento_id, $user_id, $dia = '', $hora = '' ) {
+	foreach ( jelly_ar_marcacoes_do_associado( $evento_id, $user_id ) as $m ) {
+		if ( ! $dia || ( $m['dia'] === $dia && $m['hora'] === $hora ) ) {
+			return $m;
+		}
 	}
 
-	return $suas ? reset( $suas ) : null;
+	return null;
+}
+
+/**
+ * As marcações de uma lista (jelly_ar_marcacoes_do_associado()) num dia.
+ */
+function jelly_ar_marcacoes_no_dia( $minhas, $dia ) {
+	return array_values( array_filter( $minhas, function ( $m ) use ( $dia ) {
+		return $m['dia'] === $dia;
+	} ) );
 }
 
 /**
@@ -663,8 +672,8 @@ function jelly_ar_disponibilidade( $evento ) {
  * da aprovação da equipa (Aprovações).
  *
  * @return array|WP_Error A mesa, ou o erro: marcacao-fechada (o evento não
- *                        aceita marcações), marcacao-tem (já tem uma neste
- *                        evento), marcacao-bloco, marcacao-cheia,
+ *                        aceita marcações), marcacao-tem (já tem uma a essa
+ *                        hora, noutra mesa), marcacao-bloco, marcacao-cheia,
  *                        marcacao-ocupado (o trinco não se conseguiu).
  */
 function jelly_ar_pedir( $evento, $user_id, $mesa_id, $dia, $hora ) {
@@ -674,8 +683,8 @@ function jelly_ar_pedir( $evento, $user_id, $mesa_id, $dia, $hora ) {
 		return new WP_Error( 'marcacao-fechada' );
 	}
 
-	// Uma por dia do evento: noutro dia, pode.
-	if ( jelly_ar_marcacao_do_associado( $evento['id'], $user_id, $dia ) ) {
+	// Tantas quantas quiser, mas não duas à mesma hora: não está em duas mesas ao mesmo tempo.
+	if ( jelly_ar_ocupados_a_hora( $evento['id'], $dia, $hora, [ $user_id ] ) ) {
 		return new WP_Error( 'marcacao-tem' );
 	}
 

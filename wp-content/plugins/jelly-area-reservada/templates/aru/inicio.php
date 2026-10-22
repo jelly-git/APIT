@@ -191,7 +191,7 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 						</p>
 					<?php endif; ?>
 
-					<?php // Com marcações, o botão leva à página do evento: lá veem-se todas, e marca-se nos outros dias. ?>
+					<?php // Com marcações, o botão leva à página do evento: lá veem-se todas, e marcam-se outros horários. ?>
 					<a class="aru-botao" href="<?php echo esc_url( $minha ? $e['url'] : jelly_ar_url_marcacao( $e['id'] ) ); ?>">
 						<span><?php echo esc_html( $minha ? __( 'Ver as minhas marcações', 'jelly-area-reservada' ) : __( 'Marcar mesa', 'jelly-area-reservada' ) ); ?></span>
 						<i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
@@ -219,7 +219,7 @@ $numero = function ( $rotulo, $valor, $nota, $icone, $cor, $url ) {
 						?>
 						<?php foreach ( $destaque['horas'] as $h ) : ?>
 							<li class="aru-hora aru-hora--<?php echo esc_attr( $h['estado'] ); ?>">
-								<?php // Sem marcação nesse dia, um horário livre abre o pop-up já com ele (como na página do evento). ?>
+								<?php // Um horário livre abre o pop-up já com ele (como na página do evento). ?>
 								<?php if ( $destaque['pode'] && 'livre' === $h['estado'] ) : ?>
 									<a href="<?php echo esc_url( jelly_ar_url_marcacao( $e['id'] ) ); ?>" data-ar-dia="<?php echo esc_attr( $destaque['dia_ymd'] ); ?>" data-ar-hora="<?php echo esc_attr( $h['hora'] ); ?>">
 										<strong><?php echo esc_html( $h['hora'] ); ?></strong>
