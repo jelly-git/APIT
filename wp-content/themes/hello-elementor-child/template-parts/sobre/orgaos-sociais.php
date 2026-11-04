@@ -23,7 +23,7 @@ if ( ! $membros && ! $associados ) {
 ?>
 <section class="sobre-orgaos">
 	<div class="apit-container">
-		<p class="sobre-rotulo sobre-rotulo--direita"><?php esc_html_e( 'Órgãos Sociais', 'apit' ); ?></p>
+		<p class="sobre-rotulo sobre-rotulo--centro"><?php esc_html_e( 'Órgãos Sociais', 'apit' ); ?></p>
 
 		<?php foreach ( $orgaos as $slug => $orgao ) : ?>
 			<?php if ( empty( $membros[ $slug ] ) ) : ?>
@@ -51,7 +51,7 @@ if ( ! $membros && ! $associados ) {
 
 		<?php if ( $associados ) : ?>
 			<div class="sobre-associados">
-				<p class="sobre-rotulo sobre-rotulo--direita"><?php esc_html_e( 'Somos Associados', 'apit' ); ?></p>
+				<p class="sobre-rotulo sobre-rotulo--centro"><?php esc_html_e( 'Somos Associados', 'apit' ); ?></p>
 
 				<div class="sobre-orgaos__linha sobre-associados__linha">
 					<ul class="sobre-associados__lista">

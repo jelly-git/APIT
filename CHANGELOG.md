@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.1] - 2026-11-04
+
+Tema. A base de dados não muda.
+
+### Alterado
+- **Sobre a APIT: os rótulos "Órgãos Sociais" e "Somos Associados" passam a
+  centrados**, como o "Equipa APIT", em vez de alinhados à direita. Em
+  telemóvel também ficam ao centro (antes passavam à esquerda). A classe
+  `.sobre-rotulo--direita`, que só estes dois usavam, sai do `sobre.css`.
+
 ## [0.82.0] - 2026-11-04
 
 Plugin `jelly-area-reservada` 0.41.0 e o tema. A base de dados muda: a tabela dos

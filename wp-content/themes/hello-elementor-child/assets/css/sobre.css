@@ -385,10 +385,6 @@
 	text-align: center;
 }
 
-.sobre-rotulo--direita {
-	text-align: right;
-}
-
 /* -------------------------------------------------------------------------
  * Equipa APIT
  * ---------------------------------------------------------------------- */
@@ -860,10 +856,6 @@
 
 	.sobre-orgaos {
 		padding: 56px 0 70px;
-	}
-
-	.sobre-rotulo--direita {
-		text-align: left;
 	}
 
 	.sobre-orgaos__linha {
