@@ -6,13 +6,14 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.78.1' );
+define( 'APIT_CHILD_VERSION', '0.79.0' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
 require_once get_stylesheet_directory() . '/inc/acf.php';
 require_once get_stylesheet_directory() . '/inc/breadcrumbs.php';
 require_once get_stylesheet_directory() . '/inc/elementor.php';
+require_once get_stylesheet_directory() . '/inc/documentos-pedido.php';
 require_once get_stylesheet_directory() . '/inc/hero.php';
 require_once get_stylesheet_directory() . '/inc/links.php';
 require_once get_stylesheet_directory() . '/inc/newsletter.php';
@@ -155,6 +156,18 @@ function apit_child_enqueue_assets() {
 	wp_register_script(
 		'apit-newsletter',
 		get_stylesheet_directory_uri() . '/assets/js/newsletter.js',
+		[],
+		APIT_CHILD_VERSION,
+		true
+	);
+
+	/*
+	 * The request dialog for the documents that ask for Nome, Empresa and Email.
+	 * On every page, because the Estatutos link sits in the top bar.
+	 */
+	wp_enqueue_script(
+		'apit-pedido-documento',
+		get_stylesheet_directory_uri() . '/assets/js/pedido-documento.js',
 		[],
 		APIT_CHILD_VERSION,
 		true

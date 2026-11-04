@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.78.1
+Version: 0.79.0
 */
 
 :root {
@@ -3238,5 +3238,200 @@ a.btn--escuro:focus-visible {
 	.apit-pesquisa__campo {
 		height: 46px;
 		font-size: 18px;
+	}
+}
+
+
+/* ---------- Pedido de documento (diálogo com Nome, Empresa e Email) ---------- */
+
+/*
+ * Está em todas as páginas e fechado; abre-se por script (assets/js/pedido-documento.js)
+ * quando se carrega num Anuário ou nos Estatutos. Um <dialog> nativo: o fundo
+ * escurecido, o foco preso lá dentro e o Esc para fechar vêm do browser.
+ */
+.pedido {
+	width: min(480px, calc(100% - 32px));
+	max-height: calc(100% - 32px);
+	margin: auto;
+	padding: 0;
+	border: 0;
+	border-radius: 24px;
+	background: #fff;
+	color: var(--apit-black);
+	font-family: var(--apit-font);
+	box-shadow: 0 24px 60px rgba(27, 42, 51, 0.35);
+	overflow: auto;
+}
+
+.pedido::backdrop {
+	background: rgba(27, 42, 51, 0.6);
+}
+
+.pedido__form {
+	position: relative;
+	padding: 40px 36px 36px;
+}
+
+.pedido__fechar {
+	position: absolute;
+	top: 14px;
+	right: 16px;
+	width: 36px;
+	height: 36px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	font-size: 28px;
+	line-height: 1;
+	color: var(--apit-black);
+	cursor: pointer;
+}
+
+.pedido__fechar:hover {
+	background: var(--apit-cinza);
+}
+
+.pedido__etiqueta {
+	margin: 0 0 8px;
+	font-size: 12px;
+	font-weight: 500;
+	letter-spacing: 0.36px;
+	text-transform: uppercase;
+	color: var(--apit-azul);
+}
+
+.pedido__titulo {
+	margin: 0 0 12px;
+	font-size: 26px;
+	font-weight: 400;
+	line-height: 1.15;
+	color: var(--apit-black);
+}
+
+.pedido__texto {
+	margin: 0 0 24px;
+	font-size: 15px;
+	line-height: 1.4;
+}
+
+.pedido__campo {
+	margin-bottom: 16px;
+}
+
+.pedido__campo label {
+	display: block;
+	margin-bottom: 6px;
+	font-size: 13px;
+	font-weight: 500;
+}
+
+.pedido__campo input[type="text"],
+.pedido__campo input[type="email"] {
+	display: block;
+	width: 100%;
+	height: 46px;
+	padding: 0 18px;
+	border: 2px solid var(--apit-cinza);
+	border-radius: 200px;
+	background: #fff;
+	font-family: var(--apit-font);
+	font-size: 15px;
+	color: var(--apit-black);
+}
+
+.pedido__campo input:focus {
+	outline: 0;
+	border-color: var(--apit-azul);
+}
+
+.pedido__campo input.is-erro {
+	border-color: var(--apit-magenta);
+}
+
+.pedido__erro,
+.pedido__estado.is-erro {
+	display: block;
+	margin-top: 6px;
+	font-size: 13px;
+	color: var(--apit-magenta);
+}
+
+.pedido__campo .pedido__consentimento {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	margin: 0;
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 1.4;
+	cursor: pointer;
+}
+
+.pedido__consentimento input {
+	flex-shrink: 0;
+	width: 18px;
+	height: 18px;
+	margin: 1px 0 0;
+	accent-color: var(--apit-azul);
+}
+
+.pedido__consentimento a {
+	color: var(--apit-azul);
+	text-decoration: underline;
+}
+
+.pedido__estado {
+	margin: 12px 0 0;
+	font-size: 14px;
+	color: var(--apit-azul);
+}
+
+.pedido__submit {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 20px;
+	padding: 14px 32px 13px;
+	border: 2px solid var(--apit-azul);
+	border-radius: 200px;
+	background: var(--apit-azul);
+	font-family: var(--apit-font);
+	font-size: 13px;
+	font-weight: 500;
+	letter-spacing: 0.36px;
+	line-height: 1;
+	text-transform: uppercase;
+	color: #fff;
+	cursor: pointer;
+	transition: background-color 0.2s, color 0.2s;
+}
+
+.pedido__submit:hover:not(:disabled) {
+	background: #fff;
+	color: var(--apit-azul);
+}
+
+.pedido__submit:disabled {
+	opacity: 0.6;
+	cursor: default;
+}
+
+/* Fora do ecrã, não display:none — alguns robôs ignoram o que está escondido. */
+.pedido__armadilha {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+@media (max-width: 480px) {
+	.pedido__form {
+		padding: 36px 20px 28px;
+	}
+
+	.pedido__titulo {
+		font-size: 22px;
 	}
 }

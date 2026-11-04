@@ -266,6 +266,34 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.79.0] - 2026-11-04
+
+Tema. A base de dados não é preciso importar: o formulário cria-se sozinho.
+
+### Adicionado
+- **Os Anuários e os Estatutos pedem Nome, Empresa e Email antes do download.**
+  O botão "Download" dos Anuários (e os links `#pedir-estatutos`) abre um
+  diálogo (`template-parts/pedido-documento.php`) e só depois de o preencher
+  começa o download. Brochuras e Estudos continuam a descarregar directamente;
+  as áreas que pedem formulário vêm de `apit_areas_com_pedido()`, por slug.
+  - **O endereço do ficheiro não sai na página.** O pedido vai à rota REST
+    `apit/v1/pedido-documento`, que responde com um link assinado e válido
+    15 minutos; `inc/documentos-pedido.php` confere a assinatura e entrega o
+    ficheiro como anexo. Só entrega ficheiros de `wp-content` com extensão de
+    documento, e só os dos Anuários e dos Estatutos.
+  - **O pedido fica no Gravity Forms**, no formulário "Pedido de documento",
+    que o código cria sozinho se não existir (Formulários › Entradas). Não tem
+    notificação por email configurada. Leva a armadilha para robôs da
+    newsletter e um limite de dez pedidos por dez minutos por endereço.
+  - **Os Estatutos** escolhem-se em Personalizar › APIT — Documentos. Os dois
+    links dos Estatutos (o botão do hero de Sobre a APIT e o item da barra
+    superior) passam a `#pedir-estatutos`. **O ficheiro tem de ser escolhido
+    primeiro**: só enquanto o item da barra ainda aponta para o PDF é que o
+    tema o usa, e depois de passar a `#pedir-estatutos` o pedido falha sem ele.
+  - O ficheiro continua na biblioteca de media: quem souber o endereço directo
+    abre-o sem passar pelo formulário. Fechá-lo é uma regra no servidor.
+  - Sem JavaScript os botões com formulário não fazem nada.
+
 ## [0.78.1] - 2026-10-22
 
 Plugin `jelly-area-reservada` 0.40.1. O tema e a base de dados não mudam.

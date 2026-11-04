@@ -10,6 +10,10 @@
  * The cover is the featured image and the file is the ACF field on each
  * document, so this page needs no fields of its own.
  *
+ * The areas listed in apit_areas_com_pedido() (Anuários) do not link to the file:
+ * their button opens the request form (inc/documentos-pedido.php) and the file
+ * comes after it. The other areas download directly.
+ *
  * The download link carries the `download` attribute so a PDF saves instead of
  * opening in the browser's viewer, which is what the button in the design says
  * it does. `rel="noopener"` goes with it because the browser may still hand the
@@ -40,6 +44,8 @@ foreach ( $areas as $area ) {
 			<?php
 			foreach ( $documentos as $doc ) :
 				$ficheiro = apit_media_url( (string) apit_campo( 'documento_ficheiro', $doc->ID ), 'img' );
+				// Nas áreas que pedem formulário o endereço do ficheiro não sai na página.
+				$com_pedido = $ficheiro && apit_documento_com_pedido( $doc->ID );
 				?>
 				<li class="documentos__item">
 					<?php if ( has_post_thumbnail( $doc->ID ) ) : ?>
@@ -50,7 +56,11 @@ foreach ( $areas as $area ) {
 
 					<h3 class="documentos__titulo"><?php echo esc_html( get_the_title( $doc ) ); ?></h3>
 
-					<?php if ( $ficheiro ) : ?>
+					<?php if ( $com_pedido ) : ?>
+						<a class="documentos__download" href="#pedir-doc-<?php echo (int) $doc->ID; ?>" role="button" data-pedir="doc-<?php echo (int) $doc->ID; ?>" data-titulo="<?php echo esc_attr( get_the_title( $doc ) ); ?>" aria-haspopup="dialog">
+							<?php esc_html_e( 'Download', 'apit' ); ?>
+						</a>
+					<?php elseif ( $ficheiro ) : ?>
 						<a class="documentos__download" href="<?php echo esc_url( $ficheiro ); ?>" download rel="noopener">
 							<?php esc_html_e( 'Download', 'apit' ); ?>
 						</a>
