@@ -173,8 +173,12 @@ $mostrar_setas = 'carrossel' === $layout;
 									<?php endif; ?>
 
 									<?php if ( $mostrar_acao ) : ?>
-										<a class="evento-pill evento-pill--acao" href="<?php echo esc_url( $acao['url'] ); ?>">
+										<?php // Um botão externo (o site do evento) abre noutro separador; o da marcação não, que é um pop-up desta página. ?>
+										<a class="evento-pill evento-pill--acao" href="<?php echo esc_url( $acao['url'] ); ?>"<?php echo ! empty( $acao['externo'] ) ? ' target="_blank" rel="noopener noreferrer"' : ''; ?>>
 											<?php echo esc_html( $acao['texto'] ); ?>
+											<?php if ( ! empty( $acao['externo'] ) ) : ?>
+												<span class="screen-reader-text"><?php esc_html_e( '(abre num novo separador)', 'apit' ); ?></span>
+											<?php endif; ?>
 										</a>
 									<?php endif; ?>
 								</div>

@@ -266,6 +266,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.0] - 2026-11-04
+
+Plugin `jelly-area-reservada` 0.41.0 e o tema. A base de dados muda: a tabela dos
+eventos ganha uma coluna, que o plugin acrescenta sozinho no primeiro acesso ao
+wp-admin (`JELLY_AR_DB_VERSION` 14 → 15).
+
+### Adicionado
+- **Os eventos têm uma Ligação.** Um campo opcional, com o endereço do site do
+  evento (`https://…`), no formulário de Eventos. Num evento sem marcações, o
+  cartão do calendário ganha o botão **"Saber mais"**, que abre o site num novo
+  separador; antes só havia botão nos eventos com marcação de mesas. Com
+  marcações, o botão continua a ser o da marcação e a ligação não se usa
+  (`jelly_ar_botao_do_evento()`, em `inc/eventos-dados.php`).
+  - Só se guarda um endereço http(s) completo (`esc_url_raw`), até 500
+    caracteres; o que não o seja fica vazio.
+  - A coluna `ligacao` é criada pelo `dbDelta` ao subir a versão da base de
+    dados. Até lá, os eventos lêem-se sem ela e sem botão.
+
 ## [0.81.0] - 2026-11-04
 
 Tema. A base de dados não muda: não há nada novo no Elementor.

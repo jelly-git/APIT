@@ -48,7 +48,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Sobe quando o que jelly_ar_instalar() cria mudar, para ela voltar a correr.
-define( 'JELLY_AR_DB_VERSION', '14' );
+define( 'JELLY_AR_DB_VERSION', '15' );
 
 /**
  * O nome completo de uma tabela da AR: jelly_ar_tabela( 'eventos' ).
@@ -203,6 +203,7 @@ function jelly_ar_esquema() {
 			onde varchar(20) NOT NULL DEFAULT 'site',
 			marcacoes tinyint(1) NOT NULL DEFAULT 0,
 			botao_texto varchar(60) NOT NULL DEFAULT '',
+			ligacao varchar(500) NOT NULL DEFAULT '',
 			estado varchar(20) NOT NULL DEFAULT 'publicado',
 			autor_id bigint(20) unsigned NOT NULL DEFAULT 0,
 			criado_em datetime NOT NULL,

@@ -83,6 +83,8 @@ function jelly_ar_evento_da_linha( $l ) {
 		'fim'            => $fim && $fim > $inicio ? $fim : $inicio,
 		'local'          => $l->local,
 		'acao_texto'     => $l->botao_texto,
+		// Antes da migração a coluna ainda não existe: sem ela, sem ligação.
+		'ligacao'        => (string) ( $l->ligacao ?? '' ),
 		'marcacoes'      => '1' === (string) $l->marcacoes,
 		'estado'         => $l->estado,
 	];
@@ -151,20 +153,31 @@ function jelly_ar_url_marcacao( $evento_id ) {
 }
 
 /*
- * O botão do cartão de um evento: só nos eventos em que os associados podem
- * marcar mesas; nos outros, não há botão (null). O texto é o do evento, e
- * "Fazer inscrição" se estiver vazio; o link não se escreve à mão — é o da
- * marcação.
+ * O botão do cartão de um evento. Há duas espécies, e a das marcações vence:
+ *
+ * - com marcações de mesas: o texto é o do evento ("Fazer inscrição" se estiver
+ *   vazio) e o link não se escreve à mão — é o da marcação;
+ * - sem marcações mas com a ligação do evento preenchida: "Saber mais", que
+ *   abre o site do evento (externo: o cartão abre-o num novo separador);
+ * - sem nenhuma das duas, não há botão (null).
  */
 function jelly_ar_botao_do_evento( $evento ) {
-	if ( empty( $evento['marcacoes'] ) ) {
-		return null;
+	if ( ! empty( $evento['marcacoes'] ) ) {
+		return [
+			'texto' => '' !== $evento['acao_texto'] ? $evento['acao_texto'] : __( 'Fazer inscrição', 'jelly-area-reservada' ),
+			'url'   => jelly_ar_url_marcacao( $evento['id'] ),
+		];
 	}
 
-	return [
-		'texto' => '' !== $evento['acao_texto'] ? $evento['acao_texto'] : __( 'Fazer inscrição', 'jelly-area-reservada' ),
-		'url'   => jelly_ar_url_marcacao( $evento['id'] ),
-	];
+	if ( ! empty( $evento['ligacao'] ) ) {
+		return [
+			'texto'   => __( 'Saber mais', 'jelly-area-reservada' ),
+			'url'     => $evento['ligacao'],
+			'externo' => true,
+		];
+	}
+
+	return null;
 }
 
 /* ---------- O calendário do site ---------- */

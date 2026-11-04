@@ -10,9 +10,12 @@
  *   fim         o último dia; sem ele, o evento é de um dia. Com ele, fica no
  *               calendário até ao fim desse dia, e a linha das datas mostra o
  *               intervalo ("6–9 out 2026")
- *   marcacoes   1 se os associados podem marcar mesas. Só com ela o cartão do
+ *   marcacoes   1 se os associados podem marcar mesas. Com ela o cartão do
  *               calendário tem botão, e o link é o da marcação
  *               (jelly_ar_botao_do_evento()); botao_texto é o texto dele
+ *   ligacao     o site do evento (https://…), opcional. Sem marcações, o cartão
+ *               ganha o botão "Saber mais", que o abre num novo separador. Com
+ *               marcações, o botão é o da marcação e a ligação não se usa
  *   estado      publicado | rascunho | lixo. O lixo não apaga: o evento sai
  *               das listas e do site, e a linha fica
  *
@@ -125,6 +128,9 @@ function jelly_ar_evento_guardar() {
 	$inicio     = $data( 'inicio' );
 	$fim        = $data( 'fim' );
 	$resumo     = isset( $_POST['resumo'] ) ? sanitize_textarea_field( wp_unslash( $_POST['resumo'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	// Só um endereço http(s) completo: esc_url_raw tira o que não o seja (javascript:, por exemplo) e a coluna só guarda 500.
+	$ligacao    = isset( $_POST['ligacao'] ) ? esc_url_raw( trim( wp_unslash( $_POST['ligacao'] ) ), [ 'http', 'https' ] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+	$ligacao    = strlen( $ligacao ) <= 500 ? $ligacao : '';
 	$categorias = wp_list_pluck( jelly_ar_evento_categorias(), 'id' );
 
 	if ( '' === $titulo || '' === $inicio || ! in_array( $categoria, $categorias, true ) ) {
@@ -145,6 +151,7 @@ function jelly_ar_evento_guardar() {
 		'local'         => mb_substr( $texto( 'local' ), 0, 150 ),
 		'marcacoes'     => empty( $_POST['marcacoes'] ) ? 0 : 1, // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		'botao_texto'   => mb_substr( $texto( 'acao_texto' ), 0, 60 ),
+		'ligacao'       => $ligacao,
 		'atualizado_em' => $agora,
 	];
 	$novo = ! $id;

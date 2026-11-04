@@ -121,6 +121,12 @@ $campos = function ( $e ) use ( $categorias, $gerir_categorias ) {
 			<textarea name="resumo" rows="2" placeholder="<?php esc_attr_e( 'A linha que aparece por baixo do título no cartão do calendário', 'jelly-area-reservada' ); ?>"><?php echo esc_textarea( $e['resumo'] ?? '' ); ?></textarea>
 		</label>
 
+		<label class="jar-campo jar-campo--largo">
+			<span><?php esc_html_e( 'Ligação', 'jelly-area-reservada' ); ?></span>
+			<input type="url" name="ligacao" value="<?php echo esc_attr( $e['ligacao'] ?? '' ); ?>" placeholder="https://" maxlength="500">
+			<small class="jar-campo__ajuda"><?php esc_html_e( 'Opcional. O site do evento: o cartão no calendário ganha o botão "Saber mais", que o abre num novo separador. Num evento com marcações, o botão é o da marcação e esta ligação não se usa.', 'jelly-area-reservada' ); ?></small>
+		</label>
+
 	</div>
 
 	<fieldset class="jar-opcoes">
