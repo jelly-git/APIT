@@ -266,6 +266,22 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.81.0] - 2026-11-04
+
+Tema. A base de dados não muda: não há nada novo no Elementor.
+
+### Adicionado
+- **Sobre a APIT: a área "Somos Associados", por baixo dos Órgãos Sociais.**
+  Quatro nomes, só texto, cada um a abrir o site respetivo num novo separador:
+  APDC, CCP, CEPI e GEDIPE. Fica dentro da secção que o `[apit_orgaos_sociais]`
+  já desenha (`template-parts/sobre/orgaos-sociais.php`), com o seu rótulo à
+  direita como o dos órgãos, pelo que aparece sem tocar na página.
+  - A lista está em `apit_get_somos_associados()` (`inc/post-types.php`), e o
+    filtro `apit_somos_associados` permite mudá-la sem editar o ficheiro.
+    Acrescentar ou tirar uma associação é uma alteração de código, não do
+    wp-admin.
+  - Quatro colunas no ecrã grande e duas no telemóvel.
+
 ## [0.80.0] - 2026-11-04
 
 Tema. A base de dados não é preciso importar: o campo novo vem do `acf-json`.

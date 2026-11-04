@@ -235,6 +235,34 @@ function apit_get_orgaos() {
 }
 
 /**
+ * The associations the APIT is itself a member of — the "Somos Associados" row
+ * under the Órgãos Sociais: a name and the address of its site, nothing else.
+ * Four fixed links change too rarely to deserve a post type of their own, so
+ * they live here; the filter lets a theme or a snippet change the list without
+ * touching this file.
+ */
+function apit_get_somos_associados() {
+	return apply_filters( 'apit_somos_associados', [
+		[
+			'nome' => 'APDC',
+			'url'  => 'https://www.apdc.pt/',
+		],
+		[
+			'nome' => 'CCP',
+			'url'  => 'https://ccp.pt/',
+		],
+		[
+			'nome' => 'CEPI',
+			'url'  => 'https://www.cepi-producers.eu/',
+		],
+		[
+			'nome' => 'GEDIPE',
+			'url'  => 'https://www.gedipe.org/site_gedipe/main/',
+		],
+	] );
+}
+
+/**
  * Team members in the order set by the Order field in wp-admin.
  */
 function apit_get_equipa( $limit = -1 ) {

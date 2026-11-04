@@ -7,11 +7,17 @@
  * member grid is auto-fit rather than a fixed three columns, which is what the
  * client asked for: a fourth or fifth member wraps onto a new line at the same
  * column width instead of squeezing the row.
+ *
+ * Under the órgãos, "Somos Associados": the associations the APIT belongs to,
+ * as names that link to their own sites. It has its own label because it is not
+ * an órgão, and it sits in this section so the page needs no new block in
+ * Elementor — it appears with the shortcode that is already there.
  */
-$orgaos  = apit_get_orgaos();
-$membros = apit_get_membros_por_orgao();
+$orgaos     = apit_get_orgaos();
+$membros    = apit_get_membros_por_orgao();
+$associados = apit_get_somos_associados();
 
-if ( ! $membros ) {
+if ( ! $membros && ! $associados ) {
 	return;
 }
 ?>
@@ -42,5 +48,24 @@ if ( ! $membros ) {
 				</ul>
 			</div>
 		<?php endforeach; ?>
+
+		<?php if ( $associados ) : ?>
+			<div class="sobre-associados">
+				<p class="sobre-rotulo sobre-rotulo--direita"><?php esc_html_e( 'Somos Associados', 'apit' ); ?></p>
+
+				<div class="sobre-orgaos__linha sobre-associados__linha">
+					<ul class="sobre-associados__lista">
+						<?php foreach ( $associados as $associado ) : ?>
+							<li class="sobre-associados__item">
+								<a class="sobre-associados__link" href="<?php echo esc_url( $associado['url'] ); ?>" target="_blank" rel="noopener noreferrer">
+									<?php echo esc_html( $associado['nome'] ); ?>
+									<span class="screen-reader-text"><?php esc_html_e( '(abre num novo separador)', 'apit' ); ?></span>
+								</a>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+			</div>
+		<?php endif; ?>
 	</div>
 </section>
