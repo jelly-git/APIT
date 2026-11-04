@@ -122,6 +122,24 @@ function apit_get_areas_documento() {
 	return is_wp_error( $termos ) ? [] : $termos;
 }
 
+/**
+ * The link of a document that is a page rather than a file.
+ *
+ * A document is one or the other: the file wins when both are filled in, so a
+ * file added later to a document that had a link replaces it without the link
+ * having to be cleared first. Only a full http(s) address counts — the field is
+ * a URL, but a value that is not one prints nothing rather than a dead button.
+ */
+function apit_documento_ligacao( $post_id ) {
+	if ( apit_media_url( (string) apit_campo( 'documento_ficheiro', $post_id ), 'img' ) ) {
+		return '';
+	}
+
+	$url = trim( (string) apit_campo( 'documento_ligacao', $post_id ) );
+
+	return preg_match( '#^https?://#i', $url ) ? $url : '';
+}
+
 /* -------------------------------------------------------------------------
  * Sobre a APIT
  * ---------------------------------------------------------------------- */

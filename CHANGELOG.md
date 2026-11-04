@@ -266,6 +266,40 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.80.0] - 2026-11-04
+
+Tema. A base de dados não é preciso importar: o campo novo vem do `acf-json`.
+
+### Adicionado
+- **Um documento aceita um ficheiro ou uma ligação.** O grupo ACF "Ficheiro ou
+  ligação do documento" ganha o campo **Ligação** (`documento_ligacao`, tipo
+  URL, com `https://`). Com a ligação preenchida e sem ficheiro, o botão da
+  página dos Documentos passa a "Abrir", com uma seta a sair da caixa em vez do
+  tabuleiro do download, e abre-a num novo separador (`target="_blank"`, sem o
+  atributo `download`, que não vale em endereços de outro site). Se houver
+  ficheiro e ligação, vale o ficheiro: `apit_documento_ligacao()` em
+  `inc/post-types.php`.
+  - Um documento só com ligação que esteja numa área que pede formulário
+    (Anuários) abre a ligação directamente: o formulário pede-se para entregar
+    um ficheiro, e aqui não há ficheiro.
+
+### Corrigido
+- **A pesquisa já não leva um Anuário ao endereço directo do PDF.** O resultado
+  apontava para o ficheiro, o que dava a volta ao formulário de Nome, Empresa e
+  Email. Para as áreas que o pedem leva agora à página dos Documentos, que se
+  abre no mesmo separador; um documento com ligação leva à ligação.
+
+## [0.79.1] - 2026-11-04
+
+Tema. A base de dados não muda.
+
+### Corrigido
+- **A cruz que fecha o diálogo do pedido de documento fica ao centro, sem
+  círculo.** O botão herdava do tema pai o fundo magenta e o contorno, e o "×"
+  era um carácter de texto, que assenta na linha de base da fonte e não fica ao
+  centro de nada. A cruz passa a ser desenhada em CSS, com duas barras a partir
+  do meio, e o botão deixa de ter fundo em hover e foco.
+
 ## [0.79.0] - 2026-11-04
 
 Tema. A base de dados não é preciso importar: o formulário cria-se sozinho.

@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.79.0
+Version: 0.80.0
 */
 
 :root {
@@ -3272,24 +3272,62 @@ a.btn--escuro:focus-visible {
 	padding: 40px 36px 36px;
 }
 
-.pedido__fechar {
+.pedido .pedido__fechar {
 	position: absolute;
 	top: 14px;
 	right: 16px;
+	display: block;
 	width: 36px;
 	height: 36px;
+	min-width: 0;
 	padding: 0;
 	border: 0;
-	border-radius: 50%;
+	border-radius: 0;
 	background: transparent;
-	font-size: 28px;
-	line-height: 1;
 	color: var(--apit-black);
+	font-size: 0;
+	line-height: 0;
 	cursor: pointer;
 }
 
-.pedido__fechar:hover {
-	background: var(--apit-cinza);
+/*
+ * A cruz é desenhada, não escrita: um "×" de texto assenta na linha de base da
+ * fonte e nunca fica ao centro do círculo. Duas barras a partir do meio ficam
+ * no centro com qualquer fonte.
+ */
+.pedido .pedido__fechar::before,
+.pedido .pedido__fechar::after {
+	content: "";
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 16px;
+	height: 2px;
+	border-radius: 1px;
+	background: currentColor;
+	transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.pedido .pedido__fechar::after {
+	transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/*
+ * Só a cruz, sem círculo: o tema pai pinta de magenta e põe contorno em
+ * qualquer botão em hover e foco, e aqui o único sinal é a cruz mudar de cor.
+ */
+.pedido .pedido__fechar:hover,
+.pedido .pedido__fechar:focus {
+	background: transparent;
+	color: var(--apit-azul);
+	outline: 0;
+	box-shadow: none;
+}
+
+/* Para quem navega pelo teclado, um contorno recto: continua a ver-se onde está o foco. */
+.pedido .pedido__fechar:focus-visible {
+	outline: 2px solid var(--apit-azul);
+	outline-offset: 0;
 }
 
 .pedido__etiqueta {

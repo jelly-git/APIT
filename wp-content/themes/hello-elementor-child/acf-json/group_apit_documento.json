@@ -1,6 +1,6 @@
 {
     "key": "group_apit_documento",
-    "title": "Ficheiro do documento",
+    "title": "Ficheiro ou ligação do documento",
     "fields": [
         {
             "key": "field_documento_ficheiro",
@@ -8,7 +8,7 @@
             "name": "documento_ficheiro",
             "aria-label": "",
             "type": "file",
-            "instructions": "O ficheiro que o botão Download entrega. Escolha da biblioteca de multimédia.\n\nA capa é a imagem de destaque, na coluna à direita, e o nome do documento é o título.",
+            "instructions": "O ficheiro que o botão Download entrega. Escolha da biblioteca de multimédia.\n\nSe o documento não é um ficheiro mas uma página, deixe este campo vazio e preencha a Ligação.\n\nA capa é a imagem de destaque, na coluna à direita, e o nome do documento é o título.",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -21,6 +21,23 @@
             "min_size": "",
             "max_size": "",
             "mime_types": "pdf, zip, doc, docx, xls, xlsx, ppt, pptx"
+        },
+        {
+            "key": "field_documento_ligacao",
+            "label": "Ligação",
+            "name": "documento_ligacao",
+            "aria-label": "",
+            "type": "url",
+            "instructions": "Em vez de um ficheiro: o endereço de uma página, completo, com https://. O botão abre-a num novo separador.\n\nSe preencher o ficheiro e a ligação, vale o ficheiro.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "default_value": "",
+            "placeholder": "https://"
         }
     ],
     "location": [
@@ -44,5 +61,5 @@
     "display_title": "",
     "allow_ai_access": false,
     "ai_description": "",
-    "modified": 1788883205
+    "modified": 1793811000
 }

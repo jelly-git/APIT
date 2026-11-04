@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 ?>
 <dialog class="pedido" id="apit-pedido" aria-labelledby="apit-pedido-titulo">
 	<form class="pedido__form" method="post" novalidate data-rota="<?php echo esc_url( rest_url( 'apit/v1/pedido-documento' ) ); ?>">
-		<button type="button" class="pedido__fechar" data-fechar aria-label="<?php esc_attr_e( 'Fechar', 'apit' ); ?>">&times;</button>
+		<button type="button" class="pedido__fechar" data-fechar aria-label="<?php esc_attr_e( 'Fechar', 'apit' ); ?>"></button>
 
 		<p class="pedido__etiqueta"><?php esc_html_e( 'Download', 'apit' ); ?></p>
 		<h2 class="pedido__titulo" id="apit-pedido-titulo"></h2>

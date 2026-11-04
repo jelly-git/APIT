@@ -1811,6 +1811,15 @@
 	mask-size: contain;
 }
 
+/*
+ * A document that is a page and not a file: the same button with an arrow
+ * leaving a box in place of the tray, because "download" would be a lie.
+ */
+.documentos__download--ligacao::before {
+	-webkit-mask-image: url("../img/icon-ligacao.svg");
+	mask-image: url("../img/icon-ligacao.svg");
+}
+
 .documentos__download:hover {
 	background-color: var(--apit-azul);
 	color: #fff;

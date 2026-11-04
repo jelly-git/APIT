@@ -46,6 +46,7 @@ foreach ( $areas as $area ) {
 				$ficheiro = apit_media_url( (string) apit_campo( 'documento_ficheiro', $doc->ID ), 'img' );
 				// Nas áreas que pedem formulário o endereço do ficheiro não sai na página.
 				$com_pedido = $ficheiro && apit_documento_com_pedido( $doc->ID );
+				$ligacao    = apit_documento_ligacao( $doc->ID );
 				?>
 				<li class="documentos__item">
 					<?php if ( has_post_thumbnail( $doc->ID ) ) : ?>
@@ -63,6 +64,11 @@ foreach ( $areas as $area ) {
 					<?php elseif ( $ficheiro ) : ?>
 						<a class="documentos__download" href="<?php echo esc_url( $ficheiro ); ?>" download rel="noopener">
 							<?php esc_html_e( 'Download', 'apit' ); ?>
+						</a>
+					<?php elseif ( $ligacao ) : ?>
+						<a class="documentos__download documentos__download--ligacao" href="<?php echo esc_url( $ligacao ); ?>" target="_blank" rel="noopener noreferrer">
+							<?php esc_html_e( 'Abrir', 'apit' ); ?>
+							<span class="screen-reader-text"><?php esc_html_e( '(abre num novo separador)', 'apit' ); ?></span>
 						</a>
 					<?php endif; ?>
 				</li>

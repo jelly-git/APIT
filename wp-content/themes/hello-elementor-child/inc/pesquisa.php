@@ -73,8 +73,15 @@ function apit_pesquisa_url( $post ) {
 	if ( 'apit_documento' === $post->post_type ) {
 		$ficheiro = apit_media_url( (string) apit_campo( 'documento_ficheiro', $post->ID ), 'img' );
 
-		if ( $ficheiro ) {
+		// Nas áreas que pedem formulário o resultado leva à página, onde está o botão que o abre: o endereço do ficheiro daria a volta ao formulário.
+		if ( $ficheiro && ! apit_documento_com_pedido( $post->ID ) ) {
 			return $ficheiro;
+		}
+
+		$ligacao = apit_documento_ligacao( $post->ID );
+
+		if ( $ligacao ) {
+			return $ligacao;
 		}
 
 		$pagina = get_page_by_path( 'documentos' );
@@ -155,13 +162,16 @@ function apit_pesquisa_resultado( $post ) {
 		return wp_specialchars_decode( (string) $valor, ENT_QUOTES );
 	};
 
+	$url = apit_pesquisa_url( $post );
+
 	return array(
 		'tipo'     => $post->post_type,
 		'etiqueta' => $tipos[ $post->post_type ] ?? '',
 		'titulo'   => $texto( get_the_title( $post ) ),
-		'url'      => apit_pesquisa_url( $post ),
+		'url'      => $url,
 		'contexto' => $texto( apit_pesquisa_contexto( $post ) ),
-		'externo'  => 'apit_documento' === $post->post_type,
+		// Abre noutro separador o que sai do site (um ficheiro, uma ligação); a página dos documentos, onde está o botão, abre-se no mesmo.
+		'externo'  => 'apit_documento' === $post->post_type && untrailingslashit( $url ) !== untrailingslashit( (string) get_permalink( get_page_by_path( 'documentos' ) ) ),
 	);
 }
 
