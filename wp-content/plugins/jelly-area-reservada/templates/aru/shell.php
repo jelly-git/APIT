@@ -131,7 +131,7 @@ $item = function ( $chave, $m, $classe ) use ( $secao ) {
 			<?php endforeach; ?>
 		</nav>
 
-		<p class="aru-lado__frase"><?php esc_html_e( 'Juntos fazemos chegar mais longe o audiovisual português.', 'jelly-area-reservada' ); ?></p>
+		<p class="aru-lado__frase"><?php esc_html_e( 'Juntos fazemos viajar o audiovisual português.', 'jelly-area-reservada' ); ?></p>
 	</aside>
 
 	<main class="aru-principal" id="conteudo">

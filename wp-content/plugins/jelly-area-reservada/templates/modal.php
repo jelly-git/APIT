@@ -32,9 +32,14 @@ $logo = jelly_ar_logo_url();
 				<span class="apit-ar__logo apit-ar__logo--texto"><?php bloginfo( 'name' ); ?></span>
 			<?php endif; ?>
 
-			<p class="apit-ar__slogan">
-				<?php esc_html_e( 'Juntos fazemos chegar mais longe o audiovisual português.', 'jelly-area-reservada' ); ?>
-			</p>
+			<?php // O lema, e por baixo dele o que a APIT oferece: juntos para ficarem no fundo do painel. ?>
+			<div class="apit-ar__frase">
+				<p class="apit-ar__slogan">
+					<?php esc_html_e( 'Juntos fazemos viajar o audiovisual português.', 'jelly-area-reservada' ); ?>
+				</p>
+				<p class="apit-ar__subtitulo"><?php esc_html_e( 'Mais oportunidades para o seu projeto', 'jelly-area-reservada' ); ?></p>
+				<p class="apit-ar__texto"><?php esc_html_e( 'A APIT liga os seus associados aos principais mercados internacionais de televisão.', 'jelly-area-reservada' ); ?></p>
+			</div>
 		</div>
 
 		<div class="apit-ar__conteudo">

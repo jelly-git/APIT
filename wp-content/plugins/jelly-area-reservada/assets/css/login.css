@@ -91,7 +91,7 @@ body.login {
 
 /* A frase do pop-up, por baixo. */
 .login h1.wp-login-logo::after {
-	content: "Juntos fazemos chegar mais longe o audiovisual português.";
+	content: "Juntos fazemos viajar o audiovisual português.";
 	max-width: 12em;
 	font-family: var(--ar-fonte);
 	font-weight: 500;

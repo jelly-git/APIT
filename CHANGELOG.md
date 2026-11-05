@@ -266,6 +266,29 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.3] - 2026-11-05
+
+Plugin `jelly-area-reservada` 0.41.1. O tema e a base de dados não mudam.
+
+### Alterado
+- **O lema da Área Reservada passa a "Juntos fazemos viajar o audiovisual
+  português."** (antes "…chegar mais longe o audiovisual português."), a pedido
+  da APIT. É o mesmo texto em três sítios, que ficam iguais: o pop-up de
+  entrada (`templates/modal.php`), o painel lateral da área de associados
+  (`templates/aru/shell.php`) e a página de login do WordPress
+  (`assets/css/login.css`, no `content` de um pseudo-elemento).
+
+### Adicionado
+- **O pop-up da Área Reservada ganha um título e um texto por baixo do lema:**
+  "Mais oportunidades para o seu projeto" e "A APIT liga os seus associados aos
+  principais mercados internacionais de televisão." O lema e estes dois ficam
+  num bloco (`.apit-ar__frase`) no fundo do painel cor-de-rosa, com o título e o
+  texto mais pequenos que o lema. Em telemóvel o bloco inteiro esconde-se, como
+  já acontecia ao lema.
+  - Só no pop-up (`templates/modal.php`). O painel lateral da área de
+    associados e a página de login do WordPress ficam só com o lema: aí não há
+    onde pôr dois tamanhos de letra (o login é um único `content` de CSS).
+
 ## [0.82.2] - 2026-11-05
 
 Tema. A base de dados não muda.

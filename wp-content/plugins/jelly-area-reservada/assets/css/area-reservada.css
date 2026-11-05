@@ -145,6 +145,22 @@ body.apit-ar-aberto {
 	line-height: 1.2;
 }
 
+/* O lema e, por baixo, o título e o texto: um bloco só, para o painel os pôr no fundo. */
+.apit-ar__subtitulo {
+	margin: 28px 0 6px;
+	font-weight: 500;
+	font-size: 17px;
+	line-height: 1.3;
+}
+
+.apit-ar__texto {
+	max-width: 22em;
+	margin: 0;
+	font-weight: 400;
+	font-size: 15px;
+	line-height: 1.5;
+}
+
 /* ---------- Conteúdo ---------- */
 
 .apit-ar__conteudo {
@@ -1084,7 +1100,7 @@ body.apit-ar-aberto {
 		width: 110px;
 	}
 
-	.apit-ar__slogan {
+	.apit-ar__frase {
 		display: none;
 	}
 
