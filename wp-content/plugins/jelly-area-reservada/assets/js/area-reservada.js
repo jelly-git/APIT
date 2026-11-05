@@ -171,6 +171,22 @@
 		if ( e.target.closest && e.target.closest( '[data-ar-fechar]' ) && modal.contains( e.target ) ) {
 			fechar();
 		}
+
+		/*
+		 * Um link do pop-up para uma âncora da própria página — "Contactar a APIT"
+		 * dentro de Sobre a APIT, que vai a #contactos. Sem isto o browser só mudava
+		 * o endereço, o pop-up ficava por cima e o link parecia não fazer nada. Fecha-se
+		 * o pop-up e não se impede o clique: é o browser que segue para a âncora.
+		 */
+		var interno = e.target.closest ? e.target.closest( 'a[href*="#"]' ) : null;
+
+		if ( interno && ! modal.hidden && modal.contains( interno ) ) {
+			var destino = new URL( interno.href, window.location.href );
+
+			if ( destino.origin === window.location.origin && destino.pathname === window.location.pathname && destino.hash && ! painelDaAncora( destino.hash ) ) {
+				fechar();
+			}
+		}
 	} );
 
 	/* Links diretos e e-mails: a página abre já com o pop-up (a primeira leitura está no fim do script). */

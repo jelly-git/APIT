@@ -266,6 +266,20 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.4] - 2026-11-05
+
+Plugin `jelly-area-reservada` 0.41.2. O tema e a base de dados não mudam.
+
+### Corrigido
+- **O "Contactar a APIT" do pop-up de entrada leva agora aos contactos de Sobre
+  a APIT** (`/sobre-apit/#contactos`). Apontava para `/contactos/`, uma página
+  vazia. O endereço sai de `home_url()`, por isso acompanha o site se este
+  mudar de domínio ou de pasta.
+  - Dentro de Sobre a APIT esse endereço é o da própria página, e o clique
+    só mudava a âncora: o pop-up ficava por cima e o link parecia não fazer
+    nada. O pop-up fecha-se agora ao clicar num link seu para uma âncora da
+    página onde está (`assets/js/area-reservada.js`), e o browser segue para ela.
+
 ## [0.82.3] - 2026-11-05
 
 Plugin `jelly-area-reservada` 0.41.1. O tema e a base de dados não mudam.

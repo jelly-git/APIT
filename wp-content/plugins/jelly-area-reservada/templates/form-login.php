@@ -102,6 +102,6 @@ $ajax = wp_make_link_relative( admin_url( 'admin-ajax.php' ) );
 	</p>
 	<p>
 		<?php esc_html_e( 'Precisa de ajuda?', 'jelly-area-reservada' ); ?>
-		<a href="<?php echo esc_url( home_url( '/contactos/' ) ); ?>" class="apit-ar__link"><?php esc_html_e( 'Contactar a APIT', 'jelly-area-reservada' ); ?></a>
+		<a href="<?php echo esc_url( home_url( '/sobre-apit/#contactos' ) ); ?>" class="apit-ar__link"><?php esc_html_e( 'Contactar a APIT', 'jelly-area-reservada' ); ?></a>
 	</p>
 </div>
