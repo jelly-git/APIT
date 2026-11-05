@@ -13,12 +13,34 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * O logótipo do e-mail. Tem de ser PNG: nenhum programa de e-mail mostra SVG.
- * Por omissão, o logótipo a cores do tema; sem ele, o e-mail escreve "APIT".
+ * O ficheiro do logótipo do e-mail, dentro do tema: o logótipo cinzento só com a
+ * marca, em PNG com fundo transparente e o dobro do tamanho em que se mostra
+ * (300 px para os 150 do e-mail), para ficar nítido em ecrãs de alta densidade.
+ * Sem ele serve o PNG antigo; sem nenhum, o e-mail escreve "APIT".
+ *
+ * Tem de ser PNG: nenhum programa de e-mail mostra SVG. O PNG sai do SVG do
+ * rodapé (assets/img/logo-apit-cinza.svg); mudando um, refaz-se o outro.
+ *
+ * @return string Caminho no disco, ou '' se não houver nenhum.
+ */
+function jelly_ar_email_logo_caminho() {
+	foreach ( [ 'logo-apit-email.png', 'logo-apit.png' ] as $nome ) {
+		$caminho = get_stylesheet_directory() . '/assets/img/' . $nome;
+
+		if ( file_exists( $caminho ) ) {
+			return $caminho;
+		}
+	}
+
+	return '';
+}
+
+/**
+ * O endereço do logótipo do e-mail, para as pré-visualizações.
  */
 function jelly_ar_email_logo_url() {
-	$logo = get_stylesheet_directory() . '/assets/img/logo-apit.png';
-	$url  = file_exists( $logo ) ? get_stylesheet_directory_uri() . '/assets/img/logo-apit.png' : '';
+	$caminho = jelly_ar_email_logo_caminho();
+	$url     = $caminho ? get_stylesheet_directory_uri() . '/assets/img/' . basename( $caminho ) : '';
 
 	return (string) apply_filters( 'jelly_ar_email_logo_url', $url );
 }
@@ -31,9 +53,7 @@ function jelly_ar_email_logo_url() {
  * mensagem.
  */
 function jelly_ar_email_logo_ficheiro() {
-	$logo = get_stylesheet_directory() . '/assets/img/logo-apit.png';
-
-	return (string) apply_filters( 'jelly_ar_email_logo_ficheiro', file_exists( $logo ) ? $logo : '' );
+	return (string) apply_filters( 'jelly_ar_email_logo_ficheiro', jelly_ar_email_logo_caminho() );
 }
 
 function jelly_ar_email_morada() {

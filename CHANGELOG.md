@@ -266,6 +266,27 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.5] - 2026-11-05
+
+Plugin `jelly-area-reservada` 0.41.3 e dois ficheiros novos no tema. A base de
+dados não muda.
+
+### Alterado
+- **O logótipo do rodapé e o de todos os e-mails passam a ser o novo, cinzento
+  (`#98a4b2`), só com a marca**, sem a linha "Associação de Produtores
+  Independentes de Televisão" que o antigo levava por baixo.
+  - **Rodapé:** `assets/img/logo-apit-cinza.svg`, o SVG que a APIT enviou com a
+    janela cortada ao desenho (o original tinha uma margem enorme à volta) e sem
+    o comentário do Illustrator. Fica mais baixo do que o PNG antigo.
+  - **E-mails:** `assets/img/logo-apit-email.png` (300×127, fundo transparente),
+    feito a partir desse SVG, porque nenhum programa de e-mail mostra SVG. Está
+    ao dobro do tamanho de apresentação (150 px) para ficar nítido em ecrãs de
+    alta densidade. Todos os e-mails da Área Reservada passam pelo mesmo modelo,
+    por isso mudam todos (`jelly_ar_email_logo_caminho()`). Se o ficheiro novo
+    faltar, serve o `logo-apit.png` de antes.
+  - O `logo-apit.png` antigo fica no tema: o painel lateral da área de
+    associados continua a usá-lo.
+
 ## [0.82.4] - 2026-11-05
 
 Plugin `jelly-area-reservada` 0.41.2. O tema e a base de dados não mudam.
