@@ -266,6 +266,24 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.2] - 2026-11-05
+
+Tema. A base de dados não muda.
+
+### Corrigido
+- **A Home volta a abrir no editor do Elementor.** Dava "nenhuma área de
+  conteúdo encontrada na sua página" e a pré-visualização mostrava o texto em
+  bruto. A causa estava em `template-parts/noticias.php` (o `[apit_noticias]`
+  da Home): o ciclo das notícias secundárias chamava-se `$post`, e como o
+  ficheiro corre dentro de `load_template()` essa variável é a própria página
+  atual do WordPress. O ciclo deixava a "página atual" presa na última notícia
+  (uma notícia em vez da Home), o Elementor deixava de se reconhecer em
+  pré-visualização e não punha o contentor do editor. O ciclo passa a chamar-se
+  `$noticia`.
+  - Nada se via no site normal, mas qualquer código que corresse depois do
+    carrossel e perguntasse pela página atual (`get_the_ID()`) recebia a
+    notícia em vez da Home.
+
 ## [0.82.1] - 2026-11-04
 
 Tema. A base de dados não muda.

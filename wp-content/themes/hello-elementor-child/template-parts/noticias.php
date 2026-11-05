@@ -77,15 +77,16 @@ $categoria_de = function ( $post ) {
 		</article>
 
 		<div class="noticias__coluna">
-			<?php foreach ( $secundaria as $post ) : ?>
+			<?php // O ciclo não se chama $post: este ficheiro corre dentro de load_template(), onde $post é a página atual do WordPress, e o ciclo deixava-a presa na última notícia. ?>
+			<?php foreach ( $secundaria as $noticia ) : ?>
 				<?php
-				$cat     = $categoria_de( $post );
-				$thumb   = get_the_post_thumbnail_url( $post->ID, 'large' );
+				$cat     = $categoria_de( $noticia );
+				$thumb   = get_the_post_thumbnail_url( $noticia->ID, 'large' );
 				$variant = $thumb ? 'imagem' : 'bloco';
 				?>
 				<article class="noticia noticia--<?php echo esc_attr( $variant ); ?>"
 					style="<?php echo esc_attr( apit_cor_categoria_style( $cat ) ); ?>">
-					<a class="noticia__link" href="<?php echo esc_url( get_permalink( $post ) ); ?>">
+					<a class="noticia__link" href="<?php echo esc_url( get_permalink( $noticia ) ); ?>">
 						<?php if ( $thumb ) : ?>
 							<span class="noticia__imagem" style="background-image: url('<?php echo esc_url( $thumb ); ?>')"></span>
 						<?php endif; ?>
@@ -94,7 +95,7 @@ $categoria_de = function ( $post ) {
 							<?php if ( $cat ) : ?>
 								<span class="noticia__categoria"><?php echo esc_html( $cat ); ?></span>
 							<?php endif; ?>
-							<span class="noticia__title"><?php echo esc_html( get_the_title( $post ) ); ?></span>
+							<span class="noticia__title"><?php echo esc_html( get_the_title( $noticia ) ); ?></span>
 						</span>
 					</a>
 				</article>
