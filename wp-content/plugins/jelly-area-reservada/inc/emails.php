@@ -18,8 +18,10 @@ defined( 'ABSPATH' ) || exit;
  * (300 px para os 150 do e-mail), para ficar nítido em ecrãs de alta densidade.
  * Sem ele serve o PNG antigo; sem nenhum, o e-mail escreve "APIT".
  *
- * Tem de ser PNG: nenhum programa de e-mail mostra SVG. O PNG sai do SVG do
- * rodapé (assets/img/logo-apit-cinza.svg); mudando um, refaz-se o outro.
+ * Tem de ser PNG: nenhum programa de e-mail mostra SVG. O PNG saiu do SVG
+ * cinzento (assets/img/logo-apit-cinza.svg), que ficou no tema só para isso: o
+ * rodapé usa agora o preto (logo-apit-preto.svg). Mudando o logótipo dos
+ * e-mails, refaz-se o PNG a partir do novo SVG.
  *
  * @return string Caminho no disco, ou '' se não houver nenhum.
  */

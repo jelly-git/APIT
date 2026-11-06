@@ -39,7 +39,7 @@ $n      = count( $videos );
 <header class="aru-titulo aru-encontro-titulo">
 	<h1><?php echo esc_html( $e['titulo'] ); ?></h1>
 	<ul class="aru-encontro-titulo__factos">
-		<li><i class="fa-regular fa-calendar" aria-hidden="true"></i> <?php echo esc_html( ucfirst( jelly_ar_data( 'j \d\e F \d\e Y', strtotime( $e['data'] ) ) ) ); ?></li>
+		<li><i class="fa-regular fa-calendar" aria-hidden="true"></i> <?php echo esc_html( $e['data_texto'] ); ?></li>
 		<?php if ( $n ) : ?>
 			<?php /* translators: %d: número de vídeos */ ?>
 			<li><i class="fa-solid fa-film" aria-hidden="true"></i> <?php echo esc_html( sprintf( _n( '%d vídeo', '%d vídeos', $n, 'jelly-area-reservada' ), $n ) ); ?></li>

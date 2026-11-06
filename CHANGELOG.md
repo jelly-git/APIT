@@ -266,6 +266,38 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.7] - 2026-11-06
+
+Plugin `jelly-area-reservada` 0.41.5. A base de dados não muda.
+
+### Alterado
+- **Os encontros pedem só o ano, e não o dia, o mês e o ano.** O formulário
+  tem agora o campo "Ano do encontro" (número, de 1900 a 2100) em vez de uma
+  data, e em todo o lado — a lista do back-office, a página de cada encontro, a
+  lista da ARU e o "O mais recente" do Início — aparece só o ano ("2025", e não
+  "20 mai 2025").
+  - A coluna `data` da tabela não muda de tipo: guarda `AAAA-01-01` e continua
+    a servir para ordenar. Dois encontros do mesmo ano ficam pela ordem em que
+    foram criados (o mais recente primeiro). `data_texto` passa a ser o ano e
+    há um `ano` novo na linha do encontro (`jelly_ar_encontro_da_linha()`).
+  - Os encontros já criados mantêm a data completa que tinham, mas mostram só o
+    ano: convém abrir cada um e pôr-lhe o ano certo, porque os do dev têm datas
+    provisórias, todas de 2026.
+
+## [0.82.6] - 2026-11-06
+
+Tema e um comentário no plugin `jelly-area-reservada` 0.41.4. A base de dados
+não muda.
+
+### Alterado
+- **O logótipo do rodapé passa a ser a versão preta** (`#231f20`) em vez da
+  cinzenta, a pedido da APIT: `assets/img/logo-apit-preto.svg`, o SVG enviado
+  com a janela cortada ao desenho. Só o rodapé: os e-mails ficam com o
+  cinzento.
+  - O `logo-apit-cinza.svg` fica no tema, já sem uso no site: é o desenho de
+    onde saiu o PNG dos e-mails. O comentário de `inc/emails.php`, que dizia que
+    esse SVG era o do rodapé, foi corrigido.
+
 ## [0.82.5] - 2026-11-05
 
 Plugin `jelly-area-reservada` 0.41.3 e dois ficheiros novos no tema. A base de

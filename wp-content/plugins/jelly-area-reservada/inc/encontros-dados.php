@@ -3,7 +3,7 @@
  * Os encontros e os vídeos deles, nas tabelas da AR (jelly_ar_encontros,
  * jelly_ar_encontro_videos — ver inc/instalar.php).
  *
- * Um encontro é como um artigo de notícias — título, data, resumo, texto e
+ * Um encontro é como um artigo de notícias — título, ano, resumo, texto e
  * imagem — com uma lista de vídeos do YouTube. Os vídeos são "não listados"
  * no YouTube: quem não tem o endereço não os encontra, e o endereço só está
  * aqui, na Área Reservada. Os encontros não aparecem no site.
@@ -131,13 +131,16 @@ function jelly_ar_encontros_videos( $ids ) {
 function jelly_ar_encontro_da_linha( $l, $videos ) {
 	$imagem = $l->imagem_id ? wp_get_attachment_image_url( (int) $l->imagem_id, 'medium_large' ) : '';
 	$ts     = strtotime( $l->data );
+	// Só o ano conta: a coluna `data` guarda AAAA-01-01 e serve para ordenar; o dia e o mês não se pedem nem se mostram.
+	$ano    = $ts ? (int) gmdate( 'Y', $ts ) : 0;
 
 	return [
 		'id'           => (int) $l->id,
 		'titulo'       => $l->titulo,
 		'slug'         => (string) $l->slug,
 		'data'         => $l->data,
-		'data_texto'   => $ts ? jelly_ar_data( 'j M Y', $ts ) : '—',
+		'ano'          => $ano,
+		'data_texto'   => $ano ? (string) $ano : '—',
 		'resumo'       => $l->resumo,
 		'texto'        => $l->texto,
 		'imagem_id'    => $imagem ? (int) $l->imagem_id : 0,

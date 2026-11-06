@@ -174,11 +174,11 @@ function jelly_ar_encontro_guardar() {
 	if ( $com_dados ) {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
 		$titulo = isset( $_POST['titulo'] ) ? sanitize_text_field( wp_unslash( $_POST['titulo'] ) ) : '';
-		$data   = DateTime::createFromFormat( '!Y-m-d', isset( $_POST['data'] ) ? sanitize_text_field( wp_unslash( $_POST['data'] ) ) : '' );
+		$ano    = isset( $_POST['ano'] ) ? absint( $_POST['ano'] ) : 0;
 		$imagem = isset( $_POST['imagem_id'] ) ? absint( $_POST['imagem_id'] ) : 0;
 		$linha  = [
 			'titulo'        => $titulo,
-			'data'          => $data ? $data->format( 'Y-m-d' ) : '',
+			'data'          => $ano >= 1900 && $ano <= 2100 ? sprintf( '%04d-01-01', $ano ) : '',
 			'resumo'        => isset( $_POST['resumo'] ) ? sanitize_textarea_field( wp_unslash( $_POST['resumo'] ) ) : '',
 			'texto'         => isset( $_POST['texto'] ) ? wp_kses_post( wp_unslash( $_POST['texto'] ) ) : '',
 			// Só uma imagem da biblioteca conta.

@@ -28,7 +28,7 @@ $avisos = [
 	'lixo'       => __( 'Encontro enviado para o lixo: saiu das listas e da Área Reservada, e fica guardado para se poder recuperar.', 'jelly-area-reservada' ),
 ];
 $erros  = [
-	'campos' => __( 'Falta o título ou a data.', 'jelly-area-reservada' ),
+	'campos' => __( 'Falta o título ou o ano.', 'jelly-area-reservada' ),
 	'video'  => __( 'Um dos links não é de um vídeo do YouTube. Cole o link do vídeo, por exemplo https://youtu.be/…', 'jelly-area-reservada' ),
 	'falhou' => __( 'O encontro não foi guardado. Tente outra vez.', 'jelly-area-reservada' ),
 ];
@@ -67,9 +67,9 @@ $campos_dados = function ( $e ) {
 		</label>
 
 		<label class="jar-campo">
-			<span><?php esc_html_e( 'Data do encontro', 'jelly-area-reservada' ); ?> <i aria-hidden="true">*</i></span>
-			<input type="date" name="data" value="<?php echo esc_attr( $e['data'] ?? '' ); ?>" required>
-			<small class="jar-campo__ajuda"><?php esc_html_e( 'O dia em que decorreu. Os encontros aparecem do mais recente para o mais antigo.', 'jelly-area-reservada' ); ?></small>
+			<span><?php esc_html_e( 'Ano do encontro', 'jelly-area-reservada' ); ?> <i aria-hidden="true">*</i></span>
+			<input type="number" name="ano" value="<?php echo esc_attr( $e['ano'] ?? '' ); ?>" min="1900" max="2100" step="1" inputmode="numeric" placeholder="<?php echo esc_attr( current_time( 'Y' ) ); ?>" required>
+			<small class="jar-campo__ajuda"><?php esc_html_e( 'Só o ano: o dia e o mês não se pedem. Os encontros aparecem do mais recente para o mais antigo; dois do mesmo ano ficam pela ordem em que foram criados.', 'jelly-area-reservada' ); ?></small>
 		</label>
 
 		<div class="jar-campo">
@@ -443,7 +443,7 @@ $resumo = [
 			<tr>
 				<?php
 				$tabela->coluna( 'titulo', __( 'Encontro', 'jelly-area-reservada' ) );
-				$tabela->coluna( 'data', __( 'Data', 'jelly-area-reservada' ), 'jar-col--data' );
+				$tabela->coluna( 'data', __( 'Ano', 'jelly-area-reservada' ), 'jar-col--data' );
 				?>
 				<th class="jar-col--videos jar-tabela__centro"><?php esc_html_e( 'Vídeos', 'jelly-area-reservada' ); ?></th>
 				<th class="jar-col--estado"><?php esc_html_e( 'Estado', 'jelly-area-reservada' ); ?></th>

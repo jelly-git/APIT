@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<footer class="apit-footer">
 		<div class="apit-container apit-footer__main">
 			<div class="apit-footer__brand">
-				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/logo-apit-cinza.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" width="250" height="105">
+				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/logo-apit-preto.svg' ); ?>" alt="<?php bloginfo( 'name' ); ?>" width="250" height="106">
 			</div>
 
 			<nav class="apit-footer__links" aria-label="<?php esc_attr_e( 'Links do rodapé', 'apit' ); ?>">
