@@ -21,7 +21,7 @@ if ( ! $membros && ! $associados ) {
 	return;
 }
 ?>
-<section class="sobre-orgaos">
+<section class="sobre-orgaos" id="orgaos-sociais">
 	<div class="apit-container">
 		<p class="sobre-rotulo sobre-rotulo--centro"><?php esc_html_e( 'Órgãos Sociais', 'apit' ); ?></p>
 

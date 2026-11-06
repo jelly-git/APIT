@@ -266,6 +266,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.9] - 2026-11-06
+
+Só o tema. A base de dados não muda.
+
+### Adicionado
+- **Sobre a APIT: botão "Órgãos Sociais" ao lado de "Estatutos"**, em
+  "Documentos Institucionais". Não abre um PDF: leva à secção Órgãos Sociais,
+  mais abaixo na página. Para isso a secção ganhou a âncora `#orgaos-sociais`
+  (`template-parts/sobre/orgaos-sociais.php`), com a margem do cabeçalho fixo
+  no `style.css`. O botão é um segundo botão do Elementor (mesmo estilo do dos
+  Estatutos) com o link `#orgaos-sociais`; não está no repositório, está na
+  página.
+  - O ícone de documento que `sobre.css` põe nos botões desse bloco passa a
+    não aparecer nos que apontam para uma âncora (`href="#…"`), como este.
+
 ## [0.82.8] - 2026-11-06
 
 Plugin `jelly-area-reservada` 0.41.6. A base de dados não muda.

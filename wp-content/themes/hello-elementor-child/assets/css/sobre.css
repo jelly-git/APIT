@@ -256,8 +256,11 @@
  * The fallback masks everything out, so a button shows no icon at all when the
  * field is empty — without it, an unset property would leave the mask off and
  * paint a solid 20px square.
+ *
+ * Not on a button that links to an anchor on the page (href="#…"), like
+ * "Órgãos Sociais": it opens no file, so it carries no document icon.
  */
-.apit-sobre-hero .sobre-hero__doc-botoes .elementor-button::after {
+.apit-sobre-hero .sobre-hero__doc-botoes .elementor-button:not([href^="#"])::after {
 	content: "";
 	display: inline-block;
 	flex: 0 0 auto;
