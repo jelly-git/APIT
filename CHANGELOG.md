@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.8] - 2026-11-06
+
+Plugin `jelly-area-reservada` 0.41.6. A base de dados não muda.
+
+### Alterado
+- **A barra de topo da Área Reservada dos associados usa o mesmo logótipo do
+  rodapé do site** (`logo-apit-preto.svg`), em vez do `logo-apit.png`. O
+  pop-up de entrada e a administração mantêm o logótipo branco, porque têm
+  fundo colorido ou escuro.
+
 ## [0.82.7] - 2026-11-06
 
 Plugin `jelly-area-reservada` 0.41.5. A base de dados não muda.

@@ -13,8 +13,8 @@ defined( 'ABSPATH' ) || exit;
 $pessoa = jelly_ar_aru_pessoa( $aru['user'] );
 $menu   = jelly_ar_aru_menu();
 $secao  = $aru['secao'];
-$logo   = get_stylesheet_directory() . '/assets/img/logo-apit.png';
-$logo   = file_exists( $logo ) ? get_stylesheet_directory_uri() . '/assets/img/logo-apit.png' : '';
+$logo   = get_stylesheet_directory() . '/assets/img/logo-apit-preto.svg';
+$logo   = file_exists( $logo ) ? get_stylesheet_directory_uri() . '/assets/img/logo-apit-preto.svg' : '';
 
 // Um item do menu: uma ligação, ou "Em breve" enquanto a página não existe.
 $item = function ( $chave, $m, $classe ) use ( $secao ) {
@@ -58,7 +58,7 @@ $item = function ( $chave, $m, $classe ) use ( $secao ) {
 	<header class="aru-topo">
 		<a class="aru-topo__logo" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php esc_attr_e( 'Voltar ao site', 'jelly-area-reservada' ); ?>">
 			<?php if ( $logo ) : ?>
-				<img src="<?php echo esc_url( $logo ); ?>" alt="<?php bloginfo( 'name' ); ?>" width="150" height="50">
+				<img src="<?php echo esc_url( $logo ); ?>" alt="<?php bloginfo( 'name' ); ?>" width="104" height="44">
 			<?php else : ?>
 				<strong><?php bloginfo( 'name' ); ?></strong>
 			<?php endif; ?>
