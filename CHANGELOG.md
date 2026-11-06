@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.10] - 2026-11-06
+
+Só o tema.
+
+### Corrigido
+- **O botão "Estatutos" de Sobre a APIT perdeu o ícone de PDF no dev.** A regra
+  da 0.82.9 tirava o ícone a qualquer botão com link `#…`, e no dev os Estatutos
+  apontam para `#pedir-estatutos` (o formulário). Agora só o botão "Órgãos
+  Sociais" (`#orgaos-sociais`) fica sem ícone.
+
 ## [0.82.9] - 2026-11-06
 
 Só o tema. A base de dados não muda.

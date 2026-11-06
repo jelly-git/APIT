@@ -257,10 +257,11 @@
  * field is empty — without it, an unset property would leave the mask off and
  * paint a solid 20px square.
  *
- * Not on a button that links to an anchor on the page (href="#…"), like
- * "Órgãos Sociais": it opens no file, so it carries no document icon.
+ * Not on the "Órgãos Sociais" button (href="#orgaos-sociais"): it opens no
+ * document, it scrolls down the page. Only that one: the Estatutos button links
+ * to "#pedir-estatutos" (the form that precedes the download) and keeps its icon.
  */
-.apit-sobre-hero .sobre-hero__doc-botoes .elementor-button:not([href^="#"])::after {
+.apit-sobre-hero .sobre-hero__doc-botoes .elementor-button:not([href$="#orgaos-sociais"])::after {
 	content: "";
 	display: inline-block;
 	flex: 0 0 auto;
