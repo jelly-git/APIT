@@ -39,8 +39,7 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 
 		<div class="apit-header__topbar-right">
 			<div class="apit-header__lang">
-				<a href="#" class="is-active">PT</a>
-				<a href="#">EN</a>
+				<?php echo do_shortcode( '[weglot_switcher]' ); ?>
 			</div>
 			<div class="apit-header__social"><?php apit_redes_sociais_html(); ?></div>
 		</div>
@@ -172,8 +171,7 @@ $logo = get_stylesheet_directory_uri() . '/assets/img/logo-branco.svg';
 
 	<div class="apit-menu-mobile__rodape">
 		<div class="apit-menu-mobile__lang">
-			<a href="#" class="is-active">PT</a>
-			<a href="#">EN</a>
+			<?php echo do_shortcode( '[weglot_switcher]' ); ?>
 		</div>
 		<div class="apit-menu-mobile__social"><?php apit_redes_sociais_html(); ?></div>
 	</div>

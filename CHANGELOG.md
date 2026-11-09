@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.11] - 2026-11-09
+
+Só o tema. A base de dados não muda.
+
+### Alterado
+- **O seletor de língua do cabeçalho passa a ser o do Weglot.** Os links
+  "PT / EN" eram só desenho (`href="#"`); agora o `header.php` mostra
+  `[weglot_switcher]` na barra de topo e no menu do telemóvel. O CSS do
+  seletor ainda é o dos links antigos e falta acertá-lo com o HTML do plugin,
+  que só se vê onde o Weglot está instalado (o local não o tem).
+
 ## [0.82.10] - 2026-11-06
 
 Só o tema.
