@@ -266,6 +266,21 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.20] - 2026-11-09
+
+Tema (só a versão) e `assets/js/area-reservada.js` do plugin
+`jelly-area-reservada`. A base de dados não muda.
+
+### Corrigido
+- **O login, o registo, a recuperação da palavra-passe e a marcação de mesa
+  davam erro 404 nas páginas em inglês.** O Weglot acrescenta o prefixo da
+  língua aos endereços relativos do HTML, também ao `action` dos formulários:
+  `/apit/wp-admin/admin-ajax.php` ficava `/apit/en/wp-admin/admin-ajax.php/`,
+  que não existe. O JS passa o endereço por `enderecoAjax()` antes do `fetch`,
+  que tira o prefixo da língua (e a barra final) e devolve o endereço que o
+  WordPress escreveu. Sem prefixo, não muda nada; o admin-ajax é um só em
+  qualquer língua.
+
 ## [0.82.12] - 2026-11-09
 
 Só o tema. A base de dados não muda.

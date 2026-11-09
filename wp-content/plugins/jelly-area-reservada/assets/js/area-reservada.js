@@ -30,6 +30,20 @@
 	// O mínimo de caracteres de uma palavra-passe: o mesmo que o servidor (JELLY_AR_SENHA_MINIMO).
 	var SENHA_MINIMO = 10;
 
+	/*
+	 * Nas páginas de outra língua o Weglot acrescenta o prefixo da língua aos
+	 * endereços relativos do HTML, também ao action dos formulários:
+	 * /apit/wp-admin/admin-ajax.php passa a /apit/en/wp-admin/admin-ajax.php/,
+	 * que não existe (404) — e o login, o registo e a marcação deixavam de
+	 * funcionar em inglês. O admin-ajax é um só, em qualquer língua; este
+	 * devolve-o como o WordPress o escreveu. Sem prefixo, não muda nada.
+	 */
+	function enderecoAjax( url ) {
+		return String( url )
+			.replace( /\/[a-z]{2,3}(?:-[a-z0-9]{2,8})?(?=\/wp-admin\/admin-ajax\.php)/i, '' )
+			.replace( /(admin-ajax\.php)\/(?=\?|$)/, '$1' );
+	}
+
 	var MENSAGENS = {
 		obrigatorio: 'Preencha este campo.',
 		email: 'Escreva um e-mail válido, como nome@empresa.pt.',
@@ -495,7 +509,7 @@
 		 * "action" (o do WordPress), e form.action devolve esse campo, não o
 		 * endereço — o pedido ia para "[object HTMLInputElement]".
 		 */
-		var destino = form.getAttribute( 'action' );
+		var destino = enderecoAjax( form.getAttribute( 'action' ) );
 
 		fetch( destino, {
 			method: 'POST',
@@ -853,7 +867,7 @@
 	}
 
 	function carregarMarcacao( id ) {
-		var ajax = painelMarcar.getAttribute( 'data-ar-ajax' );
+		var ajax = enderecoAjax( painelMarcar.getAttribute( 'data-ar-ajax' ) );
 
 		escolha = { dias: [], dia: marcarEscolhido ? marcarEscolhido.dia : null, hora: marcarEscolhido ? marcarEscolhido.hora : null, mesa: marcarEscolhido ? marcarEscolhido.mesa : null };
 		marcarEscolhido = null;
@@ -944,7 +958,7 @@
 				acertarResumo();
 			}
 
-			fetch( formMarcar.getAttribute( 'action' ), {
+			fetch( enderecoAjax( formMarcar.getAttribute( 'action' ) ), {
 				method: 'POST',
 				body: new FormData( formMarcar ),
 				credentials: 'same-origin'
