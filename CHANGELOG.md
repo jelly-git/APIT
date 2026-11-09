@@ -266,6 +266,17 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.12] - 2026-11-09
+
+Só o tema. A base de dados não muda.
+
+### Alterado
+- **O seletor de língua (Weglot) alinhado com o do desenho.** A regra comum a
+  `.apit-header__topbar-menu a` e `.apit-header__lang a` passa a `padding: 0 15px`
+  e `font-size: 14px`, e `span.wglanguage-name` (a língua actual, que o plugin
+  desenha num `<label>` e não num `<a>`) fica também a 14px, para PT e EN
+  terem o mesmo tamanho.
+
 ## [0.82.11] - 2026-11-09
 
 Só o tema. A base de dados não muda.
