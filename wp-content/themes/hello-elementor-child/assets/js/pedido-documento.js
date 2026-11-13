@@ -25,7 +25,25 @@
 	var chave = form.elements.chave;
 	var origem = null;
 
-	var TITULOS = { estatutos: 'Estatutos' };
+	/*
+	 * O título do documento, lido do texto da página para vir já traduzido pelo
+	 * Weglot: primeiro o que o próprio botão traz escondido (os da lista de
+	 * Documentos), depois os do diálogo pela chave (os Estatutos), e por fim o
+	 * atributo data-titulo, que o Weglot não traduz, para um botão que o use.
+	 */
+	function tituloDe( k, gatilho ) {
+		var el = gatilho && gatilho.querySelector( '[data-pedido-titulo]' );
+
+		if ( ! el ) {
+			el = dialogo.querySelector( '[data-pedido-titulo="' + k + '"]' );
+		}
+
+		if ( el && el.textContent.trim() ) {
+			return el.textContent.trim();
+		}
+
+		return ( gatilho && gatilho.getAttribute( 'data-titulo' ) ) || '';
+	}
 
 	function mostrarErros( erros ) {
 		form.querySelectorAll( '[data-erro]' ).forEach( function ( el ) {
@@ -46,14 +64,14 @@
 		estado.classList.toggle( 'is-erro', !! erro );
 	}
 
-	function abrir( k, nome, gatilho ) {
+	function abrir( k, gatilho ) {
 		form.reset();
 		mostrarErros( null );
 		mostrarEstado( '' );
 		botao.disabled = false;
 
 		chave.value = k;
-		titulo.textContent = nome || TITULOS[ k ] || '';
+		titulo.textContent = tituloDe( k, gatilho );
 		origem = gatilho || null;
 
 		if ( typeof dialogo.showModal === 'function' ) {
@@ -94,7 +112,7 @@
 
 		e.preventDefault();
 
-		abrir( k, a.getAttribute( 'data-titulo' ), a );
+		abrir( k, a );
 	} );
 
 	dialogo.querySelector( '[data-fechar]' ).addEventListener( 'click', fechar );

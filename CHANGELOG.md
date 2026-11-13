@@ -266,6 +266,20 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.25] - 2026-11-13
+
+Só o tema. A base de dados não muda.
+
+### Corrigido
+- **Pop-up de descarga de documentos: o título fica traduzido na versão
+  inglesa.** Era "Estatutos" em `/en/`, porque o título vinha escrito no
+  JavaScript (Estatutos) ou num atributo `data-titulo` (lista de Documentos),
+  e o Weglot traduz o texto da página mas não um nem outro. Passa a estar no
+  HTML como texto escondido: os Estatutos dentro do próprio pop-up, e cada
+  documento dentro do seu botão de download. O script lê-o daí. O botão
+  continua a dizer só "Download". No local o Weglot não traduz; testado
+  trocando o texto escondido no browser.
+
 ## [0.82.24] - 2026-11-13
 
 Só o tema. A base de dados não muda.

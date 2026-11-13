@@ -58,8 +58,17 @@ foreach ( $areas as $area ) {
 					<h3 class="documentos__titulo"><?php echo esc_html( get_the_title( $doc ) ); ?></h3>
 
 					<?php if ( $com_pedido ) : ?>
-						<a class="documentos__download" href="#pedir-doc-<?php echo (int) $doc->ID; ?>" role="button" data-pedir="doc-<?php echo (int) $doc->ID; ?>" data-titulo="<?php echo esc_attr( get_the_title( $doc ) ); ?>" aria-haspopup="dialog">
+						<?php
+						/*
+						 * O título que o diálogo mostra vai como texto escondido dentro
+						 * do botão, e não num atributo: o Weglot traduz o texto da
+						 * página e não os atributos data-*, e o diálogo ficava com o
+						 * título em português na versão inglesa.
+						 */
+						?>
+						<a class="documentos__download" href="#pedir-doc-<?php echo (int) $doc->ID; ?>" role="button" data-pedir="doc-<?php echo (int) $doc->ID; ?>" aria-haspopup="dialog">
 							<?php esc_html_e( 'Download', 'apit' ); ?>
+							<span data-pedido-titulo hidden><?php echo esc_html( get_the_title( $doc ) ); ?></span>
 						</a>
 					<?php elseif ( $ficheiro ) : ?>
 						<a class="documentos__download" href="<?php echo esc_url( $ficheiro ); ?>" download rel="noopener">

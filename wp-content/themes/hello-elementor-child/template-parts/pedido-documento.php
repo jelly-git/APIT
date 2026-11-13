@@ -16,6 +16,18 @@ defined( 'ABSPATH' ) || exit;
 
 		<p class="pedido__etiqueta"><?php esc_html_e( 'Download', 'apit' ); ?></p>
 		<h2 class="pedido__titulo" id="apit-pedido-titulo"></h2>
+
+		<?php
+		/*
+		 * Os títulos dos documentos que não estão numa lista — os Estatutos, que
+		 * se abrem por "#pedir-estatutos" no menu e nos botões do Elementor.
+		 * Estão aqui como texto, e não no script, para o Weglot os traduzir com o
+		 * resto da página: o título escrito no JavaScript ficava "Estatutos" na
+		 * versão inglesa. O script lê-os pela chave.
+		 */
+		?>
+		<span data-pedido-titulo="estatutos" hidden><?php esc_html_e( 'Estatutos', 'apit' ); ?></span>
+
 		<p class="pedido__texto"><?php esc_html_e( 'Para descarregar o documento, preencha os seus dados.', 'apit' ); ?></p>
 
 		<input type="hidden" name="chave" value="">
