@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.82.22
+Version: 0.82.23
 */
 
 :root {
@@ -75,6 +75,15 @@ body:not(:has(.apit-hero, .apit-pagina-hero, .apit-sobre-hero)) .apit-header {
 	position: relative;
 	background-color: var(--apit-black);
 	background-image: none;
+}
+
+/*
+ * Política de Privacidade: room between the header and the page title, which
+ * sat almost against it. `privacy-policy` is the class WordPress gives the page
+ * set in Definições › Privacidade, so this reaches no other page.
+ */
+.privacy-policy .page-header .entry-title {
+	margin-top: 50px;
 }
 
 .apit-header__topbar {

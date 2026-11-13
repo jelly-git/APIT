@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.23] - 2026-11-13
+
+Só o tema. A base de dados não muda.
+
+### Alterado
+- **Política de Privacidade:** o título da página fica a 50px do cabeçalho
+  (`margin-top: 50px`), a pedido do cliente. Só nesta página, pela classe
+  `privacy-policy` que o WordPress lhe dá; as outras páginas no modelo básico
+  não mudam.
+
 ## [0.82.22] - 2026-11-13
 
 Só o tema. A base de dados não muda.
