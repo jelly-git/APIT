@@ -266,6 +266,19 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.26] - 2026-11-13
+
+Só o tema. A base de dados não muda.
+
+### Corrigido
+- **Notícia individual: o botão "Voltar às notícias" fica ao centro.** A
+  navegação no fim do artigo era um flex com `space-between`. Assim o botão
+  ficava entre os dois títulos, mais perto do mais comprido, e mudava de sítio
+  de notícia para notícia. Passa a ser uma grelha `1fr auto 1fr` com cada peça
+  na sua coluna: o botão fica no centro da página mesmo quando falta a notícia
+  anterior ou a seguinte. No telemóvel continua tudo empilhado, com o botão em
+  último.
+
 ## [0.82.25] - 2026-11-13
 
 Só o tema. A base de dados não muda.

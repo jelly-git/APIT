@@ -561,11 +561,17 @@
 
 /* ---------- Anterior, voltar, seguinte ---------- */
 
+/*
+ * Three columns, the outer two of equal width, so the button sits on the page's
+ * centre line. With space-between it sat between the two titles instead, and
+ * moved with their lengths. The columns are named per item and not left to
+ * auto-placement, so a post with no "anterior" or no "seguinte" keeps the
+ * button in the middle.
+ */
 .noticia-single__nav {
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
 	align-items: center;
-	justify-content: space-between;
 	gap: 24px;
 	max-width: 1340px;
 	margin-top: 56px;
@@ -587,9 +593,19 @@
 	color: var(--apit-cat, var(--apit-magenta));
 }
 
+.noticia-single__salto--anterior {
+	grid-column: 1;
+	justify-self: start;
+}
+
+.noticia-single__voltar {
+	grid-column: 2;
+}
+
 /* The "seguinte" side reads from the right, so the pair frames the button. */
 .noticia-single__salto--seguinte {
-	margin-left: auto;
+	grid-column: 3;
+	justify-self: end;
 	text-align: right;
 }
 
@@ -652,12 +668,12 @@
 	 * the way back belongs at the end of it.
 	 */
 	.noticia-single__nav {
+		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
 	}
 
 	.noticia-single__salto--seguinte {
-		margin-left: 0;
 		text-align: left;
 	}
 
