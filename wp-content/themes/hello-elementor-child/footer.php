@@ -48,14 +48,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<div class="apit-container apit-footer__bottom">
 			<p class="apit-footer__copy">&copy; <?php echo esc_html( date_i18n( 'Y' ) ); ?> APIT - Todos os direitos reservados</p>
-			<?php // The slashes are markup, not text, so they can be dropped when the links stack on a phone. ?>
-			<p class="apit-footer__legal">
-				<a href="#">Política de Privacidade</a>
-				<span class="apit-footer__sep" aria-hidden="true">/</span>
-				<a href="#">Termos e Condições</a>
-				<span class="apit-footer__sep" aria-hidden="true">/</span>
-				<a href="#">Livro de Reclamações</a>
-			</p>
+			<?php
+			/*
+			 * The privacy page WordPress has in Definições › Privacidade: the same
+			 * page on both sites whatever its id, and Weglot turns the address into
+			 * the English one on /en/. Termos e Condições and Livro de Reclamações
+			 * were removed at the client's request; if a link joins this one again,
+			 * the slashes between them are markup (.apit-footer__sep), not text, so
+			 * they can be dropped when the links stack on a phone.
+			 */
+			$privacidade = get_privacy_policy_url();
+			?>
+			<?php if ( $privacidade ) : ?>
+				<p class="apit-footer__legal">
+					<a href="<?php echo esc_url( $privacidade ); ?>">Política de Privacidade</a>
+				</p>
+			<?php endif; ?>
 			<a href="https://jelly.pt" class="apit-footer__credit" target="_blank" rel="noopener" title="Jelly Digital Agency">
 				<img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/assets/img/logo-jelly.svg' ); ?>" alt="Logo Jelly Digital Agency" width="61" height="23">
 			</a>

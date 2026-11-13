@@ -266,6 +266,16 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.24] - 2026-11-13
+
+Só o tema. A base de dados não muda.
+
+### Alterado
+- **Rodapé:** saem os links "Termos e Condições" e "Livro de Reclamações",
+  a pedido do cliente. "Política de Privacidade" deixa de apontar para `#` e
+  passa a levar à página de privacidade do WordPress (Definições ›
+  Privacidade), a mesma nos dois sites qualquer que seja o id.
+
 ## [0.82.23] - 2026-11-13
 
 Só o tema. A base de dados não muda.
