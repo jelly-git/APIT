@@ -266,6 +266,14 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.22] - 2026-11-13
+
+Só o tema. A base de dados não muda.
+
+### Alterado
+- **A Política de Privacidade volta a ter o título da página**, a pedido do
+  cliente: sai o filtro da 0.82.21. A 0.82.21 nunca chegou a produção.
+
 ## [0.82.21] - 2026-11-13
 
 Só o tema. A base de dados não muda.
