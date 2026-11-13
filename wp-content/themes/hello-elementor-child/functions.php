@@ -6,7 +6,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.82.20' );
+define( 'APIT_CHILD_VERSION', '0.82.21' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
@@ -288,6 +288,26 @@ function apit_child_setup() {
 	] );
 }
 add_action( 'after_setup_theme', 'apit_child_setup' );
+
+/**
+ * No page title on the Política de Privacidade, at the client's request.
+ *
+ * The title there is Hello Elementor's own — the page is on the default
+ * template, not Elementor — so it goes through the parent theme's filter rather
+ * than a setting saved on the page: the page was edited on the dev server and
+ * not locally, and a setting in the database would have had to be repeated
+ * there by hand. In code it reaches both sites with the deploy.
+ *
+ * The page is the one WordPress has as its privacy policy (Definições ›
+ * Privacidade), so it is found the same way on both sites whatever its id, and
+ * the English version Weglot serves is the same page.
+ */
+function apit_sem_titulo_privacidade( $mostrar ) {
+	$pagina = (int) get_option( 'wp_page_for_privacy_policy' );
+
+	return ( $pagina && is_page( $pagina ) ) ? false : $mostrar;
+}
+add_filter( 'hello_elementor_page_title', 'apit_sem_titulo_privacidade' );
 
 /**
  * The networks the site links to, in the order they are shown.

@@ -266,6 +266,19 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.21] - 2026-11-13
+
+Só o tema. A base de dados não muda.
+
+### Alterado
+- **Política de Privacidade sem o título da página**, a pedido do cliente.
+  O título era o do Hello Elementor (a página está no modelo básico), e sai
+  pelo filtro do próprio tema-mãe, só nesta página: a que o WordPress tem
+  como política de privacidade (Definições › Privacidade), pelo que serve a
+  dev e ao local qualquer que seja o id, e também à versão em inglês do
+  Weglot. Feito no código e não na página porque a página foi editada em dev
+  e não no local. As outras páginas no modelo básico mantêm o título.
+
 ## [0.82.20] - 2026-11-09
 
 Tema (só a versão) e `assets/js/area-reservada.js` do plugin
