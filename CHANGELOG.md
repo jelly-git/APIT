@@ -266,6 +266,42 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.83.0] - 2026-11-18
+
+Só o tema: nada a importar na base de dados nem a migrar. Os artigos que já
+receberam um degradé ficam com ele como imagem de destaque e o tema deixa de o
+mostrar; não é preciso tirá-lo artigo a artigo.
+
+### Alterado
+- **Notícias: a opção B apresentada à APIT.** A APIT achou que a secção das
+  notícias destoava do resto do site: as notícias sem fotografia (8 das 12 de
+  2026) tinham degradés de cores diferentes, que faziam ruído ao lado das
+  fotografias.
+  - **Página Notícias:** os cartões da grelha deixam de ter imagem, haja ou
+    não fotografia. Cada um abre com uma linha fina na cor da categoria, a
+    mesma da etiqueta e do botão "Ler notícia". A fila de outras notícias por
+    baixo de cada artigo usa o mesmo cartão e muda com ele.
+  - **Home:** a notícia com fotografia mantém-na; a que não tem passa a
+    "texto", só com a etiqueta e o título abertos pela mesma linha. Substitui o
+    bloco de cor sólida do Figma.
+  - **Destaque sem fotografia** (Home e página Notícias): deixa de mostrar um
+    bloco da cor da categoria e fica com o painel de texto aberto pela linha.
+  - **A etiqueta da categoria** passa a ter a cor da categoria também na Home,
+    onde era sempre rosa.
+- **Filtro das notícias: o texto dos botões ao centro.** Lia-se descaído: a
+  Omnes desenha as letras abaixo do meio da caixa, e com 9px em cima e 7px em
+  baixo a meia altura das minúsculas ficava 2,6px abaixo do centro do botão.
+  Passa a 7px em cima e 9px em baixo; a altura do botão não muda.
+
+### Removido
+- **O degradé automático dos artigos** (`inc/degrade-artigos.php`, de 0.82.27).
+  Um artigo gravado sem imagem fica sem imagem. Os degradés que já foram dados
+  contam como não ter fotografia (`apit_noticia_imagem()`, em
+  `inc/noticias.php`, reconhece-os pelo caminho `degrade-artigos/`): não
+  aparecem nos cartões, no destaque nem no hero da notícia. A pasta
+  `uploads/degrade-artigos/` e a opção `apit_degrade_ultimo` ficam onde estão,
+  sem uso.
+
 ## [0.82.28] - 2026-11-18
 
 Plugin `jelly-area-reservada` 0.41.7. O tema e a base de dados não mudam.

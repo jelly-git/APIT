@@ -6,27 +6,24 @@
  * label and the title keep one definition for the whole site, and adds the
  * pieces only the archive has: the date, the summary and the "ler" link.
  *
- * A post with no featured image gets a block of its category's colour in place
- * of the picture, which is the treatment the Home gives the same case — the
- * grid then keeps its rhythm instead of showing a shorter card with a hole
- * where the image should be.
+ * Só texto, sem imagem, haja ou não fotografia (a opção B apresentada à APIT em
+ * novembro de 2026). Muitas notícias não têm fotografia, e a grelha mostrava-as
+ * com degradés de cores diferentes, o ruído de que a APIT se queixou. Cada
+ * cartão abre agora com uma linha fina na cor da categoria, a mesma da etiqueta
+ * e do botão; a fotografia fica para o destaque, para a Home e para a notícia.
  *
  * $args: post, mostrar_data, mostrar_resumo, resumo_palavras, ler_mais.
  */
 $post_cartao = $args['post'];
 $categorias  = get_the_category( $post_cartao->ID );
 $categoria   = $categorias ? $categorias[0]->name : '';
-$imagem      = get_the_post_thumbnail_url( $post_cartao->ID, 'large' );
 $resumo      = ! empty( $args['mostrar_resumo'] )
 	? apit_noticia_resumo( $post_cartao, $args['resumo_palavras'] )
 	: '';
 ?>
-<article class="noticia noticia--cartao<?php echo $imagem ? '' : ' noticia--sem-imagem'; ?>"
+<article class="noticia noticia--cartao"
 	style="<?php echo esc_attr( apit_cor_categoria_style( $categoria ) ); ?>">
 	<a class="noticia__link" href="<?php echo esc_url( get_permalink( $post_cartao ) ); ?>">
-		<span class="noticia__imagem"
-			<?php if ( $imagem ) : ?>style="background-image: url('<?php echo esc_url( $imagem ); ?>')"<?php endif; ?>></span>
-
 		<span class="noticia__texto">
 			<span class="noticia__meta">
 				<?php if ( $categoria ) : ?>

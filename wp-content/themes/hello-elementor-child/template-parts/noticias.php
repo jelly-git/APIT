@@ -8,11 +8,14 @@
  *   corner holding the category and title in dark text (Rect 10 + Rect 13);
  * - imagem: a 407x218 image with the category and title below it, on the
  *   section background (Rect 11, text at y=1889/1925);
- * - bloco: a 410x129 block of solid category colour with the text inside it in
- *   white (Rect 12, text at y=2063/2094).
+ * - texto: a notícia sem fotografia, só com a etiqueta e o título, abertos por
+ *   uma linha fina na cor da categoria.
  *
- * A secondary post renders as "imagem" when it has a featured image and as
- * "bloco" when it does not.
+ * A secondary post renders as "imagem" when it has a photograph and as "texto"
+ * when it does not. O "texto" substituiu o bloco de cor sólida do Figma (Rect
+ * 12) em 0.83.0: era um segundo bloco de cor ao lado das fotografias, o mesmo
+ * ruído que a APIT pediu para tirar das notícias. Um degradé dos antigos conta
+ * como não ter fotografia (apit_noticia_imagem, em inc/noticias.php).
  */
 
 /*
@@ -39,11 +42,11 @@ $secundaria = get_posts( array_merge( $base, [
 ] ) );
 
 /*
- * The design stacks the image card above the colour block, so posts with a
- * featured image come first — the variant is decided by that image.
+ * The design stacks the image card above the text one, so posts with a
+ * photograph come first — the variant is decided by that photograph.
  */
 usort( $secundaria, function ( $a, $b ) {
-	return ( has_post_thumbnail( $b ) ? 1 : 0 ) - ( has_post_thumbnail( $a ) ? 1 : 0 );
+	return ( apit_noticia_imagem( $b ) ? 1 : 0 ) - ( apit_noticia_imagem( $a ) ? 1 : 0 );
 } );
 
 /**
@@ -59,7 +62,7 @@ $categoria_de = function ( $post ) {
 	<div class="apit-container noticias__grid">
 		<?php
 		$cat   = $categoria_de( $destaque );
-		$thumb = get_the_post_thumbnail_url( $destaque->ID, 'full' );
+		$thumb = apit_noticia_imagem( $destaque, 'full' );
 		?>
 		<article class="noticia noticia--destaque<?php echo $thumb ? '' : ' noticia--sem-imagem'; ?>"
 			style="<?php echo esc_attr( apit_cor_categoria_style( $cat ) ); ?>">
@@ -81,8 +84,8 @@ $categoria_de = function ( $post ) {
 			<?php foreach ( $secundaria as $noticia ) : ?>
 				<?php
 				$cat     = $categoria_de( $noticia );
-				$thumb   = get_the_post_thumbnail_url( $noticia->ID, 'large' );
-				$variant = $thumb ? 'imagem' : 'bloco';
+				$thumb   = apit_noticia_imagem( $noticia, 'large' );
+				$variant = $thumb ? 'imagem' : 'texto';
 				?>
 				<article class="noticia noticia--<?php echo esc_attr( $variant ); ?>"
 					style="<?php echo esc_attr( apit_cor_categoria_style( $cat ) ); ?>">

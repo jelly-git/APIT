@@ -32,7 +32,9 @@ while ( have_posts() ) :
 
 	$categorias = get_the_category();
 	$categoria  = $categorias ? $categorias[0] : null;
-	$capa       = get_the_post_thumbnail_url( get_the_ID(), 'full' );
+	// Um degradé dos antigos não conta como fotografia (inc/noticias.php):
+	// sem ela, o hero fica com a arte das Notícias, como as outras páginas.
+	$capa       = apit_noticia_imagem( get_the_ID(), 'full' );
 
 	$voltar        = apit_noticias_texto( 'single_voltar', __( 'Voltar às notícias', 'apit' ), $noticias_id );
 	$mostrar_nav   = apit_noticias_bool( 'single_nav', true, $noticias_id );

@@ -2,7 +2,7 @@
 Theme Name: Hello Elementor Child - APIT
 Template: hello-elementor
 Description: Tema filho do Hello Elementor para o site da APIT, codificado a partir do design em Figma.
-Version: 0.82.28
+Version: 0.83.0
 */
 
 :root {
@@ -2181,15 +2181,28 @@ a.btn--escuro:focus-visible {
 }
 
 /*
- * A post with no featured image gets a block of its category's colour instead
- * of the near-black above — the same treatment the "bloco" card gets, so a card
- * without a picture still reads as belonging to its section rather than as an
- * image that failed to load.
+ * Uma notícia sem fotografia não ocupa espaço de imagem nenhum: deixou de
+ * receber um bloco da cor da categoria (e, antes, um degradé), que era o ruído
+ * de que a APIT se queixou. O que a abre é a linha fina na cor da categoria,
+ * a mesma dos cartões do arquivo e da notícia "texto" da Home.
  *
- * Here and not in noticias.css because the case turns up on the Home too.
+ * Aqui e não em noticias.css porque o caso aparece também no destaque da Home.
  */
 .noticia--sem-imagem .noticia__imagem {
-	background-color: var(--apit-cat, var(--apit-magenta));
+	display: none;
+}
+
+.noticia--destaque.noticia--sem-imagem {
+	min-height: 0;
+	border-top: 3px solid var(--apit-cat, var(--apit-magenta));
+}
+
+.noticia--destaque.noticia--sem-imagem .noticia__painel {
+	position: static;
+	width: auto;
+	min-height: 0;
+	padding: 26px 0 0;
+	background: none;
 }
 
 .noticia__texto,
@@ -2205,7 +2218,8 @@ a.btn--escuro:focus-visible {
 	line-height: 1.7;
 	letter-spacing: 0.28px;
 	text-transform: lowercase;
-	color: var(--apit-magenta);
+	/* A cor da categoria, a mesma da linha e do botão "Ler notícia". */
+	color: var(--apit-cat, var(--apit-magenta));
 }
 
 .noticia__title {
@@ -2258,26 +2272,19 @@ a.btn--escuro:focus-visible {
 	font-size: 24px;
 }
 
-/* ---- Bloco: solid category colour, white text ---- */
+/* ---- Texto: sem fotografia, aberta por uma linha na cor da categoria ---- */
 
-.noticia--bloco {
-	min-height: 129px;
-	background: var(--apit-cat, var(--apit-magenta));
+.noticia--texto {
+	border-top: 3px solid var(--apit-cat, var(--apit-magenta));
 }
 
-.noticia--bloco .noticia__link {
-	padding: 22px 24px;
+.noticia--texto .noticia__texto {
+	padding-top: 24px;
 }
 
-.noticia--bloco .noticia__categoria,
-.noticia--bloco .noticia__title {
-	color: #fff;
-}
-
-.noticia--bloco .noticia__title {
-	margin-top: 7px;
-	max-width: 356px;
-	font-size: 18px;
+.noticia--texto .noticia__title {
+	margin-top: 12px;
+	font-size: 24px;
 }
 
 @media (max-width: 1024px) {
@@ -2322,7 +2329,8 @@ a.btn--escuro:focus-visible {
 		font-size: 22px;
 	}
 
-	.noticia--imagem .noticia__title {
+	.noticia--imagem .noticia__title,
+	.noticia--texto .noticia__title {
 		font-size: 20px;
 	}
 

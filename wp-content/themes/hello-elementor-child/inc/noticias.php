@@ -180,6 +180,39 @@ function apit_noticia_destaque( array $base, $fonte ) {
 	return $posts ? $posts[0] : null;
 }
 
+/**
+ * A fotografia de uma notícia, ou uma string vazia se não tiver.
+ *
+ * Um degradé conta como não ter: de 0.82.27 a 0.83.0 o tema dava um dos oito
+ * degradés de `uploads/degrade-artigos/` a cada artigo gravado sem imagem, e
+ * os artigos que o receberam continuam com ele como imagem de destaque. Lê-se
+ * aqui como ausência, em vez de se apagar dos artigos, para que nada na base
+ * de dados tenha de mudar: o degradé fica no artigo e simplesmente não se
+ * mostra. É também a única forma de ser verdade em produção sem uma limpeza à
+ * mão, artigo a artigo.
+ *
+ * Reconhece-se pelo caminho do ficheiro, não pelo id, pela mesma razão que o
+ * código antigo o encontrava assim: o id muda de um site para o outro.
+ *
+ * @param WP_Post|int $post    A notícia.
+ * @param string      $tamanho O tamanho da imagem.
+ */
+function apit_noticia_imagem( $post, $tamanho = 'large' ) {
+	$anexo = (int) get_post_thumbnail_id( $post );
+
+	if ( ! $anexo ) {
+		return '';
+	}
+
+	$ficheiro = (string) get_post_meta( $anexo, '_wp_attached_file', true );
+
+	if ( 0 === strpos( $ficheiro, 'degrade-artigos/' ) ) {
+		return '';
+	}
+
+	return (string) wp_get_attachment_image_url( $anexo, $tamanho );
+}
+
 /*
  * The three field readers, shared by the two templates that make up the page.
  *

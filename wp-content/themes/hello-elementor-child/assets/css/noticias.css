@@ -107,7 +107,13 @@
 .noticias-filtros__item {
 	display: inline-flex;
 	align-items: center;
-	padding: 9px 22px 7px;
+	/*
+	 * Mais 2px em baixo do que em cima. A Omnes desenha as letras abaixo do
+	 * meio da sua caixa: com 9/7 a meia altura das minúsculas ficava 2,6px
+	 * abaixo do centro do botão, e o texto lia-se descaído. Com 7/9 o centro
+	 * das maiúsculas e o das minúsculas ficam um de cada lado do centro.
+	 */
+	padding: 7px 22px 9px;
 	border: 2px solid rgba(27, 42, 51, 0.18);
 	border-radius: 200px;
 	font-family: var(--apit-font);
@@ -163,6 +169,11 @@
 .noticia--cartao {
 	display: flex;
 	flex-direction: column;
+	/*
+	 * Os cartões não têm imagem (opção B, 0.83.0): esta linha, na cor da
+	 * categoria, é o que abre cada notícia e o que separa uma da outra.
+	 */
+	border-top: 3px solid var(--apit-cat, var(--apit-magenta));
 }
 
 .noticia--cartao .noticia__link {
@@ -171,16 +182,6 @@
 	flex: 1;
 }
 
-.noticia--cartao .noticia__imagem {
-	height: 218px;
-}
-
-/*
- * A card with no featured image keeps the picture's height and fills it with
- * the category's colour — the colour itself comes from style.css, because the
- * Home has the same case. Without the height the grid would show one short card
- * with a gap where the picture should be.
- */
 .noticia--cartao .noticia__texto {
 	/* Grows so every "ler" link in a row sits on the same line, whatever the
 	 * titles above them do. */
@@ -339,10 +340,6 @@
 
 	.noticia--cartao .noticia__title {
 		font-size: 20px;
-	}
-
-	.noticia--cartao .noticia__imagem {
-		height: min(220px, 52vw);
 	}
 }
 

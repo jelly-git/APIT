@@ -33,7 +33,7 @@ $etiqueta  = apit_noticias_texto( 'noticias_destaque_etiqueta', __( 'Em destaque
 		<?php
 		$categorias    = get_the_category( $destaque->ID );
 		$cat_destaque  = $categorias ? $categorias[0]->name : '';
-		$capa_destaque = get_the_post_thumbnail_url( $destaque->ID, 'full' );
+		$capa_destaque = apit_noticia_imagem( $destaque, 'full' );
 		$mostrar_data  = apit_noticias_bool( 'noticias_mostrar_data', true, $pagina_id );
 		/*
 		 * Hidden from the second page of the list onwards, and hidden by the
