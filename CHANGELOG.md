@@ -266,6 +266,46 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.27] - 2026-11-18
+
+Só o tema: nada a importar na base de dados nem a migrar. Os oito degradés
+(`wp-content/uploads/degrade-artigos/degrade-01.png … 08.png`) têm de estar nos
+uploads de produção, porque é deles que o código se serve.
+
+### Adicionado
+- **Imagem de destaque automática nos artigos: os degradés do Brand Kit, em
+  rotação.** Um artigo gravado sem imagem de destaque recebe o degradé seguinte
+  de `degrade-artigos/degrade-01.png … degrade-08.png`: o primeiro leva o 01, o
+  seguinte o 02, e depois do 08 volta ao 01. O último usado fica na opção
+  `apit_degrade_ultimo`. Novo `inc/degrade-artigos.php`.
+  - **Só toca em artigos sem imagem.** Quem escolhe uma imagem nunca a vê
+    trocada, e escolher uma não gasta nenhum degradé: a rotação só avança quando
+    um degradé é de facto atribuído. Também não conta o rascunho automático do
+    editor, o lixo, as revisões, as páginas nem uma importação.
+  - **O gancho é `wp_after_insert_post`, não `save_post`.** No editor de blocos
+    a imagem escolhida é gravada pela API REST depois do `save_post`; nessa
+    altura o artigo ainda parece não a ter, e o degradé era atribuído (e gasto)
+    por cima de uma imagem que ia ser posta a seguir. A resposta REST já traz o
+    degradé, por isso o editor mostra-o sem recarregar.
+  - **Uma referência morta conta como vazia.** O `has_post_thumbnail` só olha
+    para o id; uma imagem apagada por fora deixava o artigo para sempre sem
+    imagem. Passa a verificar que o anexo existe.
+  - **Os degradés entram na Multimédia na primeira utilização** e são
+    encontrados pelo caminho do ficheiro (`_wp_attached_file`), não por um id
+    guardado: o id muda de um site para o outro, o caminho não. Sem o ficheiro
+    na pasta (por exemplo num servidor onde ainda não foi copiada) o artigo
+    fica sem imagem, como estava, e a rotação não avança.
+  - **Em produção sobe só o código.** O contador e as entradas da Multimédia
+    criam-se sozinhos na primeira gravação de um artigo sem imagem; não é
+    preciso exportar nem importar a base de dados por causa disto. Ao funcionar
+    escreve na base de dados o que qualquer imagem de destaque escreve (a
+    entrada na Multimédia e a capa do artigo) mais a opção do contador, sem
+    mexer na estrutura.
+  - Testado no local com 32 verificações: a rotação 01→08→01, a API REST com e
+    sem imagem escolhida, rascunho, auto-draft, página, regravar, tirar a
+    imagem, imagem apagada e importação. Os artigos de teste foram apagados
+    pelos ids.
+
 ## [0.82.26] - 2026-11-13
 
 Só o tema. A base de dados não muda.

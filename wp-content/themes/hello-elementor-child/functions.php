@@ -6,12 +6,13 @@
 defined( 'ABSPATH' ) || exit;
 
 // Keep in sync with the Version header in style.css and with CHANGELOG.md.
-define( 'APIT_CHILD_VERSION', '0.82.26' );
+define( 'APIT_CHILD_VERSION', '0.82.27' );
 
 require_once get_stylesheet_directory() . '/inc/categoria-cores.php';
 require_once get_stylesheet_directory() . '/inc/post-types.php';
 require_once get_stylesheet_directory() . '/inc/acf.php';
 require_once get_stylesheet_directory() . '/inc/breadcrumbs.php';
+require_once get_stylesheet_directory() . '/inc/degrade-artigos.php';
 require_once get_stylesheet_directory() . '/inc/elementor.php';
 require_once get_stylesheet_directory() . '/inc/documentos-pedido.php';
 require_once get_stylesheet_directory() . '/inc/hero.php';
