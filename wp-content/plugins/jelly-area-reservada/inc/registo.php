@@ -150,11 +150,20 @@ function jelly_ar_registar() {
 		jelly_ar_registo_responder( [ 'mensagem' => __( 'Foram feitos demasiados pedidos a partir desta ligação. Tente de novo daqui a uma hora.', 'jelly-area-reservada' ) ], 429 );
 	}
 
+	/*
+	 * Os e-mails a um mesmo endereço também têm limite: com muitos IPs, alguém
+	 * podia encher a caixa de outra pessoa com pedidos em nome dela. Passado o
+	 * limite, a resposta é a mesma, mas não sai e-mail.
+	 */
+	$pode_escrever = ! jelly_ar_excedido( 'registo_email', JELLY_AR_EMAILS_POR_ENDERECO, HOUR_IN_SECONDS, $campos['email'] );
+
 	// Já há conta com este e-mail: a mesma resposta, e o aviso vai para o dono do e-mail.
 	$existente = get_user_by( 'email', $campos['email'] );
 
 	if ( $existente ) {
-		jelly_ar_email_depois( 'jelly_ar_registo_avisar_existente', [ $existente ] );
+		if ( $pode_escrever ) {
+			jelly_ar_email_depois( 'jelly_ar_registo_avisar_existente', [ $existente ] );
+		}
 		jelly_ar_registo_responder( [ 'sucesso' => true ] );
 	}
 

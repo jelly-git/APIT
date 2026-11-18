@@ -1005,6 +1005,19 @@
 	 */
 	lerAncora();
 
+	/*
+	 * A chave para definir a palavra-passe sai logo do endereço: o formulário
+	 * já a tem num campo escondido (templates/form-senha.php), e no endereço
+	 * ficava no histórico do browser e à vista de quem olhasse para o ecrã.
+	 */
+	if ( window.URL && window.history.replaceState && /[?&]ar-chave=/.test( window.location.search ) ) {
+		var semChave = new window.URL( window.location.href );
+
+		semChave.searchParams.delete( 'ar-chave' );
+		semChave.searchParams.delete( 'ar-conta' );
+		window.history.replaceState( window.history.state, '', semChave.pathname + semChave.search + semChave.hash );
+	}
+
 	/* ---------- ARU: escolher e já aplicar ---------- */
 
 	// Um formulário data-aru-auto (o "Por página" dos Documentos) envia-se ao escolher; sem JavaScript, há o botão.

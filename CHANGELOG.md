@@ -266,6 +266,38 @@ A versão aqui registada corresponde ao campo `Version` de
   e desaparece sobre um fundo claro.
 - Elementor Pro, caso se opte por usar (requer o `.zip` da licença).
 
+## [0.82.28] - 2026-11-18
+
+Plugin `jelly-area-reservada` 0.41.7. O tema e a base de dados não mudam.
+
+### Segurança
+Resultado da revisão do acesso à Área Reservada (pontos 3 a 7). A força bruta
+pelo `wp-login.php` e pelo `xmlrpc.php` fica de fora: é do WordPress, e fica a
+cargo de um plugin de segurança.
+- **O pop-up é só dos associados.**
+  - Uma conta da equipa com a palavra-passe certa já não entra pelo pop-up:
+    recebe a indicação de que o acesso é pelo back-office (`wp-login.php`).
+    Também não define a palavra-passe pelo painel do site. Assim, nenhum
+    caminho do site salta a proteção que o login do WordPress venha a ter,
+    como um segundo passo de autenticação.
+  - A entrada automática depois de definir a palavra-passe passa a ser só
+    para associados.
+- **O tempo de resposta do login já não denuncia quem tem conta.** Com um
+  e-mail sem conta, a resposta vinha mais depressa, porque não chegava a
+  verificar a palavra-passe. Agora calcula sempre um hash.
+- **A chave para definir a palavra-passe sai do endereço logo ao abrir a
+  página.**
+  - O formulário já a tem num campo escondido.
+  - A página que chega com ela não fica em cache e não envia o endereço a
+    terceiros (`Referrer-Policy: no-referrer`).
+- **Limite de e-mails por endereço:** 3 por hora, na recuperação e no
+  registo, além do limite por IP.
+  - Com muitos IPs, alguém podia encher a caixa de um associado ou de um
+    terceiro. Cada recuperação também invalidava a ligação anterior.
+  - Passado o limite, a resposta é a mesma, mas não sai e-mail.
+- **O contador de tentativas passa a ser exato.** Ler e somar ficam dentro de
+  um trinco do MySQL. Antes, vários pedidos ao mesmo tempo passavam todos.
+
 ## [0.82.27] - 2026-11-18
 
 Só o tema: nada a importar na base de dados nem a migrar. Os oito degradés
